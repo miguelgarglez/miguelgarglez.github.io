@@ -28899,7 +28899,7 @@ l=A.iZ(l,"=","")
 l=A.iZ(l,"+","-")
 o=A.iZ(l,"/","_")
 l=t.N
-n=A.a09("https","accounts.spotify.com","/authorize",A.ae(["response_type","code","client_id","26cd2b5bfc8a431eb6b343e28ced0b6f","scope","user-read-private user-read-email user-top-read","redirect_uri","http://localhost:5000/","state",A.aL0(16),"code_challenge_method","S256","code_challenge",o],l,l))
+n=A.a09("https","accounts.spotify.com","/authorize",A.ae(["response_type","code","client_id","26cd2b5bfc8a431eb6b343e28ced0b6f","scope","user-read-private user-read-email user-top-read","redirect_uri","https://miguelgarglez.github.io","state",A.aL0(16),"code_challenge_method","S256","code_challenge",o],l,l))
 s=6
 return A.L(A.aCC(n),$async$tf)
 case 6:s=b?3:5
@@ -28933,7 +28933,7 @@ if(i==null){g.b=A.B(e,e)
 q=g
 s=1
 break}j=t.N
-n=A.ae(["grant_type","authorization_code","code",f,"redirect_uri","http://localhost:5000/","client_id","26cd2b5bfc8a431eb6b343e28ced0b6f","code_verifier",i],j,e)
+n=A.ae(["grant_type","authorization_code","code",f,"redirect_uri","https://miguelgarglez.github.io","client_id","26cd2b5bfc8a431eb6b343e28ced0b6f","code_verifier",i],j,e)
 p=6
 s=9
 return A.L(A.aLw(A.dS("https://accounts.spotify.com/api/token",0,null),n,A.ae(["Content-Type","application/x-www-form-urlencoded"],j,j)),$async$Jn)
