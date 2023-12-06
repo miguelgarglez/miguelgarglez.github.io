@@ -9536,7 +9536,7 @@ l=A.l6(l,"=","")
 l=A.l6(l,"+","-")
 o=A.l6(l,"/","_")
 l=t.N
-n=A.I7("https","accounts.spotify.com","/authorize",A.aq(["response_type","code","client_id","26cd2b5bfc8a431eb6b343e28ced0b6f","scope","user-read-private user-read-email user-top-read playlist-modify-public playlist-modify-private ugc-image-upload","redirect_uri","http://localhost:5000/","state",A.aJT(16),"code_challenge_method","S256","code_challenge",o],l,l))
+n=A.I7("https","accounts.spotify.com","/authorize",A.aq(["response_type","code","client_id","26cd2b5bfc8a431eb6b343e28ced0b6f","scope","user-read-private user-read-email user-top-read playlist-modify-public playlist-modify-private ugc-image-upload","redirect_uri","https://miguelgarglez.github.io","state",A.aJT(16),"code_challenge_method","S256","code_challenge",o],l,l))
 s=6
 return A.N(A.a1m(n),$async$t7)
 case 6:s=b?3:5
@@ -9570,7 +9570,7 @@ if(i==null){g.b=A.A(e,e)
 q=g
 s=1
 break}j=t.N
-n=A.aq(["grant_type","authorization_code","code",f,"redirect_uri","http://localhost:5000/","client_id","26cd2b5bfc8a431eb6b343e28ced0b6f","code_verifier",i],j,e)
+n=A.aq(["grant_type","authorization_code","code",f,"redirect_uri","https://miguelgarglez.github.io","client_id","26cd2b5bfc8a431eb6b343e28ced0b6f","code_verifier",i],j,e)
 p=6
 s=9
 return A.N(A.ayk(A.dC("https://accounts.spotify.com/api/token",0,null),n,A.aq(["Content-Type","application/x-www-form-urlencoded"],j,j)),$async$Je)
