@@ -20,12 +20,35 @@ jobs:
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v4
-      - name: Install, build, and upload your site
-        uses: withastro/action@v3
+      
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          path: ./personal_site
           node-version: 22
-          package-manager: npm
+          cache: 'npm'
+          cache-dependency-path: './personal_site/package-lock.json'
+      
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./personal_site
+      
+      - name: Build Astro site
+        run: npm run build
+        working-directory: ./personal_site
+      
+      - name: Create deployment directory
+        run: |
+          mkdir -p _site/personal_site
+          cp -r personal_site/dist/* _site/personal_site/
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
 
   deploy:
     needs: build
