@@ -43,10 +43,8 @@ jobs:
       - name: Create deployment directory
         run: |
           mkdir -p _site/personal_site
-          # Copiar el index.html como página principal (si existe)
-          if [ -f "index.html" ]; then
-            cp index.html _site/
-          fi
+          # Copiar el index.html como página principal
+          cp index.html _site/
           # Construir y copiar el proyecto personal_site
           cp -r personal_site/dist/* _site/personal_site/
       
