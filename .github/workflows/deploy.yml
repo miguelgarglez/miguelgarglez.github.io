@@ -23,7 +23,7 @@ jobs:
       - name: Install, build, and upload your site
         uses: withastro/action@v2
         with:
-          path: ./personal_site
+          path: personal_site
           node-version: 22
           package-manager: npm
 
