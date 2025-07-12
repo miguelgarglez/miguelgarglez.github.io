@@ -1,0 +1,338 @@
+<section id="skills" class="skills">
+  <div class="container">
+    <h2 class="section-title">Technical Skills</h2>
+
+    <div class="skills-grid">
+      <div class="skill-category">
+        <h3 class="category-title">Frontend Development</h3>
+        <div class="skill-items">
+          <div class="skill-item">
+            <span class="skill-name">React & TypeScript</span>
+            <div class="skill-description">
+              UI component library development for 70+ teams
+            </div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">HTML & CSS</span>
+            <div class="skill-description">
+              Accessible and high-performance implementations
+            </div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Jest & React Testing Library</span>
+            <div class="skill-description">
+              Component unit testing and automation
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <h3 class="category-title">Backend & Data</h3>
+        <div class="skill-items">
+          <div class="skill-item">
+            <span class="skill-name">Python</span>
+            <div class="skill-description">
+              Flask, Django, Pandas, NumPy, Matplotlib
+            </div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Databases</span>
+            <div class="skill-description">
+              SQL (PostgreSQL, SQLite) and NoSQL (MongoDB)
+            </div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Node.js</span>
+            <div class="skill-description">
+              MERN stack development experience
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <h3 class="category-title">Mobile & Cross-Platform</h3>
+        <div class="skill-items">
+          <div class="skill-item">
+            <span class="skill-name">Flutter</span>
+            <div class="skill-description">Spotify API client development</div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">React Native</span>
+            <div class="skill-description">
+              Mobile app development experience
+            </div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Material-UI</span>
+            <div class="skill-description">
+              Modern UI component implementation
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <h3 class="category-title">DevOps & Tools</h3>
+        <div class="skill-items">
+          <div class="skill-item">
+            <span class="skill-name">AWS</span>
+            <div class="skill-description">S3, EC2, deployment experience</div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">CI/CD</span>
+            <div class="skill-description">
+              GitHub Actions, Microsoft Azure pipelines
+            </div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Docker & GraphQL</span>
+            <div class="skill-description">
+              Modern development tools and APIs
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="philosophy">
+      <div class="philosophy-content">
+        <h3>Development Philosophy</h3>
+        <p>
+          "Strong knowledge fundamentals are the key. Technologies and
+          frameworks come and go, they are tools that help engineers fix
+          business problems."
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Establecer estado inicial para las animaciones
+    gsap.set('#skills .section-title', { y: 50, opacity: 0 });
+    gsap.set('#skills .skill-category', { y: 60, opacity: 0 });
+    gsap.set('#skills .skill-item', { x: -30, opacity: 0 });
+    gsap.set('#skills .philosophy', { scale: 0.9, opacity: 0 });
+
+    // Animación del título
+    gsap.to('#skills .section-title', {
+      y: 0,
+      opacity: 1,
+      duration: 1,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#skills',
+        start: 'top 70%',
+        end: 'bottom 70%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    // Animación de las categorías
+    gsap.to('#skills .skill-category', {
+      y: 0,
+      opacity: 1,
+      duration: 0.8,
+      stagger: 0.2,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#skills .skills-grid',
+        start: 'top 80%',
+        end: 'bottom 80%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    // Animación de los skill items
+    gsap.to('#skills .skill-item', {
+      x: 0,
+      opacity: 1,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#skills .skills-grid',
+        start: 'top 70%',
+        end: 'bottom 70%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    // Animación de la filosofía
+    gsap.to('#skills .philosophy', {
+      scale: 1,
+      opacity: 1,
+      duration: 1,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#skills .philosophy',
+        start: 'top 80%',
+        end: 'bottom 80%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+  });
+</script>
+
+<style>
+  .skills {
+    padding: 5rem 2rem;
+    background: var(--bg-light);
+    color: var(--text);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    text-align: center;
+    margin-bottom: 4rem;
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+    margin-bottom: 4rem;
+  }
+
+  .skill-category {
+    background: var(--bg);
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    border: 1px solid var(--border-muted);
+    transition: all 0.3s ease;
+  }
+
+  .skill-category:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  }
+
+  .category-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0 0 2rem 0;
+    text-align: center;
+  }
+
+  .skill-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .skill-item {
+    padding: 1rem;
+    background: var(--bg-light);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary);
+    transition: all 0.3s ease;
+  }
+
+  .skill-item:hover {
+    transform: translateX(5px);
+    background: var(--highlight);
+  }
+
+  .skill-name {
+    display: block;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  .skill-description {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .philosophy {
+    background: var(--bg);
+    padding: 3rem;
+    border-radius: 16px;
+    border: 2px solid var(--primary);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .philosophy::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, var(--primary) 10, transparent 70%);
+    opacity: 0.05;
+    animation: rotate 20s linear infinite;
+  }
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .philosophy-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .philosophy h3 {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin: 0 0 1.5rem 0;
+    font-weight: 700;
+  }
+
+  .philosophy p {
+    font-size: 1.1rem;
+    color: var(--text);
+    font-style: italic;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    .skills {
+      padding: 3rem 1rem;
+    }
+
+    .skills-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .skill-category {
+      padding: 2rem 1.5rem;
+    }
+
+    .philosophy {
+      padding: 2rem 1.5rem;
+    }
+  }
+</style>

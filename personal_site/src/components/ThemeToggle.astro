@@ -1,0 +1,50 @@
+<!-- ThemeToggle.astro -->
+<button id="theme-toggle" aria-label="Cambiar tema">
+  <span class="sun-icon">☀️</span>
+  <span class="moon-icon">🌙</span>
+</button>
+
+<script>
+  // JavaScript que se ejecuta en el cliente
+  const themeToggle = document.getElementById('theme-toggle');
+  const body = document.body;
+
+  // Manejar click del botón - simplemente alternar sin guardar
+  themeToggle?.addEventListener('click', () => {
+    body.classList.toggle('light');
+  });
+</script>
+
+<style>
+  #theme-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    z-index: 9999;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+
+  #theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+  }
+
+  .sun-icon,
+  .moon-icon {
+    display: none;
+  }
+
+  body.light .moon-icon {
+    display: inline;
+  }
+
+  body:not(.light) .sun-icon {
+    display: inline;
+  }
+</style>

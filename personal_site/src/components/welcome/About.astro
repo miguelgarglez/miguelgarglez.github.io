@@ -1,0 +1,244 @@
+<section id="about" class="about">
+  <div class="container">
+    <h2 class="section-title">About Me</h2>
+    <div class="about-content">
+      <div class="about-text">
+        <p class="intro">
+          Master's and Bachelor's degree in Computer Science graduate from
+          Universidad Autónoma de Madrid (UAM). Passionate about leveraging
+          technology to drive impactful solutions.
+        </p>
+        <p class="description">
+          With a solid foundation in both theoretical and practical aspects of
+          computing, I aim to contribute to the creation of high-quality
+          software products that deliver significant value to businesses and
+          individuals. Additionally, I possess a keen interest in the business
+          world, extending beyond the technical field of computing.
+        </p>
+      </div>
+
+      <div class="qualities">
+        <div class="quality-item">
+          <span class="quality-icon">🏆</span>
+          <h3>Team Player</h3>
+          <p>
+            Used to belonging to teams, having played football in federated
+            teams from the age of seven to the present day.
+          </p>
+        </div>
+
+        <div class="quality-item">
+          <span class="quality-icon">💪</span>
+          <h3>Resilient</h3>
+          <p>
+            With great tolerance for failure and defeat, they always bring
+            something positive and motivate me to keep working to find
+            solutions.
+          </p>
+        </div>
+
+        <div class="quality-item">
+          <span class="quality-icon">🧠</span>
+          <h3>Fast Learner</h3>
+          <p>
+            With insatiable interest in acquiring new knowledge, attention to
+            detail and proactive approach.
+          </p>
+        </div>
+
+        <div class="quality-item">
+          <span class="quality-icon">🌍</span>
+          <h3>Global Mindset</h3>
+          <p>
+            English C1 level certified by the British Council (Aptis
+            certificate). Experience speaking in public and communication.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Establecer estado inicial para todos los elementos animados
+    gsap.set('#about .section-title', { y: 50, opacity: 0 });
+    gsap.set('#about .about-text p', { y: 30, opacity: 0 });
+    gsap.set('#about .quality-item', { y: 50, opacity: 0 });
+
+    // Animación del título de sección
+    gsap.to('#about .section-title', {
+      y: 0,
+      opacity: 1,
+      duration: 1,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#about',
+        start: 'top 70%',
+        end: 'bottom 70%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    // Animación del texto principal
+    gsap.to('#about .about-text p', {
+      y: 0,
+      opacity: 1,
+      duration: 0.6,
+      stagger: 0.15,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#about .about-text',
+        start: 'top 80%',
+        end: 'bottom 80%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    // Animación de las cualidades
+    gsap.to('#about .quality-item', {
+      y: 0,
+      opacity: 1,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '#about .qualities',
+        start: 'top 80%',
+        end: 'bottom 80%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+  });
+</script>
+
+<style>
+  .about {
+    padding: 5rem 2rem;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .about-content {
+    display: grid;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .about-text {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .intro {
+    font-size: 1.3rem;
+    line-height: 1.6;
+    color: var(--text);
+    margin-bottom: 2rem;
+    font-weight: 500;
+  }
+
+  .description {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .qualities {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .quality-item {
+    background: var(--bg-light);
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid var(--border-muted);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .quality-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transition: left 0.6s ease;
+  }
+
+  .quality-item:hover::before {
+    left: 100%;
+  }
+
+  .quality-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .quality-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .quality-item h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .quality-item p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .about {
+      padding: 3rem 1rem;
+    }
+
+    .qualities {
+      grid-template-columns: 1fr;
+    }
+
+    .quality-item {
+      padding: 1.5rem;
+    }
+  }
+</style>

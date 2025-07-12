@@ -1,0 +1,115 @@
+---
+import ThemeToggle from '../components/ThemeToggle.astro';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" href="/personal_site/favicon.png" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Miguel García</title>
+  </head>
+  <body>
+    <ThemeToggle />
+    <slot />
+  </body>
+</html>
+
+<script is:inline>
+  // Detectar preferencia del sistema
+  const systemPrefersLight = window.matchMedia(
+    '(prefers-color-scheme: light)'
+  ).matches;
+
+  // Siempre usar la preferencia del sistema al cargar
+  if (systemPrefersLight) {
+    document.body.classList.add('light');
+  }
+
+  // Escuchar cambios en la preferencia del sistema y aplicarlos automáticamente
+  window
+    .matchMedia('(prefers-color-scheme: light)')
+    .addEventListener('change', (e) => {
+      if (e.matches) {
+        document.body.classList.add('light');
+      } else {
+        document.body.classList.remove('light');
+      }
+    });
+</script>
+
+<style>
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  :root {
+    /* hsl (fallback color) */
+    --bg-dark: hsl(14 100% 2%);
+    --bg: hsl(24 100% 4%);
+    --bg-light: hsl(33 100% 6%);
+    --text: hsl(34 100% 89%);
+    --text-muted: hsl(34 54% 63%);
+    --highlight: hsl(36 61% 32%);
+    --border: hsl(39 100% 18%);
+    --border-muted: hsl(37 100% 10%);
+    --primary: hsl(35 59% 62%);
+    --secondary: hsl(213 78% 73%);
+    --danger: hsl(9 47% 65%);
+    --warning: hsl(51 32% 52%);
+    --success: hsl(149 31% 55%);
+    --info: hsl(217 52% 67%);
+    /* oklch */
+    --bg-dark: oklch(0.1 0.045 74);
+    --bg: oklch(0.15 0.045 74);
+    --bg-light: oklch(0.2 0.045 74);
+    --text: oklch(0.96 0.09 74);
+    --text-muted: oklch(0.76 0.09 74);
+    --highlight: oklch(0.5 0.09 74);
+    --border: oklch(0.4 0.09 74);
+    --border-muted: oklch(0.3 0.09 74);
+    --primary: oklch(0.76 0.1 74);
+    --secondary: oklch(0.76 0.1 254);
+    --danger: oklch(0.7 0.09 30);
+    --warning: oklch(0.7 0.09 100);
+    --success: oklch(0.7 0.09 160);
+    --info: oklch(0.7 0.09 260);
+  }
+  body.light {
+    /* hsl (fallback color) */
+    --bg-dark: hsl(34 76% 87%);
+    --bg: hsl(34 100% 92%);
+    --bg-light: hsl(34 100% 97%);
+    --text: hsl(11 100% 5%);
+    --text-muted: hsl(39 100% 18%);
+    --highlight: hsl(34 100% 94%);
+    --border: hsl(35 44% 44%);
+    --border-muted: hsl(35 44% 56%);
+    --primary: hsl(40 100% 16%);
+    --secondary: hsl(212 64% 30%);
+    --danger: hsl(8 36% 41%);
+    --warning: hsl(52 58% 28%);
+    --success: hsl(152 45% 31%);
+    --info: hsl(217 38% 43%);
+    /* oklch */
+    --bg-dark: oklch(0.92 0.045 74);
+    --bg: oklch(0.96 0.045 74);
+    --bg-light: oklch(1 0.045 74);
+    --text: oklch(0.15 0.09 74);
+    --text-muted: oklch(0.4 0.09 74);
+    --highlight: oklch(1 0.09 74);
+    --border: oklch(0.6 0.09 74);
+    --border-muted: oklch(0.7 0.09 74);
+    --primary: oklch(0.4 0.1 74);
+    --secondary: oklch(0.4 0.1 254);
+    --danger: oklch(0.5 0.09 30);
+    --warning: oklch(0.5 0.09 100);
+    --success: oklch(0.5 0.09 160);
+    --info: oklch(0.5 0.09 260);
+  }
+</style>

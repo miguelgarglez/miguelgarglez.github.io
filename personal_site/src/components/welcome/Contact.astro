@@ -1,0 +1,336 @@
+<section id="contact" class="contact">
+  <div class="container">
+    <h2 class="section-title">Let's Connect</h2>
+
+    <div class="contact-content">
+      <div class="contact-info">
+        <h3>Get in Touch</h3>
+        <p class="contact-description">
+          I'm always interested in discussing new opportunities, exciting
+          projects, or just having a conversation about technology and software
+          engineering.
+        </p>
+
+        <div class="contact-methods">
+          <a href="mailto:miguel.garglez@gmail.com" class="contact-method">
+            <div class="method-icon">✉️</div>
+            <div class="method-content">
+              <span class="method-label">Email</span>
+              <span class="method-value">miguel.garglez@gmail.com</span>
+            </div>
+          </a>
+
+          <a href="tel:+34654991047" class="contact-method">
+            <div class="method-icon">📞</div>
+            <div class="method-content">
+              <span class="method-label">Phone</span>
+              <span class="method-value">+34 654 991 047</span>
+            </div>
+          </a>
+
+          <a
+            href="https://www.linkedin.com/in/miguel-garciag"
+            target="_blank"
+            class="contact-method"
+          >
+            <div class="method-icon">🔗</div>
+            <div class="method-content">
+              <span class="method-label">LinkedIn</span>
+              <span class="method-value">miguel-garciag</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="hobbies-section">
+        <h3>Beyond Code</h3>
+        <div class="hobbies">
+          <div class="hobby-item">
+            <span class="hobby-icon">⚽</span>
+            <div class="hobby-text">
+              <h4>Sports Enthusiast</h4>
+              <p>
+                Playing football since age seven, passionate about physical
+                well-being and team sports.
+              </p>
+            </div>
+          </div>
+
+          <div class="hobby-item">
+            <span class="hobby-icon">💻</span>
+            <div class="hobby-text">
+              <h4>Tech Explorer</h4>
+              <p>
+                Regular reader of software engineering blogs, always eager to
+                learn about new technologies and innovations.
+              </p>
+            </div>
+          </div>
+
+          <div class="hobby-item">
+            <span class="hobby-icon">🌟</span>
+            <div class="hobby-text">
+              <h4>Growth Mindset</h4>
+              <p>
+                Always seeking new activities that push me out of my comfort
+                zone and help me grow as a person.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Establecer estado inicial para todos los elementos animados
+    gsap.set('#contact .section-title', { y: 50, opacity: 0 });
+    gsap.set('#contact .contact-info', { x: -100, opacity: 0 });
+    gsap.set('#contact .contact-method', { y: 30, opacity: 0 });
+    gsap.set('#contact .hobbies-section', { x: 100, opacity: 0 });
+    gsap.set('#contact .hobby-item', { y: 30, opacity: 0 });
+
+    // Fallback: asegurar visibilidad si GSAP falla
+    gsap.set(
+      '#contact .section-title, #contact .contact-info, #contact .contact-method, #contact .hobbies-section, #contact .hobby-item',
+      {
+        opacity: 1,
+      }
+    );
+
+    // Animación del título
+    gsap.to('#contact .section-title', {
+      y: 0,
+      opacity: 1,
+      duration: 1,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#contact',
+        start: 'top 70%',
+        end: 'bottom 70%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    // Animación de la información de contacto
+    gsap.to('#contact .contact-info', {
+      x: 0,
+      opacity: 1,
+      duration: 0.8,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#contact .contact-content',
+        start: 'top 80%',
+        end: 'bottom 80%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    // Animación de los métodos de contacto
+    gsap.to('#contact .contact-method', {
+      y: 0,
+      opacity: 1,
+      duration: 0.6,
+      stagger: 0.15,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#contact .contact-methods',
+        start: 'top 85%',
+        end: 'bottom 85%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    // Animación de la sección de hobbies
+    gsap.to('#contact .hobbies-section', {
+      x: 0,
+      opacity: 1,
+      duration: 0.8,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#contact .contact-content',
+        start: 'top 80%',
+        end: 'bottom 80%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    // Animación de los hobby items
+    gsap.to('#contact .hobby-item', {
+      y: 0,
+      opacity: 1,
+      duration: 0.6,
+      stagger: 0.2,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#contact .hobbies',
+        start: 'top 85%',
+        end: 'bottom 85%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+  });
+</script>
+
+<style>
+  .contact {
+    padding: 5rem 2rem;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    text-align: center;
+    margin-bottom: 4rem;
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .contact-info h3,
+  .hobbies-section h3 {
+    font-size: 1.8rem;
+    color: var(--primary);
+    margin: 0 0 1.5rem 0;
+    font-weight: 700;
+  }
+
+  .contact-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0 0 2.5rem 0;
+  }
+
+  .contact-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .contact-method {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: var(--bg-light);
+    border-radius: 12px;
+    border: 1px solid var(--border-muted);
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .contact-method:hover {
+    transform: translateY(-3px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .method-icon {
+    font-size: 2rem;
+  }
+
+  .method-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .method-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .method-value {
+    font-size: 1.1rem;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .hobbies {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .hobby-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: var(--bg-light);
+    border-radius: 12px;
+    border: 1px solid var(--border-muted);
+    transition: all 0.3s ease;
+  }
+
+  .hobby-item:hover {
+    transform: translateX(5px);
+    border-color: var(--primary);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .hobby-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+  }
+
+  .hobby-text h4 {
+    font-size: 1.2rem;
+    color: var(--text);
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+  }
+
+  .hobby-text p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .contact {
+      padding: 3rem 1rem;
+    }
+
+    .contact-content {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .contact-method,
+    .hobby-item {
+      padding: 1.25rem;
+    }
+
+    .hobby-item {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .hobby-icon {
+      font-size: 2rem;
+    }
+  }
+</style>

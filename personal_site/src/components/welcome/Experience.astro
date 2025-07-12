@@ -1,0 +1,406 @@
+<section id="experience" class="experience">
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="period">Sep 2024 - Current</div>
+        <h3 class="job-title">Frontend UI Platform Engineer</h3>
+        <p class="company">Open Digital Services (Santander Group)</p>
+        <button class="expand-btn mobile-only" aria-label="Expand details">
+          <span class="expand-text">Show more</span>
+          <span class="expand-icon">+</span>
+        </button>
+        <ul class="achievements expandable">
+          <li>
+            Successfully contributed to the development and maintenance of a
+            <strong>React/Typescript UI component library</strong> that integrates
+            with our company <strong>Design System</strong> and allows <strong
+              >white label solutions</strong
+            > for different brands.
+          </li>
+          <li>
+            During my time the use of this library throughout the company group
+            expanded to more than <strong>70% of frontend teams</strong>
+            (<strong>several hundred developers</strong>) with the goal of
+            reaching every team.
+          </li>
+          <li>
+            Collaborated closely with <strong>designers and developers</strong> to
+            create and maintain <strong>reusable components</strong>, optimizing
+            the development experience and ensuring good <strong
+              >performance and accessibility</strong
+            >.
+          </li>
+          <li>
+            Contributed to <strong>Kubit's open source ecosystem</strong> (develop
+            one of the product's landing pages), working on tools and plugins that
+            facilitate UI design and development.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="period">Sep 2023 - Jul 2024</div>
+        <h3 class="job-title">QA Software Engineer</h3>
+        <p class="company">Jember Engineering Solutions</p>
+        <button class="expand-btn mobile-only" aria-label="Expand details">
+          <span class="expand-text">Show more</span>
+          <span class="expand-icon">+</span>
+        </button>
+        <ul class="achievements expandable">
+          <li>
+            Work and coordinate with <strong
+              >app frontend development team</strong
+            > with <strong>agile methodologies</strong>, ensuring that the
+            different parties are aligned to successfully complete the
+            development of new features.
+          </li>
+          <li>
+            Report <strong>hundreds of bugs</strong>, leading to noticeable
+            improvements on app's <strong>performance and UX</strong>.
+          </li>
+          <li>
+            Working together with another QA to <strong
+              >refactor and relaunch a test automation project</strong
+            > for the company apps that had been abandoned for more than 2 years,
+            leading to an improvement of <strong
+              >50% in cost of person days</strong
+            > for regression tests.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="period">Jan 2022 - May 2022</div>
+        <h3 class="job-title">Software Developer</h3>
+        <p class="company">Electric-Save</p>
+        <button class="expand-btn mobile-only" aria-label="Expand details">
+          <span class="expand-text">Show more</span>
+          <span class="expand-icon">+</span>
+        </button>
+        <ul class="achievements expandable">
+          <li>
+            Attend <strong>clients directly</strong> (was a <strong
+              >B2B startup company</strong
+            >), reporting and fixing errors with the software provided by the
+            company, contributing to <strong>customer satisfaction</strong> and continuity
+            using the company's software product.
+          </li>
+          <li>
+            Create a <strong>web application</strong> to make a <strong
+              >proof of concept</strong
+            > to an important potential client, which took our proposal to the
+            <strong>next stage of selection</strong>.
+          </li>
+          <li>
+            Run <strong>remote meetings</strong> to show the software product to
+            new potential clients, leading to new challenges and <strong
+              >growth of the company</strong
+            >.
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Establecer estado inicial para todos los elementos animados
+    gsap.set('#experience .section-title', { y: 50, opacity: 0 });
+    gsap.set('#experience .timeline-item', { x: -100, opacity: 0 });
+    gsap.set('#experience .timeline-marker', { scale: 0 });
+
+    // Fallback: asegurar visibilidad si GSAP falla
+    gsap.set(
+      '#experience .section-title, #experience .timeline-item, #experience .timeline-marker',
+      {
+        opacity: 1,
+      }
+    );
+
+    // Animación del título
+    gsap.to('#experience .section-title', {
+      y: 0,
+      opacity: 1,
+      duration: 1,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#experience',
+        start: 'top 70%',
+        end: 'bottom 70%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    // Animación de los elementos del timeline
+    gsap.to('#experience .timeline-item', {
+      x: 0,
+      opacity: 1,
+      duration: 0.8,
+      stagger: 0.2,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#experience .timeline',
+        start: 'top 80%',
+        end: 'bottom 80%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    // Animación de los markers
+    gsap.to('#experience .timeline-marker', {
+      scale: 1,
+      duration: 0.5,
+      stagger: 0.2,
+      ease: 'back.out(1.7)',
+      scrollTrigger: {
+        trigger: '#experience .timeline',
+        start: 'top 80%',
+        end: 'bottom 80%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+  });
+
+  // Funcionalidad para botones expandibles en móvil
+  document.addEventListener('DOMContentLoaded', () => {
+    const expandBtns = document.querySelectorAll('.expand-btn');
+
+    expandBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const achievements = btn.nextElementSibling;
+        const expandText = btn.querySelector('.expand-text');
+        const expandIcon = btn.querySelector('.expand-icon');
+        if (!expandText) return;
+        if (!expandIcon) return;
+        if (!achievements) return;
+        const isExpanded = achievements.classList.contains('expanded');
+
+        if (isExpanded) {
+          achievements.classList.remove('expanded');
+          btn.classList.remove('expanded');
+          expandText.textContent = 'Show more';
+          expandIcon.textContent = '+';
+        } else {
+          achievements.classList.add('expanded');
+          btn.classList.add('expanded');
+          expandText.textContent = 'Show less';
+          expandIcon.textContent = '-';
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .experience {
+    padding: 5rem 2rem;
+    background: var(--bg-light);
+    color: var(--text);
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    text-align: center;
+    margin-bottom: 4rem;
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .timeline {
+    position: relative;
+    padding-left: 3rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 1.5rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 3rem;
+    padding-left: 2rem;
+  }
+
+  .timeline-marker {
+    position: absolute;
+    left: -2.18rem;
+    top: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+    background: var(--primary);
+    border-radius: 50%;
+    border: 3px solid var(--bg-light);
+    z-index: 1;
+  }
+
+  .timeline-content {
+    background: var(--bg);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-muted);
+    transition: all 0.3s ease;
+  }
+
+  .timeline-content:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border-color: var(--primary);
+  }
+
+  .period {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .job-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 0.5rem 0;
+  }
+
+  .company {
+    color: var(--text-muted);
+    font-style: italic;
+    margin: 0 0 1.5rem 0;
+  }
+
+  .achievements {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .achievements li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.8rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  .achievements li strong {
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  .achievements li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-weight: bold;
+  }
+
+  .achievements li:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Estilos para funcionalidad expandible en móvil */
+  .expand-btn {
+    display: none;
+    background: var(--primary);
+    color: var(--bg);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .expand-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .expand-icon {
+    transition: all 0.3s ease;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 1rem;
+  }
+
+  .expand-btn.expanded .expand-icon {
+    transform: rotate(360deg);
+  }
+
+  @media (max-width: 768px) {
+    .experience {
+      padding: 3rem 1rem;
+    }
+
+    .timeline {
+      padding-left: 2.5rem;
+    }
+
+    .timeline::before {
+      left: 1.25rem;
+    }
+
+    .timeline-marker {
+      left: -1.9rem;
+    }
+
+    .timeline-content {
+      padding: 1.5rem;
+    }
+
+    /* Mostrar botón expandible en móvil */
+    .mobile-only {
+      display: flex !important;
+    }
+
+    /* Ocultar logros por defecto en móvil */
+    .achievements.expandable {
+      display: none;
+      margin-top: 0;
+    }
+
+    /* Mostrar cuando está expandido */
+    .achievements.expandable.expanded {
+      display: block;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+</style>

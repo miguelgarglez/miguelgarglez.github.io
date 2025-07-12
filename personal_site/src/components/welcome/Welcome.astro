@@ -1,0 +1,32 @@
+---
+import Footer from '../../layouts/Footer.astro';
+import About from './About.astro';
+import Hero from './Hero.astro';
+import Experience from './Experience.astro';
+import Education from './Education.astro';
+import Skills from './Skills.astro';
+import Contact from './Contact.astro';
+---
+
+<div id="container">
+  <main>
+    <Hero />
+    <About />
+    <Experience />
+    <Education />
+    <Skills />
+    <Contact />
+  </main>
+  <Footer />
+</div>
+
+<style>
+  #container {
+    font-family: 'Inter', 'Roboto', 'Helvetica Neue', 'Arial Nova',
+      'Nimbus Sans', Arial, sans-serif;
+  }
+
+  main {
+    background-color: var(--bg);
+  }
+</style>
