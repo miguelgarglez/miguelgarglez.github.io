@@ -48,10 +48,7 @@ import ThemeToggle from '../components/ThemeToggle.astro';
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow-x: hidden; /* Evitar scroll horizontal */
   }
-
-  /* Prevenir overflow horizontal en todos los elementos */
   * {
     box-sizing: border-box;
   }
@@ -59,7 +56,6 @@ import ThemeToggle from '../components/ThemeToggle.astro';
   /* Asegurar que ningún elemento cause scroll horizontal */
   body {
     max-width: 100vw;
-    overflow-x: hidden;
   }
 
   :root {
