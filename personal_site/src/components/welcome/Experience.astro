@@ -122,14 +122,6 @@
     gsap.set('#experience .timeline-item', { x: -100, opacity: 0 });
     gsap.set('#experience .timeline-marker', { scale: 0 });
 
-    // Fallback: asegurar visibilidad si GSAP falla
-    gsap.set(
-      '#experience .section-title, #experience .timeline-item, #experience .timeline-marker',
-      {
-        opacity: 1,
-      }
-    );
-
     // Animación del título
     gsap.to('#experience .section-title', {
       y: 0,

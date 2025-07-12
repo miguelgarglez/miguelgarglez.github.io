@@ -9,6 +9,12 @@ import ThemeToggle from '../components/ThemeToggle.astro';
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/png" href="/personal_site/favicon.png" />
     <meta name="generator" content={Astro.generator} />
+    
+    <!-- Meta tags para la barra superior del navegador -->
+    <meta name="theme-color" content="#1a1a1a" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    
     <title>Miguel García</title>
   </head>
   <body>
@@ -44,8 +50,21 @@ import ThemeToggle from '../components/ThemeToggle.astro';
   html,
   body {
     margin: 0;
+    padding: 0;
     width: 100%;
     height: 100%;
+    overflow-x: hidden; /* Evitar scroll horizontal */
+  }
+
+  /* Prevenir overflow horizontal en todos los elementos */
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Asegurar que ningún elemento cause scroll horizontal */
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 
   :root {

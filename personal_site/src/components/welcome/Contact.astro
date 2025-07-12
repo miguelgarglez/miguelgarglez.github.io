@@ -97,14 +97,6 @@
     gsap.set('#contact .hobbies-section', { x: 100, opacity: 0 });
     gsap.set('#contact .hobby-item', { y: 30, opacity: 0 });
 
-    // Fallback: asegurar visibilidad si GSAP falla
-    gsap.set(
-      '#contact .section-title, #contact .contact-info, #contact .contact-method, #contact .hobbies-section, #contact .hobby-item',
-      {
-        opacity: 1,
-      }
-    );
-
     // Animación del título
     gsap.to('#contact .section-title', {
       y: 0,

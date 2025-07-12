@@ -166,7 +166,7 @@
 
   .qualities {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
     margin-top: 2rem;
   }
@@ -226,6 +226,12 @@
     line-height: 1.6;
     color: var(--text-muted);
     margin: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .qualities {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   @media (max-width: 768px) {
