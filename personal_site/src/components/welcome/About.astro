@@ -1,3 +1,7 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+
 <section id="about" class="about">
   <div class="container">
     <h2 class="section-title">About Me</h2>
@@ -5,8 +9,10 @@
       <div class="about-text">
         <p class="intro">
           Master's and Bachelor's degree in Computer Science graduate from
-          Universidad Autónoma de Madrid (UAM). Passionate about leveraging
-          technology to drive impactful solutions.
+          Universidad Autónoma de Madrid (UAM).
+          <span class="accent-underline">
+            Passionate about leveraging technology to drive impactful solutions.
+          </span>
         </p>
         <p class="description">
           With a solid foundation in both theoretical and practical aspects of
@@ -19,7 +25,7 @@
 
       <div class="qualities">
         <div class="quality-item">
-          <span class="quality-icon">🏆</span>
+          <Icon class="quality-icon" name="lucide:users" aria-hidden="true" />
           <h3>Team Player</h3>
           <p>
             Used to belonging to teams, having played football in federated
@@ -28,7 +34,7 @@
         </div>
 
         <div class="quality-item">
-          <span class="quality-icon">💪</span>
+          <Icon class="quality-icon" name="lucide:shield" aria-hidden="true" />
           <h3>Resilient</h3>
           <p>
             With great tolerance for failure and defeat, they always bring
@@ -38,7 +44,7 @@
         </div>
 
         <div class="quality-item">
-          <span class="quality-icon">🧠</span>
+          <Icon class="quality-icon" name="lucide:brain" aria-hidden="true" />
           <h3>Fast Learner</h3>
           <p>
             With insatiable interest in acquiring new knowledge, attention to
@@ -47,7 +53,7 @@
         </div>
 
         <div class="quality-item">
-          <span class="quality-icon">🌍</span>
+          <Icon class="quality-icon" name="lucide:globe" aria-hidden="true" />
           <h3>Global Mindset</h3>
           <p>
             English C1 level certified by the British Council (Aptis
@@ -157,6 +163,13 @@
     font-weight: 500;
   }
 
+  .accent-underline {
+    text-decoration: underline;
+    text-decoration-color: var(--primary);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+  }
+
   .description {
     font-size: 1.1rem;
     line-height: 1.7;
@@ -209,9 +222,18 @@
   }
 
   .quality-icon {
-    font-size: 3rem;
-    display: block;
-    margin-bottom: 1rem;
+    width: 56px;
+    height: 56px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: var(--primary);
+    stroke: currentColor;
+    stroke-width: 1.8;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .quality-item h3 {

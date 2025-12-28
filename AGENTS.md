@@ -30,3 +30,4 @@ Contexto del repo: sitio estático en `index.html` que actúa como directorio de
 
 - Antes de cambios, revisar `personal_site/README.md` para contexto del sitio.
 - Si se agregan nuevos proyectos al directorio, considerar actualizar README del repo si es necesario.
+- Iconos: se usa `astro-icon` con el set `@iconify-json/lucide`. La configuración está en `personal_site/astro.config.mjs` (lista `include`). En componentes Astro, usar `<Icon name="lucide:icon-name" />` y evitar emojis/SVG inline.

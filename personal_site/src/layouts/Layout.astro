@@ -9,6 +9,10 @@ import ThemeToggle from '../components/ThemeToggle.astro';
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/personal_site/favicon.png" />
     <meta name="generator" content={Astro.generator} />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    />
 
     <title>Miguel García</title>
   </head>
@@ -56,70 +60,77 @@ import ThemeToggle from '../components/ThemeToggle.astro';
   /* Asegurar que ningún elemento cause scroll horizontal */
   body {
     max-width: 100vw;
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
   }
 
   :root {
-    /* hsl (fallback color) */
-    --bg-dark: hsl(14 100% 2%);
-    --bg: hsl(24 100% 4%);
-    --bg-light: hsl(33 100% 6%);
-    --text: hsl(34 100% 89%);
-    --text-muted: hsl(34 54% 63%);
-    --highlight: hsl(36 61% 32%);
-    --border: hsl(39 100% 18%);
-    --border-muted: hsl(37 100% 10%);
-    --primary: hsl(35 59% 62%);
-    --secondary: hsl(213 78% 73%);
-    --danger: hsl(9 47% 65%);
-    --warning: hsl(51 32% 52%);
-    --success: hsl(149 31% 55%);
-    --info: hsl(217 52% 67%);
-    /* oklch */
-    --bg-dark: oklch(0.1 0.045 74);
-    --bg: oklch(0.15 0.045 74);
-    --bg-light: oklch(0.2 0.045 74);
-    --text: oklch(0.96 0.09 74);
-    --text-muted: oklch(0.76 0.09 74);
-    --highlight: oklch(0.5 0.09 74);
-    --border: oklch(0.4 0.09 74);
-    --border-muted: oklch(0.3 0.09 74);
-    --primary: oklch(0.76 0.1 74);
-    --secondary: oklch(0.76 0.1 254);
-    --danger: oklch(0.7 0.09 30);
-    --warning: oklch(0.7 0.09 100);
-    --success: oklch(0.7 0.09 160);
-    --info: oklch(0.7 0.09 260);
+    --font-body: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+    --font-display: "Sora", "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+    --bg-dark: #09090b;
+    --bg: #0b0b0e;
+    --bg-light: #15151a;
+    --text: #f8f4ee;
+    --text-muted: #b6aea3;
+    --highlight: #2a231a;
+    --border: #2b2420;
+    --border-muted: #1f1a16;
+    --primary: #f2a93b;
+    --secondary: #7bb0ff;
+    --danger: #e66b6b;
+    --warning: #f2c84b;
+    --success: #5bd69f;
+    --info: #78b0ff;
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --shadow-soft: 0 18px 50px rgba(0, 0, 0, 0.35);
+    --shadow-card: 0 14px 30px rgba(0, 0, 0, 0.2);
+    --shadow-glow: 0 0 40px rgba(242, 169, 59, 0.2);
+    --container-max: 1120px;
   }
   body.light {
-    /* hsl (fallback color) */
-    --bg-dark: hsl(34 76% 87%);
-    --bg: hsl(34 100% 92%);
-    --bg-light: hsl(34 100% 97%);
-    --text: hsl(11 100% 5%);
-    --text-muted: hsl(39 100% 18%);
-    --highlight: hsl(34 100% 94%);
-    --border: hsl(35 44% 44%);
-    --border-muted: hsl(35 44% 56%);
-    --primary: hsl(40 100% 16%);
-    --secondary: hsl(212 64% 30%);
-    --danger: hsl(8 36% 41%);
-    --warning: hsl(52 58% 28%);
-    --success: hsl(152 45% 31%);
-    --info: hsl(217 38% 43%);
-    /* oklch */
-    --bg-dark: oklch(0.92 0.045 74);
-    --bg: oklch(0.96 0.045 74);
-    --bg-light: oklch(1 0.045 74);
-    --text: oklch(0.15 0.09 74);
-    --text-muted: oklch(0.4 0.09 74);
-    --highlight: oklch(1 0.09 74);
-    --border: oklch(0.6 0.09 74);
-    --border-muted: oklch(0.7 0.09 74);
-    --primary: oklch(0.4 0.1 74);
-    --secondary: oklch(0.4 0.1 254);
-    --danger: oklch(0.5 0.09 30);
-    --warning: oklch(0.5 0.09 100);
-    --success: oklch(0.5 0.09 160);
-    --info: oklch(0.5 0.09 260);
+    --bg-dark: #f7f1e8;
+    --bg: #fdf9f2;
+    --bg-light: #ffffff;
+    --text: #1c1b19;
+    --text-muted: #5c524a;
+    --highlight: #f1e4d2;
+    --border: #e3d3be;
+    --border-muted: #f0e4d6;
+    --primary: #b06a06;
+    --secondary: #2a5fb5;
+    --danger: #b54343;
+    --warning: #b9860c;
+    --success: #2f8a61;
+    --info: #2d6ab7;
+    --shadow-soft: 0 18px 50px rgba(69, 50, 30, 0.15);
+    --shadow-card: 0 14px 30px rgba(69, 50, 30, 0.12);
+    --shadow-glow: 0 0 30px rgba(176, 106, 6, 0.18);
+  }
+
+  .page-shell {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .section {
+    padding: 96px 0;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    margin-bottom: 40px;
+    text-align: center;
+    color: var(--text);
+  }
+
+  .card {
+    background: var(--bg-light);
+    border: 1px solid var(--border-muted);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
   }
 </style>

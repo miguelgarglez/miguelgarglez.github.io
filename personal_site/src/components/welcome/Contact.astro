@@ -1,3 +1,7 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+
 <section id="contact" class="contact">
   <div class="container">
     <h2 class="section-title">Let's Connect</h2>
@@ -13,7 +17,7 @@
 
         <div class="contact-methods">
           <a href="mailto:miguel.garglez@gmail.com" class="contact-method">
-            <div class="method-icon">✉️</div>
+            <Icon class="method-icon" name="lucide:mail" aria-hidden="true" />
             <div class="method-content">
               <span class="method-label">Email</span>
               <span class="method-value">miguel.garglez@gmail.com</span>
@@ -21,7 +25,7 @@
           </a>
 
           <a href="tel:+34654991047" class="contact-method">
-            <div class="method-icon">📞</div>
+            <Icon class="method-icon" name="lucide:phone" aria-hidden="true" />
             <div class="method-content">
               <span class="method-label">Phone</span>
               <span class="method-value">+34 654 991 047</span>
@@ -33,7 +37,11 @@
             target="_blank"
             class="contact-method"
           >
-            <div class="method-icon">🔗</div>
+            <Icon
+              class="method-icon"
+              name="lucide:linkedin"
+              aria-hidden="true"
+            />
             <div class="method-content">
               <span class="method-label">LinkedIn</span>
               <span class="method-value">miguel-garciag</span>
@@ -46,7 +54,7 @@
         <h3>Beyond Code</h3>
         <div class="hobbies">
           <div class="hobby-item">
-            <span class="hobby-icon">⚽</span>
+            <Icon class="hobby-icon" name="lucide:trophy" aria-hidden="true" />
             <div class="hobby-text">
               <h4>Sports Enthusiast</h4>
               <p>
@@ -57,7 +65,7 @@
           </div>
 
           <div class="hobby-item">
-            <span class="hobby-icon">💻</span>
+            <Icon class="hobby-icon" name="lucide:cpu" aria-hidden="true" />
             <div class="hobby-text">
               <h4>Tech Explorer</h4>
               <p>
@@ -68,7 +76,11 @@
           </div>
 
           <div class="hobby-item">
-            <span class="hobby-icon">🌟</span>
+            <Icon
+              class="hobby-icon"
+              name="lucide:sparkles"
+              aria-hidden="true"
+            />
             <div class="hobby-text">
               <h4>Growth Mindset</h4>
               <p>
@@ -239,7 +251,14 @@
   }
 
   .method-icon {
-    font-size: 2rem;
+    width: 32px;
+    height: 32px;
+    color: var(--primary);
+    stroke: currentColor;
+    stroke-width: 1.8;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .method-content {
@@ -283,8 +302,15 @@
   }
 
   .hobby-icon {
-    font-size: 2.5rem;
+    width: 40px;
+    height: 40px;
     flex-shrink: 0;
+    color: var(--primary);
+    stroke: currentColor;
+    stroke-width: 1.8;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .hobby-text h4 {
@@ -323,7 +349,8 @@
     }
 
     .hobby-icon {
-      font-size: 2rem;
+      width: 32px;
+      height: 32px;
     }
   }
 </style>

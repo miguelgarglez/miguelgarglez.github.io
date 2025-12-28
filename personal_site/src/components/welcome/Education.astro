@@ -1,10 +1,18 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+
 <section id="education" class="education">
   <div class="container">
     <h2 class="section-title">Education</h2>
 
     <div class="education-grid">
       <div class="education-item">
-        <div class="education-icon">🎓</div>
+        <Icon
+          class="education-icon"
+          name="lucide:graduation-cap"
+          aria-hidden="true"
+        />
         <h3 class="degree">Master's Degree in Computer Science</h3>
         <p class="institution">Universidad Autónoma de Madrid</p>
         <p class="period">September 2022 - February 2024</p>
@@ -15,7 +23,7 @@
       </div>
 
       <div class="education-item">
-        <div class="education-icon">📚</div>
+        <Icon class="education-icon" name="lucide:book-open" aria-hidden="true" />
         <h3 class="degree">Bachelor's Degree in Computer Science</h3>
         <p class="institution">Universidad Autónoma de Madrid</p>
         <p class="period">September 2018 - June 2022</p>
@@ -153,9 +161,16 @@
   }
 
   .education-icon {
-    font-size: 4rem;
-    margin-bottom: 1.5rem;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1.5rem;
     display: block;
+    color: var(--primary);
+    stroke: currentColor;
+    stroke-width: 1.8;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .degree {

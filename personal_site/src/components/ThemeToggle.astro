@@ -1,7 +1,15 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+
 <!-- ThemeToggle.astro -->
 <button id="theme-toggle" aria-label="Cambiar tema">
-  <span class="sun-icon">☀️</span>
-  <span class="moon-icon">🌙</span>
+  <span class="sun-icon" aria-hidden="true">
+    <Icon name="lucide:sun" aria-hidden="true" />
+  </span>
+  <span class="moon-icon" aria-hidden="true">
+    <Icon name="lucide:moon" aria-hidden="true" />
+  </span>
 </button>
 
 <script>
@@ -24,14 +32,19 @@
     border: none;
     cursor: pointer;
     font-size: 24px;
+    width: 44px;
+    height: 44px;
     z-index: 9999;
-    padding: 8px;
-    border-radius: 50%;
+    padding: 0;
+    border-radius: 999px;
     transition: all 0.3s ease;
+    color: var(--text);
+    display: grid;
+    place-items: center;
   }
 
   #theme-toggle:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.12);
     transform: scale(1.1);
   }
 
@@ -40,11 +53,26 @@
     display: none;
   }
 
+  .sun-icon svg,
+  .moon-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
   body.light .moon-icon {
     display: inline;
   }
 
   body:not(.light) .sun-icon {
     display: inline;
+  }
+
+  body:not(.light) #theme-toggle {
+    color: #f3c46a;
   }
 </style>
