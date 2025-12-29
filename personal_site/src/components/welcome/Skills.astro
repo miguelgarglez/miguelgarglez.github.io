@@ -336,7 +336,7 @@
     text-orientation: mixed;
     letter-spacing: 0.08em;
     line-height: 1.1;
-    height: 260px;
+    height: auto;
     display: inline-flex;
     align-items: flex-start;
   }
@@ -454,25 +454,85 @@
   }
 
   .philosophy {
-    background: var(--bg);
+    --philosophy-ease: cubic-bezier(0.23, 1, 0.32, 1);
+    background:
+      linear-gradient(
+        140deg,
+        color-mix(in srgb, var(--primary) 10%, transparent),
+        transparent 55%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--bg-light) 35%, transparent),
+        transparent 65%
+      ),
+      var(--bg);
     padding: 3rem;
-    border-radius: 16px;
-    border: 2px solid var(--primary);
+    border-radius: 20px;
+    border: 1px solid color-mix(in srgb, var(--primary) 35%, var(--border));
+    box-shadow:
+      var(--shadow-card),
+      0 0 0 1px color-mix(in srgb, var(--primary) 18%, transparent);
     text-align: center;
     position: relative;
     overflow: hidden;
+    transition:
+      transform 220ms var(--philosophy-ease),
+      box-shadow 220ms var(--philosophy-ease),
+      border-color 220ms var(--philosophy-ease);
+  }
+
+  .philosophy::before {
+    content: '';
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    top: -120px;
+    right: -80px;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--primary) 22%, transparent),
+      transparent 65%
+    );
+    opacity: 0.8;
+    pointer-events: none;
+  }
+
+  .philosophy::after {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border-radius: 14px;
+    border: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .philosophy:hover,
+  .philosophy:focus-within {
+    transform: translateY(-4px);
+    box-shadow:
+      var(--shadow-card),
+      0 0 22px color-mix(in srgb, var(--primary) 16%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 55%, var(--border));
   }
 
   .philosophy-content {
     position: relative;
     z-index: 1;
+    display: grid;
+    gap: 1rem;
+    justify-items: center;
   }
 
   .philosophy h3 {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     color: var(--primary);
-    margin: 0 0 1.5rem 0;
+    margin: 0;
+    font-family: var(--font-display);
     font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
 
   .philosophy p {
@@ -481,7 +541,7 @@
     font-style: italic;
     line-height: 1.6;
     margin: 0;
-    max-width: 600px;
+    max-width: 620px;
     margin: 0 auto;
   }
 
