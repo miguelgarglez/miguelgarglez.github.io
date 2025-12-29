@@ -1,7 +1,6 @@
 <section id="skills" class="skills">
   <div class="container">
     <h2 class="section-title">Technical Skills</h2>
-    <p class="skills-hint">Hover or tap to reveal the details.</p>
 
     <ul class="skills-disclosure" role="list">
       <li class="skill-card is-active" tabindex="0">
@@ -19,27 +18,9 @@
                   </span>
                 </li>
                 <li class="skill-list-item">
-                  <span class="skill-name">HTML & CSS</span>
-                  <span class="skill-description">
-                    Accessible and high-performance implementations
-                  </span>
-                </li>
-                <li class="skill-list-item">
-                  <span class="skill-name">Jest & React Testing Library</span>
-                  <span class="skill-description">
-                    Component unit testing and automation
-                  </span>
-                </li>
-                <li class="skill-list-item">
                   <span class="skill-name">Design Systems</span>
                   <span class="skill-description">
                     Scalable tokens, components, and UI governance
-                  </span>
-                </li>
-                <li class="skill-list-item">
-                  <span class="skill-name">Performance</span>
-                  <span class="skill-description">
-                    Core Web Vitals optimization and profiling
                   </span>
                 </li>
                 <li class="skill-list-item">
@@ -186,7 +167,6 @@
 
     // Establecer estado inicial para las animaciones
     gsap.set('#skills .section-title', { y: 50, opacity: 0 });
-    gsap.set('#skills .skills-hint', { y: 30, opacity: 0 });
     gsap.set('#skills .skill-card', { y: 60, opacity: 0 });
     gsap.set('#skills .philosophy', { scale: 0.9, opacity: 0 });
 
@@ -195,19 +175,6 @@
       y: 0,
       opacity: 1,
       duration: 1,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '#skills',
-        start: 'top 70%',
-        end: 'bottom 70%',
-        toggleActions: 'play none none reverse',
-      },
-    });
-
-    gsap.to('#skills .skills-hint', {
-      y: 0,
-      opacity: 1,
-      duration: 0.8,
       ease: 'power2.out',
       scrollTrigger: {
         trigger: '#skills',
@@ -256,7 +223,7 @@
     overflow: hidden;
     position: relative;
     /* Adjust if new skills are added so details don't clip in desktop. */
-    --skill-card-height: 520px;
+    --skill-card-height: 400px;
   }
 
   .skills::before {
@@ -286,16 +253,9 @@
   .section-title {
     font-size: clamp(2rem, 4vw, 3rem);
     text-align: center;
-    margin-bottom: 0.75rem;
+    margin-bottom: 2rem;
     color: var(--text);
     font-weight: 700;
-  }
-
-  .skills-hint {
-    text-align: center;
-    margin: 0 auto 3rem;
-    color: var(--text-muted);
-    font-size: 1rem;
   }
 
   .skills-disclosure {
@@ -400,8 +360,9 @@
     opacity: 0;
     transform: translateY(-8px);
     transition:
-      opacity 0.35s ease,
-      transform 0.35s ease;
+      opacity 0.25s ease,
+      transform 0.25s ease;
+    transition-delay: 0s;
   }
 
   .skill-card:hover .skill-details-inner,
@@ -409,6 +370,7 @@
   .skill-card.is-active .skill-details-inner {
     opacity: 1;
     transform: translateY(0);
+    transition-delay: 0.35s;
   }
 
   .skill-card:hover .skill-details,
@@ -419,12 +381,7 @@
     transform: translateX(0);
     flex: 1 1 auto;
     margin-left: 1.5rem;
-  }
-
-  .skill-card:hover article,
-  .skill-card:focus-within article,
-  .skill-card.is-active article {
-    gap: 1.5rem;
+    overflow: visible;
   }
 
   .skill-list {
@@ -462,12 +419,38 @@
     border-radius: 999px;
     border: 1px solid rgba(255, 180, 80, 0.4);
     background: rgba(255, 180, 80, 0.1);
+    opacity: 0;
+    transform: translateX(-10px);
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease;
+  }
+
+  .skill-card:hover .skill-name,
+  .skill-card:focus-within .skill-name,
+  .skill-card.is-active .skill-name {
+    opacity: 1;
+    transform: translateX(0);
+    transition-delay: 0.18s;
   }
 
   .skill-description {
     color: var(--text-muted);
     font-size: 0.92rem;
     line-height: 1.5;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease;
+  }
+
+  .skill-card:hover .skill-description,
+  .skill-card:focus-within .skill-description,
+  .skill-card.is-active .skill-description {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.35s;
   }
 
   .philosophy {
@@ -554,6 +537,26 @@
       opacity: 1;
       transform: translateY(0);
       margin-left: 0;
+      overflow: visible;
+      margin-top: 1.25rem;
+    }
+
+    .skill-card:hover .skill-details-inner,
+    .skill-card:focus-within .skill-details-inner,
+    .skill-card.is-active .skill-details-inner {
+      transition-delay: 0.2s;
+    }
+
+    .skill-card:hover .skill-description,
+    .skill-card:focus-within .skill-description,
+    .skill-card.is-active .skill-description {
+      transition-delay: 0.2s;
+    }
+
+    .skill-card:hover .skill-name,
+    .skill-card:focus-within .skill-name,
+    .skill-card.is-active .skill-name {
+      transition-delay: 0.1s;
     }
 
     .skill-title {
@@ -572,10 +575,6 @@
 
     .philosophy {
       padding: 2rem 1.5rem;
-    }
-
-    .skills-hint {
-      margin-bottom: 2.5rem;
     }
 
     .skill-card {
