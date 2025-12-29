@@ -41,6 +41,10 @@ Si cambias email, telefono o LinkedIn, actualiza en `Hero.astro`, `Contact.astro
 - Cualquier cambio de layout, tipografia o espaciado debe revisarse en breakpoints moviles.
 - Mantener o extender los `@media` existentes en cada seccion para que no haya overflow horizontal ni elementos cortados.
 
+## Notas de Skills
+
+- En `src/components/welcome/Skills.astro` la altura desktop de las tarjetas usa `--skill-card-height` (valor fijo). Si se añaden muchas skills y se ve clipping, ajustar ese valor.
+
 ## Iconos
 
 - Se usa `astro-icon` con `@iconify-json/lucide`.
