@@ -18,11 +18,7 @@ const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 20;
 
 const prodOrigins = ['https://miguelgarglez.github.io'];
-const localhostOrigins = [
-  'http://localhost:4321',
-  'http://localhost:3000',
-  'http://localhost:5173',
-];
+const localhostOrigins = ['http://localhost:4321/personal_site'];
 
 const rateLimitStore = new Map<string, { count: number; reset: number }>();
 
@@ -67,19 +63,30 @@ function checkRateLimit(ip: string, now: number) {
   };
 }
 
-function getCorsHeaders(origin: string | null, allowedOrigins: Set<string>) {
+function getCorsHeaders(
+  origin: string | null,
+  allowedOrigins: Set<string>,
+  isDev: boolean
+) {
   const headers = new Headers();
-  if (origin && allowedOrigins.has(origin)) {
+  if (origin && (isDev || allowedOrigins.has(origin))) {
     headers.set('Access-Control-Allow-Origin', origin);
     headers.set('Vary', 'Origin');
   }
   headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  headers.set(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, x-vercel-ai-ui-message-stream, User-Agent'
+  );
   return headers;
 }
 
-function getJsonHeaders(origin: string | null, allowedOrigins: Set<string>) {
-  const headers = getCorsHeaders(origin, allowedOrigins);
+function getJsonHeaders(
+  origin: string | null,
+  allowedOrigins: Set<string>,
+  isDev: boolean
+) {
+  const headers = getCorsHeaders(origin, allowedOrigins, isDev);
   headers.set('Content-Type', 'application/json; charset=utf-8');
   return headers;
 }
@@ -154,17 +161,196 @@ function extractQuestion(body: Record<string, unknown>) {
   return '';
 }
 
+function coerceContent(message: Record<string, unknown>) {
+  if (typeof message.content === 'string') return message.content;
+  if (Array.isArray(message.parts)) {
+    return message.parts
+      .map((part) => {
+        if (!part || typeof part !== 'object') return '';
+        if ((part as { type?: string }).type === 'text') {
+          const text = (part as { text?: string }).text;
+          return typeof text === 'string' ? text : '';
+        }
+        return '';
+      })
+      .join('');
+  }
+  return '';
+}
+
+function extractMessages(body: Record<string, unknown>) {
+  if (!Array.isArray(body.messages)) return [] as ChatMessage[];
+  return body.messages
+    .filter((message) => message && typeof message === 'object')
+    .map((message) => {
+      const record = message as Record<string, unknown>;
+      const role = record.role;
+      const content = coerceContent(record).trim();
+      if (
+        (role === 'user' || role === 'assistant' || role === 'system') &&
+        typeof content === 'string' &&
+        content.length > 0
+      ) {
+        return { role, content };
+      }
+      return null;
+    })
+    .filter((message): message is ChatMessage => Boolean(message));
+}
+
+function createUiMessageStream(upstream: ReadableStream<Uint8Array>) {
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder();
+  const messageId = `msg_${crypto.randomUUID()}`;
+  let buffer = '';
+  let started = false;
+  let textStarted = false;
+  let ended = false;
+  let doneSent = false;
+  let errorSent = false;
+  let stopReading = false;
+  let reader: ReadableStreamDefaultReader<Uint8Array> | null = null;
+
+  const emit = (payload: string) => encoder.encode(`data: ${payload}\n\n`);
+
+  const emitJson = (payload: Record<string, unknown>) =>
+    emit(JSON.stringify(payload));
+
+  const ensureStarted = () => {
+    if (started) return;
+    started = true;
+    textStarted = true;
+    if (!controller) return;
+    controller.enqueue(emitJson({ type: 'start', messageId }));
+    controller.enqueue(emitJson({ type: 'text-start', id: messageId }));
+  };
+
+  const endMessage = () => {
+    if (ended) return;
+    if (!started) {
+      ensureStarted();
+    }
+    ended = true;
+    if (!controller) return;
+    if (textStarted) {
+      controller.enqueue(emitJson({ type: 'text-end', id: messageId }));
+    }
+    controller.enqueue(emitJson({ type: 'end', messageId }));
+  };
+
+  const sendDone = () => {
+    if (doneSent) return;
+    if (!controller) return;
+    controller.enqueue(emit('[DONE]'));
+    doneSent = true;
+  };
+
+  const sendError = (message: string) => {
+    if (errorSent) return;
+    errorSent = true;
+    if (!controller) return;
+    controller.enqueue(emitJson({ type: 'error', message }));
+  };
+
+  const handleData = (data: string) => {
+    if (!data) return;
+    if (data === '[DONE]') {
+      endMessage();
+      sendDone();
+      stopReading = true;
+      reader?.cancel().catch(() => undefined);
+      return;
+    }
+
+    let parsed: Record<string, unknown> | null = null;
+    try {
+      parsed = JSON.parse(data) as Record<string, unknown>;
+    } catch {
+      return;
+    }
+
+    const choice = Array.isArray(parsed.choices)
+      ? (parsed.choices[0] as Record<string, unknown> | undefined)
+      : undefined;
+    const delta = choice?.delta as Record<string, unknown> | undefined;
+    const content = delta?.content;
+    if (typeof content === 'string' && content.length > 0) {
+      ensureStarted();
+      if (controller) {
+        controller.enqueue(
+          emitJson({ type: 'text-delta', id: messageId, delta: content })
+        );
+      }
+    }
+
+    const finishReason = choice?.finish_reason;
+    if (typeof finishReason === 'string' && finishReason.length > 0) {
+      endMessage();
+    }
+  };
+
+  const processBuffer = () => {
+    const lines = buffer.split('\n');
+    buffer = lines.pop() ?? '';
+    lines.forEach((rawLine) => {
+      const line = rawLine.trimEnd();
+      if (!line || line.startsWith(':')) return;
+      if (!line.startsWith('data:')) return;
+      const data = line.slice(5).trimStart();
+      handleData(data);
+    });
+  };
+
+  let controller: ReadableStreamDefaultController<Uint8Array> | null = null;
+
+  return new ReadableStream<Uint8Array>({
+    async start(streamController) {
+      controller = streamController;
+      reader = upstream.getReader();
+
+      try {
+        while (reader) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          if (stopReading) break;
+          buffer += decoder.decode(value, { stream: true });
+          processBuffer();
+        }
+        buffer += decoder.decode();
+        processBuffer();
+      } catch (error) {
+        if (!ended) {
+          sendError(
+            error instanceof Error ? error.message : 'Stream processing error.'
+          );
+        }
+      } finally {
+        endMessage();
+        sendDone();
+        controller.close();
+      }
+    },
+    cancel() {
+      if (reader) {
+        reader.cancel().catch(() => undefined);
+      }
+    },
+  });
+}
+
 export default {
   async fetch(request: Request, env: Env) {
     const { pathname } = new URL(request.url);
     const origin = request.headers.get('Origin');
     const allowedOrigins = getAllowedOrigins(env);
-    const corsHeaders = getCorsHeaders(origin, allowedOrigins);
+    const isDev = env.DEV === 'true';
+    const corsHeaders = getCorsHeaders(origin, allowedOrigins, isDev);
 
-    if ((!origin && env.DEV !== 'true') || (origin && !allowedOrigins.has(origin))) {
+    const originAllowed = origin ? (isDev || allowedOrigins.has(origin)) : isDev;
+    if (!originAllowed) {
       return new Response(JSON.stringify({ error: 'Origin not allowed.' }), {
         status: 403,
-        headers: getJsonHeaders(origin, allowedOrigins),
+        headers: getJsonHeaders(origin, allowedOrigins, isDev),
       });
     }
 
@@ -186,8 +372,11 @@ export default {
     const ip = getClientIp(request);
     const rate = checkRateLimit(ip, Date.now());
     if (rate.limited) {
-      const headers = getJsonHeaders(origin, allowedOrigins);
-      headers.set('Retry-After', String(Math.ceil((rate.reset - Date.now()) / 1000)));
+      const headers = getJsonHeaders(origin, allowedOrigins, isDev);
+      headers.set(
+        'Retry-After',
+        String(Math.ceil((rate.reset - Date.now()) / 1000))
+      );
       headers.set('X-RateLimit-Limit', String(RATE_LIMIT_MAX));
       headers.set('X-RateLimit-Remaining', String(rate.remaining));
       headers.set('X-RateLimit-Reset', String(rate.reset));
@@ -200,7 +389,7 @@ export default {
     if (!env.OPENROUTER_API_KEY) {
       return new Response(
         JSON.stringify({ error: 'Missing OPENROUTER_API_KEY.' }),
-        { status: 500, headers: getJsonHeaders(origin, allowedOrigins) }
+        { status: 500, headers: getJsonHeaders(origin, allowedOrigins, isDev) }
       );
     }
 
@@ -210,15 +399,17 @@ export default {
     } catch (error) {
       return new Response(JSON.stringify({ error: 'Invalid JSON body.' }), {
         status: 400,
-        headers: getJsonHeaders(origin, allowedOrigins),
+        headers: getJsonHeaders(origin, allowedOrigins, isDev),
       });
     }
 
-    const question = extractQuestion(body);
+    const inboundMessages = extractMessages(body);
+    const question =
+      extractQuestion({ messages: inboundMessages }) || extractQuestion(body);
     if (!question) {
       return new Response(JSON.stringify({ error: 'Missing question.' }), {
         status: 400,
-        headers: getJsonHeaders(origin, allowedOrigins),
+        headers: getJsonHeaders(origin, allowedOrigins, isDev),
       });
     }
 
@@ -230,7 +421,9 @@ export default {
       stream: true,
       messages: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: question },
+        ...(inboundMessages.length > 0
+          ? inboundMessages
+          : [{ role: 'user', content: question }]),
       ],
     };
 
@@ -253,12 +446,13 @@ export default {
 
     if (!upstream.ok || !upstream.body) {
       const detail = await upstream.text();
-      const payload = env.DEV === 'true'
-        ? { error: 'OpenRouter error.', detail }
-        : { error: 'Upstream error.' };
+      const payload =
+        env.DEV === 'true'
+          ? { error: 'OpenRouter error.', detail }
+          : { error: 'Upstream error.' };
       return new Response(JSON.stringify(payload), {
         status: 502,
-        headers: getJsonHeaders(origin, allowedOrigins),
+        headers: getJsonHeaders(origin, allowedOrigins, isDev),
       });
     }
 
@@ -266,8 +460,18 @@ export default {
     streamHeaders.set('Content-Type', 'text/event-stream; charset=utf-8');
     streamHeaders.set('Cache-Control', 'no-cache, no-transform');
     streamHeaders.set('Connection', 'keep-alive');
+    streamHeaders.set('x-vercel-ai-ui-message-stream', 'v1');
 
-    return new Response(upstream.body, {
+    const requestStreamHeader = request.headers.get(
+      'x-vercel-ai-ui-message-stream'
+    );
+    if (requestStreamHeader === 'v1') {
+      streamHeaders.set('x-vercel-ai-ui-message-stream', 'v1');
+    }
+
+    const uiStream = createUiMessageStream(upstream.body);
+
+    return new Response(uiStream, {
       status: 200,
       headers: streamHeaders,
     });
