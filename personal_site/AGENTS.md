@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Contexto del repo: sitio personal en Astro con animaciones GSAP y toggle de tema (clase `body.light`). La home es una sola pagina con secciones Hero, About, Experience, Education, Skills y Contact.
+Contexto del repo: sitio personal en Astro con animaciones GSAP, toggle de tema (clase `body.light`) y una sección de chat en la home basada en AI Elements del AI SDK. La home es una sola pagina con secciones Hero, About, Experience, Education, Skills, Chat y Contact.
 
 ## Estructura clave
 
@@ -8,6 +8,11 @@ Contexto del repo: sitio personal en Astro con animaciones GSAP y toggle de tema
 - `src/layouts/Layout.astro`: HTML base, fuentes Google, CSS variables y tema; incluye `ThemeToggle`.
 - `src/components/ThemeToggle.astro`: boton de cambio de tema (solo alterna `body.light`).
 - `src/components/welcome/*`: secciones del perfil y sus animaciones GSAP.
+- `src/components/welcome/ChatSection.astro`: wrapper de la sección Chat, resuelve `PUBLIC_WORKER_CHAT_URL` / `DEV_PUBLIC_WORKER_CHAT_URL` y monta el componente React.
+- `src/components/chat/Chat.tsx`: UI y lógica de chat con AI SDK (`useChat` + `DefaultChatTransport`).
+- `src/components/ai-elements/*`: componentes derivados de AI Elements (conversación, mensajes, prompt input, loader).
+- `src/components/ui/*`: componentes base estilo shadcn usados por AI Elements.
+- `src/styles/global.css`: tokens Tailwind + estilos base para utilidades de shadcn.
 - `src/layouts/Footer.astro`: pie con datos de contacto.
 - `astro.config.mjs`: `base: '/personal_site'` y configuracion de `astro-icon`.
 
@@ -18,6 +23,7 @@ Contexto del repo: sitio personal en Astro con animaciones GSAP y toggle de tema
 - `Experience.astro`: timeline laboral con logros y comportamiento expandible en movil.
 - `Education.astro`: estudios y exchange.
 - `Skills.astro`: categorias tecnicas y cita de filosofia.
+- `ChatSection.astro`: sección de chat con `client:visible` para hidratar el componente React.
 - `Contact.astro`: metodos de contacto y hobbies.
 - `Footer.astro`: repite nombre y links de contacto.
 
@@ -28,6 +34,25 @@ Si cambias email, telefono o LinkedIn, actualiza en `Hero.astro`, `Contact.astro
 - Cada seccion importa `gsap` y `ScrollTrigger` (cuando aplica), con `gsap.registerPlugin(ScrollTrigger)`.
 - Mantener el mismo patron: `gsap.set` inicial y `gsap.to` con `scrollTrigger`.
 - Evitar animar elementos inexistentes o cambiar clases/IDs sin actualizar los selectores GSAP.
+
+## Chat (AI SDK + AI Elements)
+
+- `Chat.tsx` usa `useChat` con `DefaultChatTransport` y el header `x-vercel-ai-ui-message-stream: v1` para streaming.
+- El endpoint del chat viene de `PUBLIC_WORKER_CHAT_URL` (prod) y `DEV_PUBLIC_WORKER_CHAT_URL` (dev).
+- La UI del chat es React y se monta en Astro con `client:visible` para evitar hidratar antes de ser visible.
+- Los mensajes renderizan markdown via `MessageResponse` (usa `Streamdown`); mantener ese componente si se cambia el formato.
+
+## Variables de entorno
+
+- `PUBLIC_WORKER_CHAT_URL`: URL del endpoint del worker de chat en producción.
+- `DEV_PUBLIC_WORKER_CHAT_URL`: URL del endpoint del worker de chat en desarrollo.
+- Si no están definidas, el chat no podrá enviar mensajes (ver `src/components/welcome/ChatSection.astro`).
+
+## UI y estilos (shadcn + Tailwind)
+
+- Los componentes en `src/components/ui` son base shadcn; evitar edits innecesarios fuera de nuevos requerimientos.
+- `src/lib/utils.ts` expone `cn` (clsx + tailwind-merge) y se usa en UI/AI Elements.
+- `src/styles/global.css` define tokens para Tailwind/`tw-animate-css`; mantener consistencia con las variables de `Layout.astro`.
 
 ## Estilos y tema
 

@@ -1,5 +1,6 @@
 ---
 import ThemeToggle from '../components/ThemeToggle.astro';
+import '../styles/global.css';
 ---
 
 <!doctype html>
@@ -66,8 +67,9 @@ import ThemeToggle from '../components/ThemeToggle.astro';
   }
 
   :root {
-    --font-body: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
-    --font-display: "Sora", "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+    --font-body: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+    --font-display:
+      'Sora', 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
     --bg-dark: #09090b;
     --bg: #0b0b0e;
     --bg-light: #15151a;
@@ -89,6 +91,22 @@ import ThemeToggle from '../components/ThemeToggle.astro';
     --shadow-card: 0 14px 30px rgba(0, 0, 0, 0.2);
     --shadow-glow: 0 0 40px rgba(242, 169, 59, 0.2);
     --container-max: 1120px;
+    --radius: var(--radius-md);
+    --background: var(--bg);
+    --foreground: var(--text);
+    --card: var(--bg-light);
+    --card-foreground: var(--text);
+    --popover: var(--bg-light);
+    --popover-foreground: var(--text);
+    --primary-foreground: var(--bg-dark);
+    --secondary-foreground: var(--text);
+    --muted: var(--highlight);
+    --muted-foreground: var(--text-muted);
+    --accent: var(--secondary);
+    --accent-foreground: var(--bg-dark);
+    --destructive: var(--danger);
+    --input: var(--border-muted);
+    --ring: var(--primary);
   }
   body.light {
     --bg-dark: #f7f1e8;
@@ -108,6 +126,21 @@ import ThemeToggle from '../components/ThemeToggle.astro';
     --shadow-soft: 0 18px 50px rgba(69, 50, 30, 0.15);
     --shadow-card: 0 14px 30px rgba(69, 50, 30, 0.12);
     --shadow-glow: 0 0 30px rgba(176, 106, 6, 0.18);
+    --background: var(--bg);
+    --foreground: var(--text);
+    --card: var(--bg-light);
+    --card-foreground: var(--text);
+    --popover: var(--bg-light);
+    --popover-foreground: var(--text);
+    --primary-foreground: var(--bg-dark);
+    --secondary-foreground: var(--text);
+    --muted: var(--highlight);
+    --muted-foreground: var(--text-muted);
+    --accent: var(--secondary);
+    --accent-foreground: var(--bg-dark);
+    --destructive: var(--danger);
+    --input: var(--border-muted);
+    --ring: var(--primary);
   }
 
   .page-shell {
