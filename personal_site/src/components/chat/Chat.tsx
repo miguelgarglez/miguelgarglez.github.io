@@ -25,8 +25,11 @@ type ChatProps = {
   apiUrl: string;
 };
 
+type ChatErrorKind = 'unavailable' | 'retryable' | null;
+
 export default function Chat({ apiUrl }: ChatProps) {
   const [input, setInput] = useState('');
+  const [chatError, setChatError] = useState<ChatErrorKind>(null);
 
   const transport = useMemo(
     () =>
@@ -34,6 +37,26 @@ export default function Chat({ apiUrl }: ChatProps) {
         api: apiUrl,
         headers: {
           'x-vercel-ai-ui-message-stream': 'v1',
+        },
+        fetch: async (input, init) => {
+          try {
+            const response = await fetch(input, init);
+            if (!response.ok) {
+              if (response.status === 404 || response.status === 405) {
+                setChatError('unavailable');
+              } else if (response.status === 429 || response.status >= 500) {
+                setChatError('retryable');
+              } else {
+                setChatError('unavailable');
+              }
+            } else {
+              setChatError(null);
+            }
+            return response;
+          } catch (error) {
+            setChatError('retryable');
+            throw error;
+          }
         },
       }),
     [apiUrl]
@@ -46,6 +69,7 @@ export default function Chat({ apiUrl }: ChatProps) {
   const handleSubmit = (message: PromptInputMessage) => {
     const trimmed = message.text?.trim();
     if (!trimmed || isBusy) return;
+    setChatError(null);
     sendMessage({ text: trimmed });
     setInput('');
   };
@@ -53,7 +77,7 @@ export default function Chat({ apiUrl }: ChatProps) {
   return (
     <div className="flex h-[560px] flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-card shadow-[var(--shadow-card)]">
       <Conversation className="flex-1">
-        <ConversationContent className="h-full">
+        <ConversationContent className="pb-6">
           {messages.length === 0 ? (
             <ConversationEmptyState
               icon={<MessageSquareIcon className="size-8" />}
@@ -75,6 +99,16 @@ export default function Chat({ apiUrl }: ChatProps) {
               </Message>
             ))
           )}
+          {chatError === 'retryable' && (
+            <div className="mt-2 w-fit rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              Something went wrong sending your message. Please try again.
+            </div>
+          )}
+          {chatError === 'unavailable' && (
+            <div className="mt-2 w-fit rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              The chat is currently unavailable.
+            </div>
+          )}
           {status === 'submitted' && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Loader className="size-4" />
@@ -82,7 +116,7 @@ export default function Chat({ apiUrl }: ChatProps) {
             </div>
           )}
         </ConversationContent>
-        <ConversationScrollButton />
+        <ConversationScrollButton className="border-border bg-card text-foreground hover:bg-[color:var(--primary)] hover:text-[color:var(--primary-foreground)]" />
       </Conversation>
 
       <div className="border-t border-border bg-background p-4">
