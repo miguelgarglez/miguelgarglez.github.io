@@ -66,7 +66,8 @@ function checkRateLimit(ip: string, now: number) {
 function getCorsHeaders(
   origin: string | null,
   allowedOrigins: Set<string>,
-  isDev: boolean
+  isDev: boolean,
+  requestHeaders?: Headers
 ) {
   const headers = new Headers();
   if (origin && (isDev || allowedOrigins.has(origin))) {
@@ -74,9 +75,11 @@ function getCorsHeaders(
     headers.set('Vary', 'Origin');
   }
   headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  const requestedHeaders = requestHeaders?.get('Access-Control-Request-Headers');
   headers.set(
     'Access-Control-Allow-Headers',
-    'Content-Type, Authorization, x-vercel-ai-ui-message-stream, User-Agent'
+    requestedHeaders?.trim() ||
+      'Content-Type, Authorization, x-vercel-ai-ui-message-stream, User-Agent'
   );
   return headers;
 }
@@ -84,9 +87,10 @@ function getCorsHeaders(
 function getJsonHeaders(
   origin: string | null,
   allowedOrigins: Set<string>,
-  isDev: boolean
+  isDev: boolean,
+  requestHeaders?: Headers
 ) {
-  const headers = getCorsHeaders(origin, allowedOrigins, isDev);
+  const headers = getCorsHeaders(origin, allowedOrigins, isDev, requestHeaders);
   headers.set('Content-Type', 'application/json; charset=utf-8');
   return headers;
 }
@@ -344,13 +348,13 @@ export default {
     const origin = request.headers.get('Origin');
     const allowedOrigins = getAllowedOrigins(env);
     const isDev = env.DEV === 'true';
-    const corsHeaders = getCorsHeaders(origin, allowedOrigins, isDev);
+    const corsHeaders = getCorsHeaders(origin, allowedOrigins, isDev, request.headers);
 
     const originAllowed = origin ? (isDev || allowedOrigins.has(origin)) : isDev;
     if (!originAllowed) {
       return new Response(JSON.stringify({ error: 'Origin not allowed.' }), {
         status: 403,
-        headers: getJsonHeaders(origin, allowedOrigins, isDev),
+        headers: getJsonHeaders(origin, allowedOrigins, isDev, request.headers),
       });
     }
 
@@ -372,7 +376,7 @@ export default {
     const ip = getClientIp(request);
     const rate = checkRateLimit(ip, Date.now());
     if (rate.limited) {
-      const headers = getJsonHeaders(origin, allowedOrigins, isDev);
+      const headers = getJsonHeaders(origin, allowedOrigins, isDev, request.headers);
       headers.set(
         'Retry-After',
         String(Math.ceil((rate.reset - Date.now()) / 1000))
@@ -389,7 +393,10 @@ export default {
     if (!env.OPENROUTER_API_KEY) {
       return new Response(
         JSON.stringify({ error: 'Missing OPENROUTER_API_KEY.' }),
-        { status: 500, headers: getJsonHeaders(origin, allowedOrigins, isDev) }
+        {
+          status: 500,
+          headers: getJsonHeaders(origin, allowedOrigins, isDev, request.headers),
+        }
       );
     }
 
@@ -399,7 +406,7 @@ export default {
     } catch (error) {
       return new Response(JSON.stringify({ error: 'Invalid JSON body.' }), {
         status: 400,
-        headers: getJsonHeaders(origin, allowedOrigins, isDev),
+        headers: getJsonHeaders(origin, allowedOrigins, isDev, request.headers),
       });
     }
 
@@ -409,7 +416,7 @@ export default {
     if (!question) {
       return new Response(JSON.stringify({ error: 'Missing question.' }), {
         status: 400,
-        headers: getJsonHeaders(origin, allowedOrigins, isDev),
+        headers: getJsonHeaders(origin, allowedOrigins, isDev, request.headers),
       });
     }
 
