@@ -112,6 +112,75 @@ function tokenize(value: string) {
   return normalized.split(' ').filter((token) => token.length > 2);
 }
 
+const TAG_KEYWORDS: Record<string, string[]> = {
+  trayectoria: [
+    'trayectoria',
+    'camino',
+    'historia',
+    'inicios',
+    'origen',
+    'empezar',
+    'empece',
+    'empezo',
+  ],
+  motivacion: ['motivacion', 'motiva', 'porque', 'razon', 'razones', 'pasion'],
+  'forma-de-trabajar': [
+    'trabajar',
+    'forma',
+    'metodo',
+    'metodologia',
+    'priorizo',
+    'organizo',
+    'proceso',
+    'workflow',
+  ],
+  equipo: [
+    'equipo',
+    'companero',
+    'colaboracion',
+    'colaborar',
+    'feedback',
+    'comunicacion',
+    'liderazgo',
+  ],
+  fortalezas: ['fortaleza', 'fortalezas', 'fuerte', 'strength'],
+  debilidades: ['debilidad', 'debilidades', 'defecto', 'defectos'],
+  valores: ['valores', 'principios', 'etica', 'importante', 'prioridad'],
+  impacto: ['impacto', 'logro', 'resultado', 'metricas', 'mejora', 'mejorar'],
+  aprendizaje: ['aprendizaje', 'aprender', 'aprendo', 'curiosidad'],
+  cultura: ['cultura', 'ambiente', 'entorno'],
+  proyectos: ['proyecto', 'proyectos', 'caso', 'ejemplo', 'situacion', 'reto'],
+  futuro: ['futuro', 'objetivo', 'objetivos', 'crecer'],
+};
+
+const TYPE_KEYWORDS: Record<string, string[]> = {
+  example: ['ejemplo', 'caso', 'situacion', 'reto', 'problema'],
+  story: ['historia', 'camino', 'trayectoria', 'inicios', 'origen'],
+  answer: ['fortaleza', 'debilidad', 'valoras', 'detestas', 'prefieres'],
+};
+
+const MAX_CONTEXT_BLOCKS = 6;
+
+function extractIntentTags(tokens: string[]) {
+  const intentTags = new Set<string>();
+  Object.entries(TAG_KEYWORDS).forEach(([tag, keywords]) => {
+    if (keywords.some((keyword) => tokens.includes(keyword))) {
+      intentTags.add(tag);
+    }
+  });
+  return intentTags;
+}
+
+function extractIntentTypes(tokens: string[]) {
+  const intentTypes = new Set<string>();
+  Object.entries(TYPE_KEYWORDS).forEach(([type, keywords]) => {
+    if (keywords.some((keyword) => tokens.includes(keyword))) {
+      intentTypes.add(type);
+    }
+  });
+  return intentTypes;
+}
+
 function scoreSection(sectionText: string, tokens: string[]) {
   if (tokens.length === 0) return 0;
   const sectionTokens = new Set(tokenize(sectionText));
@@ -124,21 +193,29 @@ function scoreSection(sectionText: string, tokens: string[]) {
 
 function buildContext(question: string) {
   const tokens = tokenize(question);
+  const intentTags = extractIntentTags(tokens);
+  const intentTypes = extractIntentTypes(tokens);
   const ranked = profileSections
     .map((section) => ({
       section,
-      score: scoreSection(section.content, tokens),
+      score:
+        scoreSection(`${section.title} ${section.content}`, tokens) +
+        section.tags.reduce(
+          (total, tag) => total + (intentTags.has(tag) ? 2 : 0),
+          0
+        ) +
+        (intentTypes.has(section.type) ? 2 : 0),
     }))
     .sort((a, b) => b.score - a.score);
 
   const topSections = ranked
     .filter((entry) => entry.score > 0)
-    .slice(0, 4)
+    .slice(0, MAX_CONTEXT_BLOCKS)
     .map((entry) => `# ${entry.section.title}\n${entry.section.content}`);
 
   if (topSections.length === 0) {
     return profileSections
-      .slice(0, 4)
+      .slice(0, MAX_CONTEXT_BLOCKS)
       .map((section) => `# ${section.title}\n${section.content}`)
       .join('\n\n');
   }
