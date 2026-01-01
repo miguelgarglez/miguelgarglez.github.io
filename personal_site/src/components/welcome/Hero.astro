@@ -20,13 +20,27 @@ import { Icon } from 'astro-icon/components';
           <Icon class="chip-icon" name="lucide:map-pin" aria-hidden="true" />
           Madrid, Spain
         </span>
-        <a href="tel:+34654991047" class="contact-chip">
-          <Icon class="chip-icon" name="lucide:phone" aria-hidden="true" />
-          +34 654991047
+        <a
+          href="https://www.linkedin.com/in/miguel-garciag"
+          target="_blank"
+          rel="noreferrer"
+          class="contact-chip"
+        >
+          <Icon class="chip-icon" name="lucide:linkedin" aria-hidden="true" />
+          LinkedIn
         </a>
-        <a href="mailto:miguel.garglez@gmail.com" class="contact-chip">
-          <Icon class="chip-icon" name="lucide:mail" aria-hidden="true" />
-          miguel.garglez@gmail.com
+        <a
+          href="https://x.com/mikio00o"
+          target="_blank"
+          rel="noreferrer"
+          class="contact-chip"
+        >
+          <Icon
+            class="chip-icon chip-icon-solid"
+            name="simple-icons:x"
+            aria-hidden="true"
+          />
+          X (Twitter)
         </a>
       </div>
 
@@ -229,6 +243,11 @@ import { Icon } from 'astro-icon/components';
     stroke-linejoin: round;
   }
 
+  .chip-icon-solid {
+    fill: currentColor;
+    stroke: none;
+  }
+
   .cta-buttons {
     display: flex;
     gap: 1rem;
@@ -304,6 +323,7 @@ import { Icon } from 'astro-icon/components';
     .cta-buttons {
       flex-direction: column;
       width: 100%;
+      align-items: center;
     }
 
     .btn {

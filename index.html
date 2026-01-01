@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miguel García - Directorio</title>
+    <title>Miguel García - Directory</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -190,20 +190,20 @@
     <div class="container">
         <header>
             <div class="controls">
-                <h1>Directorio de Miguel</h1>
-                <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">Modo claro</button>
+                <h1>Miguel's Directory</h1>
+                <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">Light mode</button>
             </div>
-            <p>Accesos directos a mis proyectos publicados en GitHub Pages.</p>
+            <p>Shortcuts to my projects published on GitHub Pages.</p>
         </header>
 
-        <section class="section" aria-labelledby="proyectos">
-            <h2 id="proyectos">Proyectos</h2>
+        <section class="section" aria-labelledby="projects">
+            <h2 id="projects">Projects</h2>
             <ul class="project-list">
                 <li class="card">
                     <p class="project-title"><a href="/personal_site">personal_site</a></p>
-                    <p>Web personal con CV y animaciones.</p>
+                    <p>Personal site with CV and animations.</p>
                     <p><a href="/personal_site">miguelgarglez.github.io/personal_site</a></p>
-                    <p class="status">Estado: <strong>Activo</strong></p>
+                    <p class="status">Status: <strong>Active</strong></p>
                     <div class="meta">
                         <span class="badge">Astro</span>
                         <span class="badge">TypeScript</span>
@@ -222,14 +222,14 @@
 
         root.dataset.theme = initialTheme;
         toggle.setAttribute("aria-pressed", initialTheme === "dark");
-        toggle.textContent = initialTheme === "dark" ? "Modo claro" : "Modo oscuro";
+        toggle.textContent = initialTheme === "dark" ? "Light mode" : "Dark mode";
 
         toggle.addEventListener("click", () => {
             const next = root.dataset.theme === "dark" ? "light" : "dark";
             root.dataset.theme = next;
             localStorage.setItem("theme", next);
             toggle.setAttribute("aria-pressed", next === "dark");
-            toggle.textContent = next === "dark" ? "Modo claro" : "Modo oscuro";
+            toggle.textContent = next === "dark" ? "Light mode" : "Dark mode";
         });
     </script>
 </body>

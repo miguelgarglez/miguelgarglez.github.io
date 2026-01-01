@@ -1,3 +1,7 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
 <footer id="footer">
   <div class="footer-content">
     <div class="footer-info">
@@ -6,15 +10,19 @@
     </div>
 
     <div class="footer-links">
-      <a href="mailto:miguel.garglez@gmail.com">Email</a>
-      <a href="https://www.linkedin.com/in/miguel-garciag" target="_blank"
+      <a
+        href="https://www.linkedin.com/in/miguel-garciag"
+        target="_blank"
+        rel="noreferrer"
         >LinkedIn</a
       >
-      <a href="tel:+34654991047">Phone</a>
+      <a href="https://x.com/mikio00o" target="_blank" rel="noreferrer"
+        >X (Twitter)</a
+      >
     </div>
 
     <div class="footer-bottom">
-      <p>&copy; 2025 Miguel García. Built with Astro and GSAP.</p>
+      <p>&copy; {currentYear} Miguel García. Built with Astro and GSAP.</p>
     </div>
   </div>
 </footer>
