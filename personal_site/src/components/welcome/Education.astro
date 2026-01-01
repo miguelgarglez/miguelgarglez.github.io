@@ -29,6 +29,98 @@ import { Icon } from 'astro-icon/components';
         <p class="period">September 2018 - June 2022</p>
       </div>
     </div>
+
+    <div class="certifications">
+      <h3 class="subsection-title">Courses & Certifications</h3>
+      <div class="certifications-grid">
+        <a
+          class="certification-card certification-card-link"
+          href="https://www.credly.com/badges/78c42e63-cb83-4914-8607-4073c40599a3/linked_in_profile"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="View credential for Professional Scrum Master I (PSM I)"
+        >
+          <h4 class="certification-title">Professional Scrum Master I (PSM I)</h4>
+          <p class="certification-issuer">Scrum.org</p>
+          <span class="certification-date">Oct 2025</span>
+          <span class="certification-link" aria-hidden="true">
+            <Icon class="certification-link-icon" name="lucide:arrow-up-right" />
+          </span>
+        </a>
+        <a
+          class="certification-card certification-card-link"
+          href="https://animations.dev/certificate/6372ea11-f38d-45be-9c2f-9817e68b90a6"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="View credential for Animations on the Web"
+        >
+          <h4 class="certification-title">Animations on the Web</h4>
+          <p class="certification-issuer">Emil Kowalski</p>
+          <span class="certification-date">Aug 2025</span>
+          <span class="certification-link" aria-hidden="true">
+            <Icon class="certification-link-icon" name="lucide:arrow-up-right" />
+          </span>
+        </a>
+        <a
+          class="certification-card certification-card-link"
+          href="https://www.kaggle.com/certification/badges/miguelgarglez/96"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="View credential for Google GenAI Intensive"
+        >
+          <h4 class="certification-title">Google GenAI Intensive</h4>
+          <p class="certification-issuer">Kaggle</p>
+          <span class="certification-date">Apr 2025</span>
+          <span class="certification-link" aria-hidden="true">
+            <Icon class="certification-link-icon" name="lucide:arrow-up-right" />
+          </span>
+        </a>
+        <a
+          class="certification-card certification-card-link"
+          href="https://learn.founderz.com/certificate/curso-generacion-ia-comunidad-madrid/7ca969ab-1671-4608-9c40-8b87d3bbfddf"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="View credential for Responsible AI and Prompt Engineering"
+        >
+          <h4 class="certification-title">
+            Responsible AI and Prompt Engineering (Online Course)
+          </h4>
+          <p class="certification-issuer">Founderz</p>
+          <span class="certification-date">Mar 2025</span>
+          <span class="certification-link" aria-hidden="true">
+            <Icon class="certification-link-icon" name="lucide:arrow-up-right" />
+          </span>
+        </a>
+        <a
+          class="certification-card certification-card-link"
+          href="https://www.linkedin.com/in/miguel-garciag/details/certifications/"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="View credential for TOEIC - C1 CEFR Level"
+        >
+          <h4 class="certification-title">TOEIC - C1 CEFR Level</h4>
+          <p class="certification-issuer">Capman Testing Solutions</p>
+          <span class="certification-date">Feb 2025</span>
+          <span class="certification-link" aria-hidden="true">
+            <Icon class="certification-link-icon" name="lucide:arrow-up-right" />
+          </span>
+        </a>
+        <a
+          class="certification-card certification-card-link"
+          href="https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/db1060c383cd09cd6ab128fb5f864156"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="View credential for Full Stack Open"
+        >
+          <h4 class="certification-title">Full Stack Open</h4>
+          <p class="certification-issuer">University of Helsinki</p>
+          <span class="certification-date">Apr 2024</span>
+          <span class="certification-link" aria-hidden="true">
+            <Icon class="certification-link-icon" name="lucide:arrow-up-right" />
+          </span>
+        </a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -207,6 +299,107 @@ import { Icon } from 'astro-icon/components';
     margin: 0;
   }
 
+  .certifications {
+    margin-top: 4.5rem;
+  }
+
+  .subsection-title {
+    text-align: center;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    color: var(--text);
+    margin: 0 0 2.5rem 0;
+    font-weight: 700;
+  }
+
+  .certifications-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.8rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .certification-card {
+    background: var(--bg-light);
+    border: 1px solid var(--border-muted);
+    border-radius: 14px;
+    padding: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .certification-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--primary);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.28);
+  }
+
+  .certification-card-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .certification-card-link:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 4px;
+  }
+
+  .certification-title {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .certification-issuer {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .certification-date {
+    align-self: flex-start;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(242, 169, 59, 0.15);
+    color: var(--primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .certification-link {
+    position: absolute;
+    right: 1.6rem;
+    bottom: 1.6rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: 1px solid rgba(242, 169, 59, 0.4);
+    color: var(--primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .certification-card-link:hover .certification-link {
+    border-color: var(--primary);
+    background: rgba(242, 169, 59, 0.12);
+    transform: scale(1.02);
+  }
+
+  .certification-link-icon {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-width: 2;
+  }
+
   @media (max-width: 768px) {
     .education {
       padding: 3rem 1rem;
@@ -219,6 +412,10 @@ import { Icon } from 'astro-icon/components';
 
     .education-item {
       padding: 2rem 1.5rem;
+    }
+
+    .certifications-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>

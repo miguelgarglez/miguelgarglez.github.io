@@ -6,7 +6,7 @@
       <li class="skill-card is-active" tabindex="0">
         <article>
           <div class="skill-card-header">
-            <h3 class="skill-title">FRONTEND DEVELOPMENT</h3>
+            <h3 class="skill-title">UI PLATFORM & FRONTEND</h3>
           </div>
           <div class="skill-details">
             <div class="skill-details-inner">
@@ -14,19 +14,25 @@
                 <li class="skill-list-item">
                   <span class="skill-name">React & TypeScript</span>
                   <span class="skill-description">
-                    UI component library development for 70+ teams
+                    Component libraries at scale
                   </span>
                 </li>
                 <li class="skill-list-item">
                   <span class="skill-name">Design Systems</span>
                   <span class="skill-description">
-                    Scalable tokens, components, and UI governance
+                    Tokens, components, and UI governance
                   </span>
                 </li>
                 <li class="skill-list-item">
                   <span class="skill-name">Accessibility</span>
                   <span class="skill-description">
-                    WCAG compliance and inclusive interaction patterns
+                    WCAG compliance and inclusive patterns
+                  </span>
+                </li>
+                <li class="skill-list-item">
+                  <span class="skill-name">Performance</span>
+                  <span class="skill-description">
+                    UI quality, profiling, and optimization
                   </span>
                 </li>
               </ul>
@@ -88,9 +94,9 @@
                   </span>
                 </li>
                 <li class="skill-list-item">
-                  <span class="skill-name">Material-UI</span>
+                  <span class="skill-name">Mobile UI</span>
                   <span class="skill-description">
-                    Modern UI component implementation
+                    Cross-platform UX and interface patterns
                   </span>
                 </li>
               </ul>
@@ -102,15 +108,15 @@
       <li class="skill-card" tabindex="0">
         <article>
           <div class="skill-card-header">
-            <h3 class="skill-title">DEVOPS & TOOLS</h3>
+            <h3 class="skill-title">ENGINEERING TOOLS & AI</h3>
           </div>
           <div class="skill-details">
             <div class="skill-details-inner">
               <ul class="skill-list" role="list">
                 <li class="skill-list-item">
-                  <span class="skill-name">AWS</span>
+                  <span class="skill-name">AI-assisted development</span>
                   <span class="skill-description">
-                    S3, EC2, deployment experience
+                    GitHub Copilot, MCP servers, context engineering
                   </span>
                 </li>
                 <li class="skill-list-item">
@@ -120,9 +126,9 @@
                   </span>
                 </li>
                 <li class="skill-list-item">
-                  <span class="skill-name">Docker & GraphQL</span>
+                  <span class="skill-name">Cloud & APIs</span>
                   <span class="skill-description">
-                    Modern development tools and APIs
+                    AWS, Vercel, Cloudflare Workers, Docker, GraphQL
                   </span>
                 </li>
               </ul>
@@ -153,6 +159,8 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     const cards = Array.from(document.querySelectorAll('#skills .skill-card'));
+    const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)')
+      .matches;
 
     const setActiveCard = (card) => {
       cards.forEach((item) => item.classList.remove('is-active'));
@@ -160,10 +168,15 @@
     };
 
     cards.forEach((card) => {
-      card.addEventListener('mouseenter', () => setActiveCard(card));
       card.addEventListener('focusin', () => setActiveCard(card));
-      card.addEventListener('click', () => setActiveCard(card));
+
+      if (supportsHover) {
+        card.addEventListener('mouseenter', () => setActiveCard(card));
+      } else {
+        card.addEventListener('click', () => setActiveCard(card));
+      }
     });
+
 
     // Establecer estado inicial para las animaciones
     gsap.set('#skills .section-title', { y: 50, opacity: 0 });
@@ -574,12 +587,13 @@
     .skill-details {
       width: 100%;
       max-width: none;
-      max-height: 0;
+      display: grid;
+      grid-template-rows: 0fr;
       opacity: 0;
       transform: translateY(-6px);
       margin-left: 0;
       transition:
-        max-height 0.45s ease,
+        grid-template-rows 0.45s ease,
         opacity 0.35s ease,
         transform 0.35s ease;
     }
@@ -587,14 +601,7 @@
     .skill-card:hover .skill-details,
     .skill-card:focus-within .skill-details,
     .skill-card.is-active .skill-details {
-      display: flex;
-      align-items: center;
-    }
-
-    .skill-card:hover .skill-details,
-    .skill-card:focus-within .skill-details,
-    .skill-card.is-active .skill-details {
-      max-height: 420px;
+      grid-template-rows: 1fr;
       opacity: 1;
       transform: translateY(0);
       margin-left: 0;
@@ -602,22 +609,26 @@
       margin-top: 1.25rem;
     }
 
+    .skill-details-inner {
+      overflow: hidden;
+    }
+
     .skill-card:hover .skill-details-inner,
     .skill-card:focus-within .skill-details-inner,
     .skill-card.is-active .skill-details-inner {
-      transition-delay: 0.2s;
+      transition-delay: 0s;
     }
 
     .skill-card:hover .skill-description,
     .skill-card:focus-within .skill-description,
     .skill-card.is-active .skill-description {
-      transition-delay: 0.2s;
+      transition-delay: 0s;
     }
 
     .skill-card:hover .skill-name,
     .skill-card:focus-within .skill-name,
     .skill-card.is-active .skill-name {
-      transition-delay: 0.1s;
+      transition-delay: 0s;
     }
 
     .skill-title {

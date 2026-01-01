@@ -23,11 +23,12 @@ Contexto del repo: sitio estático en `index.html` que actúa como directorio de
   - `npm run dev`
   - `npm run build`
   - `npm run preview`
-- Mantener contenido en español o bilingue si ya existe.
+- Mantener el contenido en inglés.
 - Respetar el estilo visual actual y las animaciones con scroll.
 
 ## Notas para agentes
 
-- Antes de cambios, revisar `personal_site/README.md` para contexto del sitio.
+- Antes de cambios, revisar `personal_site/README.md` para contexto del sitio si existe.
 - Si se agregan nuevos proyectos al directorio, considerar actualizar README del repo si es necesario.
 - Iconos: se usa `astro-icon` con el set `@iconify-json/lucide`. La configuración está en `personal_site/astro.config.mjs` (lista `include`). En componentes Astro, usar `<Icon name="lucide:icon-name" />` y evitar emojis/SVG inline.
+- La fuente canónica del perfil es el contenido visible de `personal_site`. `chat-worker/src/profile-data.ts` debe estar alineado con esa información, y puede incluir contenido complementario no visible en la web.

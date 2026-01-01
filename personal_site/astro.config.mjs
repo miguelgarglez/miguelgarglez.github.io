@@ -25,6 +25,7 @@ export default defineConfig({
           'linkedin',
           'map-pin',
           'moon',
+          'arrow-up-right',
           'shield',
           'sparkles',
           'sun',

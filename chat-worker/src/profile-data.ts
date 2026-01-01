@@ -39,7 +39,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'experience-ods',
     title: 'Experience - Open Digital Services (Santander Group)',
     content:
-      'Frontend UI Platform Engineer (Sep 2024 - Current). Contributed to a React and TypeScript UI component library aligned with the design system and white label solutions. Helped expand adoption to over 70% of frontend teams (several hundred developers). Collaborated with designers and developers on reusable components with strong performance and accessibility. Contributed to Kubit open source ecosystem, including a landing page and tools for UI design and development.',
+      'Frontend UI Platform Engineer (Sep 2024 - Current). Member of the Kubit Web UI components platform team, building and maintaining the component library used by web developers across Grupo Santander banks. Leads implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem. Contributes to the open-source charting library with new features and continuous improvements. Manages releases with semantic versioning, branch strategy, and Storybook documentation; supports Kubit public presence through product landing pages. Drives AI-enabled workflows with tools like GitHub Copilot, MCP servers, and context engineering to improve productivity, code quality, and collaborative development.',
     tags: ['experiencia', 'impacto', 'proyectos', 'frontend'],
     type: 'example',
     lang: 'en',
@@ -72,10 +72,19 @@ export const profileSections: ProfileBlock[] = [
     lang: 'en',
   },
   {
+    id: 'education-certifications',
+    title: 'Courses and certifications',
+    content:
+      'Professional Scrum Master I (PSM I) — Scrum.org (Oct 2025). Credential: https://www.credly.com/badges/78c42e63-cb83-4914-8607-4073c40599a3/linked_in_profile. Animations on the Web — Emil Kowalski (Aug 2025). Credential: https://animations.dev/certificate/6372ea11-f38d-45be-9c2f-9817e68b90a6. Google GenAI Intensive — Kaggle (Apr 2025). Credential: https://www.kaggle.com/certification/badges/miguelgarglez/96. Responsible AI and Prompt Engineering (Online Course) — Founderz (Mar 2025). Credential: https://learn.founderz.com/certificate/curso-generacion-ia-comunidad-madrid/7ca969ab-1671-4608-9c40-8b87d3bbfddf. TOEIC - C1 CEFR Level — Capman Testing Solutions (Feb 2025). Credential: https://www.linkedin.com/in/miguel-garciag/details/certifications/. Full Stack Open — University of Helsinki (Apr 2024). Credential: https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/db1060c383cd09cd6ab128fb5f864156.',
+    tags: ['educacion', 'certificaciones', 'cursos'],
+    type: 'fact',
+    lang: 'en',
+  },
+  {
     id: 'skills-frontend',
     title: 'Skills - Frontend Development',
     content:
-      'React and TypeScript with UI component library development for 70+ teams. Design systems, including scalable tokens, components, and UI governance. Accessibility with WCAG compliance and inclusive interaction patterns.',
+      'React and TypeScript with component libraries at scale. Design systems with tokens, components, and UI governance. Accessibility with WCAG compliance and inclusive patterns. Performance-focused UI quality, profiling, and optimization.',
     tags: ['skills', 'frontend', 'impacto'],
     type: 'answer',
     lang: 'en',
@@ -93,16 +102,16 @@ export const profileSections: ProfileBlock[] = [
     id: 'skills-mobile',
     title: 'Skills - Mobile and Cross-Platform',
     content:
-      'Flutter, including a Spotify API client. React Native mobile app development. Material-UI for modern UI components.',
+      'Flutter, including a Spotify API client. React Native mobile app development. Cross-platform UX and mobile interface patterns.',
     tags: ['skills', 'mobile', 'frontend'],
     type: 'answer',
     lang: 'en',
   },
   {
     id: 'skills-devops',
-    title: 'Skills - DevOps and Tools',
+    title: 'Skills - Engineering Tools and AI',
     content:
-      'AWS (S3, EC2, deployment). CI/CD with GitHub Actions and Microsoft Azure pipelines. Docker and GraphQL for modern development tools and APIs.',
+      'AI-assisted development with GitHub Copilot, MCP servers, and context engineering. CI/CD with GitHub Actions and Microsoft Azure pipelines. Cloud and APIs with AWS, Vercel, Cloudflare Workers, Docker, and GraphQL.',
     tags: ['skills', 'devops', 'infra'],
     type: 'answer',
     lang: 'en',
