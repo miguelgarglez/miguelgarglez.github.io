@@ -26,6 +26,7 @@ export default defineConfig({
           'map-pin',
           'moon',
           'arrow-up-right',
+          'chevron-down',
           'shield',
           'sparkles',
           'sun',

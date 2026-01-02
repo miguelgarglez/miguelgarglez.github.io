@@ -75,51 +75,81 @@ import { Icon } from 'astro-icon/components';
             <Icon class="certification-link-icon" name="lucide:arrow-up-right" />
           </span>
         </a>
-        <a
-          class="certification-card certification-card-link"
-          href="https://learn.founderz.com/certificate/curso-generacion-ia-comunidad-madrid/7ca969ab-1671-4608-9c40-8b87d3bbfddf"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="View credential for Responsible AI and Prompt Engineering"
+        <div
+          class="certifications-collapse"
+          id="certifications-extra"
+          data-cert-collapse
+          data-open="false"
         >
-          <h4 class="certification-title">
-            Responsible AI and Prompt Engineering (Online Course)
-          </h4>
-          <p class="certification-issuer">Founderz</p>
-          <span class="certification-date">Mar 2025</span>
-          <span class="certification-link" aria-hidden="true">
-            <Icon class="certification-link-icon" name="lucide:arrow-up-right" />
-          </span>
-        </a>
-        <a
-          class="certification-card certification-card-link"
-          href="https://www.linkedin.com/in/miguel-garciag/details/certifications/"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="View credential for TOEIC - C1 CEFR Level"
-        >
-          <h4 class="certification-title">TOEIC - C1 CEFR Level</h4>
-          <p class="certification-issuer">Capman Testing Solutions</p>
-          <span class="certification-date">Feb 2025</span>
-          <span class="certification-link" aria-hidden="true">
-            <Icon class="certification-link-icon" name="lucide:arrow-up-right" />
-          </span>
-        </a>
-        <a
-          class="certification-card certification-card-link"
-          href="https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/db1060c383cd09cd6ab128fb5f864156"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="View credential for Full Stack Open"
-        >
-          <h4 class="certification-title">Full Stack Open</h4>
-          <p class="certification-issuer">University of Helsinki</p>
-          <span class="certification-date">Apr 2024</span>
-          <span class="certification-link" aria-hidden="true">
-            <Icon class="certification-link-icon" name="lucide:arrow-up-right" />
-          </span>
-        </a>
+          <div class="certifications-collapse-inner">
+            <div class="certifications-grid certifications-grid-extra">
+              <a
+                class="certification-card certification-card-link"
+                href="https://learn.founderz.com/certificate/curso-generacion-ia-comunidad-madrid/7ca969ab-1671-4608-9c40-8b87d3bbfddf"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="View credential for Responsible AI and Prompt Engineering"
+              >
+                <h4 class="certification-title">
+                  Responsible AI and Prompt Engineering (Online Course)
+                </h4>
+                <p class="certification-issuer">Founderz</p>
+                <span class="certification-date">Mar 2025</span>
+                <span class="certification-link" aria-hidden="true">
+                  <Icon
+                    class="certification-link-icon"
+                    name="lucide:arrow-up-right"
+                  />
+                </span>
+              </a>
+              <a
+                class="certification-card certification-card-link"
+                href="https://www.linkedin.com/in/miguel-garciag/details/certifications/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="View credential for TOEIC - C1 CEFR Level"
+              >
+                <h4 class="certification-title">TOEIC - C1 CEFR Level</h4>
+                <p class="certification-issuer">Capman Testing Solutions</p>
+                <span class="certification-date">Feb 2025</span>
+                <span class="certification-link" aria-hidden="true">
+                  <Icon
+                    class="certification-link-icon"
+                    name="lucide:arrow-up-right"
+                  />
+                </span>
+              </a>
+              <a
+                class="certification-card certification-card-link"
+                href="https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/db1060c383cd09cd6ab128fb5f864156"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="View credential for Full Stack Open"
+              >
+                <h4 class="certification-title">Full Stack Open</h4>
+                <p class="certification-issuer">University of Helsinki</p>
+                <span class="certification-date">Apr 2024</span>
+                <span class="certification-link" aria-hidden="true">
+                  <Icon
+                    class="certification-link-icon"
+                    name="lucide:arrow-up-right"
+                  />
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
+      <button
+        class="certifications-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="certifications-extra"
+        data-cert-toggle
+      >
+        <span class="certifications-toggle-label">Show all</span>
+        <Icon class="certifications-toggle-icon" name="lucide:chevron-down" />
+      </button>
     </div>
   </div>
 </section>
@@ -131,6 +161,52 @@ import { Icon } from 'astro-icon/components';
   gsap.registerPlugin(ScrollTrigger);
 
   document.addEventListener('DOMContentLoaded', () => {
+    const certsToggle = document.querySelector('[data-cert-toggle]');
+    const certsCollapse = document.querySelector('[data-cert-collapse]');
+
+    if (certsToggle && certsCollapse) {
+      const collapsedLinks = certsCollapse.querySelectorAll('a');
+      const toggleLabel = certsToggle.querySelector(
+        '.certifications-toggle-label'
+      );
+      const mediaQuery = window.matchMedia('(min-width: 769px)');
+
+      const setCertsOpen = (isOpen) => {
+        certsCollapse.setAttribute('data-open', String(isOpen));
+        certsToggle.setAttribute('aria-expanded', String(isOpen));
+        if (toggleLabel) {
+          toggleLabel.textContent = isOpen ? 'Show less' : 'Show all';
+        }
+
+        collapsedLinks.forEach((link) => {
+          if (isOpen) {
+            link.removeAttribute('tabindex');
+            link.removeAttribute('aria-hidden');
+          } else {
+            link.setAttribute('tabindex', '-1');
+            link.setAttribute('aria-hidden', 'true');
+          }
+        });
+      };
+
+      const syncCerts = () => {
+        setCertsOpen(mediaQuery.matches ? true : false);
+      };
+
+      syncCerts();
+
+      certsToggle.addEventListener('click', () => {
+        const isOpen = certsCollapse.getAttribute('data-open') === 'true';
+        setCertsOpen(!isOpen);
+      });
+
+      if (mediaQuery.addEventListener) {
+        mediaQuery.addEventListener('change', syncCerts);
+      } else if (mediaQuery.addListener) {
+        mediaQuery.addListener(syncCerts);
+      }
+    }
+
     // Establecer estado inicial para las animaciones
     gsap.set('#education .section-title', { y: 50, opacity: 0 });
     gsap.set('#education .education-item', { y: 80, opacity: 0 });
@@ -192,6 +268,7 @@ import { Icon } from 'astro-icon/components';
     padding: 5rem 2rem;
     background: var(--bg);
     color: var(--text);
+    --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
   }
 
   .container {
@@ -319,6 +396,77 @@ import { Icon } from 'astro-icon/components';
     margin: 0 auto;
   }
 
+  .certifications-collapse {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.45s var(--ease-out-quart);
+    grid-column: 1 / -1;
+  }
+
+  .certifications-collapse-inner {
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.3s var(--ease-out-quart),
+      transform 0.3s var(--ease-out-quart);
+  }
+
+  .certifications-grid-extra {
+    margin-top: 0;
+  }
+
+  .certifications-collapse[data-open='true'] {
+    grid-template-rows: 1fr;
+  }
+
+  .certifications-collapse[data-open='true'] .certifications-collapse-inner {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .certifications-toggle {
+    margin: 2rem auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: fit-content;
+    padding: 0.6rem 1.4rem;
+    border-radius: 999px;
+    border: 1px solid rgba(242, 169, 59, 0.4);
+    background: rgba(242, 169, 59, 0.12);
+    color: var(--primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s var(--ease-out-quart),
+      border-color 0.2s var(--ease-out-quart),
+      color 0.2s var(--ease-out-quart);
+  }
+
+  .certifications-toggle:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  .certifications-toggle-icon {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-width: 2;
+    transition: transform 0.3s var(--ease-out-quart);
+  }
+
+  .certifications-toggle[aria-expanded='true'] .certifications-toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  .certifications-toggle:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 4px;
+  }
+
   .certification-card {
     background: var(--bg-light);
     border: 1px solid var(--border-muted);
@@ -343,8 +491,8 @@ import { Icon } from 'astro-icon/components';
   }
 
   .certification-card-link:focus-visible {
-    outline: 2px solid var(--primary);
-    outline-offset: 4px;
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary) inset;
   }
 
   .certification-title {
@@ -416,6 +564,32 @@ import { Icon } from 'astro-icon/components';
 
     .certifications-grid {
       grid-template-columns: 1fr;
+    }
+
+    .certification-card:hover {
+      transform: none;
+    }
+
+    .certification-card-link:hover .certification-link {
+      transform: none;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .certifications-collapse {
+      display: contents;
+    }
+
+    .certifications-collapse-inner {
+      display: contents;
+    }
+
+    .certifications-grid-extra {
+      display: contents;
+    }
+
+    .certifications-toggle {
+      display: none;
     }
   }
 </style>
