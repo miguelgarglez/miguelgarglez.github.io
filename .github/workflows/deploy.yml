@@ -15,34 +15,49 @@ permissions:
   id-token: write
 
 jobs:
-  build:
+  build-pages:
     runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{ steps.site-changes.outputs.site }}
     env:
       PUBLIC_WORKER_CHAT_URL: https://miguel-chat-worker.miguel-garglez.workers.dev/chat
     steps:
-      - name: Checkout your repository using git
+      - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Detect personal_site changes
+        id: site-changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            site:
+              - 'personal_site/**'
       
-      - name: Setup Pages
+      - name: Configure GitHub Pages
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
         id: pages
         uses: actions/configure-pages@v4
       
-      - name: Setup Node.js
+      - name: Setup Node.js for Astro build
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: 'npm'
           cache-dependency-path: './personal_site/package-lock.json'
       
-      - name: Install dependencies
+      - name: Install personal_site dependencies
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
         run: npm ci
         working-directory: ./personal_site
       
       - name: Build Astro site
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
         run: npm run build
         working-directory: ./personal_site
       
-      - name: Create deployment directory
+      - name: Prepare Pages artifact
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           mkdir -p _site/personal_site
           # Copiar el index.html como página principal
@@ -50,24 +65,26 @@ jobs:
           # Construir y copiar el proyecto personal_site
           cp -r personal_site/dist/* _site/personal_site/
       
-      - name: Upload artifact
+      - name: Upload Pages artifact
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./_site
 
-  deploy:
-    needs: build
+  deploy-pages:
+    needs: build-pages
     runs-on: ubuntu-latest
+    if: needs.build-pages.outputs.should_deploy == 'true' || github.event_name == 'workflow_dispatch'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
 
-  deploy-worker:
-    name: Deploy Worker
+  deploy-cloudflare-worker:
+    name: Deploy Cloudflare Worker
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -79,7 +96,7 @@ jobs:
           filters: |
             worker:
               - 'chat-worker/**'
-      - name: Build & Deploy Worker
+      - name: Build & Deploy Worker with Wrangler
         if: steps.worker-changes.outputs.worker == 'true' || github.event_name == 'workflow_dispatch'
         uses: cloudflare/wrangler-action@v3
         with:
