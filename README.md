@@ -28,3 +28,19 @@ My personal website showcasing my CV.
 
 </div>
 
+<div style="border: 1px solid #d0d7de; border-radius: 6px; padding: 16px; margin: 16px 0;">
+
+### **chat-worker**
+Cloudflare Worker powering the chat endpoint for the site.
+
+**Status:** ✅ Active  
+**Technologies:** ![Cloudflare Workers](https://img.shields.io/badge/-Cloudflare%20Workers-F38020?style=flat-square&logo=cloudflare&logoColor=white) ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+
+</div>
+
+## 🚀 CI/CD
+
+- GitHub Pages deploys on every push to `main`.
+- The Cloudflare Worker deploys on pushes that include changes under `chat-worker/`.
+- Manual runs from the Actions tab can deploy the worker even without changes.
+- Required secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
