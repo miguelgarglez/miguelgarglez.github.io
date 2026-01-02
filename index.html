@@ -157,6 +157,17 @@
             gap: 0.5rem;
             margin-top: 0.8rem;
         }
+        .meta.indent {
+            margin-left: 1.2rem;
+        }
+        .branch {
+            margin: 0.6rem 0 0.2rem 0.6rem;
+            padding-left: 0.9rem;
+            border-left: 2px solid var(--line);
+        }
+        .branch .branch-title {
+            margin-top: 0;
+        }
         .badge {
             border: 2px solid var(--line);
             background: var(--badge);
@@ -193,7 +204,7 @@
                 <h1>Miguel's Directory</h1>
                 <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">Light mode</button>
             </div>
-            <p>Shortcuts to my projects published on GitHub Pages.</p>
+            <p>Shortcuts to my projects :)</p>
         </header>
 
         <section class="section" aria-labelledby="projects">
@@ -202,6 +213,14 @@
                 <li class="card">
                     <p class="project-title"><a href="/personal_site">personal_site</a></p>
                     <p>Personal site with CV and animations.</p>
+                    <div class="branch" aria-label="Subproject">
+                        <p class="branch-title">↳ <a href="/personal_site/#chat">profile_chat</a>: LLM Q&A about my professional profile.</p>
+                        <div class="meta indent">
+                            <span class="badge">AI SDK</span>
+                            <span class="badge">Cloudflare Worker</span>
+                            <span class="badge">Streaming</span>
+                        </div>
+                    </div>
                     <p><a href="/personal_site">miguelgarglez.github.io/personal_site</a></p>
                     <p class="status">Status: <strong>Active</strong></p>
                     <div class="meta">

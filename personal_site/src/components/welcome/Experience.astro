@@ -217,8 +217,11 @@
   }
 
   .timeline {
+    --timeline-padding: 3rem;
+    --timeline-line-x: 1.5rem;
+    --marker-size: 1rem;
     position: relative;
-    padding-left: 3rem;
+    padding-left: var(--timeline-padding);
     max-width: 980px;
     margin: 0 auto;
   }
@@ -226,7 +229,7 @@
   .timeline::before {
     content: '';
     position: absolute;
-    left: 1.5rem;
+    left: var(--timeline-line-x);
     top: 0;
     bottom: 0;
     width: 2px;
@@ -241,10 +244,14 @@
 
   .timeline-marker {
     position: absolute;
-    left: -2.18rem;
+    left: calc(
+      (var(--timeline-line-x) - var(--timeline-padding)) -
+        (var(--marker-size) / 2)
+    );
     top: 0.5rem;
-    width: 1rem;
-    height: 1rem;
+    width: var(--marker-size);
+    height: var(--marker-size);
+    box-sizing: border-box;
     background: var(--bg);
     border-radius: 50%;
     border: 3px solid var(--primary);
@@ -425,16 +432,13 @@
     }
 
     .timeline {
-      padding-left: 2.5rem;
+      --timeline-padding: 2.5rem;
+      --timeline-line-x: 1.25rem;
       max-width: 100%;
     }
 
     .timeline::before {
-      left: 1.25rem;
-    }
-
-    .timeline-marker {
-      left: -1.9rem;
+      left: var(--timeline-line-x);
     }
 
     .timeline-content {
