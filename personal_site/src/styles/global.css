@@ -121,3 +121,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+@media (max-width: 640px) {
+  body.chat-overlay-open {
+    overflow: hidden;
+    touch-action: none;
+  }
+}

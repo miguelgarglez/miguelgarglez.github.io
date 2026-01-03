@@ -20,14 +20,17 @@ import {
   PromptInputTextarea,
   type PromptInputMessage,
 } from '@/components/ai-elements/prompt-input';
+import { cn } from '@/lib/utils';
 
 type ChatProps = {
   apiUrl: string;
+  className?: string;
+  autoFocus?: boolean;
 };
 
 type ChatErrorKind = 'unavailable' | 'retryable' | null;
 
-export default function Chat({ apiUrl }: ChatProps) {
+export default function Chat({ apiUrl, className, autoFocus }: ChatProps) {
   const [input, setInput] = useState('');
   const [chatError, setChatError] = useState<ChatErrorKind>(null);
 
@@ -75,7 +78,12 @@ export default function Chat({ apiUrl }: ChatProps) {
   };
 
   return (
-    <div className="flex h-[560px] flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-card shadow-[var(--shadow-card)]">
+    <div
+      className={cn(
+        'flex h-[560px] flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-card shadow-[var(--shadow-card)]',
+        className
+      )}
+    >
       <Conversation className="flex-1">
         <ConversationContent className="pb-6">
           {messages.length === 0 ? (
@@ -126,6 +134,7 @@ export default function Chat({ apiUrl }: ChatProps) {
             value={input}
             onChange={(event) => setInput(event.currentTarget.value)}
             placeholder="Type your question..."
+            autoFocus={autoFocus}
             disabled={isBusy}
           />
           <PromptInputSubmit

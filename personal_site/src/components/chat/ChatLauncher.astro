@@ -1,0 +1,9 @@
+---
+import ChatLauncher from './ChatLauncher';
+
+const workerUrl = import.meta.env.DEV
+  ? import.meta.env.DEV_PUBLIC_WORKER_CHAT_URL
+  : import.meta.env.PUBLIC_WORKER_CHAT_URL;
+---
+
+<ChatLauncher apiUrl={workerUrl} client:load />
