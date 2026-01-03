@@ -169,7 +169,7 @@ export default function ChatLauncher({ apiUrl }: ChatLauncherProps) {
           <section
             id={panelId}
             role="dialog"
-            aria-label="Chat with Miguel"
+            aria-label="Chat with Miguel's AI assistant"
             aria-modal={isCompact || undefined}
             aria-hidden={!isOpen}
             className={cn(
@@ -191,7 +191,7 @@ export default function ChatLauncher({ apiUrl }: ChatLauncherProps) {
             }}
           >
             <div className="mb-3 flex items-center justify-between px-4 pt-4 text-sm font-semibold text-foreground lg:p-0">
-              <span>Chat with Miguel</span>
+              <span>Chat with Miguel's AI assistant</span>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
