@@ -14,6 +14,7 @@ type Env = {
 };
 
 const DEFAULT_MODEL = 'meta-llama/llama-3.3-70b-instruct:free';
+const OPENROUTER_TIMEOUT_MS = 25_000;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 20;
 
@@ -519,14 +520,38 @@ export default {
       'X-Title': env.OPENROUTER_APP_TITLE ?? 'Miguel Garcia Profile Chat',
     };
 
-    const upstream = await fetch(
-      'https://openrouter.ai/api/v1/chat/completions',
-      {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(payload),
-      }
-    );
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), OPENROUTER_TIMEOUT_MS);
+    let upstream: Response;
+    try {
+      upstream = await fetch(
+        'https://openrouter.ai/api/v1/chat/completions',
+        {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+        }
+      );
+    } catch (error) {
+      const isTimeout =
+        error instanceof Error && error.name === 'AbortError';
+      const payload =
+        env.DEV === 'true'
+          ? {
+              error: isTimeout ? 'OpenRouter timeout.' : 'OpenRouter request failed.',
+              detail: error instanceof Error ? error.message : String(error),
+            }
+          : {
+              error: isTimeout ? 'Upstream timeout.' : 'Upstream request failed.',
+            };
+      return new Response(JSON.stringify(payload), {
+        status: isTimeout ? 504 : 502,
+        headers: getJsonHeaders(origin, allowedOrigins, isDev),
+      });
+    } finally {
+      clearTimeout(timeoutId);
+    }
 
     if (!upstream.ok || !upstream.body) {
       const detail = await upstream.text();

@@ -28,7 +28,7 @@ type ChatProps = {
   autoFocus?: boolean;
 };
 
-type ChatErrorKind = 'unavailable' | 'retryable' | null;
+type ChatErrorKind = 'unavailable' | 'retryable' | 'timeout' | null;
 
 export default function Chat({ apiUrl, className, autoFocus }: ChatProps) {
   const [input, setInput] = useState('');
@@ -47,6 +47,8 @@ export default function Chat({ apiUrl, className, autoFocus }: ChatProps) {
             if (!response.ok) {
               if (response.status === 404 || response.status === 405) {
                 setChatError('unavailable');
+              } else if (response.status === 504) {
+                setChatError('timeout');
               } else if (response.status === 429 || response.status >= 500) {
                 setChatError('retryable');
               } else {
@@ -110,6 +112,11 @@ export default function Chat({ apiUrl, className, autoFocus }: ChatProps) {
           {chatError === 'retryable' && (
             <div className="mt-2 w-fit rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
               Something went wrong sending your message. Please try again.
+            </div>
+          )}
+          {chatError === 'timeout' && (
+            <div className="mt-2 w-fit rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              The chat is taking too long. Please try again.
             </div>
           )}
           {chatError === 'unavailable' && (
