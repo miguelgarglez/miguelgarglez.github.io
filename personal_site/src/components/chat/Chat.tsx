@@ -80,7 +80,7 @@ export default function Chat({ apiUrl, className, autoFocus }: ChatProps) {
   return (
     <div
       className={cn(
-        'flex h-[560px] flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-card shadow-[var(--shadow-card)]',
+        'flex min-h-0 flex-1 flex-col overflow-hidden bg-card lg:h-[560px] lg:rounded-[var(--radius-lg)] lg:border lg:border-border lg:shadow-[var(--shadow-card)]',
         className
       )}
     >

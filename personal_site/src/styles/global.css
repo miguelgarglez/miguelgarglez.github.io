@@ -122,9 +122,17 @@
   }
 }
 
-@media (max-width: 640px) {
-  body.chat-overlay-open {
+@media (max-width: 1024px) {
+  body.chat-page-open {
     overflow: hidden;
     touch-action: none;
+  }
+
+  body.chat-page-open #page-content {
+    display: none;
+  }
+
+  body.chat-page-open #theme-toggle {
+    display: none;
   }
 }
