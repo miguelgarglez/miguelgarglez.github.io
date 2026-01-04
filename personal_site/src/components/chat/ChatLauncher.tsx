@@ -105,7 +105,8 @@ export default function ChatLauncher({ apiUrl }: ChatLauncherProps) {
     if (!hasOpened) {
       setHasOpened(true);
       setIsHidden(false);
-      requestAnimationFrame(() => setIsOpen(true));
+      // Opening immediately avoids iOS delays when waiting for the next animation frame.
+      setIsOpen(true);
       return;
     }
 
