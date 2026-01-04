@@ -7,6 +7,7 @@ Contexto del repo: sitio estático en `index.html` que actúa como directorio de
 - `index.html`: pagina de entrada/directorio de proyectos.
 - `personal_site/`: sitio Astro.
 - `.github/workflows/deploy.yml`: workflow de deploy (si aplica).
+- `.github/workflows/release-please.yml`: workflow de versionado semver y releases con PR.
 
 ## Tareas comunes
 
@@ -32,3 +33,4 @@ Contexto del repo: sitio estático en `index.html` que actúa como directorio de
 - Si se agregan nuevos proyectos al directorio, considerar actualizar README del repo si es necesario.
 - Iconos: se usa `astro-icon` con el set `@iconify-json/lucide`. La configuración está en `personal_site/astro.config.mjs` (lista `include`). En componentes Astro, usar `<Icon name="lucide:icon-name" />` y evitar emojis/SVG inline.
 - La fuente canónica del perfil es el contenido visible de `personal_site`. `chat-worker/src/profile-data.ts` debe estar alineado con esa información, y puede incluir contenido complementario no visible en la web.
+- Para que Release Please pueda abrir PRs, habilitar en GitHub: Actions permissions con "Read and write" y "Allow GitHub Actions to create and approve pull requests".

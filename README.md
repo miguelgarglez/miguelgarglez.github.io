@@ -44,3 +44,5 @@ Cloudflare Worker powering the chat endpoint for the site.
 - The Cloudflare Worker deploys on pushes that include changes under `chat-worker/`.
 - Manual runs from the Actions tab can deploy the worker even without changes.
 - Required secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
+- Release automation uses Release Please (`.github/workflows/release-please.yml`) to open a PR on pushes to `main`, then creates tags/releases when that PR is merged.
+- To allow the workflow to open PRs, enable "Read and write permissions" and "Allow GitHub Actions to create and approve pull requests" in repo Actions settings.
