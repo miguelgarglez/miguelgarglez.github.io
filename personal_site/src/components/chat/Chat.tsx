@@ -67,7 +67,12 @@ export default function Chat({ apiUrl, className, autoFocus }: ChatProps) {
     [apiUrl]
   );
 
-  const { messages, sendMessage, status } = useChat({ transport });
+  const { messages, sendMessage, status } = useChat({
+    transport,
+    onError: () => {
+      setChatError('retryable');
+    },
+  });
   const isBusy = status === 'submitted' || status === 'streaming';
   const submitStatus = isBusy ? status : 'ready';
 

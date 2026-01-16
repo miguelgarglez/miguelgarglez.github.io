@@ -291,6 +291,7 @@ function createUiMessageStream(upstream: ReadableStream<Uint8Array>) {
   let doneSent = false;
   let errorSent = false;
   let stopReading = false;
+  let receivedBytes = 0;
   let reader: ReadableStreamDefaultReader<Uint8Array> | null = null;
 
   const emit = (payload: string) => encoder.encode(`data: ${payload}\n\n`);
@@ -310,14 +311,15 @@ function createUiMessageStream(upstream: ReadableStream<Uint8Array>) {
   const endMessage = () => {
     if (ended) return;
     if (!started) {
-      ensureStarted();
+      ended = true;
+      return;
     }
     ended = true;
     if (!controller) return;
     if (textStarted) {
       controller.enqueue(emitJson({ type: 'text-end', id: messageId }));
     }
-    controller.enqueue(emitJson({ type: 'end', messageId }));
+    controller.enqueue(emitJson({ type: 'finish', finishReason: 'stop' }));
   };
 
   const sendDone = () => {
@@ -331,7 +333,7 @@ function createUiMessageStream(upstream: ReadableStream<Uint8Array>) {
     if (errorSent) return;
     errorSent = true;
     if (!controller) return;
-    controller.enqueue(emitJson({ type: 'error', message }));
+    controller.enqueue(emitJson({ type: 'error', errorText: message }));
   };
 
   const handleData = (data: string) => {
@@ -395,6 +397,9 @@ function createUiMessageStream(upstream: ReadableStream<Uint8Array>) {
           const { value, done } = await reader.read();
           if (done) break;
           if (stopReading) break;
+          if (value) {
+            receivedBytes += value.length;
+          }
           buffer += decoder.decode(value, { stream: true });
           processBuffer();
         }
@@ -407,6 +412,9 @@ function createUiMessageStream(upstream: ReadableStream<Uint8Array>) {
           );
         }
       } finally {
+        if (receivedBytes === 0 && !errorSent) {
+          sendError('No response from the model.');
+        }
         endMessage();
         sendDone();
         controller.close();

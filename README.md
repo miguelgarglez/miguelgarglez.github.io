@@ -38,6 +38,12 @@ Cloudflare Worker powering the chat endpoint for the site.
 
 </div>
 
+## 💬 Chat streaming notes
+
+- The worker streams AI SDK UI message events (SSE). Use `start`, `text-start`, `text-delta`, `text-end`, `finish`, and `[DONE]`.
+- Errors must be sent as `{ "type": "error", "errorText": "..." }` for the UI to surface them.
+- The worker avoids creating empty assistant messages; if the upstream sends zero bytes, it emits a streaming error instead.
+
 ## 🚀 CI/CD
 
 - GitHub Pages deploys on every push to `main`.

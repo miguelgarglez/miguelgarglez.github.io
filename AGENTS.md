@@ -34,3 +34,4 @@ Contexto del repo: sitio estático en `index.html` que actúa como directorio de
 - Iconos: se usa `astro-icon` con el set `@iconify-json/lucide`. La configuración está en `personal_site/astro.config.mjs` (lista `include`). En componentes Astro, usar `<Icon name="lucide:icon-name" />` y evitar emojis/SVG inline.
 - La fuente canónica del perfil es el contenido visible de `personal_site`. `chat-worker/src/profile-data.ts` debe estar alineado con esa información, y puede incluir contenido complementario no visible en la web.
 - Para que Release Please pueda abrir PRs, habilitar en GitHub: Actions permissions con "Read and write" y "Allow GitHub Actions to create and approve pull requests".
+- Chat worker: el stream debe seguir el protocolo UI message stream del AI SDK. Emitir `finish` (no `end`) y errores como `{ type: "error", errorText: "..." }`. Si no hay bytes en el upstream, emitir error y no crear mensajes vacios.
