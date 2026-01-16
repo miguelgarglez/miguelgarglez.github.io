@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/miguelgarglez/miguelgarglez.github.io/compare/v0.4.0...v0.4.1) (2026-01-16)
+
+
+### Bug Fixes
+
+* **chat:** align streaming events with AI SDK ([c311f55](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/c311f55d4121fd8a99e636f813b69c8603da2f37))
+
 ## [0.4.0](https://github.com/miguelgarglez/miguelgarglez.github.io/compare/v0.3.0...v0.4.0) (2026-01-04)
 
 
