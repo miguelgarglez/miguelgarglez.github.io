@@ -12,7 +12,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'profile',
     title: 'Profile basics',
     content:
-      'Miguel Garcia is a Software Engineer based in Madrid, Spain. LinkedIn: linkedin.com/in/miguel-garciag. X (Twitter): x.com/mikio00o.',
+      'Miguel Garcia is a Software Engineer based in Madrid, Spain. LinkedIn: linkedin.com/in/miguel-garciag. X (Twitter): x.com/miguel_garglez.',
     tags: ['contact', 'facts'],
     type: 'fact',
     lang: 'en',
