@@ -1,0 +1,19 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/*.ts": {
+      "runtime": "@vercel/node@5.6.3",
+      "maxDuration": 30
+    }
+  },
+  "routes": [
+    {
+      "src": "/chat",
+      "dest": "/api/chat"
+    },
+    {
+      "src": "/healthz",
+      "dest": "/api/healthz"
+    }
+  ]
+}
