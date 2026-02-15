@@ -4,6 +4,7 @@ Secondary chat API for `personal_site`, deployed on Vercel.
 
 ## Endpoints
 
+- `GET /` -> service metadata JSON
 - `POST /chat` -> streaming response compatible with `x-vercel-ai-ui-message-stream: v1`
 - `GET /healthz` -> `{ "ok": true, "backend": "vercel-fallback" }`
 

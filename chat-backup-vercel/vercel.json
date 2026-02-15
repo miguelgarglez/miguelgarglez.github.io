@@ -8,6 +8,10 @@
   },
   "routes": [
     {
+      "src": "/$",
+      "dest": "/api/index"
+    },
+    {
       "src": "/chat",
       "dest": "/api/chat"
     },
