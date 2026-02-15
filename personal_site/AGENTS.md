@@ -8,7 +8,7 @@ Contexto del repo: sitio personal en Astro con animaciones GSAP, toggle de tema 
 - `src/layouts/Layout.astro`: HTML base, fuentes Google, CSS variables y tema; incluye `ThemeToggle`.
 - `src/components/ThemeToggle.astro`: boton de cambio de tema (solo alterna `body.light`).
 - `src/components/welcome/*`: secciones del perfil y sus animaciones GSAP.
-- `src/components/welcome/ChatSection.astro`: wrapper de la sección Chat, resuelve `PUBLIC_WORKER_CHAT_URL` / `DEV_PUBLIC_WORKER_CHAT_URL` y monta el componente React.
+- `src/components/chat/ChatLauncher.astro`: wrapper del chat, resuelve endpoints primario/secundario y monta el componente React.
 - `src/components/chat/Chat.tsx`: UI y lógica de chat con AI SDK (`useChat` + `DefaultChatTransport`).
 - `src/components/ai-elements/*`: componentes derivados de AI Elements (conversación, mensajes, prompt input, loader).
 - `src/components/ui/*`: componentes base estilo shadcn usados por AI Elements.
@@ -38,14 +38,17 @@ Si cambias email, telefono o LinkedIn, actualiza en `Hero.astro`, `Contact.astro
 ## Chat (AI SDK + AI Elements)
 
 - `Chat.tsx` usa `useChat` con `DefaultChatTransport` y el header `x-vercel-ai-ui-message-stream: v1` para streaming.
-- El endpoint del chat viene de `PUBLIC_WORKER_CHAT_URL` (prod) y `DEV_PUBLIC_WORKER_CHAT_URL` (dev).
+- El chat admite endpoint primario/secundario para failover transparente.
 - La UI del chat es React y se monta en Astro con `client:visible` para evitar hidratar antes de ser visible.
 - Los mensajes renderizan markdown via `MessageResponse` (usa `Streamdown`); mantener ese componente si se cambia el formato.
 
 ## Variables de entorno
 
-- `PUBLIC_WORKER_CHAT_URL`: URL del endpoint del worker de chat en producción.
-- `DEV_PUBLIC_WORKER_CHAT_URL`: URL del endpoint del worker de chat en desarrollo.
+- `PUBLIC_CHAT_API_PRIMARY_URL`: URL del endpoint primario en producción.
+- `PUBLIC_CHAT_API_SECONDARY_URL`: URL del endpoint secundario en producción.
+- `DEV_PUBLIC_CHAT_API_PRIMARY_URL`: URL del endpoint primario en desarrollo.
+- `DEV_PUBLIC_CHAT_API_SECONDARY_URL`: URL del endpoint secundario en desarrollo.
+- Compat legacy: `PUBLIC_WORKER_CHAT_URL` y `DEV_PUBLIC_WORKER_CHAT_URL` se usan como fallback si no se define el primario nuevo.
 - Si no están definidas, el chat no podrá enviar mensajes (ver `src/components/welcome/ChatSection.astro`).
 
 ## UI y estilos (shadcn + Tailwind)

@@ -4,10 +4,14 @@ import { cn } from '@/lib/utils';
 import Chat from './Chat';
 
 type ChatLauncherProps = {
-  apiUrl: string;
+  primaryApiUrl: string;
+  secondaryApiUrl?: string;
 };
 
-export default function ChatLauncher({ apiUrl }: ChatLauncherProps) {
+export default function ChatLauncher({
+  primaryApiUrl,
+  secondaryApiUrl,
+}: ChatLauncherProps) {
   const panelId = useId();
   const [isOpen, setIsOpen] = useState(false);
   const [hasOpened, setHasOpened] = useState(false);
@@ -203,7 +207,8 @@ export default function ChatLauncher({ apiUrl }: ChatLauncherProps) {
               </button>
             </div>
             <Chat
-              apiUrl={apiUrl}
+              primaryApiUrl={primaryApiUrl}
+              secondaryApiUrl={secondaryApiUrl}
               className="flex-1 min-h-0 h-auto"
               autoFocus={isOpen}
             />

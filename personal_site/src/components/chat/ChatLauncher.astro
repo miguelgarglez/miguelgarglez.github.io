@@ -1,9 +1,23 @@
 ---
 import ChatLauncher from './ChatLauncher';
 
-const workerUrl = import.meta.env.DEV
+const legacyWorkerUrl = import.meta.env.DEV
   ? import.meta.env.DEV_PUBLIC_WORKER_CHAT_URL
   : import.meta.env.PUBLIC_WORKER_CHAT_URL;
+
+const primaryApiUrl = (
+  import.meta.env.DEV
+    ? import.meta.env.DEV_PUBLIC_CHAT_API_PRIMARY_URL
+    : import.meta.env.PUBLIC_CHAT_API_PRIMARY_URL
+) ?? legacyWorkerUrl ?? '';
+
+const secondaryApiUrl = import.meta.env.DEV
+  ? import.meta.env.DEV_PUBLIC_CHAT_API_SECONDARY_URL
+  : import.meta.env.PUBLIC_CHAT_API_SECONDARY_URL;
 ---
 
-<ChatLauncher apiUrl={workerUrl} client:load />
+<ChatLauncher
+  primaryApiUrl={primaryApiUrl}
+  secondaryApiUrl={secondaryApiUrl}
+  client:load
+/>

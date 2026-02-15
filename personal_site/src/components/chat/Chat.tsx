@@ -1,7 +1,7 @@
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { MessageSquareIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
   Conversation,
   ConversationContent,
@@ -23,7 +23,8 @@ import {
 import { cn } from '@/lib/utils';
 
 type ChatProps = {
-  apiUrl: string;
+  primaryApiUrl: string;
+  secondaryApiUrl?: string;
   className?: string;
   autoFocus?: boolean;
 };
@@ -33,8 +34,8 @@ type ChatErrorKind =
   | 'retryable'
   | 'timeout'
   | 'workerRateLimited'
-  | 'openrouterRateLimited'
-  | 'openrouterQuotaExceeded'
+  | 'providerRateLimited'
+  | 'providerQuotaExceeded'
   | null;
 
 type ChatApiErrorPayload = {
@@ -44,12 +45,32 @@ type ChatApiErrorPayload = {
   retryAfterSeconds?: number | null;
 };
 
-export default function Chat({ apiUrl, className, autoFocus }: ChatProps) {
+const PRIMARY_DEGRADED_MS = 5 * 60 * 1000;
+const FAILOVER_STATUSES = new Set([429, 502, 503, 504]);
+
+function cloneRequestInit(init?: RequestInit): RequestInit | undefined {
+  if (!init) return undefined;
+  if (init.body instanceof ReadableStream) {
+    throw new Error('Streaming request body is not supported by chat failover.');
+  }
+  return {
+    ...init,
+    headers: init.headers ? new Headers(init.headers) : undefined,
+  };
+}
+
+export default function Chat({
+  primaryApiUrl,
+  secondaryApiUrl,
+  className,
+  autoFocus,
+}: ChatProps) {
   const [input, setInput] = useState('');
   const [chatError, setChatError] = useState<ChatErrorKind>(null);
   const [retryAfterSeconds, setRetryAfterSeconds] = useState<number | null>(
     null
   );
+  const primaryDegradedUntilRef = useRef(0);
   const contactHint = (
     <span>
       If you need help right now, reach out on{' '}
@@ -77,64 +98,150 @@ export default function Chat({ apiUrl, className, autoFocus }: ChatProps) {
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
-        api: apiUrl,
+        api: primaryApiUrl || secondaryApiUrl || '',
         headers: {
           'x-vercel-ai-ui-message-stream': 'v1',
         },
-        fetch: async (input, init) => {
-          try {
-            const response = await fetch(input, init);
-            if (!response.ok) {
-              let errorPayload: ChatApiErrorPayload | null = null;
-              const contentType = response.headers.get('Content-Type');
-              if (contentType?.includes('application/json')) {
-                try {
-                  errorPayload =
-                    (await response.clone().json()) as ChatApiErrorPayload;
-                } catch {
-                  errorPayload = null;
-                }
+        fetch: async (_input, init) => {
+          const applyErrorFromResponse = async (response: Response) => {
+            let errorPayload: ChatApiErrorPayload | null = null;
+            const contentType = response.headers.get('Content-Type');
+            if (contentType?.includes('application/json')) {
+              try {
+                errorPayload =
+                  (await response.clone().json()) as ChatApiErrorPayload;
+              } catch {
+                errorPayload = null;
               }
+            }
 
-              const retryAfterHeader = response.headers.get('Retry-After');
-              const retryAfterFromHeader = retryAfterHeader
-                ? Number(retryAfterHeader)
-                : NaN;
-              const parsedRetryAfter = Number.isFinite(
-                errorPayload?.retryAfterSeconds
-              )
-                ? Number(errorPayload?.retryAfterSeconds)
-                : Number.isFinite(retryAfterFromHeader)
-                  ? retryAfterFromHeader
-                  : null;
-              setRetryAfterSeconds(parsedRetryAfter);
+            const retryAfterHeader = response.headers.get('Retry-After');
+            const retryAfterFromHeader = retryAfterHeader
+              ? Number(retryAfterHeader)
+              : NaN;
+            const parsedRetryAfter = Number.isFinite(
+              errorPayload?.retryAfterSeconds
+            )
+              ? Number(errorPayload?.retryAfterSeconds)
+              : Number.isFinite(retryAfterFromHeader)
+                ? retryAfterFromHeader
+                : null;
+            setRetryAfterSeconds(parsedRetryAfter);
 
-              if (response.status === 404 || response.status === 405) {
-                setChatError('unavailable');
-              } else if (response.status === 429) {
-                if (errorPayload?.errorCode === 'OPENROUTER_RATE_LIMIT') {
-                  setChatError('openrouterRateLimited');
-                } else if (errorPayload?.errorCode === 'WORKER_RATE_LIMIT') {
-                  setChatError('workerRateLimited');
-                } else {
-                  setChatError('retryable');
-                }
-              } else if (response.status === 504) {
-                setChatError('timeout');
-              } else if (
-                response.status === 503 &&
-                errorPayload?.errorCode === 'OPENROUTER_QUOTA_EXCEEDED'
+            if (response.status === 404 || response.status === 405) {
+              setChatError('unavailable');
+            } else if (response.status === 429) {
+              if (
+                errorPayload?.errorCode === 'OPENROUTER_RATE_LIMIT' ||
+                errorPayload?.errorCode === 'UPSTREAM_RATE_LIMIT'
               ) {
-                setChatError('openrouterQuotaExceeded');
-              } else if (response.status === 429 || response.status >= 500) {
-                setChatError('retryable');
+                setChatError('providerRateLimited');
+              } else if (errorPayload?.errorCode === 'WORKER_RATE_LIMIT') {
+                setChatError('workerRateLimited');
               } else {
-                setChatError('unavailable');
+                setChatError('retryable');
               }
+            } else if (response.status === 504) {
+              setChatError('timeout');
+            } else if (
+              response.status === 503 &&
+              (errorPayload?.errorCode === 'OPENROUTER_QUOTA_EXCEEDED' ||
+                errorPayload?.errorCode === 'UPSTREAM_QUOTA_EXCEEDED')
+            ) {
+              setChatError('providerQuotaExceeded');
+            } else if (response.status === 429 || response.status >= 500) {
+              setChatError('retryable');
+            } else {
+              setChatError('unavailable');
+            }
+          };
+
+          try {
+            const now = Date.now();
+            const useSecondaryFirst =
+              Boolean(secondaryApiUrl) &&
+              now < primaryDegradedUntilRef.current;
+            const endpoints: Array<{
+              url: string;
+              kind: 'primary' | 'secondary';
+            }> = [];
+
+            if (useSecondaryFirst) {
+              if (secondaryApiUrl) {
+                endpoints.push({ url: secondaryApiUrl, kind: 'secondary' });
+              }
+            } else {
+              if (primaryApiUrl) {
+                endpoints.push({ url: primaryApiUrl, kind: 'primary' });
+              }
+              if (secondaryApiUrl) {
+                endpoints.push({ url: secondaryApiUrl, kind: 'secondary' });
+              }
+            }
+
+            if (endpoints.length === 0) {
+              setChatError('unavailable');
+              setRetryAfterSeconds(null);
+              return new Response(
+                JSON.stringify({ error: 'Chat endpoint not configured.' }),
+                {
+                  status: 503,
+                  headers: { 'Content-Type': 'application/json' },
+                }
+              );
+            }
+
+            let response: Response | null = null;
+            let lastNetworkError: unknown = null;
+
+            for (let index = 0; index < endpoints.length; index += 1) {
+              const endpoint = endpoints[index];
+              try {
+                response = await fetch(endpoint.url, cloneRequestInit(init));
+              } catch (error) {
+                lastNetworkError = error;
+                if (
+                  endpoint.kind === 'primary' &&
+                  secondaryApiUrl &&
+                  index < endpoints.length - 1
+                ) {
+                  primaryDegradedUntilRef.current = Date.now() + PRIMARY_DEGRADED_MS;
+                  continue;
+                }
+                throw error;
+              }
+
+              if (endpoint.kind === 'primary' && response.ok) {
+                primaryDegradedUntilRef.current = 0;
+              }
+
+              const canFailover =
+                endpoint.kind === 'primary' &&
+                secondaryApiUrl &&
+                index < endpoints.length - 1;
+
+              if (canFailover && FAILOVER_STATUSES.has(response.status)) {
+                primaryDegradedUntilRef.current = Date.now() + PRIMARY_DEGRADED_MS;
+                continue;
+              }
+
+              break;
+            }
+
+            if (!response) {
+              throw (
+                lastNetworkError ??
+                new Error('All chat backends failed before receiving a response.')
+              );
+            }
+
+            if (!response.ok) {
+              await applyErrorFromResponse(response);
             } else {
               setChatError(null);
               setRetryAfterSeconds(null);
             }
+
             return response;
           } catch (error) {
             setChatError('retryable');
@@ -143,7 +250,7 @@ export default function Chat({ apiUrl, className, autoFocus }: ChatProps) {
           }
         },
       }),
-    [apiUrl]
+    [primaryApiUrl, secondaryApiUrl]
   );
 
   const { messages, sendMessage, status } = useChat({
@@ -199,7 +306,7 @@ export default function Chat({ apiUrl, className, autoFocus }: ChatProps) {
               try again. {contactHint}
             </div>
           )}
-          {chatError === 'openrouterRateLimited' && (
+          {chatError === 'providerRateLimited' && (
             <div className="mt-2 w-fit rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
               The chat provider is rate-limited right now.
               {retryAfterSeconds !== null
@@ -217,7 +324,7 @@ export default function Chat({ apiUrl, className, autoFocus }: ChatProps) {
               {contactHint}
             </div>
           )}
-          {chatError === 'openrouterQuotaExceeded' && (
+          {chatError === 'providerQuotaExceeded' && (
             <div className="mt-2 w-fit rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
               The chat provider quota is currently exhausted. Please try again
               later. {contactHint}
