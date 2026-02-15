@@ -63,6 +63,7 @@ curl -N \
 ## Notes
 
 - Endpoint: POST /chat
+- Health endpoint: GET /healthz
 - Body: { "question": "..." } or { "messages": [{ "role": "user", "content": "..." }] }
 - Streaming response: text/event-stream (OpenRouter SSE passthrough)
 - Resilience defaults:
@@ -71,3 +72,4 @@ curl -N \
   - provider routing with `allow_fallbacks: true` and `sort: throughput`
   - automatic retries for transient upstream errors (`408/429/5xx`) with exponential backoff
 - Error JSON includes `errorCode` and `source` so the frontend can distinguish worker vs OpenRouter limits.
+- Responses include `X-Chat-Backend: cloudflare` for backend tracing in failover setups.

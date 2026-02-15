@@ -85,13 +85,14 @@ function getCorsHeaders(
     headers.set('Access-Control-Allow-Origin', origin);
     headers.set('Vary', 'Origin');
   }
-  headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  headers.set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
   const requestedHeaders = requestHeaders?.get('Access-Control-Request-Headers');
   headers.set(
     'Access-Control-Allow-Headers',
     requestedHeaders?.trim() ||
       'Content-Type, Authorization, x-vercel-ai-ui-message-stream, User-Agent'
   );
+  headers.set('X-Chat-Backend', 'cloudflare');
   return headers;
 }
 
@@ -496,7 +497,11 @@ export default {
     const isDev = env.DEV === 'true';
     const corsHeaders = getCorsHeaders(origin, allowedOrigins, isDev, request.headers);
 
-    const originAllowed = origin ? (isDev || allowedOrigins.has(origin)) : isDev;
+    const isHealthRequest =
+      request.method === 'GET' && (pathname === '/' || pathname === '/healthz');
+    const originAllowed = origin
+      ? isDev || allowedOrigins.has(origin)
+      : isDev || isHealthRequest;
     if (!originAllowed) {
       return new Response(JSON.stringify({ error: 'Origin not allowed.' }), {
         status: 403,
@@ -510,6 +515,16 @@ export default {
 
     if (request.method === 'GET' && pathname === '/') {
       return new Response('ok', { headers: corsHeaders });
+    }
+
+    if (request.method === 'GET' && pathname === '/healthz') {
+      return new Response(
+        JSON.stringify({ ok: true, backend: 'cloudflare' }),
+        {
+          status: 200,
+          headers: getJsonHeaders(origin, allowedOrigins, isDev, request.headers),
+        }
+      );
     }
 
     if (request.method !== 'POST' || pathname !== '/chat') {

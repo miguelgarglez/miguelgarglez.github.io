@@ -21,6 +21,8 @@ jobs:
       should_deploy: ${{ steps.site-changes.outputs.site }}
     env:
       PUBLIC_WORKER_CHAT_URL: https://miguel-chat-worker.miguel-garglez.workers.dev/chat
+      PUBLIC_CHAT_API_PRIMARY_URL: https://miguel-chat-worker.miguel-garglez.workers.dev/chat
+      PUBLIC_CHAT_API_SECONDARY_URL: ${{ vars.PUBLIC_CHAT_API_SECONDARY_URL }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

@@ -7,6 +7,7 @@ Cloudflare Worker that streams OpenRouter responses about Miguel Garcia's profes
 ## What is implemented
 
 - SSE streaming endpoint at `POST /chat`.
+- Health endpoint at `GET /healthz`.
 - Minimal RAG via keyword matching against a local profile dataset.
 - Strict CORS allowlist to only allow production origin.
 - Optional localhost access for dev via environment toggle.
@@ -42,6 +43,7 @@ or
   - `errorCode: WORKER_RATE_LIMIT` (local worker throttle)
   - `errorCode: OPENROUTER_RATE_LIMIT` (upstream/provider throttling)
   - `errorCode: OPENROUTER_QUOTA_EXCEEDED` (upstream quota exhaustion)
+- All responses include `X-Chat-Backend: cloudflare` to simplify failover diagnostics.
 
 ## CORS behavior
 
@@ -50,7 +52,7 @@ or
   - `http://localhost:4321`
   - `http://localhost:3000`
   - `http://localhost:5173`
-- Requests without `Origin` are rejected in prod; if `DEV=true`, empty Origin is allowed to support `curl` in dev.
+- Requests without `Origin` are rejected for `POST /chat` in prod; `GET /` and `GET /healthz` are allowed to support health checks.
 
 ## Env vars
 
