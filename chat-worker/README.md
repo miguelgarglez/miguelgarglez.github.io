@@ -16,8 +16,21 @@ Optional variables:
 
 ```bash
 npx wrangler secret put OPENROUTER_MODEL
+npx wrangler secret put OPENROUTER_FALLBACK_MODELS
 npx wrangler secret put OPENROUTER_SITE_URL
 npx wrangler secret put OPENROUTER_APP_TITLE
+```
+
+Suggested model setup for higher free-tier resiliency:
+
+```bash
+# Primary model router for free models
+npx wrangler secret put OPENROUTER_MODEL
+# value: openrouter/free
+
+# Comma-separated fallback chain used if the primary fails/rate-limits
+npx wrangler secret put OPENROUTER_FALLBACK_MODELS
+# value: stepfun/step-3.5-flash:free,arcee-ai/trinity-large-preview:free,nvidia/nemotron-3-nano-30b-a3b:free
 ```
 
 Dev-only variable:
@@ -52,3 +65,9 @@ curl -N \
 - Endpoint: POST /chat
 - Body: { "question": "..." } or { "messages": [{ "role": "user", "content": "..." }] }
 - Streaming response: text/event-stream (OpenRouter SSE passthrough)
+- Resilience defaults:
+  - `model: openrouter/free`
+  - fallback models via `models`
+  - provider routing with `allow_fallbacks: true` and `sort: throughput`
+  - automatic retries for transient upstream errors (`408/429/5xx`) with exponential backoff
+- Error JSON includes `errorCode` and `source` so the frontend can distinguish worker vs OpenRouter limits.

@@ -24,7 +24,7 @@ Contexto: Worker de Cloudflare que hace streaming SSE hacia OpenRouter para resp
 ## OpenRouter
 
 - Secret obligatorio: `OPENROUTER_API_KEY`.
-- Opcionales: `OPENROUTER_MODEL`, `OPENROUTER_SITE_URL`, `OPENROUTER_APP_TITLE`.
+- Opcionales: `OPENROUTER_MODEL`, `OPENROUTER_FALLBACK_MODELS`, `OPENROUTER_SITE_URL`, `OPENROUTER_APP_TITLE`.
 - Mantener `stream: true` para UX de chat.
 - `DEV=true` permite respuestas con detalle de errores upstream.
 

@@ -36,6 +36,12 @@ or
 
 - Passes through OpenRouter SSE (`text/event-stream`).
 - Client should parse `data:` lines and append `delta.content`.
+- Uses `openrouter/free` plus model fallback chain (`models`) and provider routing (`allow_fallbacks`, throughput sorting) for better availability.
+- Retries transient upstream failures (`408/429/5xx`) with bounded backoff before returning an error.
+- Error responses include machine-readable fields to help the UI classify failures:
+  - `errorCode: WORKER_RATE_LIMIT` (local worker throttle)
+  - `errorCode: OPENROUTER_RATE_LIMIT` (upstream/provider throttling)
+  - `errorCode: OPENROUTER_QUOTA_EXCEEDED` (upstream quota exhaustion)
 
 ## CORS behavior
 
@@ -54,7 +60,8 @@ Required:
 
 Optional:
 
-- `OPENROUTER_MODEL` (defaults to `meta-llama/llama-3.3-70b-instruct:free`)
+- `OPENROUTER_MODEL` (defaults to `openrouter/free`)
+- `OPENROUTER_FALLBACK_MODELS` (comma-separated fallback chain)
 - `OPENROUTER_SITE_URL`
 - `OPENROUTER_APP_TITLE`
 - `DEV` (`true` to enable localhost + detailed upstream errors)
