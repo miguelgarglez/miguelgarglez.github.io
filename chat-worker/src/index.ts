@@ -8,15 +8,25 @@ type ChatMessage = {
 type Env = {
   OPENROUTER_API_KEY?: string;
   OPENROUTER_MODEL?: string;
+  OPENROUTER_FALLBACK_MODELS?: string;
   OPENROUTER_SITE_URL?: string;
   OPENROUTER_APP_TITLE?: string;
   DEV?: string;
 };
 
-const DEFAULT_MODEL = 'meta-llama/llama-3.3-70b-instruct:free';
+const DEFAULT_MODEL = 'openrouter/free';
+const DEFAULT_FALLBACK_MODELS = [
+  'stepfun/step-3.5-flash:free',
+  'arcee-ai/trinity-large-preview:free',
+  'nvidia/nemotron-3-nano-30b-a3b:free',
+];
 const OPENROUTER_TIMEOUT_MS = 25_000;
+const OPENROUTER_MAX_ATTEMPTS = 3;
+const OPENROUTER_RETRY_BASE_MS = 500;
+const OPENROUTER_RETRY_MAX_MS = 6_000;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 20;
+const RETRYABLE_UPSTREAM_STATUS = new Set([408, 429, 500, 502, 503, 504]);
 
 const prodOrigins = ['https://miguelgarglez.github.io'];
 const localhostOrigins = ['http://localhost:4321/personal_site'];
@@ -280,6 +290,56 @@ function extractMessages(body: Record<string, unknown>) {
     .filter((message): message is ChatMessage => Boolean(message));
 }
 
+function parseModelList(raw: string | undefined) {
+  if (!raw) return [] as string[];
+  return raw
+    .split(',')
+    .map((value) => value.trim())
+    .filter((value) => value.length > 0);
+}
+
+function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function parseRetryAfterMs(value: string | null) {
+  if (!value) return null;
+  const seconds = Number(value);
+  if (!Number.isNaN(seconds) && seconds >= 0) {
+    return Math.round(seconds * 1000);
+  }
+  const dateMs = Date.parse(value);
+  if (Number.isNaN(dateMs)) return null;
+  return Math.max(0, dateMs - Date.now());
+}
+
+function computeBackoffMs(attempt: number, retryAfterMs: number | null) {
+  if (retryAfterMs !== null) {
+    return Math.min(retryAfterMs, OPENROUTER_RETRY_MAX_MS);
+  }
+  const base = OPENROUTER_RETRY_BASE_MS * 2 ** (attempt - 1);
+  const jitter = Math.floor(Math.random() * 250);
+  return Math.min(base + jitter, OPENROUTER_RETRY_MAX_MS);
+}
+
+function extractUpstreamError(detail: string) {
+  try {
+    const parsed = JSON.parse(detail) as Record<string, unknown>;
+    const error = parsed.error as Record<string, unknown> | undefined;
+    const message = error?.message;
+    const code = error?.code;
+    if (typeof message === 'string' && typeof code === 'number') {
+      return { message, code };
+    }
+    if (typeof message === 'string') {
+      return { message };
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
 function createUiMessageStream(upstream: ReadableStream<Uint8Array>) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
@@ -470,10 +530,19 @@ export default {
       headers.set('X-RateLimit-Limit', String(RATE_LIMIT_MAX));
       headers.set('X-RateLimit-Remaining', String(rate.remaining));
       headers.set('X-RateLimit-Reset', String(rate.reset));
-      return new Response(JSON.stringify({ error: 'Rate limit exceeded.' }), {
-        status: 429,
-        headers,
-      });
+      const retryAfterSeconds = Math.ceil((rate.reset - Date.now()) / 1000);
+      return new Response(
+        JSON.stringify({
+          error: 'Rate limit exceeded.',
+          errorCode: 'WORKER_RATE_LIMIT',
+          source: 'worker',
+          retryAfterSeconds,
+        }),
+        {
+          status: 429,
+          headers,
+        }
+      );
     }
 
     if (!env.OPENROUTER_API_KEY) {
@@ -509,8 +578,16 @@ export default {
     const context = buildContext(question);
     const systemPrompt = `${systemPromptBase}\n\nContext:\n${context}`;
 
-    const payload = {
-      model: env.OPENROUTER_MODEL ?? DEFAULT_MODEL,
+    const primaryModel = (env.OPENROUTER_MODEL ?? DEFAULT_MODEL).trim();
+    const configuredFallbacks = parseModelList(env.OPENROUTER_FALLBACK_MODELS);
+    const fallbackModels = (
+      configuredFallbacks.length > 0
+        ? configuredFallbacks
+        : DEFAULT_FALLBACK_MODELS
+    ).filter((model) => model !== primaryModel);
+
+    const payload: Record<string, unknown> = {
+      model: primaryModel,
       stream: true,
       messages: [
         { role: 'system', content: systemPrompt },
@@ -518,7 +595,14 @@ export default {
           ? inboundMessages
           : [{ role: 'user', content: question }]),
       ],
+      provider: {
+        allow_fallbacks: true,
+        sort: 'throughput',
+      },
     };
+    if (fallbackModels.length > 0) {
+      payload.models = fallbackModels;
+    }
 
     const headers: Record<string, string> = {
       Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
@@ -528,48 +612,142 @@ export default {
       'X-Title': env.OPENROUTER_APP_TITLE ?? 'Miguel Garcia Profile Chat',
     };
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), OPENROUTER_TIMEOUT_MS);
-    let upstream: Response;
-    try {
-      upstream = await fetch(
-        'https://openrouter.ai/api/v1/chat/completions',
-        {
+    let upstream: Response | null = null;
+    let upstreamStatus = 0;
+    let upstreamDetail = '';
+    let upstreamRetryAfterMs: number | null = null;
+    let requestError: string | null = null;
+    let requestTimedOut = false;
+    let attempts = 0;
+
+    for (let attempt = 1; attempt <= OPENROUTER_MAX_ATTEMPTS; attempt += 1) {
+      attempts = attempt;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), OPENROUTER_TIMEOUT_MS);
+
+      try {
+        upstream = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
           headers,
           body: JSON.stringify(payload),
           signal: controller.signal,
+        });
+      } catch (error) {
+        clearTimeout(timeoutId);
+        requestTimedOut = error instanceof Error && error.name === 'AbortError';
+        requestError = error instanceof Error ? error.message : String(error);
+        if (attempt < OPENROUTER_MAX_ATTEMPTS) {
+          await wait(computeBackoffMs(attempt, null));
+          continue;
         }
-      );
-    } catch (error) {
-      const isTimeout =
-        error instanceof Error && error.name === 'AbortError';
+        break;
+      } finally {
+        clearTimeout(timeoutId);
+      }
+
+      if (upstream.ok && upstream.body) {
+        break;
+      }
+
+      upstreamStatus = upstream.status;
+      upstreamDetail = await upstream.text();
+      const retryAfterMs = parseRetryAfterMs(upstream.headers.get('Retry-After'));
+      upstreamRetryAfterMs = retryAfterMs;
+      const canRetryRateLimit =
+        upstream.status !== 429 ||
+        (attempt === 1 &&
+          (retryAfterMs === null || retryAfterMs <= OPENROUTER_RETRY_MAX_MS));
+      const shouldRetry =
+        attempt < OPENROUTER_MAX_ATTEMPTS &&
+        RETRYABLE_UPSTREAM_STATUS.has(upstream.status) &&
+        canRetryRateLimit;
+      if (shouldRetry) {
+        await wait(computeBackoffMs(attempt, retryAfterMs));
+        continue;
+      }
+      break;
+    }
+
+    if (!upstream) {
       const payload =
         env.DEV === 'true'
           ? {
-              error: isTimeout ? 'OpenRouter timeout.' : 'OpenRouter request failed.',
-              detail: error instanceof Error ? error.message : String(error),
+              error: requestTimedOut
+                ? 'OpenRouter timeout.'
+                : 'OpenRouter request failed.',
+              errorCode: requestTimedOut
+                ? 'OPENROUTER_TIMEOUT'
+                : 'OPENROUTER_REQUEST_FAILED',
+              source: 'openrouter',
+              detail: requestError,
+              attempts,
             }
           : {
-              error: isTimeout ? 'Upstream timeout.' : 'Upstream request failed.',
+              error: requestTimedOut
+                ? 'Upstream timeout.'
+                : 'Upstream request failed.',
+              errorCode: requestTimedOut
+                ? 'OPENROUTER_TIMEOUT'
+                : 'OPENROUTER_REQUEST_FAILED',
+              source: 'openrouter',
             };
       return new Response(JSON.stringify(payload), {
-        status: isTimeout ? 504 : 502,
+        status: requestTimedOut ? 504 : 502,
         headers: getJsonHeaders(origin, allowedOrigins, isDev),
       });
-    } finally {
-      clearTimeout(timeoutId);
     }
 
     if (!upstream.ok || !upstream.body) {
-      const detail = await upstream.text();
+      const parsed = extractUpstreamError(upstreamDetail);
+      let status = 502;
+      let error = 'Upstream error.';
+      let errorCode = 'OPENROUTER_UPSTREAM_ERROR';
+      if (upstreamStatus === 429) {
+        status = 429;
+        error = 'Upstream rate limit exceeded.';
+        errorCode = 'OPENROUTER_RATE_LIMIT';
+      } else if (upstreamStatus === 402) {
+        status = 503;
+        error = 'Upstream quota exceeded.';
+        errorCode = 'OPENROUTER_QUOTA_EXCEEDED';
+      }
+
+      const responseHeaders = getJsonHeaders(origin, allowedOrigins, isDev);
+      if (status === 429 && upstreamRetryAfterMs !== null) {
+        responseHeaders.set(
+          'Retry-After',
+          String(Math.max(1, Math.ceil(upstreamRetryAfterMs / 1000)))
+        );
+      }
+
       const payload =
         env.DEV === 'true'
-          ? { error: 'OpenRouter error.', detail }
-          : { error: 'Upstream error.' };
+          ? {
+              error,
+              errorCode,
+              source: 'openrouter',
+              upstreamStatus,
+              detail: parsed?.message ?? upstreamDetail,
+              upstreamCode: parsed?.code,
+              attempts,
+              retryAfterSeconds:
+                upstreamRetryAfterMs !== null
+                  ? Math.max(1, Math.ceil(upstreamRetryAfterMs / 1000))
+                  : null,
+            }
+          : {
+              error,
+              errorCode,
+              source: 'openrouter',
+              retryAfterSeconds:
+                upstreamRetryAfterMs !== null
+                  ? Math.max(1, Math.ceil(upstreamRetryAfterMs / 1000))
+                  : null,
+            };
+
       return new Response(JSON.stringify(payload), {
-        status: 502,
-        headers: getJsonHeaders(origin, allowedOrigins, isDev),
+        status,
+        headers: responseHeaders,
       });
     }
 
