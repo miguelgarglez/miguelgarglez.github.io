@@ -33,6 +33,7 @@ jobs:
         with:
           filters: |
             site:
+              - 'index.html'
               - 'personal_site/**'
       
       - name: Configure GitHub Pages
