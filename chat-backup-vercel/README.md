@@ -12,12 +12,14 @@ Secondary chat API for `personal_site`, deployed on Vercel.
 
 Required:
 
-- `CF_ACCOUNT_ID`
-- `CF_API_TOKEN`
+- `OPENROUTER_API_KEY`
 
 Optional:
 
-- `WORKERS_AI_MODEL` (default: `@cf/meta/llama-3.1-8b-instruct`)
+- `OPENROUTER_MODEL` (default: `openrouter/free`)
+- `OPENROUTER_FALLBACK_MODELS` (CSV fallback chain)
+- `OPENROUTER_SITE_URL` (default: `https://miguelgarglez.github.io`)
+- `OPENROUTER_APP_TITLE` (default: `Miguel Garcia Profile Chat`)
 - `ALLOWED_ORIGINS` (comma-separated, defaults include `https://miguelgarglez.github.io` and localhost)
 
 ## Local checks

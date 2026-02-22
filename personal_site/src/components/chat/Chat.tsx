@@ -46,7 +46,24 @@ type ChatApiErrorPayload = {
 };
 
 const PRIMARY_DEGRADED_MS = 5 * 60 * 1000;
-const FAILOVER_STATUSES = new Set([429, 502, 503, 504]);
+const PRIMARY_REQUEST_TIMEOUT_MS = 8_000;
+const SECONDARY_REQUEST_TIMEOUT_MS = 12_000;
+const FAILOVER_STATUSES = new Set([
+  408,
+  429,
+  500,
+  502,
+  503,
+  504,
+  520,
+  521,
+  522,
+  523,
+  524,
+  525,
+  526,
+  530,
+]);
 
 function cloneRequestInit(init?: RequestInit): RequestInit | undefined {
   if (!init) return undefined;
@@ -57,6 +74,38 @@ function cloneRequestInit(init?: RequestInit): RequestInit | undefined {
     ...init,
     headers: init.headers ? new Headers(init.headers) : undefined,
   };
+}
+
+function fetchWithTimeout(
+  url: string,
+  init: RequestInit | undefined,
+  timeoutMs: number
+) {
+  const timeoutController = new AbortController();
+  const requestInit = cloneRequestInit(init) ?? {};
+  const externalSignal = requestInit.signal;
+
+  if (externalSignal) {
+    if (externalSignal.aborted) {
+      timeoutController.abort();
+    } else {
+      externalSignal.addEventListener(
+        'abort',
+        () => timeoutController.abort(),
+        { once: true }
+      );
+    }
+  }
+
+  requestInit.signal = timeoutController.signal;
+
+  const timeoutId = window.setTimeout(() => {
+    timeoutController.abort();
+  }, timeoutMs);
+
+  return fetch(url, requestInit).finally(() => {
+    window.clearTimeout(timeoutId);
+  });
 }
 
 export default function Chat({
@@ -197,7 +246,13 @@ export default function Chat({
             for (let index = 0; index < endpoints.length; index += 1) {
               const endpoint = endpoints[index];
               try {
-                response = await fetch(endpoint.url, cloneRequestInit(init));
+                response = await fetchWithTimeout(
+                  endpoint.url,
+                  init,
+                  endpoint.kind === 'primary'
+                    ? PRIMARY_REQUEST_TIMEOUT_MS
+                    : SECONDARY_REQUEST_TIMEOUT_MS
+                );
               } catch (error) {
                 lastNetworkError = error;
                 if (

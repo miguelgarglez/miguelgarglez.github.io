@@ -10,5 +10,5 @@
     "types": ["node", "@vercel/node"],
     "noEmit": true
   },
-  "include": ["api/**/*.ts", "src/**/*.ts"]
+  "include": ["api/**/*.ts", "src/**/*.ts", "shared/**/*.ts"]
 }

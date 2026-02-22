@@ -41,16 +41,18 @@ Contexto: backend de backup en Vercel para el chat del `personal_site`. Este ser
   - `X-RateLimit-Reset`
   - JSON con `errorCode: WORKER_RATE_LIMIT`.
 
-## Workers AI
+## OpenRouter
 
 Variables requeridas:
 
-- `CF_ACCOUNT_ID`
-- `CF_API_TOKEN`
+- `OPENROUTER_API_KEY`
 
 Variables opcionales:
 
-- `WORKERS_AI_MODEL` (default `@cf/meta/llama-3.1-8b-instruct`)
+- `OPENROUTER_MODEL` (default `openrouter/free`)
+- `OPENROUTER_FALLBACK_MODELS` (CSV)
+- `OPENROUTER_SITE_URL`
+- `OPENROUTER_APP_TITLE`
 - `ALLOWED_ORIGINS`
 
 ## Streaming (importante)

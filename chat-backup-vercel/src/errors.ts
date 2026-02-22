@@ -4,11 +4,11 @@ const RETRY_MAX_MS = 6_000;
 
 export type NormalizedErrorCode =
   | 'WORKER_RATE_LIMIT'
-  | 'UPSTREAM_RATE_LIMIT'
-  | 'UPSTREAM_TIMEOUT'
-  | 'UPSTREAM_REQUEST_FAILED'
-  | 'UPSTREAM_QUOTA_EXCEEDED'
-  | 'UPSTREAM_ERROR';
+  | 'OPENROUTER_RATE_LIMIT'
+  | 'OPENROUTER_TIMEOUT'
+  | 'OPENROUTER_REQUEST_FAILED'
+  | 'OPENROUTER_QUOTA_EXCEEDED'
+  | 'OPENROUTER_UPSTREAM_ERROR';
 
 export function parseRetryAfterMs(value: string | null) {
   if (!value) return null;
@@ -42,7 +42,10 @@ export function extractUpstreamError(detail: string) {
     const message = error?.message;
     const code = error?.code;
 
-    if (typeof message === 'string' && typeof code === 'number') {
+    if (
+      typeof message === 'string' &&
+      (typeof code === 'number' || typeof code === 'string')
+    ) {
       return { message, code };
     }
 
@@ -66,16 +69,16 @@ export function normalizeUpstreamFailure(
   const parsed = extractUpstreamError(upstreamDetail);
   let status = 502;
   let error = 'Upstream error.';
-  let errorCode: NormalizedErrorCode = 'UPSTREAM_ERROR';
+  let errorCode: NormalizedErrorCode = 'OPENROUTER_UPSTREAM_ERROR';
 
   if (upstreamStatus === 429) {
     status = 429;
     error = 'Upstream rate limit exceeded.';
-    errorCode = 'UPSTREAM_RATE_LIMIT';
+    errorCode = 'OPENROUTER_RATE_LIMIT';
   } else if (upstreamStatus === 402) {
     status = 503;
     error = 'Upstream quota exceeded.';
-    errorCode = 'UPSTREAM_QUOTA_EXCEEDED';
+    errorCode = 'OPENROUTER_QUOTA_EXCEEDED';
   }
 
   return {
@@ -84,7 +87,7 @@ export function normalizeUpstreamFailure(
       ? {
           error,
           errorCode,
-          source: 'workers-ai',
+          source: 'openrouter',
           upstreamStatus,
           detail: parsed?.message ?? upstreamDetail,
           upstreamCode: parsed?.code,
@@ -95,7 +98,9 @@ export function normalizeUpstreamFailure(
       : {
           error,
           errorCode,
-          source: 'workers-ai',
+          source: 'openrouter',
+          upstreamStatus,
+          upstreamCode: parsed?.code,
           retryAfterSeconds:
             retryAfterMs !== null ? Math.max(1, Math.ceil(retryAfterMs / 1000)) : null,
         },
