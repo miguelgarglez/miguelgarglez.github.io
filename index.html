@@ -3,266 +3,768 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miguel García - Directory</title>
+    <title>Miguel Garcia - Project Directory</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..700,0..100&family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Theme tokens */
         :root {
-            color-scheme: light dark;
-            --bg: #f4f1e8;
-            --bg-contrast: #efe7d7;
-            --ink: #171717;
-            --ink-muted: #3a3a3a;
-            --line: #c9c1b2;
-            --link: #1d1d1d;
-            --link-hover: #000000;
-            --card: #f7f2e6;
-            --badge: #1a1a1a;
-            --badge-text: #f6f2ea;
-            --shadow: rgba(0, 0, 0, 0.07);
+            color-scheme: light;
+            --bg: #eceeea;
+            --ink: #12151c;
+            --ink-muted: #5f6776;
+            --line: #ccd2c8;
+            --line-soft: rgba(18, 21, 28, 0.11);
+            --accent: #1d5fd9;
+            --accent-soft: rgba(29, 95, 217, 0.11);
+            --font-sans: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+            --font-serif: "Fraunces", "Times New Roman", serif;
+            --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
         }
         [data-theme="dark"] {
-            --bg: #111111;
-            --bg-contrast: #0a0a0a;
-            --ink: #f5f1e8;
-            --ink-muted: #cfc9be;
-            --line: #2d2d2d;
-            --link: #f5f1e8;
-            --link-hover: #ffffff;
-            --card: #161616;
-            --badge: #f5f1e8;
-            --badge-text: #111111;
-            --shadow: rgba(0, 0, 0, 0.3);
+            color-scheme: dark;
+            --bg: #0c1119;
+            --ink: #ecf1f9;
+            --ink-muted: #96a1b4;
+            --line: #283348;
+            --line-soft: rgba(236, 241, 249, 0.16);
+            --accent: #95b7ff;
+            --accent-soft: rgba(149, 183, 255, 0.15);
         }
+        /* Base */
         * {
             box-sizing: border-box;
         }
         body {
-            font-family: "VT323", "Courier New", monospace;
-            line-height: 1.5;
             margin: 0;
-            padding: 2.5rem 1.5rem 4rem;
-            background:
-                repeating-linear-gradient(
-                    90deg,
-                    transparent 0,
-                    transparent 22px,
-                    rgba(0, 0, 0, 0.03) 22px,
-                    rgba(0, 0, 0, 0.03) 23px
-                ),
-                linear-gradient(180deg, var(--bg) 0%, var(--bg-contrast) 100%);
-            color: var(--ink);
             min-height: 100vh;
-            transition: background 220ms ease, color 220ms ease;
+            padding: clamp(1rem, 2.4vw, 2.4rem) 1rem 3rem;
+            font-family: var(--font-sans);
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 0% 0%, rgba(29, 95, 217, 0.08), transparent 31%),
+                radial-gradient(circle at 100% 8%, rgba(29, 95, 217, 0.05), transparent 33%),
+                var(--bg);
+            transition: background-color 180ms ease, color 180ms ease;
         }
-        .container {
-            max-width: 760px;
+
+        /* Layout */
+        .layout {
+            width: min(1380px, 100%);
             margin: 0 auto;
+            padding: clamp(1rem, 2.2vw, 2rem);
         }
-        header {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            border-bottom: 2px solid var(--line);
-            padding-bottom: 1.5rem;
-            margin-bottom: 2rem;
+        .page-shell {
+            display: grid;
+            grid-template-columns: minmax(130px, 210px) minmax(0, 920px) minmax(130px, 210px);
+            gap: clamp(1rem, 2vw, 1.8rem);
+            align-items: start;
         }
-        h1 {
-            font-family: "Press Start 2P", "VT323", monospace;
-            font-size: clamp(1.4rem, 3vw, 2.2rem);
-            margin: 0;
-            letter-spacing: 0.02em;
+
+        /* Sidebar */
+        .sidebar {
+            top: clamp(0.75rem, 2vw, 1.4rem);
+            align-self: start;
+            position: sticky;
+            grid-column: 1;
+            justify-self: start;
+            opacity: 0.92;
+            transition: opacity 200ms ease;
         }
-        h2 {
-            font-family: "Press Start 2P", "VT323", monospace;
-            font-size: 1.05rem;
-            letter-spacing: 0.04em;
-            margin: 2.5rem 0 1rem;
+        .sidebar.is-scrolled {
+            opacity: 0.45;
         }
-        p {
-            margin: 0.5rem 0 0;
+        .sidebar:hover,
+        .sidebar:focus-within {
+            opacity: 1;
+        }
+        .sidebar-nav {
+            display: grid;
+            gap: 0.45rem;
+        }
+        .sidebar-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            width: fit-content;
             color: var(--ink-muted);
-            font-size: 1.15rem;
-            letter-spacing: 0.02em;
-        }
-        a {
-            color: var(--link);
             text-decoration: none;
-            border-bottom: 2px solid transparent;
-            transition: border-color 160ms ease, color 160ms ease;
+            font-size: 0.92rem;
+            line-height: 1.45;
+            transition: color 140ms ease;
         }
-        a:hover {
-            color: var(--link-hover);
-            border-color: var(--link-hover);
+        .sidebar-link::before {
+            content: "";
+            width: 0.46rem;
+            height: 0.46rem;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: transparent;
+            transition: border-color 140ms ease, background-color 140ms ease;
         }
-        a:focus-visible {
-            color: var(--link-hover);
-            border-color: var(--link-hover);
-            outline: 2px solid var(--link-hover);
+        .sidebar-link:hover {
+            color: var(--ink);
+        }
+        .sidebar-link:focus-visible {
+            outline: 2px solid var(--accent);
             outline-offset: 2px;
+            border-radius: 4px;
         }
-        .controls {
+        .sidebar-link.is-active {
+            color: var(--ink);
+        }
+        .sidebar-link.is-active::before {
+            border-color: var(--accent);
+            background: var(--accent);
+        }
+
+        /* Content shell + grid overlay */
+        .content-column {
+            grid-column: 2;
+            position: relative;
+            min-width: 0;
+            width: 100%;
+            padding: 0 clamp(0rem, 1vw, 0.4rem);
+        }
+        .content-column::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(to right, transparent 33.33%, var(--line-soft) 33.33%, var(--line-soft) calc(33.33% + 1px), transparent calc(33.33% + 1px)),
+                linear-gradient(to right, transparent 66.66%, var(--line-soft) 66.66%, var(--line-soft) calc(66.66% + 1px), transparent calc(66.66% + 1px));
+            opacity: 0.44;
+        }
+        .content-column > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Masthead + theme switch */
+        .masthead {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 1rem;
-            flex-wrap: wrap;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--line);
+        }
+        .eyebrow,
+        .section-label,
+        .project-index,
+        .footer-note {
+            margin: 0;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
         }
         .theme-toggle {
-            font-family: "Press Start 2P", "VT323", monospace;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            border: 2px solid var(--line);
-            background: var(--card);
+            border: 1px solid var(--line);
+            background: transparent;
             color: var(--ink);
-            padding: 0.6rem 0.9rem;
+            border-radius: 999px;
+            width: 2.35rem;
+            height: 2.35rem;
+            padding: 0;
+            font: inherit;
+            font-weight: 600;
+            font-size: 0.78rem;
             cursor: pointer;
-            box-shadow: 3px 3px 0 var(--shadow);
-            transition: transform 120ms ease, box-shadow 120ms ease, background 220ms ease, color 220ms ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
         }
-        .theme-toggle:active {
-            transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0 var(--shadow);
+        .theme-toggle:hover {
+            background: var(--accent-soft);
+            border-color: var(--accent);
+            color: var(--accent);
         }
         .theme-toggle:focus-visible {
-            outline: 3px solid var(--link-hover);
-            outline-offset: 3px;
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
         }
-        .section {
-            margin-top: 2rem;
+        .theme-icon {
+            width: 1.07rem;
+            height: 1.07rem;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            pointer-events: none;
         }
-        .card {
-            border: 2px solid var(--line);
-            background: var(--card);
-            padding: 1.2rem 1.4rem;
-            margin-top: 1rem;
-            box-shadow: 6px 6px 0 var(--shadow);
+        .theme-icon--sun {
+            display: none;
         }
+        [data-theme="dark"] .theme-icon--sun {
+            display: block;
+        }
+        [data-theme="dark"] .theme-icon--moon {
+            display: none;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Intro */
+        .intro {
+            padding: clamp(2rem, 6vw, 5.2rem) 0 clamp(2rem, 4.4vw, 3.2rem);
+            max-width: 760px;
+            animation: rise 450ms ease both;
+        }
+        h1 {
+            margin: 0;
+            max-width: 10.8ch;
+            text-wrap: balance;
+            font-family: var(--font-serif);
+            font-size: clamp(2.7rem, 7.2vw, 5.3rem);
+            line-height: 0.98;
+            letter-spacing: -0.02em;
+            font-weight: 500;
+        }
+        .lead {
+            margin: 1.35rem 0 0;
+            max-width: 58ch;
+            color: var(--ink-muted);
+            font-size: clamp(1.03rem, 2.1vw, 1.25rem);
+            line-height: 1.72;
+        }
+        .section-label {
+            margin-bottom: 1rem;
+        }
+
+        /* Projects */
         .project-list {
             list-style: none;
-            padding: 0;
             margin: 0;
+            padding: 0;
+            border-top: 1px solid var(--line);
+        }
+        .project {
             display: grid;
-            gap: 1rem;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            gap: 1rem 1.2rem;
+            padding: 1.4rem 0 1.6rem;
+            border-bottom: 1px solid var(--line);
+            animation: rise 450ms ease both;
+        }
+        .project:nth-child(1) {
+            animation-delay: 85ms;
+        }
+        .project:nth-child(2) {
+            animation-delay: 135ms;
+        }
+        .project:nth-child(3) {
+            animation-delay: 185ms;
+        }
+        .project-index {
+            margin-top: 0.72rem;
+            font-size: 0.69rem;
+            letter-spacing: 0.14em;
+            line-height: 1;
+        }
+        .project-status {
+            margin: 0.4rem 0 0;
+            font-family: var(--font-mono);
+            font-size: 0.69rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
         }
         .project-title {
-            font-family: "Press Start 2P", "VT323", monospace;
-            font-size: 0.9rem;
-            margin: 0 0 0.6rem;
+            margin: 0;
+            font-family: var(--font-serif);
+            font-size: clamp(1.35rem, 2.4vw, 1.92rem);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            font-weight: 500;
         }
-        .meta {
+        .project-title a,
+        .reference-title a {
+            color: inherit;
+            text-decoration: none;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+        .project-title a {
+            display: inline-block;
+        }
+        .project-title a:hover {
+            color: var(--accent);
+        }
+        .project-title a:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+        .project-arrow {
+            font-size: 0.9em;
+            display: inline-block;
+            margin-left: 0.35rem;
+            opacity: 0.75;
+            transition: transform 150ms ease, opacity 150ms ease;
+        }
+        .project-title a:hover .project-arrow {
+            opacity: 1;
+            transform: translate(1px, -1px);
+        }
+        .project-description {
+            margin: 0.65rem 0 0;
+            color: var(--ink-muted);
+            font-size: 0.99rem;
+            line-height: 1.7;
+            max-width: 62ch;
+        }
+        .project-sub {
+            margin: 0.75rem 0 0;
+            color: var(--ink-muted);
+            border-left: 1px solid var(--line-soft);
+            padding-left: 0.9rem;
+            max-width: 60ch;
+            font-size: 0.92rem;
+        }
+        .project-sub a {
+            color: var(--ink);
+            text-decoration-thickness: 1px;
+            text-underline-offset: 2px;
+        }
+        .project-links {
+            margin: 0.9rem 0 0;
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.8rem;
+            gap: 0.5rem 1rem;
+            font-size: 0.89rem;
         }
-        .meta.indent {
-            margin-left: 1.2rem;
-        }
-        .branch {
-            margin: 0.6rem 0 0.2rem 0.6rem;
-            padding-left: 0.9rem;
-            border-left: 2px solid var(--line);
-        }
-        .branch .branch-title {
-            margin-top: 0;
-        }
-        .badge {
-            border: 2px solid var(--line);
-            background: var(--badge);
-            color: var(--badge-text);
-            padding: 0.2rem 0.5rem;
-            font-size: 0.85rem;
-        }
-        .status {
+        .project-links a {
             color: var(--ink);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: color 140ms ease, border-color 140ms ease;
         }
-        .status strong {
-            background: var(--ink);
-            color: var(--bg);
-            padding: 0 0.4rem;
-            margin-left: 0.3rem;
+        .project-links a:hover {
+            color: var(--accent);
+            border-color: currentColor;
         }
-        @media (max-width: 600px) {
+        .project-links a:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+        .stack {
+            list-style: none;
+            margin: 0.9rem 0 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.38rem 0.6rem;
+            color: var(--ink-muted);
+            font-size: 0.72rem;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+        }
+        .stack li::after {
+            content: " /";
+            margin-left: 0.6rem;
+            color: var(--line);
+        }
+        .stack li:last-child::after {
+            content: "";
+            margin: 0;
+        }
+
+        /* Inspiring people */
+        .reference-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        #inspiring-people {
+            margin-top: clamp(1.2rem, 2.4vw, 1.8rem);
+        }
+        .reference {
+            padding: 1.2rem 0 1.35rem;
+            border-bottom: 1px solid var(--line);
+            animation: rise 450ms ease both;
+        }
+        .reference:nth-child(1) {
+            animation-delay: 160ms;
+        }
+        .reference:nth-child(2) {
+            animation-delay: 210ms;
+        }
+        .reference-type {
+            margin: 0;
+            font-family: var(--font-mono);
+            font-size: 0.69rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+        }
+        .reference-title {
+            margin: 0.5rem 0 0;
+            font-family: var(--font-serif);
+            font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+            font-weight: 500;
+            line-height: 1.25;
+        }
+        .reference-title a:hover {
+            color: var(--accent);
+        }
+        .reference-note {
+            margin: 0.58rem 0 0;
+            max-width: 66ch;
+            color: var(--ink-muted);
+            font-size: 0.96rem;
+            line-height: 1.65;
+        }
+
+        /* Footer */
+        footer {
+            padding-top: 1.2rem;
+            margin-top: 1.2rem;
+            border-top: 1px solid var(--line);
+            animation: rise 460ms ease both;
+            animation-delay: 190ms;
+        }
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 980px) {
+            .page-shell {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                display: none;
+            }
+            .content-column {
+                grid-column: 1;
+                padding: 0;
+            }
+        }
+        @media (max-width: 840px) {
+            .content-column::before {
+                display: none;
+            }
+            .project {
+                grid-template-columns: auto minmax(0, 1fr);
+            }
+            .project-index {
+                margin-top: 0.5rem;
+            }
+            .project-status {
+                grid-column: 2;
+                margin-top: -0.3rem;
+                margin-bottom: 0.1rem;
+            }
+        }
+        @media (max-width: 640px) {
             body {
-                padding: 2rem 1.1rem 3rem;
+                padding: 0.75rem 0.75rem 2.2rem;
             }
-            .theme-toggle {
-                width: 100%;
+            .layout {
+                padding: 1rem;
             }
-            .card {
-                box-shadow: 4px 4px 0 var(--shadow);
+            .masthead {
+                flex-direction: row;
+                align-items: center;
+            }
+            .intro {
+                padding-top: 1.55rem;
+                padding-bottom: 1.55rem;
+            }
+            .project {
+                grid-template-columns: auto minmax(0, 1fr);
+                gap: 0.65rem 0.82rem;
+                padding: 1.2rem 0 1.3rem;
+            }
+            .project > div {
+                min-width: 0;
+            }
+            .project-title {
+                font-size: clamp(1.28rem, 7vw, 1.55rem);
+            }
+            .project-index {
+                margin-top: 0.58rem;
+            }
+            .project-status {
+                grid-column: 2;
+                margin: -0.08rem 0 0;
+            }
+            .stack li::after {
+                margin-left: 0.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="controls">
-                <h1>Miguel's Directory</h1>
-                <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">Light mode</button>
-            </div>
-            <p>Shortcuts to my projects :)</p>
-        </header>
+    <main class="layout">
+        <div class="page-shell">
+            <aside class="sidebar" data-sidebar aria-label="Section index">
+                <nav class="sidebar-nav">
+                    <a class="sidebar-link" data-nav-link href="#overview">Overview</a>
+                    <a class="sidebar-link" data-nav-link href="#projects">Projects</a>
+                    <a class="sidebar-link" data-nav-link href="#inspiring-people">Inspiring people</a>
+                </nav>
+            </aside>
+            <div class="content-column">
+                <header class="masthead">
+                    <p class="eyebrow">Miguel Garcia • Directory</p>
+                    <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="Switch to dark theme" title="Switch to dark theme">
+                        <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 1 0 9.8 9.8Z"></path>
+                        </svg>
+                        <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="12" r="4.3"></circle>
+                            <path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"></path>
+                        </svg>
+                        <span class="sr-only">Toggle color theme</span>
+                    </button>
+                </header>
 
-        <section class="section" aria-labelledby="projects">
-            <h2 id="projects">Projects</h2>
-            <ul class="project-list">
-                <li class="card">
-                    <p class="project-title"><a href="/personal_site">personal_site</a></p>
-                    <p>Personal site with CV and animations.</p>
-                    <div class="branch" aria-label="Subproject">
-                        <p class="branch-title">↳ <a href="/personal_site/#chat">profile_chat</a>: LLM Q&A about my professional profile.</p>
-                        <div class="meta indent">
-                            <span class="badge">AI SDK</span>
-                            <span class="badge">Cloudflare Worker</span>
-                            <span class="badge">Streaming</span>
-                        </div>
-                    </div>
-                    <p><a href="/personal_site">miguelgarglez.github.io/personal_site</a></p>
-                    <p class="status">Status: <strong>Active</strong></p>
-                    <div class="meta">
-                        <span class="badge">Astro</span>
-                        <span class="badge">TypeScript</span>
-                        <span class="badge">CSS</span>
-                    </div>
-                </li>
-                <li class="card">
-                    <p class="project-title"><a href="/frontend-dual-layout-showcase">frontend_dual_layout_showcase</a></p>
-                    <p>Frontend case study with two UI flows: desktop dashboard + mobile-first request form.</p>
-                    <p><a href="/frontend-dual-layout-showcase">miguelgarglez.github.io/frontend-dual-layout-showcase</a></p>
-                    <p><a href="https://github.com/miguelgarglez/frontend-dual-layout-showcase" target="_blank" rel="noopener noreferrer">github.com/miguelgarglez/frontend-dual-layout-showcase</a></p>
-                    <p class="status">Status: <strong>Active</strong></p>
-                    <div class="meta">
-                        <span class="badge">React</span>
-                        <span class="badge">TypeScript</span>
-                        <span class="badge">Tailwind CSS</span>
-                        <span class="badge">Vitest</span>
-                    </div>
-                </li>
-            </ul>
-        </section>
-    </div>
+                <section class="intro" id="overview" data-section-anchor aria-labelledby="directory-title">
+                    <h1 id="directory-title">An index of projects, people, and ideas.</h1>
+                    <p class="lead">A lightweight directory of things I build and the work that inspires them.</p>
+                </section>
+
+                <section id="projects" data-section-anchor aria-labelledby="projects-title">
+                    <p class="section-label" id="projects-title">Projects</p>
+                    <ol class="project-list">
+                        <li class="project">
+                            <p class="project-index">01</p>
+                            <div>
+                                <h2 class="project-title">
+                                    <a href="/personal_site">personal_site<span class="project-arrow" aria-hidden="true">↗</span></a>
+                                </h2>
+                                <p class="project-description">Personal website with professional profile, CV, and GSAP-based motion sections.</p>
+                                <p class="project-sub">Includes <a href="/personal_site/#chat">profile_chat</a>, a grounded LLM Q&amp;A on top of my profile data.</p>
+                                <div class="project-links">
+                                    <a href="/personal_site">Open project</a>
+                                    <a href="https://miguelgarglez.github.io/personal_site" target="_blank" rel="noopener noreferrer">Public URL</a>
+                                </div>
+                                <ul class="stack" aria-label="Tech stack">
+                                    <li>Astro</li>
+                                    <li>TypeScript</li>
+                                    <li>GSAP</li>
+                                    <li>Cloudflare Worker</li>
+                                </ul>
+                            </div>
+                            <p class="project-status">Active</p>
+                        </li>
+                        <li class="project">
+                            <p class="project-index">02</p>
+                            <div>
+                                <h2 class="project-title">
+                                    <a href="https://miguelgarglez.github.io/frontend-dual-layout-showcase" target="_blank" rel="noopener noreferrer">frontend_dual_layout_showcase<span class="project-arrow" aria-hidden="true">↗</span></a>
+                                </h2>
+                                <p class="project-description">Frontend case study with two UI flows: desktop dashboard and mobile-first request form.</p>
+                                <div class="project-links">
+                                    <a href="https://miguelgarglez.github.io/frontend-dual-layout-showcase" target="_blank" rel="noopener noreferrer">Live demo</a>
+                                    <a href="https://github.com/miguelgarglez/frontend-dual-layout-showcase" target="_blank" rel="noopener noreferrer">GitHub</a>
+                                </div>
+                                <ul class="stack" aria-label="Tech stack">
+                                    <li>React</li>
+                                    <li>TypeScript</li>
+                                    <li>Tailwind CSS</li>
+                                    <li>Vitest</li>
+                                </ul>
+                            </div>
+                            <p class="project-status">Active</p>
+                        </li>
+                        <li class="project">
+                            <p class="project-index">03</p>
+                            <div>
+                                <h2 class="project-title">
+                                    <a href="https://github.com/kubit-ui/kubit-react-charts" target="_blank" rel="noopener noreferrer">kubit_react_charts<span class="project-arrow" aria-hidden="true">↗</span></a>
+                                </h2>
+                                <p class="project-description">Open-source chart components library where I actively contribute as part of my day-to-day work.</p>
+                                <div class="project-links">
+                                    <a href="https://github.com/kubit-ui/kubit-react-charts" target="_blank" rel="noopener noreferrer">GitHub repository</a>
+                                </div>
+                                <ul class="stack" aria-label="Tech stack">
+                                    <li>React</li>
+                                    <li>TypeScript</li>
+                                    <li>Charts</li>
+                                    <li>Open Source</li>
+                                </ul>
+                            </div>
+                            <p class="project-status">Active</p>
+                        </li>
+                    </ol>
+                </section>
+
+                <section id="inspiring-people" data-section-anchor aria-labelledby="inspiring-people-title">
+                    <p class="section-label" id="inspiring-people-title">Inspiring people</p>
+                    <ol class="reference-list">
+                        <li class="reference">
+                            <p class="reference-type">Design / Writing</p>
+                            <h2 class="reference-title">
+                                <a href="https://benji.org" target="_blank" rel="noopener noreferrer">Benji Taylor</a>
+                            </h2>
+                            <p class="reference-note">Writing and interface decisions with strong editorial clarity, calm pacing, and intentional visual rhythm.</p>
+                        </li>
+                        <li class="reference">
+                            <p class="reference-type">Engineering / Writing</p>
+                            <h2 class="reference-title">
+                                <a href="https://www.pragmaticengineer.com" target="_blank" rel="noopener noreferrer">Gergely Orosz</a>
+                            </h2>
+                            <p class="reference-note">Practical insights about software engineering, leadership, and how high-performing teams work in real companies.</p>
+                        </li>
+                        <li class="reference">
+                            <p class="reference-type">Developer Education</p>
+                            <h2 class="reference-title">
+                                <a href="https://www.youtube.com/midudev" target="_blank" rel="noopener noreferrer">midudev</a>
+                            </h2>
+                            <p class="reference-note">Hands-on dev content with a clear teaching style, strong community mindset, and real-world frontend focus.</p>
+                        </li>
+                        <li class="reference">
+                            <p class="reference-type">Product / Engineering</p>
+                            <h2 class="reference-title">
+                                <a href="https://x.com/rauchg" target="_blank" rel="noopener noreferrer">Guillermo Rauch</a>
+                            </h2>
+                            <p class="reference-note">A product-and-platform perspective on developer experience, web infrastructure, and shipping quality software fast.</p>
+                        </li>
+                        <li class="reference">
+                            <p class="reference-type">Design Systems</p>
+                            <h2 class="reference-title">
+                                <a href="https://x.com/shadcn" target="_blank" rel="noopener noreferrer">shadcn</a>
+                            </h2>
+                            <p class="reference-note">A practical standard for modern UI building through component primitives, registries, and scalable patterns.</p>
+                        </li>
+                    </ol>
+                </section>
+
+                <footer>
+                    <p class="footer-note">Last update: February 2026.</p>
+                </footer>
+            </div>
+        </div>
+    </main>
     <script>
+        const THEME_STORAGE_KEY = "theme";
+        const DARK_THEME = "dark";
+        const LIGHT_THEME = "light";
+        const SIDEBAR_SCROLL_THRESHOLD = 36;
+        const SECTION_OBSERVER_ROOT_MARGIN = "-22% 0px -58% 0px";
+
         const root = document.documentElement;
         const toggle = document.querySelector("[data-theme-toggle]");
-        const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-        const saved = localStorage.getItem("theme");
-        const initialTheme = saved || preferred;
+        const sidebar = document.querySelector("[data-sidebar]");
+        const navLinks = Array.from(document.querySelectorAll("[data-nav-link]"));
+        const sections = Array.from(document.querySelectorAll("[data-section-anchor]"));
 
-        root.dataset.theme = initialTheme;
-        toggle.setAttribute("aria-pressed", initialTheme === "dark");
-        toggle.textContent = initialTheme === "dark" ? "Light mode" : "Dark mode";
+        function initializeThemeToggle() {
+            if (!toggle) {
+                return;
+            }
 
-        toggle.addEventListener("click", () => {
-            const next = root.dataset.theme === "dark" ? "light" : "dark";
-            root.dataset.theme = next;
-            localStorage.setItem("theme", next);
-            toggle.setAttribute("aria-pressed", next === "dark");
-            toggle.textContent = next === "dark" ? "Light mode" : "Dark mode";
-        });
+            const setThemeToggleState = (theme) => {
+                const isDark = theme === DARK_THEME;
+                const label = isDark ? "Switch to light theme" : "Switch to dark theme";
+                toggle.setAttribute("aria-pressed", String(isDark));
+                toggle.setAttribute("aria-label", label);
+                toggle.setAttribute("title", label);
+            };
+
+            const applyTheme = (theme) => {
+                root.dataset.theme = theme;
+                setThemeToggleState(theme);
+            };
+
+            const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? DARK_THEME : LIGHT_THEME;
+            const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            const initialTheme = savedTheme || preferredTheme;
+
+            applyTheme(initialTheme);
+
+            toggle.addEventListener("click", () => {
+                const nextTheme = root.dataset.theme === DARK_THEME ? LIGHT_THEME : DARK_THEME;
+                localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+                applyTheme(nextTheme);
+            });
+        }
+
+        function initializeSidebarFade() {
+            if (!sidebar) {
+                return;
+            }
+
+            const syncSidebarOpacity = () => {
+                sidebar.classList.toggle("is-scrolled", window.scrollY > SIDEBAR_SCROLL_THRESHOLD);
+            };
+
+            syncSidebarOpacity();
+            window.addEventListener("scroll", syncSidebarOpacity, { passive: true });
+        }
+
+        function initializeSectionNavigation() {
+            if (!sections.length || !navLinks.length) {
+                return;
+            }
+
+            const setActiveLink = (id) => {
+                for (const link of navLinks) {
+                    const isActive = link.getAttribute("href") === `#${id}`;
+                    link.classList.toggle("is-active", isActive);
+                    if (isActive) {
+                        link.setAttribute("aria-current", "true");
+                    } else {
+                        link.removeAttribute("aria-current");
+                    }
+                }
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        setActiveLink(entry.target.id);
+                    }
+                }
+            }, {
+                rootMargin: SECTION_OBSERVER_ROOT_MARGIN,
+                threshold: 0
+            });
+
+            for (const section of sections) {
+                observer.observe(section);
+            }
+
+            setActiveLink(sections[0].id);
+        }
+
+        initializeThemeToggle();
+        initializeSidebarFade();
+        initializeSectionNavigation();
     </script>
 </body>
 </html>
