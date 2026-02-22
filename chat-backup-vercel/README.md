@@ -35,3 +35,7 @@ npm run typecheck
 - Enable auto-deploy from `main`
 - Configure environment variables above
 - Use the generated URL as `PUBLIC_CHAT_API_SECONDARY_URL`
+
+## Frontend failover validation
+
+- Browser-level failover testing (with request interception to simulate `timeout`/`429`/`503`/`504`) is documented at [`../docs/playwright-failover-testing.md`](../docs/playwright-failover-testing.md).

@@ -44,6 +44,12 @@ Cloudflare Worker powering the chat endpoint for the site.
 - Errors must be sent as `{ "type": "error", "errorText": "..." }` for the UI to surface them.
 - The worker avoids creating empty assistant messages; if the upstream sends zero bytes, it emits a streaming error instead.
 
+## 🧪 Frontend failover testing
+
+- We test failover behavior in a real browser with Playwright by intercepting the primary chat request at runtime.
+- This allows deterministic simulation of `timeout`, `429`, `503`, and `504` without taking down real services.
+- Full guide: [`docs/playwright-failover-testing.md`](docs/playwright-failover-testing.md)
+
 ## 🚀 CI/CD
 
 - GitHub Pages deploys on every push to `main`.

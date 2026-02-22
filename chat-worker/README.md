@@ -73,3 +73,4 @@ curl -N \
   - automatic retries for transient upstream errors (`408/429/5xx`) with exponential backoff
 - Error JSON includes `errorCode` and `source` so the frontend can distinguish worker vs OpenRouter limits.
 - Responses include `X-Chat-Backend: cloudflare` for backend tracing in failover setups.
+- Frontend failover testing with browser-level request interception is documented at [`../docs/playwright-failover-testing.md`](../docs/playwright-failover-testing.md).
