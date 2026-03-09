@@ -16,79 +16,89 @@ import { Icon } from 'astro-icon/components';
         </p>
 
         <div class="contact-methods">
-          <a
-            href="https://www.linkedin.com/in/miguel-garciag"
-            target="_blank"
-            rel="noreferrer"
-            class="contact-method"
-          >
-            <Icon
-              class="method-icon"
-              name="lucide:linkedin"
-              aria-hidden="true"
-            />
-            <div class="method-content">
-              <span class="method-label">LinkedIn</span>
-              <span class="method-value">miguel-garciag</span>
-            </div>
-          </a>
+          <div class="contact-method-reveal">
+            <a
+              href="https://www.linkedin.com/in/miguel-garciag"
+              target="_blank"
+              rel="noreferrer"
+              class="contact-method"
+            >
+              <Icon
+                class="method-icon"
+                name="lucide:linkedin"
+                aria-hidden="true"
+              />
+              <div class="method-content">
+                <span class="method-label">LinkedIn</span>
+                <span class="method-value">miguel-garciag</span>
+              </div>
+            </a>
+          </div>
 
-          <a
-            href="https://x.com/miguel_garglez"
-            target="_blank"
-            rel="noreferrer"
-            class="contact-method"
-          >
-            <Icon
-              class="method-icon method-icon-solid"
-              name="simple-icons:x"
-              aria-hidden="true"
-            />
-            <div class="method-content">
-              <span class="method-label">X (Twitter)</span>
-              <span class="method-value">miguel_garglez</span>
-            </div>
-          </a>
+          <div class="contact-method-reveal">
+            <a
+              href="https://x.com/miguel_garglez"
+              target="_blank"
+              rel="noreferrer"
+              class="contact-method"
+            >
+              <Icon
+                class="method-icon method-icon-solid"
+                name="simple-icons:x"
+                aria-hidden="true"
+              />
+              <div class="method-content">
+                <span class="method-label">X (Twitter)</span>
+                <span class="method-value">miguel_garglez</span>
+              </div>
+            </a>
+          </div>
         </div>
       </div>
 
       <div class="hobbies-section">
         <h3>Beyond Code</h3>
         <div class="hobbies">
-          <div class="hobby-item">
-            <Icon class="hobby-icon" name="lucide:trophy" aria-hidden="true" />
-            <div class="hobby-text">
-              <h4>Sports Enthusiast</h4>
-              <p>
-                Playing football since age seven, passionate about physical
-                well-being and team sports.
-              </p>
+          <div class="hobby-item-reveal">
+            <div class="hobby-item">
+              <Icon class="hobby-icon" name="lucide:trophy" aria-hidden="true" />
+              <div class="hobby-text">
+                <h4>Sports Enthusiast</h4>
+                <p>
+                  Playing football since age seven, passionate about physical
+                  well-being and team sports.
+                </p>
+              </div>
             </div>
           </div>
 
-          <div class="hobby-item">
-            <Icon class="hobby-icon" name="lucide:cpu" aria-hidden="true" />
-            <div class="hobby-text">
-              <h4>Tech Explorer</h4>
-              <p>
-                Regular reader of software engineering blogs, always eager to
-                learn about new technologies and innovations.
-              </p>
+          <div class="hobby-item-reveal">
+            <div class="hobby-item">
+              <Icon class="hobby-icon" name="lucide:cpu" aria-hidden="true" />
+              <div class="hobby-text">
+                <h4>Tech Explorer</h4>
+                <p>
+                  Regular reader of software engineering blogs, always eager to
+                  learn about new technologies and innovations.
+                </p>
+              </div>
             </div>
           </div>
 
-          <div class="hobby-item">
-            <Icon
-              class="hobby-icon"
-              name="lucide:sparkles"
-              aria-hidden="true"
-            />
-            <div class="hobby-text">
-              <h4>Growth Mindset</h4>
-              <p>
-                Always seeking new activities that push me out of my comfort
-                zone and help me grow as a person.
-              </p>
+          <div class="hobby-item-reveal">
+            <div class="hobby-item">
+              <Icon
+                class="hobby-icon"
+                name="lucide:sparkles"
+                aria-hidden="true"
+              />
+              <div class="hobby-text">
+                <h4>Growth Mindset</h4>
+                <p>
+                  Always seeking new activities that push me out of my comfort
+                  zone and help me grow as a person.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -107,9 +117,9 @@ import { Icon } from 'astro-icon/components';
     // Establecer estado inicial para todos los elementos animados
     gsap.set('#contact .section-title', { y: 50, opacity: 0 });
     gsap.set('#contact .contact-info', { x: -100, opacity: 0 });
-    gsap.set('#contact .contact-method', { y: 30, opacity: 0 });
+    gsap.set('#contact .contact-method-reveal', { y: 30, opacity: 0 });
     gsap.set('#contact .hobbies-section', { x: 100, opacity: 0 });
-    gsap.set('#contact .hobby-item', { y: 30, opacity: 0 });
+    gsap.set('#contact .hobby-item-reveal', { y: 30, opacity: 0 });
 
     // Animación del título
     gsap.to('#contact .section-title', {
@@ -140,12 +150,13 @@ import { Icon } from 'astro-icon/components';
     });
 
     // Animación de los métodos de contacto
-    gsap.to('#contact .contact-method', {
+    gsap.to('#contact .contact-method-reveal', {
       y: 0,
       opacity: 1,
-      duration: 0.6,
-      stagger: 0.15,
-      ease: 'power2.out',
+      duration: 0.62,
+      stagger: 0.12,
+      ease: 'power3.out',
+      force3D: true,
       scrollTrigger: {
         trigger: '#contact .contact-methods',
         start: 'top 85%',
@@ -169,12 +180,13 @@ import { Icon } from 'astro-icon/components';
     });
 
     // Animación de los hobby items
-    gsap.to('#contact .hobby-item', {
+    gsap.to('#contact .hobby-item-reveal', {
       y: 0,
       opacity: 1,
-      duration: 0.6,
-      stagger: 0.2,
-      ease: 'power2.out',
+      duration: 0.62,
+      stagger: 0.14,
+      ease: 'power3.out',
+      force3D: true,
       scrollTrigger: {
         trigger: '#contact .hobbies',
         start: 'top 85%',
@@ -234,6 +246,12 @@ import { Icon } from 'astro-icon/components';
     gap: 1.5rem;
   }
 
+  .contact-method-reveal,
+  .hobby-item-reveal {
+    display: block;
+    will-change: transform, opacity;
+  }
+
   .contact-method {
     display: flex;
     align-items: center;
@@ -243,7 +261,10 @@ import { Icon } from 'astro-icon/components';
     border-radius: 12px;
     border: 1px solid var(--border-muted);
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition:
+      border-color 220ms ease,
+      box-shadow 240ms var(--ease-out-quart),
+      transform 240ms var(--ease-out-quart);
   }
 
   .contact-method:hover {
@@ -299,7 +320,10 @@ import { Icon } from 'astro-icon/components';
     background: var(--bg-light);
     border-radius: 12px;
     border: 1px solid var(--border-muted);
-    transition: all 0.3s ease;
+    transition:
+      border-color 220ms ease,
+      box-shadow 240ms var(--ease-out-quart),
+      transform 240ms var(--ease-out-quart);
   }
 
   .hobby-item:hover {

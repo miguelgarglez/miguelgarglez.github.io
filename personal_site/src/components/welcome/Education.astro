@@ -7,26 +7,30 @@ import { Icon } from 'astro-icon/components';
     <h2 class="section-title">Education</h2>
 
     <div class="education-grid">
-      <div class="education-item">
-        <Icon
-          class="education-icon"
-          name="lucide:graduation-cap"
-          aria-hidden="true"
-        />
-        <h3 class="degree">Master's Degree in Computer Science</h3>
-        <p class="institution">Universidad Autónoma de Madrid</p>
-        <p class="period">September 2022 - February 2024</p>
-        <p class="exchange">
-          Exchange Program: Aalto University (Helsinki, Finland)
-        </p>
-        <p class="exchange-period">January 2023 – June 2023</p>
+      <div class="education-item-reveal">
+        <div class="education-item">
+          <Icon
+            class="education-icon"
+            name="lucide:graduation-cap"
+            aria-hidden="true"
+          />
+          <h3 class="degree">Master's Degree in Computer Science</h3>
+          <p class="institution">Universidad Autónoma de Madrid</p>
+          <p class="period">September 2022 - February 2024</p>
+          <p class="exchange">
+            Exchange Program: Aalto University (Helsinki, Finland)
+          </p>
+          <p class="exchange-period">January 2023 – June 2023</p>
+        </div>
       </div>
 
-      <div class="education-item">
-        <Icon class="education-icon" name="lucide:book-open" aria-hidden="true" />
-        <h3 class="degree">Bachelor's Degree in Computer Science</h3>
-        <p class="institution">Universidad Autónoma de Madrid</p>
-        <p class="period">September 2018 - June 2022</p>
+      <div class="education-item-reveal">
+        <div class="education-item">
+          <Icon class="education-icon" name="lucide:book-open" aria-hidden="true" />
+          <h3 class="degree">Bachelor's Degree in Computer Science</h3>
+          <p class="institution">Universidad Autónoma de Madrid</p>
+          <p class="period">September 2018 - June 2022</p>
+        </div>
       </div>
     </div>
 
@@ -209,7 +213,7 @@ import { Icon } from 'astro-icon/components';
 
     // Establecer estado inicial para las animaciones
     gsap.set('#education .section-title', { y: 50, opacity: 0 });
-    gsap.set('#education .education-item', { y: 80, opacity: 0 });
+    gsap.set('#education .education-item-reveal', { y: 72, opacity: 0 });
     gsap.set('#education .education-icon', {
       scale: 0,
       rotation: 180,
@@ -231,12 +235,13 @@ import { Icon } from 'astro-icon/components';
     });
 
     // Animación de las tarjetas de educación
-    gsap.to('#education .education-item', {
+    gsap.to('#education .education-item-reveal', {
       y: 0,
       opacity: 1,
-      duration: 0.8,
-      stagger: 0.3,
-      ease: 'power2.out',
+      duration: 0.72,
+      stagger: 0.16,
+      ease: 'power3.out',
+      force3D: true,
       scrollTrigger: {
         trigger: '#education .education-grid',
         start: 'top 80%',
@@ -268,7 +273,6 @@ import { Icon } from 'astro-icon/components';
     padding: 5rem 2rem;
     background: var(--bg);
     color: var(--text);
-    --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
   }
 
   .container {
@@ -292,15 +296,25 @@ import { Icon } from 'astro-icon/components';
     margin: 0 auto;
   }
 
+  .education-item-reveal {
+    display: block;
+    height: 100%;
+    will-change: transform, opacity;
+  }
+
   .education-item {
     background: var(--bg-light);
     padding: 3rem 2rem;
     border-radius: 16px;
     text-align: center;
     border: 1px solid var(--border-muted);
-    transition: all 0.3s ease;
+    transition:
+      border-color 220ms ease,
+      box-shadow 260ms var(--ease-out-quart),
+      transform 260ms var(--ease-out-quart);
     position: relative;
     overflow: hidden;
+    height: 100%;
   }
 
   .education-item::before {
@@ -475,7 +489,10 @@ import { Icon } from 'astro-icon/components';
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
-    transition: all 0.3s ease;
+    transition:
+      border-color 220ms ease,
+      box-shadow 240ms var(--ease-out-quart),
+      transform 240ms var(--ease-out-quart);
     position: relative;
   }
 
@@ -532,7 +549,10 @@ import { Icon } from 'astro-icon/components';
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition:
+      border-color 220ms ease,
+      background-color 220ms ease,
+      transform 220ms var(--ease-out-quart);
   }
 
   .certification-card-link:hover .certification-link {

@@ -16,37 +16,47 @@ import { Icon } from 'astro-icon/components';
       </div>
 
       <div class="contact-info">
-        <span class="contact-chip">
-          <Icon class="chip-icon" name="lucide:map-pin" aria-hidden="true" />
-          Madrid, Spain
+        <span class="contact-chip-reveal">
+          <span class="contact-chip">
+            <Icon class="chip-icon" name="lucide:map-pin" aria-hidden="true" />
+            Madrid, Spain
+          </span>
         </span>
-        <a
-          href="https://www.linkedin.com/in/miguel-garciag"
-          target="_blank"
-          rel="noreferrer"
-          class="contact-chip"
-        >
-          <Icon class="chip-icon" name="lucide:linkedin" aria-hidden="true" />
-          LinkedIn
-        </a>
-        <a
-          href="https://x.com/miguel_garglez"
-          target="_blank"
-          rel="noreferrer"
-          class="contact-chip"
-        >
-          <Icon
-            class="chip-icon chip-icon-solid"
-            name="simple-icons:x"
-            aria-hidden="true"
-          />
-          X (Twitter)
-        </a>
+        <span class="contact-chip-reveal">
+          <a
+            href="https://www.linkedin.com/in/miguel-garciag"
+            target="_blank"
+            rel="noreferrer"
+            class="contact-chip"
+          >
+            <Icon class="chip-icon" name="lucide:linkedin" aria-hidden="true" />
+            LinkedIn
+          </a>
+        </span>
+        <span class="contact-chip-reveal">
+          <a
+            href="https://x.com/miguel_garglez"
+            target="_blank"
+            rel="noreferrer"
+            class="contact-chip"
+          >
+            <Icon
+              class="chip-icon chip-icon-solid"
+              name="simple-icons:x"
+              aria-hidden="true"
+            />
+            X (Twitter)
+          </a>
+        </span>
       </div>
 
       <div class="cta-buttons">
-        <a href="#about" class="btn btn-primary">About Me</a>
-        <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+        <span class="cta-button-reveal">
+          <a href="#about" class="btn btn-primary">About Me</a>
+        </span>
+        <span class="cta-button-reveal">
+          <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+        </span>
       </div>
     </div>
   </div>
@@ -62,7 +72,10 @@ import { Icon } from 'astro-icon/components';
       y: 40,
       opacity: 0,
     });
-    gsap.set('.contact-chip, .btn', { y: 20, opacity: 0 });
+    gsap.set('.contact-chip-reveal, .cta-button-reveal', {
+      y: 24,
+      opacity: 0,
+    });
 
     // Animación de entrada del hero
     const tl = gsap.timeline();
@@ -84,26 +97,28 @@ import { Icon } from 'astro-icon/components';
         '-=0.4'
       )
       .to(
-        '.contact-chip',
+        '.contact-chip-reveal',
         {
           y: 0,
           opacity: 1,
-          duration: 0.4,
-          stagger: 0.1,
-          ease: 'power2.out',
+          duration: 0.55,
+          stagger: 0.08,
+          ease: 'power3.out',
+          force3D: true,
         },
-        '-=0.2'
+        '-=0.18'
       )
       .to(
-        '.btn',
+        '.cta-button-reveal',
         {
           y: 0,
           opacity: 1,
-          duration: 0.5,
-          stagger: 0.1,
-          ease: 'power2.out',
+          duration: 0.6,
+          stagger: 0.08,
+          ease: 'power3.out',
+          force3D: true,
         },
-        '-=0.1'
+        '-=0.12'
       );
   });
 </script>
@@ -201,11 +216,22 @@ import { Icon } from 'astro-icon/components';
     margin: 1rem 0 0.2rem;
   }
 
+  .contact-chip-reveal,
+  .cta-button-reveal {
+    display: inline-flex;
+    will-change: transform, opacity;
+  }
+
   .contact-chip {
     color: var(--text-muted);
     text-decoration: none;
     font-size: 1rem;
-    transition: all 0.3s ease;
+    transition:
+      color 220ms ease,
+      background-color 220ms ease,
+      border-color 220ms ease,
+      box-shadow 240ms var(--ease-out-quart),
+      transform 240ms var(--ease-out-quart);
     padding: 0.6rem 1.25rem;
     border-radius: 999px;
     border: 1px solid rgba(255, 255, 255, 0.12);
@@ -261,7 +287,12 @@ import { Icon } from 'astro-icon/components';
     border-radius: 12px;
     text-decoration: none;
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition:
+      color 220ms ease,
+      background-color 220ms ease,
+      border-color 220ms ease,
+      box-shadow 240ms var(--ease-out-quart),
+      transform 240ms var(--ease-out-quart);
     border: 2px solid transparent;
     cursor: pointer;
     font-size: 1rem;
