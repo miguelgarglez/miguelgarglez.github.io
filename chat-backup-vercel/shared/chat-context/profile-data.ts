@@ -12,16 +12,34 @@ export const profileSections: ProfileBlock[] = [
     id: 'profile',
     title: 'Profile basics',
     content:
-      'Miguel Garcia is a Software Engineer based in Madrid, Spain. LinkedIn: linkedin.com/in/miguel-garciag. X (Twitter): x.com/miguel_garglez.',
+      'Miguel Garcia is a Software Engineer based in Madrid, Spain. He builds frontend systems, product-facing web experiences, and practical AI-enabled workflows. LinkedIn: linkedin.com/in/miguel-garciag. X (Twitter): x.com/miguel_garglez.',
     tags: ['contact', 'facts'],
     type: 'fact',
+    lang: 'en',
+  },
+  {
+    id: 'directory-page',
+    title: 'Directory page overview',
+    content:
+      "Miguel's root page is a lightweight directory titled 'An index of projects, people, and ideas.' It works as an entry point to the things he builds and the work that inspires them. It currently highlights selected projects such as personal_site, momentum, frontend_dual_layout_showcase, and kubit_react_charts, plus a curated list of inspiring people.",
+    tags: ['directorio', 'proyectos', 'cultura'],
+    type: 'fact',
+    lang: 'en',
+  },
+  {
+    id: 'directory-personal-site',
+    title: 'What personal_site is inside the directory',
+    content:
+      'Within the directory, personal_site is Miguel’s main professional website. It contains his profile, CV, experience, skills, and a grounded chat experience called profile_chat that answers questions based on curated profile data.',
+    tags: ['directorio', 'proyectos', 'recruiting', 'contact'],
+    type: 'answer',
     lang: 'en',
   },
   {
     id: 'about',
     title: 'About Miguel',
     content:
-      "I'm a product-minded software developer focused on delivering real business value through scalable, user-centered digital products. I make practical use of AI tools to optimize workflows, improve software quality, and boost team productivity, and I actively share best practices to help teams adopt them. I aim to keep a global view of the product, balancing engineering best practices, maintainability, and cross-team collaboration. I'm motivated to keep growing as a technical professional while contributing to projects where quality, innovation, and impact are the core.",
+      "I'm a product-minded software developer focused on delivering real business value through scalable, user-centered digital products. I use AI tools in practical ways to improve workflows, software quality, and team productivity, and I actively help others adopt what works. I try to keep a global view of the product, balancing engineering quality, maintainability, and cross-team collaboration. I'm especially motivated by work where quality, innovation, and measurable impact matter.",
     tags: ['trayectoria', 'motivacion', 'valores'],
     type: 'story',
     lang: 'en',
@@ -39,7 +57,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'recruiter-value-proposition',
     title: 'Recruiter snapshot - Why Miguel',
     content:
-      'Miguel combines product mindset and frontend platform execution. In enterprise environments, he focuses on consistent, accessible, and high-performance UI systems while keeping adoption and business impact in view. He is especially valuable in teams that need both delivery speed and strong engineering quality standards.',
+      'Miguel combines product mindset, frontend platform execution, and strong collaboration habits. He brings a generalist mentality: he is motivated by solving real problems, does not back away from unfamiliar challenges, and is comfortable moving across product, quality, delivery, and technical depth as needed. He is especially valuable in environments that need consistent, accessible, high-performance interfaces without losing sight of adoption, delivery, and business value.',
     tags: ['recruiting', 'impacto', 'fortalezas', 'forma-de-trabajar'],
     type: 'answer',
     lang: 'en',
@@ -48,8 +66,35 @@ export const profileSections: ProfileBlock[] = [
     id: 'work-style',
     title: 'Work style and collaboration',
     content:
-      'He works with a pragmatic, quality-first approach: clarify product goals, break work into maintainable increments, communicate tradeoffs early, and ship with documentation and release discipline. He is comfortable collaborating with engineers, QA, designers, and product stakeholders in agile setups.',
+      'He works with a pragmatic, quality-first approach: clarify the problem, understand the product goal, break work into maintainable increments, communicate tradeoffs early, and ship with documentation and release discipline. He collaborates comfortably with engineers, QA, designers, and product stakeholders, especially when expectations are explicit and ownership is clear.',
     tags: ['forma-de-trabajar', 'equipo', 'valores', 'stakeholders', 'ownership'],
+    type: 'answer',
+    lang: 'en',
+  },
+  {
+    id: 'preferred-environments',
+    title: 'Best environments for Miguel',
+    content:
+      'Miguel progresses most in environments with ownership, growth, and healthy ambition. He does his best work when teams care about product impact, high engineering standards, accessibility, and maintainability, while still making pragmatic decisions and moving with purpose. He is a strong fit for places where collaboration is healthy, feedback is direct, and quality is a shared responsibility rather than an afterthought.',
+    tags: ['cultura', 'forma-de-trabajar', 'ownership', 'impacto', 'recruiting'],
+    type: 'answer',
+    lang: 'en',
+  },
+  {
+    id: 'generalist-mindset',
+    title: 'Generalist mindset and approach to challenges',
+    content:
+      'Miguel sees himself as a generalist engineer whose job is to solve meaningful problems, not to stay inside a narrow box. He is diligent, capable, and willing to step into unfamiliar territory when the situation requires it. New challenges do not push him back; they motivate him to learn fast, structure the problem, and move the work forward with ownership and discipline.',
+    tags: ['fortalezas', 'aprendizaje', 'proyectos', 'forma-de-trabajar', 'recruiting'],
+    type: 'answer',
+    lang: 'en',
+  },
+  {
+    id: 'preferred-collaborators',
+    title: 'People Miguel likes working with',
+    content:
+      'He enjoys working with people who combine high standards with kindness: low-ego teammates who care about the craft, give direct feedback, communicate clearly, and want to solve problems together. He values colleagues who are reliable, collaborative, and motivated by helping the team improve, not by protecting status.',
+    tags: ['equipo', 'cultura', 'valores', 'forma-de-trabajar', 'recruiting'],
     type: 'answer',
     lang: 'en',
   },
@@ -57,7 +102,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'leadership-and-ownership',
     title: 'Leadership and ownership examples',
     content:
-      'At Open Digital Services, he leads implementation, maintenance, and refactoring of shared UI components used by web developers across Grupo Santander banks. At Jember, he co-led the recovery of a stalled test automation initiative and helped turn it into a practical regression asset with around 50% reduction in person-day cost.',
+      'At Open Digital Services, he leads implementation, maintenance, and refactoring of shared UI components used by web developers across Grupo Santander banks. At Jember, he co-led the recovery of a stalled test automation initiative and helped turn it into a practical regression asset with around 50% reduction in person-day cost. These examples reflect the type of ownership he wants to expand: technical direction that improves product delivery and raises the level of the team around him.',
     tags: ['liderazgo', 'impacto', 'proyectos', 'ownership', 'recruiting'],
     type: 'example',
     lang: 'en',
@@ -165,7 +210,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'growth-areas',
     title: 'Growth areas and continuous improvement',
     content:
-      'He actively improves in two directions: deeper backend and system design breadth, and stronger leverage of AI workflows in day-to-day engineering. His approach is iterative: test in real tasks, document what works, share practices, and standardize successful patterns with the team.',
+      'He is actively growing in two directions: deeper backend and system design breadth, and better leverage of AI workflows in day-to-day engineering. His approach is iterative: test ideas in real tasks, document what works, share practices, and standardize successful patterns with the team.',
     tags: ['debilidades', 'aprendizaje', 'futuro', 'forma-de-trabajar', 'recruiting'],
     type: 'answer',
     lang: 'en',
@@ -174,8 +219,17 @@ export const profileSections: ProfileBlock[] = [
     id: 'role-fit',
     title: 'Best fit roles and environments',
     content:
-      'Best fit roles include frontend platform engineering, design systems, and product-facing frontend positions where accessibility, performance, and maintainability matter. He thrives in environments with ownership, cross-functional collaboration, and measurable product impact.',
+      'Best fit roles include frontend platform engineering, design systems, and product-facing frontend positions where accessibility, performance, and maintainability matter. He is particularly aligned with roles that combine technical depth, cross-functional influence, and visible product or business impact.',
     tags: ['recruiting', 'futuro', 'impacto', 'forma-de-trabajar', 'ownership'],
+    type: 'answer',
+    lang: 'en',
+  },
+  {
+    id: 'career-direction',
+    title: 'Career direction and leadership ambition',
+    content:
+      'Miguel wants to grow into a technical leadership role with clear business influence. The direction he is aiming for is to help shape technical decisions, improve how teams deliver, contribute to product outcomes, and actively support other engineers as they grow. He is motivated by the idea of being a trusted technical leader who raises both the quality of the work and the level of the people around him.',
+    tags: ['futuro', 'liderazgo', 'impacto', 'recruiting', 'ownership'],
     type: 'answer',
     lang: 'en',
   },
@@ -183,7 +237,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'availability',
     title: 'Availability and work setup',
     content:
-      'Based in Madrid (CET/CEST) and open to discussing new opportunities, impactful projects, and collaborative engineering roles. For role details, interview process, and availability timing, reach out via LinkedIn or X.',
+      'Based in Madrid (CET/CEST) and open to discussing new opportunities, impactful projects, and collaborative engineering roles. The profile context does not define a strict preference across remote, hybrid, or onsite setups; for role details, interview process, and availability timing, reach out via LinkedIn or X.',
     tags: ['contact', 'disponibilidad', 'recruiting'],
     type: 'fact',
     lang: 'en',
@@ -192,7 +246,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'philosophy',
     title: 'Development philosophy',
     content:
-      'Strong knowledge fundamentals are the key. Technologies and frameworks come and go; they are tools that help engineers fix business problems.',
+      'Strong knowledge fundamentals are the key. Technologies and frameworks come and go; they are tools that help engineers solve business problems. What matters most is understanding the challenge, learning what is needed, and being capable of moving across disciplines when the problem demands it.',
     tags: ['valores', 'filosofia', 'impacto'],
     type: 'answer',
     lang: 'en',
