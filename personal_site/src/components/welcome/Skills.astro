@@ -3,7 +3,13 @@
     <h2 class="section-title">Technical Skills</h2>
 
     <ul class="skills-disclosure" role="list">
-      <li class="skill-card is-active" tabindex="0">
+      <li
+        class="skill-card is-active"
+        tabindex="0"
+        role="button"
+        aria-expanded="true"
+        aria-label="Show UI Platform and Frontend skills"
+      >
         <div class="skill-card-surface">
           <article>
             <div class="skill-card-header">
@@ -43,7 +49,13 @@
         </div>
       </li>
 
-      <li class="skill-card" tabindex="0">
+      <li
+        class="skill-card"
+        tabindex="0"
+        role="button"
+        aria-expanded="false"
+        aria-label="Show Backend and Data skills"
+      >
         <div class="skill-card-surface">
           <article>
             <div class="skill-card-header">
@@ -77,7 +89,13 @@
         </div>
       </li>
 
-      <li class="skill-card" tabindex="0">
+      <li
+        class="skill-card"
+        tabindex="0"
+        role="button"
+        aria-expanded="false"
+        aria-label="Show Mobile and Cross-platform skills"
+      >
         <div class="skill-card-surface">
           <article>
             <div class="skill-card-header">
@@ -111,7 +129,13 @@
         </div>
       </li>
 
-      <li class="skill-card" tabindex="0">
+      <li
+        class="skill-card"
+        tabindex="0"
+        role="button"
+        aria-expanded="false"
+        aria-label="Show Engineering Tools and AI skills"
+      >
         <div class="skill-card-surface">
           <article>
             <div class="skill-card-header">
@@ -151,9 +175,9 @@
         <div class="philosophy-content">
           <h3>Development Philosophy</h3>
           <p>
-            "Strong knowledge fundamentals are the key. Technologies and
-            frameworks come and go, they are tools that help engineers fix
-            business problems."
+            “Strong knowledge fundamentals are the key. Technologies and
+            frameworks come and go; they are tools that help engineers solve
+            business problems.”
           </p>
         </div>
       </div>
@@ -162,23 +186,30 @@
 </section>
 
 <script>
-  import gsap from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { getScrollMotionTools, prefersReducedMotion } from '../../lib/motion';
 
-  gsap.registerPlugin(ScrollTrigger);
-
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
     const cards = Array.from(document.querySelectorAll('#skills .skill-card'));
     const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)')
       .matches;
 
     const setActiveCard = (card) => {
-      cards.forEach((item) => item.classList.remove('is-active'));
+      cards.forEach((item) => {
+        item.classList.remove('is-active');
+        item.setAttribute('aria-expanded', 'false');
+      });
       card.classList.add('is-active');
+      card.setAttribute('aria-expanded', 'true');
     };
 
     cards.forEach((card) => {
       card.addEventListener('focusin', () => setActiveCard(card));
+      card.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          setActiveCard(card);
+        }
+      });
 
       if (supportsHover) {
         card.addEventListener('mouseenter', () => setActiveCard(card));
@@ -187,13 +218,16 @@
       }
     });
 
+    if (prefersReducedMotion()) {
+      return;
+    }
 
-    // Establecer estado inicial para las animaciones
+    const { gsap } = await getScrollMotionTools();
+
     gsap.set('#skills .section-title', { y: 50, opacity: 0 });
     gsap.set('#skills .skill-card', { y: 56, opacity: 0 });
     gsap.set('#skills .philosophy-reveal', { y: 36, scale: 0.96, opacity: 0 });
 
-    // Animación del título
     gsap.to('#skills .section-title', {
       y: 0,
       opacity: 1,
@@ -207,7 +241,6 @@
       },
     });
 
-    // Animación de las tarjetas
     gsap.to('#skills .skill-card', {
       y: 0,
       opacity: 1,
@@ -223,7 +256,6 @@
       },
     });
 
-    // Animación de la filosofía
     gsap.to('#skills .philosophy-reveal', {
       y: 0,
       scale: 1,

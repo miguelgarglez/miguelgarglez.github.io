@@ -3,7 +3,7 @@ import { Icon } from 'astro-icon/components';
 ---
 
 <!-- ThemeToggle.astro -->
-<button id="theme-toggle" aria-label="Cambiar tema">
+<button id="theme-toggle" type="button" aria-label="Switch theme">
   <span class="sun-icon" aria-hidden="true">
     <Icon name="lucide:sun" aria-hidden="true" />
   </span>
@@ -13,13 +13,18 @@ import { Icon } from 'astro-icon/components';
 </button>
 
 <script>
-  // JavaScript que se ejecuta en el cliente
   const themeToggle = document.getElementById('theme-toggle');
-  const body = document.body;
 
-  // Manejar click del botón - simplemente alternar sin guardar
   themeToggle?.addEventListener('click', () => {
-    body.classList.toggle('light');
+    const nextTheme = document.body.classList.contains('light')
+      ? 'dark'
+      : 'light';
+
+    if (typeof window['__setPreferredTheme'] === 'function') {
+      window['__setPreferredTheme'](nextTheme);
+    } else {
+      document.body.classList.toggle('light', nextTheme === 'light');
+    }
   });
 </script>
 
@@ -37,16 +42,33 @@ import { Icon } from 'astro-icon/components';
     z-index: 9999;
     padding: 0;
     border-radius: 999px;
-    transition: all 0.3s ease-in-out;
+    transition:
+      transform 180ms ease,
+      background-color 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      color 180ms ease;
     color: var(--text);
     display: grid;
     place-items: center;
+    border: 1px solid color-mix(in srgb, var(--border) 90%, transparent);
+    background: color-mix(in srgb, var(--bg-light) 78%, transparent);
+    backdrop-filter: blur(14px);
+    box-shadow: var(--shadow-card);
   }
 
   #theme-toggle:hover {
     transform: scale(1.08);
+    border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+    color: var(--primary);
   }
 
+  #theme-toggle:focus-visible {
+    outline: none;
+    box-shadow:
+      var(--shadow-card),
+      0 0 0 3px color-mix(in srgb, var(--primary) 24%, transparent);
+  }
 
   .sun-icon,
   .moon-icon {
@@ -73,6 +95,6 @@ import { Icon } from 'astro-icon/components';
   }
 
   body:not(.light) #theme-toggle {
-    color: #f3c46a;
+    color: color-mix(in srgb, var(--primary) 88%, white 12%);
   }
 </style>

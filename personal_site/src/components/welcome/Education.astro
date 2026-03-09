@@ -159,12 +159,9 @@ import { Icon } from 'astro-icon/components';
 </section>
 
 <script>
-  import gsap from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { getScrollMotionTools, prefersReducedMotion } from '../../lib/motion';
 
-  gsap.registerPlugin(ScrollTrigger);
-
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
     const certsToggle = document.querySelector('[data-cert-toggle]');
     const certsCollapse = document.querySelector('[data-cert-collapse]');
 
@@ -211,7 +208,12 @@ import { Icon } from 'astro-icon/components';
       }
     }
 
-    // Establecer estado inicial para las animaciones
+    if (prefersReducedMotion()) {
+      return;
+    }
+
+    const { gsap } = await getScrollMotionTools();
+
     gsap.set('#education .section-title', { y: 50, opacity: 0 });
     gsap.set('#education .education-item-reveal', { y: 72, opacity: 0 });
     gsap.set('#education .education-icon', {
@@ -220,7 +222,6 @@ import { Icon } from 'astro-icon/components';
       opacity: 0,
     });
 
-    // Animación del título
     gsap.to('#education .section-title', {
       y: 0,
       opacity: 1,
@@ -234,7 +235,6 @@ import { Icon } from 'astro-icon/components';
       },
     });
 
-    // Animación de las tarjetas de educación
     gsap.to('#education .education-item-reveal', {
       y: 0,
       opacity: 1,
@@ -250,7 +250,6 @@ import { Icon } from 'astro-icon/components';
       },
     });
 
-    // Animación de los iconos
     gsap.to('#education .education-icon', {
       scale: 1,
       rotation: 0,
@@ -509,7 +508,9 @@ import { Icon } from 'astro-icon/components';
 
   .certification-card-link:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px var(--primary) inset;
+    box-shadow:
+      0 0 0 2px var(--primary) inset,
+      0 0 0 4px color-mix(in srgb, var(--primary) 18%, transparent);
   }
 
   .certification-title {

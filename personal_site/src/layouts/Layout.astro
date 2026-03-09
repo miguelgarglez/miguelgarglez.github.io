@@ -8,8 +8,15 @@ import '../styles/global.css';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Miguel García's digital CV. Frontend platform engineer focused on accessible interfaces, scalable design systems, and practical AI workflows."
+    />
+    <meta name="theme-color" content="#09111c" />
     <link rel="icon" type="image/png" href="/personal_site/favicon.png" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
@@ -18,35 +25,56 @@ import '../styles/global.css';
     <title>Miguel García</title>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <ThemeToggle />
     <slot />
   </body>
 </html>
 
 <script is:inline>
-  // Detectar preferencia del sistema
-  const systemPrefersLight = window.matchMedia(
-    '(prefers-color-scheme: light)'
-  ).matches;
+  const themeMediaQuery = window.matchMedia('(prefers-color-scheme: light)');
+  const themeColorMeta = document.querySelector('meta[name="theme-color"]');
 
-  // Siempre usar la preferencia del sistema al cargar
-  if (systemPrefersLight) {
-    document.body.classList.add('light');
-  }
+  const applyTheme = (theme) => {
+    const isLight = theme === 'light';
+    document.body.classList.toggle('light', isLight);
+    document.documentElement.style.colorScheme = isLight ? 'light' : 'dark';
 
-  // Escuchar cambios en la preferencia del sistema y aplicarlos automáticamente
-  window
-    .matchMedia('(prefers-color-scheme: light)')
-    .addEventListener('change', (e) => {
-      if (e.matches) {
-        document.body.classList.add('light');
-      } else {
-        document.body.classList.remove('light');
-      }
-    });
+    if (themeColorMeta) {
+      themeColorMeta.setAttribute('content', isLight ? '#f5efe5' : '#09111c');
+    }
+  };
+
+  const getPreferredTheme = () => {
+    const storedTheme = localStorage.getItem('miguel-theme');
+
+    if (storedTheme === 'light' || storedTheme === 'dark') {
+      return storedTheme;
+    }
+
+    return themeMediaQuery.matches ? 'light' : 'dark';
+  };
+
+  applyTheme(getPreferredTheme());
+
+  window['__setPreferredTheme'] = (theme) => {
+    localStorage.setItem('miguel-theme', theme);
+    applyTheme(theme);
+  };
+
+  themeMediaQuery.addEventListener('change', (event) => {
+    if (!localStorage.getItem('miguel-theme')) {
+      applyTheme(event.matches ? 'light' : 'dark');
+    }
+  });
 </script>
 
 <style>
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+
   html,
   body {
     margin: 0;
@@ -64,22 +92,25 @@ import '../styles/global.css';
     font-family: var(--font-body);
     background: var(--bg);
     color: var(--text);
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: rgba(217, 139, 20, 0.18);
+    text-rendering: optimizeLegibility;
   }
 
   :root {
     --font-body: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
     --font-display:
       'Sora', 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
-    --bg-dark: #09090b;
-    --bg: #0b0b0e;
-    --bg-light: #15151a;
-    --text: #f8f4ee;
-    --text-muted: #b6aea3;
-    --highlight: #2a231a;
-    --border: #2b2420;
-    --border-muted: #1f1a16;
-    --primary: #f2a93b;
-    --secondary: #7bb0ff;
+    --bg-dark: #050b14;
+    --bg: #09111c;
+    --bg-light: #101b2b;
+    --text: #edf2ff;
+    --text-muted: #9ea8bb;
+    --highlight: #162338;
+    --border: #22324a;
+    --border-muted: #152133;
+    --primary: #d98b14;
+    --secondary: #76bfff;
     --danger: #e66b6b;
     --warning: #f2c84b;
     --success: #5bd69f;
@@ -111,16 +142,16 @@ import '../styles/global.css';
     --ring: var(--primary);
   }
   body.light {
-    --bg-dark: #f7f1e8;
-    --bg: #fdf9f2;
-    --bg-light: #ffffff;
-    --text: #1c1b19;
-    --text-muted: #5c524a;
-    --highlight: #f1e4d2;
-    --border: #e3d3be;
-    --border-muted: #f0e4d6;
-    --primary: #b06a06;
-    --secondary: #2a5fb5;
+    --bg-dark: #ebe3d5;
+    --bg: #f5efe5;
+    --bg-light: #fffaf3;
+    --text: #171513;
+    --text-muted: #5e584f;
+    --highlight: #e9dfd1;
+    --border: #dacdbd;
+    --border-muted: #e9dece;
+    --primary: #b8740b;
+    --secondary: #2e74b8;
     --danger: #b54343;
     --warning: #b9860c;
     --success: #2f8a61;
@@ -147,6 +178,75 @@ import '../styles/global.css';
     --ring: var(--primary);
   }
 
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(
+        circle at 15% 20%,
+        color-mix(in srgb, var(--primary) 12%, transparent),
+        transparent 32%
+      ),
+      radial-gradient(
+        circle at 82% 14%,
+        color-mix(in srgb, var(--secondary) 9%, transparent),
+        transparent 28%
+      ),
+      linear-gradient(180deg, color-mix(in srgb, var(--bg-dark) 60%, transparent), transparent 24%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  main[id],
+  section[id] {
+    scroll-margin-top: 96px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  a,
+  button {
+    touch-action: manipulation;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10000;
+    padding: 0.75rem 1rem;
+    border-radius: 999px;
+    background: var(--bg-light);
+    color: var(--text);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    transform: translateY(-140%);
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease;
+    box-shadow: var(--shadow-card);
+    pointer-events: none;
+  }
+
+  .skip-link:focus-visible {
+    position: fixed;
+    transform: translateY(0);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 24%, transparent);
+    outline: none;
+    pointer-events: auto;
+  }
+
   .page-shell {
     max-width: var(--container-max);
     margin: 0 auto;
@@ -169,5 +269,20 @@ import '../styles/global.css';
     border: 1px solid var(--border-muted);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-card);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 </style>

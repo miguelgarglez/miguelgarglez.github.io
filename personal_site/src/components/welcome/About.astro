@@ -76,18 +76,19 @@ import { Icon } from 'astro-icon/components';
 </section>
 
 <script>
-  import gsap from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { getScrollMotionTools, prefersReducedMotion } from '../../lib/motion';
 
-  gsap.registerPlugin(ScrollTrigger);
+  document.addEventListener('DOMContentLoaded', async () => {
+    if (prefersReducedMotion()) {
+      return;
+    }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    // Establecer estado inicial para todos los elementos animados
+    const { gsap } = await getScrollMotionTools();
+
     gsap.set('#about .section-title', { y: 50, opacity: 0 });
     gsap.set('#about .about-text p', { y: 30, opacity: 0 });
     gsap.set('#about .quality-card-reveal', { y: 44, opacity: 0 });
 
-    // Animación del título de sección
     gsap.to('#about .section-title', {
       y: 0,
       opacity: 1,
@@ -101,7 +102,6 @@ import { Icon } from 'astro-icon/components';
       },
     });
 
-    // Animación del texto principal
     gsap.to('#about .about-text p', {
       y: 0,
       opacity: 1,
@@ -116,7 +116,6 @@ import { Icon } from 'astro-icon/components';
       },
     });
 
-    // Animación de las cualidades
     gsap.to('#about .quality-card-reveal', {
       y: 0,
       opacity: 1,
@@ -280,6 +279,10 @@ import { Icon } from 'astro-icon/components';
   @media (max-width: 768px) {
     .about {
       padding: 3rem 1rem;
+    }
+
+    .about-text {
+      text-align: center;
     }
 
     .qualities {

@@ -108,20 +108,21 @@ import { Icon } from 'astro-icon/components';
 </section>
 
 <script>
-  import gsap from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { getScrollMotionTools, prefersReducedMotion } from '../../lib/motion';
 
-  gsap.registerPlugin(ScrollTrigger);
+  document.addEventListener('DOMContentLoaded', async () => {
+    if (prefersReducedMotion()) {
+      return;
+    }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    // Establecer estado inicial para todos los elementos animados
+    const { gsap } = await getScrollMotionTools();
+
     gsap.set('#contact .section-title', { y: 50, opacity: 0 });
     gsap.set('#contact .contact-info', { x: -100, opacity: 0 });
     gsap.set('#contact .contact-method-reveal', { y: 30, opacity: 0 });
     gsap.set('#contact .hobbies-section', { x: 100, opacity: 0 });
     gsap.set('#contact .hobby-item-reveal', { y: 30, opacity: 0 });
 
-    // Animación del título
     gsap.to('#contact .section-title', {
       y: 0,
       opacity: 1,
@@ -135,7 +136,6 @@ import { Icon } from 'astro-icon/components';
       },
     });
 
-    // Animación de la información de contacto
     gsap.to('#contact .contact-info', {
       x: 0,
       opacity: 1,
@@ -149,7 +149,6 @@ import { Icon } from 'astro-icon/components';
       },
     });
 
-    // Animación de los métodos de contacto
     gsap.to('#contact .contact-method-reveal', {
       y: 0,
       opacity: 1,
@@ -165,7 +164,6 @@ import { Icon } from 'astro-icon/components';
       },
     });
 
-    // Animación de la sección de hobbies
     gsap.to('#contact .hobbies-section', {
       x: 0,
       opacity: 1,
@@ -179,7 +177,6 @@ import { Icon } from 'astro-icon/components';
       },
     });
 
-    // Animación de los hobby items
     gsap.to('#contact .hobby-item-reveal', {
       y: 0,
       opacity: 1,
@@ -271,6 +268,14 @@ import { Icon } from 'astro-icon/components';
     transform: translateY(-3px);
     border-color: var(--primary);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .contact-method:focus-visible {
+    outline: none;
+    border-color: color-mix(in srgb, var(--primary) 60%, var(--border));
+    box-shadow:
+      0 10px 25px rgba(0, 0, 0, 0.2),
+      0 0 0 3px color-mix(in srgb, var(--primary) 22%, transparent);
   }
 
   .method-icon {
