@@ -2,6 +2,10 @@
   "name": "personal_site",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=22",
+    "npm": ">=10"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -24,7 +28,7 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "ai": "^6.0.4",
-    "astro": "^5.11.0",
+    "astro": "^5.18.0",
     "astro-icon": "^1.1.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
