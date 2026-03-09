@@ -16,6 +16,16 @@ Built with [**Astro**](https://astro.build/) - a modern web framework for buildi
 
 </div>
 
+## Local Development
+
+For `personal_site`, use `npm` as the package manager.
+
+```bash
+cd personal_site
+npm install
+npm run dev
+```
+
 ## 📁 Projects
 
 <div style="border: 1px solid #d0d7de; border-radius: 6px; padding: 16px; margin: 16px 0;">
