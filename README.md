@@ -6,11 +6,11 @@ Welcome to my GitHub Pages repository!
 
 </div>
 
-## 🌐 Personal Website
+## 🌐 cv-chat
 
 <div style="border: 1px solid #d0d7de; border-radius: 6px; padding: 16px; margin: 16px 0;">
 
-Visit my personal website: **[miguelgarglez.github.io/personal_site](https://miguelgarglez.github.io/personal_site)**
+Visit my digital CV: **[miguelgarglez.github.io/cv-chat](https://miguelgarglez.github.io/cv-chat)**
 
 Built with [**Astro**](https://astro.build/) - a modern web framework for building fast, content-focused websites.
 
@@ -18,10 +18,10 @@ Built with [**Astro**](https://astro.build/) - a modern web framework for buildi
 
 ## Local Development
 
-For `personal_site`, use `npm` as the package manager.
+For `cv-chat`, use `npm` as the package manager.
 
 ```bash
-cd personal_site
+cd cv-chat
 npm install
 npm run dev
 ```
@@ -30,8 +30,8 @@ npm run dev
 
 <div style="border: 1px solid #d0d7de; border-radius: 6px; padding: 16px; margin: 16px 0;">
 
-### **personal_site**
-My personal website showcasing my CV.
+### **cv-chat**
+My digital CV with chat.
 
 **Status:** ✅ Active  
 **Technologies:** ![Astro](https://img.shields.io/badge/-Astro-FF5D01?style=flat-square&logo=astro&logoColor=white) ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) ![CSS3](https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)

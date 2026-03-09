@@ -21,16 +21,16 @@ export const profileSections: ProfileBlock[] = [
     id: 'directory-page',
     title: 'Directory page overview',
     content:
-      "Miguel's root page is a lightweight directory titled 'An index of projects, people, and ideas.' It works as an entry point to the things he builds and the work that inspires them. It currently highlights selected projects such as personal_site, momentum, frontend_dual_layout_showcase, and kubit_react_charts, plus a curated list of inspiring people.",
+      "Miguel's root page is a lightweight directory titled 'An index of projects, people, and ideas.' It works as an entry point to the things he builds and the work that inspires them. It currently highlights selected projects such as cv-chat, momentum, frontend_dual_layout_showcase, and kubit_react_charts, plus a curated list of inspiring people.",
     tags: ['directorio', 'proyectos', 'cultura'],
     type: 'fact',
     lang: 'en',
   },
   {
-    id: 'directory-personal-site',
-    title: 'What personal_site is inside the directory',
+    id: 'directory-cv-chat',
+    title: 'What cv-chat is inside the directory',
     content:
-      'Within the directory, personal_site is Miguel’s main professional website. It contains his profile, CV, experience, skills, and a grounded chat experience called profile_chat that answers questions based on curated profile data.',
+      'Within the directory, cv-chat is Miguel’s main professional website. It contains his profile, CV, experience, skills, and a grounded chat experience called profile_chat that answers questions based on curated profile data.',
     tags: ['directorio', 'proyectos', 'recruiting', 'contact'],
     type: 'answer',
     lang: 'en',

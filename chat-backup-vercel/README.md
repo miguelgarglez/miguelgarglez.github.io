@@ -1,6 +1,6 @@
 # chat-backup-vercel
 
-Secondary chat API for `personal_site`, deployed on Vercel.
+Secondary chat API for `cv-chat`, deployed on Vercel.
 
 ## Endpoints
 

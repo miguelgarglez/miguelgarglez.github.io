@@ -45,7 +45,7 @@ await page.route("**/miguel-chat-worker.miguel-garglez.workers.dev/chat", (route
 
 ## Manual validation flow
 
-1. Open `https://miguelgarglez.github.io/personal_site/` in Playwright.
+1. Open `https://miguelgarglez.github.io/cv-chat/` in Playwright.
 2. Register one route interception rule for the primary endpoint.
 3. Open chat and send one message.
 4. Verify network sequence:
@@ -66,6 +66,6 @@ await page.route("**/miguel-chat-worker.miguel-garglez.workers.dev/chat", (route
 - Keep CORS headers in mocked responses, otherwise browser behavior can differ from real backend failures.
 - Interception is session-scoped; it does not change deployed infrastructure.
 - Re-run tests after changing:
-  - chat failover logic (`personal_site/src/components/chat/Chat.tsx`)
-  - endpoint wiring (`personal_site/src/components/chat/ChatLauncher.astro`)
+  - chat failover logic (`cv-chat/src/components/chat/Chat.tsx`)
+  - endpoint wiring (`cv-chat/src/components/chat/ChatLauncher.astro`)
   - backend contracts (`chat-worker` or `chat-backup-vercel`)

@@ -1,11 +1,11 @@
 # AGENTS.md
 
-Contexto del repo: sitio estático en `index.html` que actúa como directorio de proyectos. Hoy solo enlaza a `personal_site`, que es un sitio Astro con mi perfil profesional y CV, con animaciones GSAP.
+Contexto del repo: sitio estático en `index.html` que actúa como directorio de proyectos. Hoy solo enlaza a `cv-chat`, que es un sitio Astro con mi perfil profesional y CV, con animaciones GSAP.
 
 ## Estructura
 
 - `index.html`: pagina de entrada/directorio de proyectos.
-- `personal_site/`: sitio Astro.
+- `cv-chat/`: sitio Astro.
 - `.github/workflows/deploy.yml`: workflow de deploy (si aplica).
 - `.github/workflows/release-please.yml`: workflow de versionado semver y releases con PR.
 
@@ -17,10 +17,10 @@ Contexto del repo: sitio estático en `index.html` que actúa como directorio de
 - Mantener el estilo simple y directo, tipo directorio.
 - Revisar que los links apunten a rutas reales dentro del repo o a URLs validas.
 
-### Trabajar en `personal_site/`
+### Trabajar en `cv-chat/`
 
 - Seguir el stack actual (Astro + GSAP).
-- Usar los scripts definidos en `personal_site/package.json`:
+- Usar los scripts definidos en `cv-chat/package.json`:
   - `npm run dev`
   - `npm run build`
   - `npm run preview`
@@ -29,9 +29,9 @@ Contexto del repo: sitio estático en `index.html` que actúa como directorio de
 
 ## Notas para agentes
 
-- Antes de cambios, revisar `personal_site/README.md` para contexto del sitio si existe.
+- Antes de cambios, revisar `cv-chat/README.md` para contexto del sitio si existe.
 - Si se agregan nuevos proyectos al directorio, considerar actualizar README del repo si es necesario.
-- Iconos: se usa `astro-icon` con el set `@iconify-json/lucide`. La configuración está en `personal_site/astro.config.mjs` (lista `include`). En componentes Astro, usar `<Icon name="lucide:icon-name" />` y evitar emojis/SVG inline.
-- La fuente canónica del perfil es el contenido visible de `personal_site`. `chat-worker/src/profile-data.ts` debe estar alineado con esa información, y puede incluir contenido complementario no visible en la web.
+- Iconos: se usa `astro-icon` con el set `@iconify-json/lucide`. La configuración está en `cv-chat/astro.config.mjs` (lista `include`). En componentes Astro, usar `<Icon name="lucide:icon-name" />` y evitar emojis/SVG inline.
+- La fuente canónica del perfil es el contenido visible de `cv-chat`. `chat-worker/src/profile-data.ts` debe estar alineado con esa información, y puede incluir contenido complementario no visible en la web.
 - Para que Release Please pueda abrir PRs, habilitar en GitHub: Actions permissions con "Read and write" y "Allow GitHub Actions to create and approve pull requests".
 - Chat worker: el stream debe seguir el protocolo UI message stream del AI SDK. Emitir `finish` (no `end`) y errores como `{ type: "error", errorText: "..." }`. Si no hay bytes en el upstream, emitir error y no crear mensajes vacios.

@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Contexto: backend de backup en Vercel para el chat del `personal_site`. Este servicio se usa como fallback cuando falla el endpoint primario de Cloudflare.
+Contexto: backend de backup en Vercel para el chat del `cv-chat`. Este servicio se usa como fallback cuando falla el endpoint primario de Cloudflare.
 
 ## Estructura
 
@@ -27,7 +27,7 @@ Contexto: backend de backup en Vercel para el chat del `personal_site`. Este ser
 - Si `ALLOWED_ORIGINS` no existe, usar defaults:
   - `https://miguelgarglez.github.io`
   - `http://localhost:4321`
-  - `http://localhost:4321/personal_site`
+  - `http://localhost:4321/cv-chat`
 - Requests con `Origin` no permitido -> `403`.
 
 ## Rate limiting
@@ -67,4 +67,4 @@ Variables opcionales:
 - Este backend es API-only; no sirve frontend.
 - Incluir `X-Chat-Backend: vercel-fallback` en respuestas para trazabilidad.
 - Mantener `GET /healthz` sin logica pesada para checks externos.
-- Si cambia informacion del perfil, sincronizar `src/profile-data.ts` con `personal_site`.
+- Si cambia informacion del perfil, sincronizar `src/profile-data.ts` con `cv-chat`.

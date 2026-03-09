@@ -1,7 +1,7 @@
 const DEFAULT_ALLOWED_ORIGINS = [
   'https://miguelgarglez.github.io',
   'http://localhost:4321',
-  'http://localhost:4321/personal_site',
+  'http://localhost:4321/cv-chat',
 ];
 
 export function getAllowedOrigins() {

@@ -1,6 +1,6 @@
-# personal_site
+# cv-chat
 
-Personal website built with Astro.
+Digital CV with chat built with Astro.
 
 ## Package manager
 
@@ -29,4 +29,4 @@ npm run build
 npm run preview
 ```
 
-Run commands from `/Users/miguelgarglez/Developer/miguelgarglez.github.io/personal_site`.
+Run commands from `/Users/miguelgarglez/Developer/miguelgarglez.github.io/cv-chat`.

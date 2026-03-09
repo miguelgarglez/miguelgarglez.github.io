@@ -14,7 +14,7 @@ Contexto del repo: sitio personal en Astro con animaciones GSAP, toggle de tema 
 - `src/components/ui/*`: componentes base estilo shadcn usados por AI Elements.
 - `src/styles/global.css`: tokens Tailwind + estilos base para utilidades de shadcn.
 - `src/layouts/Footer.astro`: pie con datos de contacto.
-- `astro.config.mjs`: `base: '/personal_site'` y configuracion de `astro-icon`.
+- `astro.config.mjs`: `base: '/cv-chat'` y configuracion de `astro-icon`.
 
 ## Contenido y edicion de secciones
 
@@ -82,8 +82,8 @@ Si cambias email, telefono o LinkedIn, actualiza en `Hero.astro`, `Contact.astro
 
 ## Rutas y assets
 
-- `base` es `/personal_site`, asi que los assets publicos deben referenciarse con ese prefijo si aplica.
-- `favicon` vive en `public/favicon.png` y se referencia como `/personal_site/favicon.png` en `Layout.astro`.
+- `base` es `/cv-chat`, asi que los assets publicos deben referenciarse con ese prefijo si aplica.
+- `favicon` vive en `public/favicon.png` y se referencia como `/cv-chat/favicon.png` en `Layout.astro`.
 
 ## Idioma
 
@@ -91,4 +91,4 @@ Si cambias email, telefono o LinkedIn, actualiza en `Hero.astro`, `Contact.astro
 
 ## Scripts
 
-- `npm run dev`, `npm run build`, `npm run preview` (definidos en `personal_site/package.json`).
+- `npm run dev`, `npm run build`, `npm run preview` (definidos en `cv-chat/package.json`).

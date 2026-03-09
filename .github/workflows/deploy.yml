@@ -27,14 +27,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Detect personal_site changes
+      - name: Detect cv-chat changes
         id: site-changes
         uses: dorny/paths-filter@v3
         with:
           filters: |
             site:
               - 'index.html'
-              - 'personal_site/**'
+              - 'cv-chat/**'
       
       - name: Configure GitHub Pages
         if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
@@ -47,26 +47,26 @@ jobs:
         with:
           node-version: 22
           cache: 'npm'
-          cache-dependency-path: './personal_site/package-lock.json'
+          cache-dependency-path: './cv-chat/package-lock.json'
       
-      - name: Install personal_site dependencies
+      - name: Install cv-chat dependencies
         if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
         run: npm ci
-        working-directory: ./personal_site
+        working-directory: ./cv-chat
       
       - name: Build Astro site
         if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
         run: npm run build
-        working-directory: ./personal_site
+        working-directory: ./cv-chat
       
       - name: Prepare Pages artifact
         if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
         run: |
-          mkdir -p _site/personal_site
+          mkdir -p _site/cv-chat
           # Copiar el index.html como página principal
           cp index.html _site/
-          # Construir y copiar el proyecto personal_site
-          cp -r personal_site/dist/* _site/personal_site/
+          # Construir y copiar el proyecto cv-chat
+          cp -r cv-chat/dist/* _site/cv-chat/
       
       - name: Upload Pages artifact
         if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'

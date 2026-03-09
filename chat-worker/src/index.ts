@@ -29,7 +29,7 @@ const RATE_LIMIT_MAX = 20;
 const RETRYABLE_UPSTREAM_STATUS = new Set([408, 429, 500, 502, 503, 504]);
 
 const prodOrigins = ['https://miguelgarglez.github.io'];
-const localhostOrigins = ['http://localhost:4321/personal_site'];
+const localhostOrigins = ['http://localhost:4321/cv-chat'];
 
 const rateLimitStore = new Map<string, { count: number; reset: number }>();
 
