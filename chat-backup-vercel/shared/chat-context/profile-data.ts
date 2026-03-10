@@ -12,7 +12,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'profile',
     title: 'Profile basics',
     content:
-      'Miguel Garcia is a Software Engineer based in Madrid, Spain. He builds frontend systems, product-facing web experiences, and practical AI-enabled workflows. LinkedIn: linkedin.com/in/miguel-garciag. X (Twitter): x.com/miguel_garglez.',
+      'Miguel Garcia is a Software Engineer based in Madrid, Spain. He builds frontend systems, product-facing web experiences, and practical AI-enabled workflows. LinkedIn: https://www.linkedin.com/in/miguel-garciag. X (Twitter): https://x.com/miguel_garglez.',
     tags: ['contact', 'facts'],
     type: 'fact',
     lang: 'en',
@@ -21,7 +21,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'directory-page',
     title: 'Directory page overview',
     content:
-      "Miguel's root page is a lightweight directory titled 'An index of projects, people, and ideas.' It works as an entry point to the things he builds and the work that inspires them. It currently highlights selected projects such as cv-chat, momentum, frontend_dual_layout_showcase, and kubit_react_charts, plus a curated list of inspiring people.",
+      "Miguel's root page is the lightweight directory at https://miguelgarglez.github.io, titled 'An index of projects, people, and ideas.' It works as an entry point to the things he builds and currently points visitors to cv-chat as the main featured project.",
     tags: ['directorio', 'proyectos', 'cultura'],
     type: 'fact',
     lang: 'en',
@@ -30,7 +30,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'directory-cv-chat',
     title: 'What cv-chat is inside the directory',
     content:
-      'Within the directory, cv-chat is Miguel’s main professional website. It contains his profile, CV, experience, skills, and a grounded chat experience called profile_chat that answers questions based on curated profile data.',
+      'Within the directory, cv-chat is Miguel’s main professional website at https://miguelgarglez.github.io/cv-chat/. It contains his profile, CV, experience, skills, and a grounded chat experience called profile_chat that answers questions based on curated profile data.',
     tags: ['directorio', 'proyectos', 'recruiting', 'contact'],
     type: 'answer',
     lang: 'en',

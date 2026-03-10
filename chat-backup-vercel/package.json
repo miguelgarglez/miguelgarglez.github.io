@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "dev": "vercel dev"
+    "dev:vercel": "vercel dev"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

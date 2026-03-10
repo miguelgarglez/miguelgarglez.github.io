@@ -11,6 +11,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  isExternalHref,
+  mergeRel,
+  normalizeHref,
+  normalizeMarkdownLinks,
+} from "@/lib/chat-links";
 import { cn } from "@/lib/utils";
 import type { FileUIPart, UIMessage } from "ai";
 import {
@@ -20,8 +26,42 @@ import {
   XIcon,
 } from "lucide-react";
 import type { ComponentProps, HTMLAttributes, ReactElement } from "react";
-import { createContext, memo, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Streamdown } from "streamdown";
+
+type MessageLinkProps = ComponentProps<"a"> & {
+  node?: unknown;
+};
+
+const MessageLink = ({
+  href,
+  className,
+  rel,
+  target,
+  ...props
+}: MessageLinkProps) => {
+  const normalizedHref = href ? normalizeHref(href) : href;
+  const isExternal = normalizedHref ? isExternalHref(normalizedHref) : false;
+
+  return (
+    <a
+      {...props}
+      href={normalizedHref}
+      target={isExternal ? "_blank" : target}
+      rel={isExternal ? mergeRel(rel, "noopener", "noreferrer") : rel}
+      className={cn(
+        "break-words font-medium underline underline-offset-2 transition-colors",
+        "group-[.is-assistant]:text-[color:var(--primary)] group-[.is-assistant]:decoration-[color:var(--primary)]",
+        "group-[.is-user]:text-current group-[.is-user]:decoration-current",
+        className
+      )}
+    />
+  );
+};
+
+const MESSAGE_RESPONSE_COMPONENTS = {
+  a: MessageLink,
+};
 
 export type MessageProps = HTMLAttributes<HTMLDivElement> & {
   from: UIMessage["role"];
@@ -306,20 +346,26 @@ export const MessageBranchPage = ({
 
 export type MessageResponseProps = ComponentProps<typeof Streamdown>;
 
-export const MessageResponse = memo(
-  ({ className, ...props }: MessageResponseProps) => (
-    <Streamdown
-      className={cn(
-        "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
-        className
-      )}
-      {...props}
-    />
-  ),
-  (prevProps, nextProps) => prevProps.children === nextProps.children
+export const MessageResponse = ({
+  className,
+  children,
+  components,
+  ...props
+}: MessageResponseProps) => (
+  <Streamdown
+    className={cn(
+      "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
+      className
+    )}
+    components={{
+      ...MESSAGE_RESPONSE_COMPONENTS,
+      ...components,
+    }}
+    {...props}
+  >
+    {typeof children === "string" ? normalizeMarkdownLinks(children) : children}
+  </Streamdown>
 );
-
-MessageResponse.displayName = "MessageResponse";
 
 export type MessageAttachmentProps = HTMLAttributes<HTMLDivElement> & {
   data: FileUIPart;
