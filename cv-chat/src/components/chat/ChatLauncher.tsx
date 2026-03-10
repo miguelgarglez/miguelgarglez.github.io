@@ -12,6 +12,7 @@ export default function ChatLauncher({
   primaryApiUrl,
   secondaryApiUrl,
 }: ChatLauncherProps) {
+  const COMPACT_CLOSE_DELAY_MS = 220;
   const panelId = useId();
   const [isOpen, setIsOpen] = useState(false);
   const [hasOpened, setHasOpened] = useState(false);
@@ -19,6 +20,7 @@ export default function ChatLauncher({
   const [isHidden, setIsHidden] = useState(true);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
+  const closeTimeoutRef = useRef<number | null>(null);
 
   // The panel stays mounted for open/close animations; we only hide it once the close animation ends.
   // These class groups keep timing, easing, and transforms consistent across both states.
@@ -43,6 +45,33 @@ export default function ChatLauncher({
   const panelHiddenClass = isCompact
     ? 'opacity-0'
     : 'opacity-0 scale-95 translate-y-2';
+  const shouldRenderPanel = hasOpened && !isHidden;
+
+  const clearCloseTimeout = () => {
+    if (closeTimeoutRef.current !== null) {
+      window.clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  };
+
+  const closePanel = () => {
+    if (!isOpen) return;
+
+    clearCloseTimeout();
+
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+
+    setIsOpen(false);
+
+    if (isCompact) {
+      closeTimeoutRef.current = window.setTimeout(() => {
+        setIsHidden(true);
+        closeTimeoutRef.current = null;
+      }, COMPACT_CLOSE_DELAY_MS);
+    }
+  };
 
   useEffect(() => {
     const media = window.matchMedia('(max-width: 1024px)');
@@ -57,6 +86,12 @@ export default function ChatLauncher({
   }, []);
 
   useEffect(() => {
+    return () => {
+      clearCloseTimeout();
+    };
+  }, []);
+
+  useEffect(() => {
     const shouldLock = isOpen && isCompact;
     document.body.classList.toggle('chat-page-open', shouldLock);
     return () => document.body.classList.remove('chat-page-open');
@@ -66,6 +101,7 @@ export default function ChatLauncher({
     const panel = panelRef.current;
     if (!panel) return;
     if (isOpen) {
+      clearCloseTimeout();
       panel.removeAttribute('inert');
       return;
     }
@@ -76,12 +112,12 @@ export default function ChatLauncher({
     if (!isOpen) return;
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setIsOpen(false);
+        closePanel();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen]);
+  }, [isCompact, isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -102,9 +138,11 @@ export default function ChatLauncher({
 
   const toggleOpen = () => {
     if (isOpen) {
-      setIsOpen(false);
+      closePanel();
       return;
     }
+
+    clearCloseTimeout();
 
     if (!hasOpened) {
       setHasOpened(true);
@@ -123,7 +161,7 @@ export default function ChatLauncher({
       <button
         type="button"
         className={cn(
-          'fixed bottom-6 right-6 z-[9998] grid size-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-card)] transition-all duration-300 ease-in-out will-change-transform',
+          'fixed bottom-[calc(var(--safe-area-bottom)+1.5rem)] right-[calc(var(--safe-area-right)+1.5rem)] z-[9998] grid size-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-card)] transition-all duration-300 ease-in-out will-change-transform lg:bottom-6 lg:right-6',
           'cursor-pointer hover:scale-[1.08] hover:shadow-[var(--shadow-glow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)]',
           isOpen && 'shadow-[var(--shadow-glow)]',
           isCompact && isOpen && 'pointer-events-none opacity-0 scale-90'
@@ -161,7 +199,7 @@ export default function ChatLauncher({
         </span>
       </button>
 
-      {hasOpened && (
+      {shouldRenderPanel && (
         <div
           className={cn(
             'fixed left-0 right-0 top-0 z-[9997] flex items-stretch justify-stretch p-0',
@@ -190,7 +228,7 @@ export default function ChatLauncher({
             ref={panelRef}
             onAnimationEnd={(event) => {
               if (event.currentTarget !== event.target) return;
-              if (!isOpen) {
+              if (!isOpen && !isCompact) {
                 setIsHidden(true);
               }
             }}
@@ -199,7 +237,7 @@ export default function ChatLauncher({
               <span>Chat with Miguel's AI assistant</span>
               <button
                 type="button"
-                onClick={() => setIsOpen(false)}
+                onClick={closePanel}
                 className="grid size-8 place-items-center rounded-full bg-primary text-primary-foreground transition-all duration-300 ease-in-out will-change-transform cursor-pointer hover:scale-[1.08] hover:shadow-[var(--shadow-glow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] lg:hidden"
                 aria-label="Close chat"
               >

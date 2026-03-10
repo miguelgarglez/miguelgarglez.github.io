@@ -7,12 +7,25 @@ import '../styles/global.css';
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
     <meta
       name="description"
       content="Miguel García's digital CV. Frontend platform engineer focused on accessible interfaces, scalable design systems, and practical AI workflows."
     />
-    <meta name="theme-color" content="#09111c" />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: dark)"
+      content="#09111c"
+    />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: light)"
+      content="#f5efe5"
+    />
+    <meta name="theme-color" content="#09111c" data-dynamic-theme-color />
     <link rel="icon" type="image/png" href="/cv-chat/favicon.png" />
     <meta name="generator" content={Astro.generator} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -33,12 +46,17 @@ import '../styles/global.css';
 
 <script is:inline>
   const themeMediaQuery = window.matchMedia('(prefers-color-scheme: light)');
-  const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+  const themeColorMeta = document.querySelector(
+    'meta[data-dynamic-theme-color]'
+  );
 
   const applyTheme = (theme) => {
     const isLight = theme === 'light';
     document.body.classList.toggle('light', isLight);
     document.documentElement.style.colorScheme = isLight ? 'light' : 'dark';
+    document.documentElement.style.backgroundColor = isLight
+      ? '#f5efe5'
+      : '#09111c';
 
     if (themeColorMeta) {
       themeColorMeta.setAttribute('content', isLight ? '#f5efe5' : '#09111c');
@@ -73,6 +91,13 @@ import '../styles/global.css';
   html {
     color-scheme: dark;
     scroll-behavior: smooth;
+    background: #09111c;
+  }
+
+  @media (prefers-color-scheme: light) {
+    html {
+      background: #f5efe5;
+    }
   }
 
   html,
@@ -98,6 +123,10 @@ import '../styles/global.css';
   }
 
   :root {
+    --safe-area-top: env(safe-area-inset-top);
+    --safe-area-right: env(safe-area-inset-right);
+    --safe-area-bottom: env(safe-area-inset-bottom);
+    --safe-area-left: env(safe-area-inset-left);
     --font-body: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
     --font-display:
       'Sora', 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;

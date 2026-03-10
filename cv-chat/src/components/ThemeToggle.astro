@@ -31,8 +31,8 @@ import { Icon } from 'astro-icon/components';
 <style>
   #theme-toggle {
     position: fixed;
-    top: 16px;
-    right: 16px;
+    top: calc(var(--safe-area-top) + 16px);
+    right: calc(var(--safe-area-right) + 16px);
     background: none;
     border: none;
     cursor: pointer;
