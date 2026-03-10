@@ -369,7 +369,6 @@ import { Icon } from "astro-icon/components";
 
     @media (max-width: 1024px) {
         .hero-content {
-            min-height: auto;
             padding: 6rem 0 3.5rem;
         }
     }
@@ -380,12 +379,37 @@ import { Icon } from "astro-icon/components";
         }
 
         .hero-content {
-            padding: 5.5rem 0 2.5rem;
+            padding: 5.5rem 1.2rem 2.5rem;
+        }
+    }
+
+    @media (max-width: 620px) {
+        .hero-content {
+            padding-inline: 1rem;
+        }
+
+        .hero-copy {
+            gap: 1.35rem;
+        }
+
+        .name {
+            font-size: clamp(2.85rem, 14vw, 4.2rem);
+        }
+
+        .summary {
+            max-width: 26ch;
         }
 
         .contact-info {
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(2, max-content);
+            justify-content: center;
             align-items: center;
+        }
+
+        .contact-chip-reveal:first-child {
+            grid-column: 1 / -1;
+            justify-self: center;
         }
 
         .cta-buttons {
