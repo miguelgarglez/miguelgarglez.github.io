@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.5.0](https://github.com/miguelgarglez/miguelgarglez.github.io/compare/v0.4.0...v0.5.0) (2026-03-10)
+
+
+### Features
+
+* **chat-ui:** classify provider errors ([d516493](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/d516493f97bed826016ee8a7d1a0c168eadf6386))
+* **chat:** add transparent failover ([b42f5a6](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/b42f5a6f6f45df95c53b00547b037ac8a5b00dc8))
+* **chat:** refine profile context ([4f90d71](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/4f90d71e602e7839a86740a34a34714639d94e2d))
+* **directory:** add Momentum project entry ([3125de7](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/3125de7a3a3b9919ea896e79ca4d6ecd2bcd1e99))
+* **directory:** add showcase project link ([4b1d4cc](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/4b1d4cc2b51834d8d09fe7285d28e63f06eb62d8))
+* **site:** refine personal site ([b7e095b](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/b7e095b2bb1065386c2b829456efb9f443287185))
+* **vercel:** add api root metadata ([66d9bdb](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/66d9bdbe85bf475050e0f7b5f735a664fe4398a2))
+* **vercel:** add backup chat api ([c55f7c6](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/c55f7c60e8c8a5aff9fad7721135f1cb0ff22b45))
+
+
+### Bug Fixes
+
+* **chat:** align streaming events with AI SDK ([c311f55](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/c311f55d4121fd8a99e636f813b69c8603da2f37))
+* **chat:** render clickable links ([f9404c9](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/f9404c96280e10ecd24f3dfb346c8bc65f9f477b))
+* **ci:** deploy pages on index changes ([ff0351e](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/ff0351e59ff89c93557418b6de1b30959819dc11))
+* **hero:** refine responsive hero layout ([f0c59a7](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/f0c59a71bd98ea843ee0ae3040ff087f7ef55f9c))
+* **mobile:** restore viewport after chat ([9d5f268](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/9d5f26866baeae9c60a0fe2a40d185afa9af36b7))
+* **social:** Update X handle ([6e59a71](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/6e59a71ba6488127ea9bde8a0b0857514d8ad809))
+* **worker:** add health and backend header ([c7b7c01](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/c7b7c01d4ae996fe236a4fddfbe988a46e1c8e6f))
+* **worker:** harden upstream reliability ([c11d82e](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/c11d82ee366409ed80be20a29139371cd0e13bae))
+
 ## [0.4.0](https://github.com/miguelgarglez/miguelgarglez.github.io/compare/v0.3.0...v0.4.0) (2026-01-04)
 
 
