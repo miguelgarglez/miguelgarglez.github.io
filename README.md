@@ -51,6 +51,17 @@ Native macOS productivity app to help sustain execution rhythm and focus.
 
 <div style="border: 1px solid #d0d7de; border-radius: 6px; padding: 16px; margin: 16px 0;">
 
+### **wellstudio-platform**
+Modular Next.js platform for a boutique wellness studio, covering members, bookings, plans, payments, and studio operations.
+
+**Links:** [GitHub repository](https://github.com/miguelgarglez/wellstudio-platform)<br>
+**Status:** ✅ Active<br>
+**Technologies:** ![Next.js](https://img.shields.io/badge/-Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white) ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) ![Prisma](https://img.shields.io/badge/-Prisma-2D3748?style=flat-square&logo=prisma&logoColor=white) ![Supabase](https://img.shields.io/badge/-Supabase-3FCF8E?style=flat-square&logo=supabase&logoColor=white)
+
+</div>
+
+<div style="border: 1px solid #d0d7de; border-radius: 6px; padding: 16px; margin: 16px 0;">
+
 ### **chat-worker**
 Cloudflare Worker powering the chat endpoint for the site.
 
