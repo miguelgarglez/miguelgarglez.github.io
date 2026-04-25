@@ -122,17 +122,21 @@
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   body.chat-page-open {
     overflow: hidden;
     touch-action: none;
   }
 
+  /* Safari note: if the compact breakpoint re-triggers here, consider locking the page width
+     instead of only hiding content, to avoid layout feedback loops. */
   body.chat-page-open #page-content {
-    display: none;
+    visibility: hidden;
+    pointer-events: none;
   }
 
   body.chat-page-open #theme-toggle {
-    display: none;
+    visibility: hidden;
+    pointer-events: none;
   }
 }
