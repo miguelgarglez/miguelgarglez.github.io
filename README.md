@@ -6,6 +6,21 @@ Welcome to my GitHub Pages repository!
 
 </div>
 
+## 🌐 Personal site
+
+The root site is an Astro app that works as my personal home: a directory of projects, people, and ideas.
+
+```bash
+npm install
+npm run dev
+npm run build
+```
+
+Content lives in:
+
+- `src/data/projects.ts`
+- `src/data/people.ts`
+
 ## 🌐 cv-chat
 
 <div style="border: 1px solid #d0d7de; border-radius: 6px; padding: 16px; margin: 16px 0;">
@@ -18,9 +33,14 @@ Built with [**Astro**](https://astro.build/) - a modern web framework for buildi
 
 ## Local Development
 
-For `cv-chat`, use `npm` as the package manager.
+Both the root site and `cv-chat` use `npm` as the package manager. They are independent Astro projects.
 
 ```bash
+# Root personal site
+npm install
+npm run dev
+
+# cv-chat
 cd cv-chat
 npm install
 npm run dev
@@ -84,7 +104,7 @@ Cloudflare Worker powering the chat endpoint for the site.
 
 ## 🚀 CI/CD
 
-- GitHub Pages deploys on every push to `main`.
+- GitHub Pages builds the root Astro site and `cv-chat` on every relevant push to `main`.
 - The Cloudflare Worker deploys on pushes that include changes under `chat-worker/`.
 - Manual runs from the Actions tab can deploy the worker even without changes.
 - Required secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.

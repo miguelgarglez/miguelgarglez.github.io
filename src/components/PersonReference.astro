@@ -1,0 +1,17 @@
+---
+import type { PersonReference } from "../data/people";
+
+type Props = {
+  person: PersonReference;
+};
+
+const { person } = Astro.props;
+---
+
+<li class="reference">
+  <p class="reference-type">{person.type}</p>
+  <h2 class="reference-title">
+    <a href={person.href} target="_blank" rel="noopener noreferrer">{person.name}</a>
+  </h2>
+  <p class="reference-note">{person.note}</p>
+</li>

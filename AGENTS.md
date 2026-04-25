@@ -1,20 +1,30 @@
 # AGENTS.md
 
-Contexto del repo: sitio estático en `index.html` que actúa como directorio de proyectos. Hoy solo enlaza a `cv-chat`, que es un sitio Astro con mi perfil profesional y CV, con animaciones GSAP.
+Contexto del repo: sitio personal publicado en GitHub Pages. La home vive en Astro en la raíz del repo y actúa como directorio principal de proyectos, personas e ideas. `cv-chat` sigue siendo un subproyecto Astro independiente con mi perfil profesional y CV, con animaciones GSAP.
 
 ## Estructura
 
-- `index.html`: pagina de entrada/directorio de proyectos.
+- `src/pages/index.astro`: pagina de entrada/directorio de proyectos.
+- `src/components/`: componentes Astro de la home.
+- `src/data/`: datos estructurados de proyectos y personas.
+- `src/styles/global.css`: estilos globales de la home.
 - `cv-chat/`: sitio Astro.
+- `dist/`: salida generada de la home Astro, ignorada por git.
 - `.github/workflows/deploy.yml`: workflow de deploy (si aplica).
 - `.github/workflows/release-please.yml`: workflow de versionado semver y releases con PR.
 
 ## Tareas comunes
 
-### Trabajar en `index.html`
+### Trabajar en la home Astro
 
-- Añadir nuevas entradas de proyectos con enlaces claros.
-- Mantener el estilo simple y directo, tipo directorio.
+- Usar `npm` como package manager en la raíz.
+- Scripts:
+  - `npm run dev`
+  - `npm run build`
+  - `npm run preview`
+- Añadir nuevas entradas de proyectos en `src/data/projects.ts`.
+- Añadir nuevas entradas de personas en `src/data/people.ts`.
+- Mantener el estilo visual actual salvo que se pida explícitamente rediseño.
 - Revisar que los links apunten a rutas reales dentro del repo o a URLs validas.
 
 ### Trabajar en `cv-chat/`

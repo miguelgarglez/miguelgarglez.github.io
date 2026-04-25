@@ -1,0 +1,172 @@
+---
+import ProjectCard from "../components/ProjectCard.astro";
+import PersonReference from "../components/PersonReference.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { people } from "../data/people";
+import { projects } from "../data/projects";
+---
+
+<BaseLayout title="Miguel Garcia - Project Directory">
+  <main class="layout">
+    <div class="page-shell">
+      <aside class="sidebar" data-sidebar aria-label="Section index">
+        <nav class="sidebar-nav">
+          <a class="sidebar-link" data-nav-link href="#overview">Overview</a>
+          <a class="sidebar-link" data-nav-link href="#projects">Projects</a>
+          <a class="sidebar-link" data-nav-link href="#inspiring-people">
+            Inspiring people
+          </a>
+        </nav>
+      </aside>
+      <div class="content-column">
+        <header class="masthead">
+          <p class="eyebrow">Miguel Garcia • Directory</p>
+          <ThemeToggle />
+        </header>
+
+        <section
+          class="intro"
+          id="overview"
+          data-section-anchor
+          aria-labelledby="directory-title"
+        >
+          <h1 id="directory-title">An index of projects, people, and ideas.</h1>
+          <p class="lead">
+            A directory of things I build and the work that inspires them.
+          </p>
+        </section>
+
+        <section id="projects" data-section-anchor aria-labelledby="projects-title">
+          <p class="section-label" id="projects-title">Projects</p>
+          <ol class="project-list">
+            {
+              projects.map((project, index) => (
+                <ProjectCard project={project} index={index} />
+              ))
+            }
+          </ol>
+        </section>
+
+        <section
+          id="inspiring-people"
+          data-section-anchor
+          aria-labelledby="inspiring-people-title"
+        >
+          <p class="section-label" id="inspiring-people-title">Inspiring people</p>
+          <ol class="reference-list">
+            {people.map((person) => <PersonReference person={person} />)}
+          </ol>
+        </section>
+
+        <footer>
+          <p class="footer-note">Last update: April 2026.</p>
+        </footer>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const THEME_STORAGE_KEY = "theme";
+    const DARK_THEME = "dark";
+    const LIGHT_THEME = "light";
+    const SIDEBAR_SCROLL_THRESHOLD = 36;
+    const SECTION_OBSERVER_ROOT_MARGIN = "-22% 0px -58% 0px";
+
+    const root = document.documentElement;
+    const toggle = document.querySelector("[data-theme-toggle]");
+    const sidebar = document.querySelector("[data-sidebar]");
+    const navLinks = Array.from(document.querySelectorAll("[data-nav-link]"));
+    const sections = Array.from(document.querySelectorAll("[data-section-anchor]"));
+
+    function initializeThemeToggle() {
+      if (!toggle) {
+        return;
+      }
+
+      const setThemeToggleState = (theme) => {
+        const isDark = theme === DARK_THEME;
+        const label = isDark ? "Switch to light theme" : "Switch to dark theme";
+        toggle.setAttribute("aria-pressed", String(isDark));
+        toggle.setAttribute("aria-label", label);
+        toggle.setAttribute("title", label);
+      };
+
+      const applyTheme = (theme) => {
+        root.dataset.theme = theme;
+        setThemeToggleState(theme);
+      };
+
+      const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? DARK_THEME
+        : LIGHT_THEME;
+      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+      const initialTheme = savedTheme || preferredTheme;
+
+      applyTheme(initialTheme);
+
+      toggle.addEventListener("click", () => {
+        const nextTheme = root.dataset.theme === DARK_THEME ? LIGHT_THEME : DARK_THEME;
+        localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+        applyTheme(nextTheme);
+      });
+    }
+
+    function initializeSidebarFade() {
+      if (!sidebar) {
+        return;
+      }
+
+      const syncSidebarOpacity = () => {
+        sidebar.classList.toggle("is-scrolled", window.scrollY > SIDEBAR_SCROLL_THRESHOLD);
+      };
+
+      syncSidebarOpacity();
+      window.addEventListener("scroll", syncSidebarOpacity, {
+        passive: true,
+      });
+    }
+
+    function initializeSectionNavigation() {
+      if (!sections.length || !navLinks.length) {
+        return;
+      }
+
+      const setActiveLink = (id) => {
+        for (const link of navLinks) {
+          const isActive = link.getAttribute("href") === `#${id}`;
+          link.classList.toggle("is-active", isActive);
+          if (isActive) {
+            link.setAttribute("aria-current", "true");
+          } else {
+            link.removeAttribute("aria-current");
+          }
+        }
+      };
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              setActiveLink(entry.target.id);
+            }
+          }
+        },
+        {
+          rootMargin: SECTION_OBSERVER_ROOT_MARGIN,
+          threshold: 0,
+        },
+      );
+
+      for (const section of sections) {
+        observer.observe(section);
+      }
+
+      setActiveLink(sections[0].id);
+    }
+
+    initializeThemeToggle();
+    initializeSidebarFade();
+    initializeSectionNavigation();
+  </script>
+</BaseLayout>

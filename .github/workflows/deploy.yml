@@ -33,7 +33,10 @@ jobs:
         with:
           filters: |
             site:
-              - 'index.html'
+              - 'astro.config.mjs'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'src/**'
               - 'cv-chat/**'
       
       - name: Configure GitHub Pages
@@ -47,7 +50,17 @@ jobs:
         with:
           node-version: 22
           cache: 'npm'
-          cache-dependency-path: './cv-chat/package-lock.json'
+          cache-dependency-path: |
+            package-lock.json
+            cv-chat/package-lock.json
+
+      - name: Install home dependencies
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
+        run: npm ci
+
+      - name: Build home site
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
+        run: npm run build
       
       - name: Install cv-chat dependencies
         if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
@@ -63,8 +76,8 @@ jobs:
         if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           mkdir -p _site/cv-chat
-          # Copiar el index.html como página principal
-          cp index.html _site/
+          # Copiar la home Astro como página principal
+          cp -r dist/* _site/
           # Construir y copiar el proyecto cv-chat
           cp -r cv-chat/dist/* _site/cv-chat/
       

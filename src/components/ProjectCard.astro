@@ -1,0 +1,57 @@
+---
+import ExternalArrow from "./ExternalArrow.astro";
+import type { Project } from "../data/projects";
+
+type Props = {
+  project: Project;
+  index: number;
+};
+
+const { project, index } = Astro.props;
+const projectIndex = String(index + 1).padStart(2, "0");
+const titleTarget = project.external
+  ? { target: "_blank", rel: "noopener noreferrer" }
+  : {};
+---
+
+<li class="project">
+  <p class="project-index">{projectIndex}</p>
+  <div>
+    <h2 class="project-title">
+      <a href={project.href} {...titleTarget}>
+        {project.title}<ExternalArrow />
+      </a>
+    </h2>
+    <p class="project-description">{project.description}</p>
+    {
+      project.sub && (
+        <p class="project-sub">
+          {typeof project.sub === "string" ? (
+            project.sub
+          ) : (
+            <Fragment>
+              {project.sub.before}<a href={project.sub.href}>{project.sub.label}</a>{project.sub.after}
+            </Fragment>
+          )}
+        </p>
+      )
+    }
+    <div class="project-links">
+      {
+        project.links.map((link) => (
+          <a
+            href={link.href}
+            target={link.external ? "_blank" : undefined}
+            rel={link.external ? "noopener noreferrer" : undefined}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </div>
+    <ul class="stack" aria-label="Tech stack">
+      {project.stack.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+  <p class="project-status">{project.status}</p>
+</li>
