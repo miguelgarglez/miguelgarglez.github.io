@@ -18,7 +18,7 @@ npx wrangler secret put LLM_BASE_URL
 # https://opencode.ai/zen/v1
 
 npx wrangler secret put LLM_MODEL
-# nemotron-3-super-free
+# gpt-5.4-nano or the exact opencode Zen model id configured for production
 
 npx wrangler secret put LLM_SITE_URL
 # https://miguelgarglez.github.io
@@ -38,6 +38,19 @@ DEV=true
 ```bash
 npx wrangler dev
 ```
+
+## Agent context tests
+
+The Worker builds a deterministic context before making the single LLM call.
+Run the retrieval regression suite from the repository root:
+
+```bash
+npm run test:profile-agent
+```
+
+These tests protect critical context selection for questions about current role,
+contact, AI projects, lightweight RAG/GenAI exposure, and frontend experience.
+They do not call the LLM.
 
 ## Deploy
 
@@ -62,6 +75,9 @@ curl -N \
 - Body: `{ "question": "..." }` or AI SDK `messages`
 - Streaming response: `text/event-stream`
 - Upstream: OpenAI-compatible `/chat/completions`
+- Runtime: `runProfileAgent()` selects profile facts, profile blocks, projects,
+  and memories before the LLM call.
+- Knowledge files live under `src/knowledge/`.
 - Error JSON includes `errorCode` and `source`
 - Responses include `X-Chat-Backend: cloudflare`
 - Do not expose `LLM_API_KEY` in frontend

@@ -13,7 +13,6 @@ import {
   MessageContent,
   MessageResponse,
 } from '@/components/ai-elements/message';
-import { Loader } from '@/components/ai-elements/loader';
 import {
   PromptInput,
   PromptInputSubmit,
@@ -21,6 +20,7 @@ import {
   type PromptInputMessage,
 } from '@/components/ai-elements/prompt-input';
 import { cn } from '@/lib/utils';
+import { AgentActivity, looksSpanish } from './AgentActivity';
 
 type ChatProps = {
   primaryApiUrl: string;
@@ -115,6 +115,7 @@ export default function Chat({
   autoFocus,
 }: ChatProps) {
   const [input, setInput] = useState('');
+  const [lastSubmittedText, setLastSubmittedText] = useState('');
   const [chatError, setChatError] = useState<ChatErrorKind>(null);
   const [retryAfterSeconds, setRetryAfterSeconds] = useState<number | null>(
     null
@@ -317,6 +318,7 @@ export default function Chat({
     const trimmed = message.text?.trim();
     if (!trimmed || isBusy) return;
     setChatError(null);
+    setLastSubmittedText(trimmed);
     sendMessage({ text: trimmed });
     setInput('');
   };
@@ -393,10 +395,9 @@ export default function Chat({
             </div>
           )}
           {status === 'submitted' && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader className="size-4" />
-              Thinking...
-            </div>
+            <AgentActivity
+              language={looksSpanish(lastSubmittedText) ? 'es' : 'en'}
+            />
           )}
         </ConversationContent>
         <ConversationScrollButton className="border-border bg-card text-foreground hover:bg-[color:var(--primary)] hover:text-[color:var(--primary-foreground)]" />

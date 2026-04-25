@@ -5,7 +5,12 @@ Contexto: Worker de Cloudflare que hace streaming SSE hacia un proveedor LLM Ope
 ## Estructura
 
 - `src/index.ts`: handler principal, CORS, validacion de origen, streaming.
-- `src/profile-data.ts`: base de conocimiento (contenido del CV y secciones).
+- `src/agent/`: runtime determinista del agente de perfil.
+- `src/knowledge/profile-facts.ts`: facts criticos que no deberian fallar (puesto actual, contacto, stack, ubicacion).
+- `src/knowledge/profile-data.ts`: bloques largos de perfil y CV.
+- `src/knowledge/projects.ts`: proyectos estructurados.
+- `src/knowledge/memories.ts`: memorias publicas curadas.
+- `test/profile-agent.test.ts`: regresiones de retrieval del agente.
 - `wrangler.toml`: config del worker.
 
 ## Reglas de CORS
@@ -30,16 +35,26 @@ Contexto: Worker de Cloudflare que hace streaming SSE hacia un proveedor LLM Ope
   - `LLM_MODEL`
 - Proveedor actual: opencode Zen.
 - Base URL actual: `https://opencode.ai/zen/v1`.
-- Modelo actual: `nemotron-3-super-free`.
+- Modelo actual: configurado por `LLM_MODEL` (mantener gpt-5.4-nano/opencode Zen si sigue siendo el modelo productivo elegido).
 - Mantener `stream: true` para UX de chat.
 - `DEV=true` permite CORS local y respuestas con detalle de errores upstream.
 - No usar variables `OPENROUTER_*` en este Worker.
 - No incluir payload propietario de OpenRouter (`provider`, `models`, `allow_fallbacks`, etc.).
 
-## RAG
+## Runtime agentic
 
-- RAG basico por keywords en `buildContext`.
-- Si se cambia contenido del sitio, actualizar `src/profile-data.ts`.
+- El Worker usa `runProfileAgent()` para clasificar audiencia/intencion y seleccionar contexto.
+- Mantener una sola llamada LLM por mensaje.
+- No introducir tool loops, KV, D1, Vectorize o MCP runtime sin una razon clara.
+- El contexto se compone de facts criticos, bloques de perfil, proyectos y memorias.
+- Si cambia contenido del sitio o posicionamiento profesional, actualizar `src/knowledge/*`.
+- La experiencia RAG debe describirse como exposicion ligera y practica del Google GenAI Intensive de 5 dias con capstone, no como experiencia RAG productiva profunda.
+
+## Tests
+
+- Ejecutar desde la raiz: `npm run test:profile-agent`.
+- Estos tests no llaman al LLM; validan que `runProfileAgent()` entrega el contexto correcto.
+- Anadir regresiones cuando se detecte una pregunta importante que seleccione mal el contexto.
 
 ## Notas
 

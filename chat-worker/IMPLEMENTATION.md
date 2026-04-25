@@ -2,24 +2,67 @@
 
 ## Goal
 
-Cloudflare Worker that streams OpenRouter responses about Miguel Garcia's professional profile. Intended to be called from the Astro site hosted on GitHub Pages.
+Cloudflare Worker that powers the `cv-chat` assistant. It answers questions about Miguel Garcia's professional profile through a fast, grounded, OpenAI-compatible LLM call.
 
-## What is implemented
+The Worker intentionally keeps the runtime simple:
 
-- SSE streaming endpoint at `POST /chat`.
-- Health endpoint at `GET /healthz`.
-- Minimal RAG via keyword matching against a local profile dataset.
-- Strict CORS allowlist to only allow production origin.
-- Optional localhost access for dev via environment toggle.
+- one request from UI to Worker;
+- one upstream LLM call per user message;
+- deterministic context selection before the LLM call;
+- AI SDK UI message stream output for the frontend.
+
+## What Is Implemented
+
+- `POST /chat` SSE endpoint.
+- `GET /healthz` health endpoint.
+- CORS allowlist for production origins, with localhost enabled by `DEV=true`.
+- In-memory rate limiting.
+- OpenAI-compatible upstream `/chat/completions` call.
+- Retry and timeout handling for transient upstream failures.
+- Conversion from OpenAI-style SSE to AI SDK UI message stream events.
+- Lightweight profile agent runtime via `runProfileAgent()`.
+
+## Agent Runtime
+
+The Worker no longer builds a single ad hoc prompt directly in `index.ts`.
+Instead, `runProfileAgent()` prepares model messages from deterministic context:
+
+```text
+question
+  -> classifyAudience()
+  -> classifyIntent()
+  -> retrieveProfileFacts()
+  -> retrieveProfileBlocks()
+  -> retrieveProjects()
+  -> retrieveMemories()
+  -> buildContextText()
+  -> one LLM call
+```
+
+The agent is not autonomous and does not run tool loops. This is deliberate: the chat should stay fast, predictable, cheap, and grounded.
+
+## Knowledge Files
+
+- `src/knowledge/profile-facts.ts`: critical facts that should not fail, such as current role, location, contact links, and primary stack.
+- `src/knowledge/profile-data.ts`: longer profile blocks copied into the Worker so it does not depend on the Vercel fallback.
+- `src/knowledge/projects.ts`: structured project knowledge with summaries, technologies, links, visibility, and priority.
+- `src/knowledge/memories.ts`: curated public updates and learning notes.
+
+Important positioning note: RAG is represented as lightweight practical exposure from the five-day Google GenAI Intensive capstone, not as deep production RAG experience.
 
 ## Files
 
-- `chat-worker/src/index.ts`: Worker handler, CORS checks, request validation, OpenRouter streaming.
-- `chat-worker/src/profile-data.ts`: Knowledge base derived from site content.
-- `chat-worker/wrangler.toml`: Worker config (`workers_dev = true`, `preview_urls = false`).
-- `chat-worker/AGENTS.md`: Local rules and operating notes.
+- `src/index.ts`: Worker handler, CORS, rate limiting, upstream fetch, and stream conversion.
+- `src/agent/run-profile-agent.ts`: agent orchestration.
+- `src/agent/intent.ts`: heuristic intent and audience classification.
+- `src/agent/*-retrieval.ts`: deterministic context retrieval.
+- `src/agent/prompts.ts`: assistant policy and context formatting.
+- `src/knowledge/*`: versioned professional profile knowledge.
+- `test/profile-agent.test.ts`: retrieval regression tests.
+- `wrangler.toml`: Worker config.
+- `AGENTS.md`: local rules and operating notes.
 
-## Request format
+## Request Format
 
 Accepts either format:
 
@@ -27,98 +70,86 @@ Accepts either format:
 { "question": "..." }
 ```
 
-or
+or AI SDK style messages:
 
 ```json
 { "messages": [{ "role": "user", "content": "..." }] }
 ```
 
-## Streaming response
+## Streaming Response
 
-- Passes through OpenRouter SSE (`text/event-stream`).
-- Client should parse `data:` lines and append `delta.content`.
-- Uses `openrouter/free` plus model fallback chain (`models`) and provider routing (`allow_fallbacks`, throughput sorting) for better availability.
-- Retries transient upstream failures (`408/429/5xx`) with bounded backoff before returning an error.
-- Error responses include machine-readable fields to help the UI classify failures:
-  - `errorCode: WORKER_RATE_LIMIT` (local worker throttle)
-  - `errorCode: OPENROUTER_RATE_LIMIT` (upstream/provider throttling)
-  - `errorCode: OPENROUTER_QUOTA_EXCEEDED` (upstream quota exhaustion)
-- All responses include `X-Chat-Backend: cloudflare` to simplify failover diagnostics.
+The Worker emits AI SDK UI message stream events over `text/event-stream`:
 
-## CORS behavior
+- `start`
+- `text-start`
+- `text-delta`
+- `text-end`
+- `finish`
+- `[DONE]`
 
-- Allowed origin: `https://miguelgarglez.github.io`.
-- If `DEV=true`, also allows:
-  - `http://localhost:4321`
-  - `http://localhost:3000`
-  - `http://localhost:5173`
-- Requests without `Origin` are rejected for `POST /chat` in prod; `GET /` and `GET /healthz` are allowed to support health checks.
+Errors inside the stream are emitted as:
 
-## Env vars
+```json
+{ "type": "error", "errorText": "..." }
+```
+
+The Worker avoids empty assistant messages. If the upstream sends zero bytes, it emits an error instead.
+
+## Env Vars
 
 Required:
 
-- `OPENROUTER_API_KEY`
+- `LLM_API_KEY`
+- `LLM_BASE_URL`
+- `LLM_MODEL`
 
 Optional:
 
-- `OPENROUTER_MODEL` (defaults to `openrouter/free`)
-- `OPENROUTER_FALLBACK_MODELS` (comma-separated fallback chain)
-- `OPENROUTER_SITE_URL`
-- `OPENROUTER_APP_TITLE`
-- `DEV` (`true` to enable localhost + detailed upstream errors)
+- `LLM_PROVIDER`
+- `LLM_SITE_URL`
+- `LLM_APP_TITLE`
+- `DEV` (`true` enables local CORS and more detailed upstream errors)
 
-## Notes
+Do not use legacy `OPENROUTER_*` variables in this Worker.
 
-- Designed to be dependency-free and low maintenance.
-- RAG is intentionally basic; update `profile-data.ts` when the site content changes.
-- For production, keep `DEV` unset.
+## Testing
 
-## Rate limiting
+Run the profile-agent regression suite from the repository root:
+
+```bash
+npm run test:profile-agent
+```
+
+The tests bundle the TypeScript test file with the existing local `esbuild` package and run Node's built-in test runner. They do not install packages and do not call the LLM.
+
+Current covered behaviors:
+
+- Spanish current-role question selects the current role fact and `experience-ods`.
+- Contact questions include LinkedIn and X facts.
+- AI project questions include `cv-chat` and relevant AI memories.
+- RAG questions are framed as lightweight Google GenAI Intensive capstone exposure.
+- Frontend experience questions include current role and frontend skills.
+
+## CORS Behavior
+
+- Production origins:
+  - `https://miguelgarglez.github.io`
+  - `https://miguelgarglez.com`
+- If `DEV=true`, also allows:
+  - `http://localhost:4321`
+  - `http://127.0.0.1:4321`
+- Requests without `Origin` are rejected for `POST /chat` in prod; `GET /` and `GET /healthz` remain available for health checks.
+
+## Rate Limiting
 
 - In-memory throttle: 20 requests per minute per IP.
-- Uses `CF-Connecting-IP` (fallback to `X-Forwarded-For`).
-- Responds with `429` and `Retry-After` / `X-RateLimit-*` headers.
-- Best-effort only (not shared across instances, resets on worker recycle).
+- Uses `CF-Connecting-IP`, falling back to `X-Forwarded-For`.
+- Responds with `429`, `Retry-After`, and `X-RateLimit-*` headers.
+- Best-effort only: the limit is not shared across Worker instances and resets when an instance recycles.
 
-## Minimal client snippet (browser)
+## Maintenance Notes
 
-This consumes the SSE stream and appends deltas to a string.
-
-```js
-export async function streamChat({ question, endpoint, onDelta }) {
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ question }),
-  });
-
-  if (!response.ok || !response.body) {
-    throw new Error('Chat request failed');
-  }
-
-  const reader = response.body
-    .pipeThrough(new TextDecoderStream())
-    .getReader();
-
-  let buffer = '';
-  while (true) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    buffer += value;
-
-    const lines = buffer.split('\n');
-    buffer = lines.pop() ?? '';
-
-    for (const line of lines) {
-      if (!line.startsWith('data: ')) continue;
-      const payload = line.slice('data: '.length).trim();
-      if (!payload || payload === '[DONE]') continue;
-
-      const json = JSON.parse(payload);
-      const delta = json?.choices?.[0]?.delta?.content;
-      if (delta) onDelta(delta);
-    }
-  }
-}
-```
+- Keep `chat-backup-vercel` intact unless explicitly changing the fallback.
+- Keep the Worker dependency-light and avoid adding runtime storage until the knowledge base is too large for static files.
+- Add or update profile-agent tests when changing retrieval behavior or professional positioning.
+- Keep public knowledge factual and conservative. Do not overstate project depth, metrics, availability, or private work.

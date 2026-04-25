@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "test:profile-agent": "node scripts/test-profile-agent.mjs"
   },
   "devDependencies": {
     "astro": "^6.1.9"

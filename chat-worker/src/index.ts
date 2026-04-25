@@ -1,4 +1,4 @@
-import { buildSystemPrompt } from '../../chat-backup-vercel/shared/chat-context/context';
+import { runProfileAgent } from './agent/run-profile-agent';
 
 type ChatMessage = {
   role: 'system' | 'user' | 'assistant';
@@ -483,17 +483,33 @@ export default {
       });
     }
 
-    const systemPrompt = buildSystemPrompt(question);
+    const agentResult = runProfileAgent({
+      question,
+      inboundMessages,
+    });
+
+    console.log(
+      JSON.stringify({
+        event: 'profile_agent_context',
+        intent: agentResult.context.intent,
+        audience: agentResult.context.audience,
+        facts: agentResult.context.selectedFacts.map((fact) => fact.id),
+        profileBlocks: agentResult.context.selectedProfileBlocks.map(
+          (block) => block.id
+        ),
+        projects: agentResult.context.selectedProjects.map(
+          (project) => project.id
+        ),
+        memories: agentResult.context.selectedMemories.map(
+          (memory) => memory.id
+        ),
+      })
+    );
 
     const payload: Record<string, unknown> = {
       model: llm.model,
       stream: true,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        ...(inboundMessages.length > 0
-          ? inboundMessages
-          : [{ role: 'user', content: question }]),
-      ],
+      messages: agentResult.messages,
     };
 
     const headers: Record<string, string> = {

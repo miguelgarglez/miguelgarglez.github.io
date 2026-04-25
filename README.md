@@ -95,6 +95,8 @@ Cloudflare Worker powering the chat endpoint for the site.
 - The worker streams AI SDK UI message events (SSE). Use `start`, `text-start`, `text-delta`, `text-end`, `finish`, and `[DONE]`.
 - Errors must be sent as `{ "type": "error", "errorText": "..." }` for the UI to surface them.
 - The worker avoids creating empty assistant messages; if the upstream sends zero bytes, it emits a streaming error instead.
+- The chat worker now uses a lightweight profile-agent runtime that selects facts, profile blocks, projects, and memories before a single LLM call.
+- Run deterministic profile-agent regressions with `npm run test:profile-agent`.
 
 ## 🧪 Frontend failover testing
 
