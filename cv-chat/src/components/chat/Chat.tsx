@@ -46,7 +46,7 @@ type ChatApiErrorPayload = {
 };
 
 const PRIMARY_DEGRADED_MS = 5 * 60 * 1000;
-const PRIMARY_REQUEST_TIMEOUT_MS = 8_000;
+const PRIMARY_REQUEST_TIMEOUT_MS = 15_000;
 const SECONDARY_REQUEST_TIMEOUT_MS = 12_000;
 const FAILOVER_STATUSES = new Set([
   408,
@@ -180,10 +180,7 @@ export default function Chat({
             if (response.status === 404 || response.status === 405) {
               setChatError('unavailable');
             } else if (response.status === 429) {
-              if (
-                errorPayload?.errorCode === 'OPENROUTER_RATE_LIMIT' ||
-                errorPayload?.errorCode === 'UPSTREAM_RATE_LIMIT'
-              ) {
+              if (errorPayload?.errorCode === 'UPSTREAM_RATE_LIMIT') {
                 setChatError('providerRateLimited');
               } else if (errorPayload?.errorCode === 'WORKER_RATE_LIMIT') {
                 setChatError('workerRateLimited');
@@ -194,8 +191,7 @@ export default function Chat({
               setChatError('timeout');
             } else if (
               response.status === 503 &&
-              (errorPayload?.errorCode === 'OPENROUTER_QUOTA_EXCEEDED' ||
-                errorPayload?.errorCode === 'UPSTREAM_QUOTA_EXCEEDED')
+              errorPayload?.errorCode === 'UPSTREAM_QUOTA_EXCEEDED'
             ) {
               setChatError('providerQuotaExceeded');
             } else if (response.status === 429 || response.status >= 500) {
