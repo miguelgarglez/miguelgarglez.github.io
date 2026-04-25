@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Contexto: Worker de Cloudflare que hace streaming SSE hacia OpenRouter para responder preguntas sobre el perfil profesional. Se consume desde el sitio Astro en GitHub Pages.
+Contexto: Worker de Cloudflare que hace streaming SSE hacia un proveedor LLM OpenAI-compatible para responder preguntas sobre el perfil profesional. Se consume desde el sitio Astro en GitHub Pages.
 
 ## Estructura
 
@@ -21,12 +21,20 @@ Contexto: Worker de Cloudflare que hace streaming SSE hacia OpenRouter para resp
 - Responde `429` con headers `Retry-After` y `X-RateLimit-*`.
 - Es best-effort: no se comparte entre instancias y se resetea al reciclar el worker.
 
-## OpenRouter
+## Proveedor LLM OpenAI-compatible
 
-- Secret obligatorio: `OPENROUTER_API_KEY`.
-- Opcionales: `OPENROUTER_MODEL`, `OPENROUTER_FALLBACK_MODELS`, `OPENROUTER_SITE_URL`, `OPENROUTER_APP_TITLE`.
+- Secret obligatorio: `LLM_API_KEY`.
+- Variables requeridas:
+  - `LLM_PROVIDER`
+  - `LLM_BASE_URL`
+  - `LLM_MODEL`
+- Proveedor actual: opencode Zen.
+- Base URL actual: `https://opencode.ai/zen/v1`.
+- Modelo actual: `nemotron-3-super-free`.
 - Mantener `stream: true` para UX de chat.
-- `DEV=true` permite respuestas con detalle de errores upstream.
+- `DEV=true` permite CORS local y respuestas con detalle de errores upstream.
+- No usar variables `OPENROUTER_*` en este Worker.
+- No incluir payload propietario de OpenRouter (`provider`, `models`, `allow_fallbacks`, etc.).
 
 ## RAG
 
