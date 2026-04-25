@@ -6,30 +6,28 @@ type ChatMessage = {
 };
 
 type Env = {
-  OPENROUTER_API_KEY?: string;
-  OPENROUTER_MODEL?: string;
-  OPENROUTER_FALLBACK_MODELS?: string;
-  OPENROUTER_SITE_URL?: string;
-  OPENROUTER_APP_TITLE?: string;
+  LLM_PROVIDER?: string;
+  LLM_API_KEY?: string;
+  LLM_BASE_URL?: string;
+  LLM_MODEL?: string;
+  LLM_SITE_URL?: string;
+  LLM_APP_TITLE?: string;
   DEV?: string;
 };
 
-const DEFAULT_MODEL = 'openrouter/free';
-const DEFAULT_FALLBACK_MODELS = [
-  'stepfun/step-3.5-flash:free',
-  'arcee-ai/trinity-large-preview:free',
-  'nvidia/nemotron-3-nano-30b-a3b:free',
-];
-const OPENROUTER_TIMEOUT_MS = 25_000;
-const OPENROUTER_MAX_ATTEMPTS = 3;
-const OPENROUTER_RETRY_BASE_MS = 500;
-const OPENROUTER_RETRY_MAX_MS = 6_000;
+const UPSTREAM_TIMEOUT_MS = 25_000;
+const UPSTREAM_MAX_ATTEMPTS = 3;
+const UPSTREAM_RETRY_BASE_MS = 500;
+const UPSTREAM_RETRY_MAX_MS = 6_000;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 20;
 const RETRYABLE_UPSTREAM_STATUS = new Set([408, 429, 500, 502, 503, 504]);
 
-const prodOrigins = ['https://miguelgarglez.github.io'];
-const localhostOrigins = ['http://localhost:4321/cv-chat'];
+const prodOrigins = [
+  'https://miguelgarglez.github.io',
+  'https://miguelgarglez.com',
+];
+const localhostOrigins = ['http://localhost:4321', 'http://127.0.0.1:4321'];
 
 const rateLimitStore = new Map<string, { count: number; reset: number }>();
 
@@ -156,12 +154,36 @@ function extractMessages(body: Record<string, unknown>) {
     .filter((message): message is ChatMessage => Boolean(message));
 }
 
-function parseModelList(raw: string | undefined) {
-  if (!raw) return [] as string[];
-  return raw
-    .split(',')
-    .map((value) => value.trim())
-    .filter((value) => value.length > 0);
+type LlmConfig = {
+  provider: string;
+  apiKey: string;
+  baseUrl: string;
+  model: string;
+  siteUrl: string;
+  appTitle: string;
+};
+
+function normalizeBaseUrl(value: string) {
+  return value.trim().replace(/\/+$/, '');
+}
+
+function getLlmConfig(env: Env): LlmConfig | null {
+  const apiKey = env.LLM_API_KEY?.trim();
+  const rawBaseUrl = env.LLM_BASE_URL?.trim();
+  const model = env.LLM_MODEL?.trim();
+
+  if (!apiKey || !rawBaseUrl || !model) {
+    return null;
+  }
+
+  return {
+    provider: env.LLM_PROVIDER?.trim() || 'custom',
+    apiKey,
+    baseUrl: normalizeBaseUrl(rawBaseUrl),
+    model,
+    siteUrl: env.LLM_SITE_URL?.trim() || 'https://miguelgarglez.github.io',
+    appTitle: env.LLM_APP_TITLE?.trim() || 'Miguel Garcia Profile Chat',
+  };
 }
 
 function wait(ms: number) {
@@ -181,11 +203,11 @@ function parseRetryAfterMs(value: string | null) {
 
 function computeBackoffMs(attempt: number, retryAfterMs: number | null) {
   if (retryAfterMs !== null) {
-    return Math.min(retryAfterMs, OPENROUTER_RETRY_MAX_MS);
+    return Math.min(retryAfterMs, UPSTREAM_RETRY_MAX_MS);
   }
-  const base = OPENROUTER_RETRY_BASE_MS * 2 ** (attempt - 1);
+  const base = UPSTREAM_RETRY_BASE_MS * 2 ** (attempt - 1);
   const jitter = Math.floor(Math.random() * 250);
-  return Math.min(base + jitter, OPENROUTER_RETRY_MAX_MS);
+  return Math.min(base + jitter, UPSTREAM_RETRY_MAX_MS);
 }
 
 function extractUpstreamError(detail: string) {
@@ -425,9 +447,15 @@ export default {
       );
     }
 
-    if (!env.OPENROUTER_API_KEY) {
+    const llm = getLlmConfig(env);
+
+    if (!llm) {
       return new Response(
-        JSON.stringify({ error: 'Missing OPENROUTER_API_KEY.' }),
+        JSON.stringify({
+          error: 'Missing LLM configuration.',
+          errorCode: 'LLM_CONFIG_MISSING',
+          source: 'worker',
+        }),
         {
           status: 500,
           headers: getJsonHeaders(origin, allowedOrigins, isDev, request.headers),
@@ -457,16 +485,8 @@ export default {
 
     const systemPrompt = buildSystemPrompt(question);
 
-    const primaryModel = (env.OPENROUTER_MODEL ?? DEFAULT_MODEL).trim();
-    const configuredFallbacks = parseModelList(env.OPENROUTER_FALLBACK_MODELS);
-    const fallbackModels = (
-      configuredFallbacks.length > 0
-        ? configuredFallbacks
-        : DEFAULT_FALLBACK_MODELS
-    ).filter((model) => model !== primaryModel);
-
     const payload: Record<string, unknown> = {
-      model: primaryModel,
+      model: llm.model,
       stream: true,
       messages: [
         { role: 'system', content: systemPrompt },
@@ -474,21 +494,11 @@ export default {
           ? inboundMessages
           : [{ role: 'user', content: question }]),
       ],
-      provider: {
-        allow_fallbacks: true,
-        sort: 'throughput',
-      },
     };
-    if (fallbackModels.length > 0) {
-      payload.models = fallbackModels;
-    }
 
     const headers: Record<string, string> = {
-      Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
+      Authorization: `Bearer ${llm.apiKey}`,
       'Content-Type': 'application/json',
-      'HTTP-Referer':
-        env.OPENROUTER_SITE_URL ?? 'https://miguelgarglez.github.io',
-      'X-Title': env.OPENROUTER_APP_TITLE ?? 'Miguel Garcia Profile Chat',
     };
 
     let upstream: Response | null = null;
@@ -499,13 +509,13 @@ export default {
     let requestTimedOut = false;
     let attempts = 0;
 
-    for (let attempt = 1; attempt <= OPENROUTER_MAX_ATTEMPTS; attempt += 1) {
+    for (let attempt = 1; attempt <= UPSTREAM_MAX_ATTEMPTS; attempt += 1) {
       attempts = attempt;
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), OPENROUTER_TIMEOUT_MS);
+      const timeoutId = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
 
       try {
-        upstream = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        upstream = await fetch(`${llm.baseUrl}/chat/completions`, {
           method: 'POST',
           headers,
           body: JSON.stringify(payload),
@@ -515,7 +525,7 @@ export default {
         clearTimeout(timeoutId);
         requestTimedOut = error instanceof Error && error.name === 'AbortError';
         requestError = error instanceof Error ? error.message : String(error);
-        if (attempt < OPENROUTER_MAX_ATTEMPTS) {
+        if (attempt < UPSTREAM_MAX_ATTEMPTS) {
           await wait(computeBackoffMs(attempt, null));
           continue;
         }
@@ -535,9 +545,9 @@ export default {
       const canRetryRateLimit =
         upstream.status !== 429 ||
         (attempt === 1 &&
-          (retryAfterMs === null || retryAfterMs <= OPENROUTER_RETRY_MAX_MS));
+          (retryAfterMs === null || retryAfterMs <= UPSTREAM_RETRY_MAX_MS));
       const shouldRetry =
-        attempt < OPENROUTER_MAX_ATTEMPTS &&
+        attempt < UPSTREAM_MAX_ATTEMPTS &&
         RETRYABLE_UPSTREAM_STATUS.has(upstream.status) &&
         canRetryRateLimit;
       if (shouldRetry) {
@@ -552,12 +562,12 @@ export default {
         env.DEV === 'true'
           ? {
               error: requestTimedOut
-                ? 'OpenRouter timeout.'
-                : 'OpenRouter request failed.',
+                ? 'Upstream timeout.'
+                : 'Upstream request failed.',
               errorCode: requestTimedOut
-                ? 'OPENROUTER_TIMEOUT'
-                : 'OPENROUTER_REQUEST_FAILED',
-              source: 'openrouter',
+                ? 'UPSTREAM_TIMEOUT'
+                : 'UPSTREAM_REQUEST_FAILED',
+              source: llm.provider,
               detail: requestError,
               attempts,
             }
@@ -566,9 +576,9 @@ export default {
                 ? 'Upstream timeout.'
                 : 'Upstream request failed.',
               errorCode: requestTimedOut
-                ? 'OPENROUTER_TIMEOUT'
-                : 'OPENROUTER_REQUEST_FAILED',
-              source: 'openrouter',
+                ? 'UPSTREAM_TIMEOUT'
+                : 'UPSTREAM_REQUEST_FAILED',
+              source: llm.provider,
             };
       return new Response(JSON.stringify(payload), {
         status: requestTimedOut ? 504 : 502,
@@ -580,15 +590,15 @@ export default {
       const parsed = extractUpstreamError(upstreamDetail);
       let status = 502;
       let error = 'Upstream error.';
-      let errorCode = 'OPENROUTER_UPSTREAM_ERROR';
+      let errorCode = 'UPSTREAM_ERROR';
       if (upstreamStatus === 429) {
         status = 429;
         error = 'Upstream rate limit exceeded.';
-        errorCode = 'OPENROUTER_RATE_LIMIT';
+        errorCode = 'UPSTREAM_RATE_LIMIT';
       } else if (upstreamStatus === 402) {
         status = 503;
         error = 'Upstream quota exceeded.';
-        errorCode = 'OPENROUTER_QUOTA_EXCEEDED';
+        errorCode = 'UPSTREAM_QUOTA_EXCEEDED';
       }
 
       const responseHeaders = getJsonHeaders(origin, allowedOrigins, isDev);
@@ -604,7 +614,7 @@ export default {
           ? {
               error,
               errorCode,
-              source: 'openrouter',
+              source: llm.provider,
               upstreamStatus,
               detail: parsed?.message ?? upstreamDetail,
               upstreamCode: parsed?.code,
@@ -617,7 +627,7 @@ export default {
           : {
               error,
               errorCode,
-              source: 'openrouter',
+              source: llm.provider,
               retryAfterSeconds:
                 upstreamRetryAfterMs !== null
                   ? Math.max(1, Math.ceil(upstreamRetryAfterMs / 1000))
