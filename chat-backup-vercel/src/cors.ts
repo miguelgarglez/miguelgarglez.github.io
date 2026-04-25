@@ -1,5 +1,6 @@
 const DEFAULT_ALLOWED_ORIGINS = [
   'https://miguelgarglez.github.io',
+  'https://miguelgarglez.com',
   'http://localhost:4321',
   'http://localhost:4321/cv-chat',
 ];
