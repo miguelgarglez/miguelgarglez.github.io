@@ -12,6 +12,18 @@ The goal is not to incrementally improve the current dark CV. The goal is to red
 
 `cv-chat` should feel like an elegant technical dossier: editorial, asymmetric, slightly experimental, powered by a conversational agent, with restrained GSAP motion and ASCII-inspired interface details.
 
+## Closed decisions so far
+
+- Concept: `Editorial Technical Dossier + AI Case File`.
+- Palette: `Charcoal / Warm Paper / Rust`.
+- Typography: keep system fonts for now.
+- Hero: very simple, with name-first composition and minimal supporting copy.
+- Navbar identity: `/miguelgarglez`.
+- Agent access: click-triggered lateral drawer, with `Cmd+K` / `Ctrl+K` as a secondary shortcut.
+- Intro: skip the boot/loading intro.
+- ASCII: subtle hero texture plus one small visible fragment.
+- Motion: very restrained.
+
 ## What the page is
 
 A professional CV experience with an AI chat/agent layer.
@@ -84,6 +96,8 @@ The strongest recommended direction.
 
 A professional file/case/dossier with refined typography, technical labels, restrained motion, and a conversational agent layer.
 
+Selected direction.
+
 ### 2. AI Case File
 
 The page as a professional case file that the visitor scrolls through. The chat acts like an analyst that can explain the contents.
@@ -102,6 +116,8 @@ Recommended blend:
 Editorial Technical Dossier + AI Case File
 ```
 
+This is the chosen framing.
+
 ## Palette exploration
 
 The current amber/dark palette works but feels too close to common developer portfolios.
@@ -111,6 +127,8 @@ Explore a more distinctive palette.
 ### Option A: Charcoal / Warm Paper / Rust
 
 Most recommended.
+
+Selected palette direction.
 
 ```text
 background: charcoal / near black
@@ -182,6 +200,8 @@ Desired typography feeling:
 
 The typography should do a lot of the visual work.
 
+Decision: keep system fonts in phase 05 and build hierarchy with scale, spacing, and contrast.
+
 ## Layout direction
 
 Move away from centered stacked CV sections.
@@ -228,6 +248,8 @@ Navbar should include:
 
 The navbar can be sticky or become sticky after the hero.
 
+Identity choice: `/miguelgarglez`.
+
 ## Loading / intro direction
 
 Consider a short boot/loading intro, maximum 1–1.5 seconds.
@@ -259,9 +281,13 @@ Requirements:
 - Respect reduced motion preferences.
 - Avoid becoming annoying on repeat visits if possible.
 
+Decision: skip the intro for now.
+
 ## Hero direction
 
 The hero should be the biggest change.
+
+Decision: keep it extremely simple and let the scroll carry the rest.
 
 Goals:
 
@@ -301,6 +327,8 @@ Explore my work, engineering judgment and AI-assisted workflow through an intera
 ## ASCII / technical illustration direction
 
 ASCII should be used as a refined visual language, not a retro joke.
+
+Decision: use it as subtle atmosphere in the hero, not as a dominant visual system.
 
 Use it for:
 
@@ -356,6 +384,8 @@ Avoid:
 
 Respect `prefers-reduced-motion`.
 
+Decision: keep motion barely noticeable and only use it to support reading.
+
 ## Scroll direction
 
 The page should feel more guided.
@@ -402,6 +432,8 @@ The chat should feel more integrated through:
 - Improved chat panel styling aligned with the new art direction.
 
 The chat should feel like a layer of the page, not a generic widget.
+
+Decision: implement the agent as a lateral drawer, not a fixed visible panel.
 
 ## Implementation attitude
 

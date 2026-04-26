@@ -60,8 +60,16 @@ export const profileFacts: ProfileFact[] = [
     id: 'primary-stack',
     label: 'Primary stack',
     value:
-      'React, TypeScript, Astro, design systems, accessibility, Cloudflare Workers, AI-assisted engineering workflows',
+      'React, TypeScript, Astro, design systems, accessibility, Cloudflare Workers, AI-assisted engineering workflows with Windsurf, Devin, Codex, GitHub Copilot, MCP servers, context engineering, and reusable skills',
     tags: ['skills', 'frontend', 'ai', 'summary'],
     priority: 85,
+  },
+  {
+    id: 'ai-tools-workflow',
+    label: 'AI tools and workflow',
+    value:
+      'Miguel has used Windsurf and Devin in professional work, and Codex and GitHub Copilot personally. He applies MCP/context workflows, structured prompts, and reusable skills to accelerate and standardize recurring development tasks while keeping human review and code ownership.',
+    tags: ['skills', 'ai', 'experience', 'work_style', 'current-role'],
+    priority: 88,
   },
 ];

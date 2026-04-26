@@ -68,7 +68,25 @@ export function classifyIntent(question: string): Intent {
       'cargo actual',
     ])
   ) return 'experience';
-  if (matchesAny(question, ['skills', 'technologies', 'stack', 'habilidades', 'tecnologias', 'tecnologías'])) return 'skills';
+  if (
+    matchesAny(question, [
+      'skills',
+      'technologies',
+      'stack',
+      'ai',
+      'artificial intelligence',
+      'tools',
+      'herramientas',
+      'windsurf',
+      'devin',
+      'codex',
+      'copilot',
+      'mcp',
+      'habilidades',
+      'tecnologias',
+      'tecnologías',
+    ])
+  ) return 'skills';
   if (matchesAny(question, ['work style', 'collaboration', 'forma de trabajar', 'metodo', 'método'])) return 'work_style';
   if (matchesAny(question, ['contact', 'linkedin', 'email', 'reach', 'contacto'])) return 'contact';
   if (matchesAny(question, ['available', 'availability', 'remote', 'hybrid', 'disponibilidad'])) return 'availability';

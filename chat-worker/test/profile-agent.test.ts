@@ -61,4 +61,15 @@ describe('profile agent context retrieval', () => {
     assert.ok(blockIds.includes('experience-ods'));
     assert.ok(blockIds.includes('skills-frontend'));
   });
+
+  it('selects AI tooling context for AI tools questions', () => {
+    const context = run('What AI tools does Miguel use in his workflow?');
+    const factIds = ids(context.selectedFacts);
+    const blockIds = ids(context.selectedProfileBlocks);
+
+    assert.equal(context.intent, 'skills');
+    assert.ok(factIds.includes('ai-tools-workflow'));
+    assert.ok(blockIds.includes('skills-devops'));
+    assert.ok(blockIds.includes('experience-ods'));
+  });
 });

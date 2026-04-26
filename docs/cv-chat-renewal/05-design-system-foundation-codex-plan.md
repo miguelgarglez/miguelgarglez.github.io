@@ -34,6 +34,8 @@ Recommended palette direction:
 Charcoal / Warm Paper / Rust
 ```
 
+Confirmed as the palette baseline.
+
 This keeps some warmth from the existing amber accent but makes the page feel more premium and editorial.
 
 Suggested token family:
@@ -74,6 +76,8 @@ Possible palette values to try, adjust visually:
 
 These are suggestions, not strict requirements.
 
+Decision note: keep the palette warm, editorial, and technically credible.
+
 ## Typography direction
 
 Create a stronger hierarchy.
@@ -101,6 +105,8 @@ Suggested safe stack:
 --font-body: Inter, ui-sans-serif, system-ui, sans-serif;
 --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 ```
+
+Decision: use system fonts first, then refine hierarchy through size and spacing.
 
 If adding hosted web fonts, do so carefully and avoid hurting performance. Do not add a heavy font strategy unless explicitly needed.
 
@@ -171,6 +177,8 @@ body::before or page wrapper background:
 
 Keep it restrained.
 
+Decision: add subtle depth, not a heavy texture layer.
+
 ## Reduced motion foundation
 
 Add or verify reduced-motion handling:
@@ -187,6 +195,8 @@ Add or verify reduced-motion handling:
 ```
 
 If GSAP is used later, make sure animation setup checks `prefers-reduced-motion` before initializing heavy scroll animations.
+
+Decision: reduced motion is mandatory, not optional.
 
 ## Implementation steps
 

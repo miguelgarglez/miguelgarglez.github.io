@@ -28,6 +28,7 @@ const TAG_KEYWORDS: Record<string, string[]> = {
   contact: ['contact', 'linkedin', 'email', 'reach', 'contacto'],
   educacion: ['educacion', 'educación', 'university', 'degree', 'certifications', 'certificaciones'],
   skills: ['skills', 'stack', 'technologies', 'habilidades', 'tecnologias', 'tecnologías'],
+  ai: ['ai', 'ia', 'artificial intelligence', 'herramientas', 'tools', 'windsurf', 'devin', 'codex', 'copilot', 'mcp', 'skills'],
   frontend: ['frontend', 'react', 'typescript', 'ui', 'components', 'design system'],
   devops: ['devops', 'cloud', 'ci', 'cd', 'cloudflare', 'vercel', 'github actions'],
 };
@@ -50,7 +51,7 @@ const INTENT_TAG_BOOSTS: Record<Intent, string[]> = {
   summary: ['recruiting', 'fortalezas', 'impacto'],
   experience: ['experiencia', 'impacto', 'proyectos'],
   projects: ['proyectos'],
-  skills: ['skills', 'frontend', 'devops'],
+  skills: ['skills', 'frontend', 'devops', 'ai'],
   work_style: ['forma-de-trabajar', 'equipo', 'ownership'],
   contact: ['contact'],
   availability: ['disponibilidad', 'contact'],

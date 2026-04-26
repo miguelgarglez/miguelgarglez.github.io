@@ -129,8 +129,8 @@ export const profileSections: ProfileBlock[] = [
     id: 'experience-ods',
     title: 'Experience - Open Digital Services (Santander Group)',
     content:
-      'Frontend UI Platform Engineer (Sep 2024 - Current). Member of the Kubit Web UI components platform team, building and maintaining the component library used by web developers across Grupo Santander banks. Leads implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem. Contributes to the open-source charting library with new features and continuous improvements. Manages releases with semantic versioning, branch strategy, and Storybook documentation; supports Kubit public presence through product landing pages. Drives AI-enabled workflows with tools like GitHub Copilot, MCP servers, and context engineering to improve productivity, code quality, and collaborative development.',
-    tags: ['experiencia', 'impacto', 'proyectos', 'frontend'],
+      'Frontend UI Platform Engineer (Sep 2024 - Current). Member of the Kubit Web UI components platform team, building and maintaining the component library used by web developers across Grupo Santander banks. Leads implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem. Contributes to the open-source charting library with new features and continuous improvements. Manages releases with semantic versioning, branch strategy, and Storybook documentation; supports Kubit public presence through product landing pages. Drives AI-enabled workflows with tools such as Windsurf and Devin at work, and Codex and GitHub Copilot personally. He uses MCP servers, context engineering, structured prompts, and reusable skills to accelerate recurring development tasks, standardize team workflows, improve code quality, and make AI-assisted development easier to adopt without losing code ownership.',
+    tags: ['experiencia', 'impacto', 'proyectos', 'frontend', 'ai', 'skills'],
     type: 'example',
     lang: 'en',
   },
@@ -201,8 +201,8 @@ export const profileSections: ProfileBlock[] = [
     id: 'skills-devops',
     title: 'Skills - Engineering Tools and AI',
     content:
-      'AI-assisted development with GitHub Copilot, MCP servers, and context engineering. CI/CD with GitHub Actions and Microsoft Azure pipelines. Cloud and APIs with AWS, Vercel, Cloudflare Workers, Docker, and GraphQL.',
-    tags: ['skills', 'devops', 'infra'],
+      'AI-assisted development with Windsurf, Devin, Codex, GitHub Copilot, MCP servers, context engineering, structured prompts, and reusable skills. Miguel uses AI tools pragmatically to accelerate implementation, refactoring, debugging, documentation, and repeated team workflows while keeping human review and code ownership. CI/CD with GitHub Actions and Microsoft Azure pipelines. Cloud and APIs with AWS, Vercel, Cloudflare Workers, Docker, and GraphQL.',
+    tags: ['skills', 'devops', 'infra', 'ai', 'forma-de-trabajar'],
     type: 'answer',
     lang: 'en',
   },

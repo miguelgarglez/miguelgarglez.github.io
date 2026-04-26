@@ -34,6 +34,8 @@ signals → current role → previous experience → interpretation
 
 Not just reading stacked cards.
 
+Decision: keep the motion subtle and let the structure do most of the work.
+
 ## Content structure
 
 Recommended structure:
@@ -46,6 +48,16 @@ Experience Dossier
 Current Role Focus
 ↓
 Previous Experience Compact Archive
+```
+
+Practical section order is now:
+
+```text
+About
+Experience
+Skills
+Agent
+Contact
 ```
 
 This can all live inside one `Experience` section, or be split if the codebase benefits from it.
@@ -90,6 +102,8 @@ Visual style:
 - avoid heavy orange borders;
 - use metadata and editorial spacing.
 
+Decision: keep this block compact and readable.
+
 ## Experience Dossier
 
 Replace the standard timeline feeling with a more designed role presentation.
@@ -124,6 +138,8 @@ Quality mindset · Testing · Product validation · Cross-functional collaborati
 ```
 
 Keep factual accuracy. Do not invent metrics, company details, or responsibilities.
+
+Decision: present experience as dossier-style blocks, not a strict timeline.
 
 ## Layout options
 
@@ -168,6 +184,8 @@ Use strong typography, asymmetric cards and light scroll reveals without pinning
 
 Recommended first implementation if time is limited.
 
+Decision: start with the safest editorial block layout.
+
 ## GSAP ScrollTrigger suggestions
 
 Use GSAP only if already available and easy to initialize safely.
@@ -188,6 +206,8 @@ Avoid:
 - pinning that breaks mobile.
 
 Disable or simplify for mobile and reduced motion.
+
+Decision: any scroll motion must stay very subtle.
 
 ## Section-level prompts
 
@@ -212,6 +232,8 @@ Summarize Miguel's QA background
 Minimum:
 
 - Render prompt chips with `data-chat-prompt` attributes.
+
+Decision: keep the prompt layer present but lightweight.
 
 Best:
 
@@ -250,6 +272,8 @@ Start simple:
 - reveal animations.
 
 Only add pinning after the layout is stable.
+
+Decision: no complex pinning up front.
 
 ### Step 5: Responsive pass
 

@@ -10,7 +10,7 @@ Focus on:
 2. Optional short loading/boot intro.
 3. Asymmetric hero.
 4. Start-the-visit scroll cue.
-5. Hero-level chat/agent framing.
+5. Hero-level agent access cues.
 6. Initial GSAP reveal motion.
 
 Read first:
@@ -36,6 +36,8 @@ The visitor should immediately understand:
 or
 
 > An elegant professional dossier with an AI assistant built into the interface.
+
+Current direction: keep the hero extremely simple and let the identity do the work.
 
 ## Navbar requirements
 
@@ -67,6 +69,8 @@ Possible navbar metadata:
 agent: ready
 ```
 
+Confirmed identity: `/miguelgarglez`.
+
 Only include if it improves the design.
 
 ## Optional loading / boot intro
@@ -93,6 +97,8 @@ Requirements:
 
 If implementation feels heavy, skip the intro and focus on the hero reveal.
 
+Decision: skip the intro.
+
 ## Hero layout
 
 Move toward an asymmetric editorial layout.
@@ -103,29 +109,26 @@ Suggested desktop structure:
 TOP NAV
 Miguel García     About / Experience / Agent / Skills / Contact     Ask CV
 
-LEFT MAIN
-kicker: / CONVERSATIONAL CV
-headline: Software engineer building frontend platforms, design systems and AI-assisted workflows.
-body: Explore this professional dossier with an AI assistant trained on my profile, projects and work signals.
-
-RIGHT PANEL
-ASCII/profile-agent panel
-prompt chips
-agent status / context metadata
+MAIN
+Miguel García
+minimal supporting line
+light metadata
+scroll cue
 
 BOTTOM
 Madrid · Frontend Platform · Design Systems · AI Workflows
 Start the visit ↓
 ```
 
+Update: keep the composition even simpler. The hero should primarily be name-first, with minimal supporting copy and only the scroll cue visible by default.
+The agent should be accessible from the navbar and drawer, not as a fixed visible panel.
+
 Suggested mobile structure:
 
 ```text
 Navbar
-Kicker
-Headline
-Body
-Agent/prompt panel
+Name
+Minimal supporting line
 Metadata
 Start the visit
 ```
@@ -156,11 +159,15 @@ Product-minded software engineer focused on frontend platforms, design systems a
 Ask the CV about my experience, projects, stack or how this agent works.
 ```
 
-## Hero agent panel
+Decision: do not lock the exact supporting line yet; keep it open for refinement.
 
-Create a right-side panel that gives the chat/agent a visual presence.
+## Hero agent access
 
-Possible content:
+Do not create a fixed right-side panel in the hero for now.
+
+The agent should live in the drawer and remain reachable from the navbar and shortcut.
+
+Possible drawer content:
 
 ```text
 ╭──────────────────────────╮
@@ -189,9 +196,9 @@ What has he built at Santander?
 How does this CV chat work?
 ```
 
-If chat integration exists, wire chips to open/send/pre-fill the chat.
+If chat integration exists, wire chips to open/send/pre-fill the chat from the drawer.
 
-Minimum: render as visual prompt chips with `data-chat-prompt` attributes.
+Minimum: render visual prompt chips with `data-chat-prompt` attributes in the drawer or later sections.
 
 ## Start-the-visit cue
 
@@ -211,6 +218,8 @@ Scroll to enter ↓
 
 It should scroll to the next section, likely About or Work Signals.
 
+Decision: the scroll cue is enough; no extra CTA needed in the hero.
+
 Implementation:
 
 - Use anchor link if simple.
@@ -224,12 +233,11 @@ Use GSAP for a restrained hero reveal.
 Suggested animation sequence:
 
 1. Navbar fades/slides in.
-2. Kicker appears.
-3. Hero headline line reveal.
-4. Body copy fades in.
-5. Agent panel appears with slight y/opacity reveal.
-6. Prompt chips stagger in.
-7. Start cue appears last.
+2. Name appears.
+3. Supporting line fades in.
+4. Metadata settles in.
+5. ASCII fragment appears subtly.
+6. Start cue appears last.
 
 Use `gsap.context()` or equivalent cleanup if this is inside an Astro island/client script.
 
@@ -237,6 +245,8 @@ Respect `prefers-reduced-motion`:
 
 - If reduced motion is enabled, show content immediately.
 - Avoid scrub animations in this phase.
+
+Decision: keep motion very restrained and premium.
 
 ## Visual details
 
@@ -254,6 +264,8 @@ Potential background elements:
 - very low-opacity grid;
 - ASCII fragment layer;
 - parallax reserved for later phases unless easy.
+
+Decision: place a subtle ASCII fragment in the hero background, with a soft entrance and minimal drift.
 
 Avoid:
 
@@ -279,6 +291,8 @@ Implement or refactor a top navbar for `cv-chat`.
 
 Make sure it does not unintentionally affect the main directory page unless shared intentionally.
 
+Implementation note: show the nav in the hero and let it become sticky after scroll.
+
 ### Step 3: Add hero layout
 
 Build the asymmetric hero with:
@@ -296,6 +310,8 @@ Build the asymmetric hero with:
 If chat trigger is easy to access, wire chips.
 
 Otherwise add stable `data-chat-prompt` attributes for later.
+
+Implementation note: the drawer opens on click, with `Cmd+K` / `Ctrl+K` as a secondary shortcut.
 
 ### Step 5: Add GSAP reveal
 
@@ -329,7 +345,7 @@ npm run build
 - First screen feels significantly more distinctive.
 - Navbar replaces the old centered link/button feel.
 - Hero is asymmetric and editorial/technical.
-- Chat/agent concept is visible immediately.
+- Chat/agent concept is accessible immediately.
 - Start-the-visit cue exists and works.
 - Motion is restrained and respects reduced motion.
 - Existing chat backend remains untouched.
@@ -340,6 +356,6 @@ npm run build
 ```text
 feat(cv-chat): add editorial navbar
 feat(cv-chat): redesign hero as technical dossier
-feat(cv-chat): add hero agent panel and prompt chips
+feat(cv-chat): add hero agent access cues
 style(cv-chat): add restrained GSAP hero reveal
 ```
