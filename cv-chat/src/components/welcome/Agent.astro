@@ -1,0 +1,277 @@
+<section id="agent" class="agent">
+  <div class="container">
+    <div class="agent-shell">
+      <div class="agent-copy">
+        <p class="agent-kicker">/ agent</p>
+        <h2 class="section-title">How the drawer works</h2>
+        <p class="agent-description">
+          Open the agent to ask about experience, projects, workflow, or how this
+          CV is structured. It is meant to stay accessible without taking over the
+          page.
+        </p>
+      </div>
+
+      <div class="agent-panel">
+        <div class="agent-panel-head">
+          <span class="agent-status">status: ready</span>
+          <button type="button" class="agent-open" data-agent-open>
+            Open agent
+          </button>
+        </div>
+
+        <div class="agent-panel-body">
+          <div class="agent-line">
+            <span>context</span>
+            <strong>profile / experience / signals</strong>
+          </div>
+          <div class="agent-line">
+            <span>mode</span>
+            <strong>dossier</strong>
+          </div>
+        </div>
+
+        <div class="agent-prompts" aria-label="Suggested prompts">
+          <button type="button" class="agent-chip" data-chat-prompt="What kind of engineer is Miguel?">
+            What kind of engineer is Miguel?
+          </button>
+          <button type="button" class="agent-chip" data-chat-prompt="How does Miguel use AI in engineering?">
+            How does Miguel use AI in engineering?
+          </button>
+          <button type="button" class="agent-chip" data-chat-prompt="How does this CV chat work?">
+            How does this CV chat work?
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { getScrollMotionTools, prefersReducedMotion } from '../../lib/motion';
+
+  const openAgent = () => {
+    window.dispatchEvent(new CustomEvent('cv-chat:open'));
+  };
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    document.querySelectorAll('[data-agent-open]').forEach((element) => {
+      element.addEventListener('click', openAgent);
+    });
+
+    if (prefersReducedMotion()) {
+      return;
+    }
+
+    const { gsap } = await getScrollMotionTools();
+
+    gsap.set('#agent .agent-copy, #agent .agent-panel', { y: 42, opacity: 0 });
+    gsap.set('#agent .agent-chip', { y: 14, opacity: 0 });
+
+    gsap.to('#agent .agent-copy, #agent .agent-panel', {
+      y: 0,
+      opacity: 1,
+      duration: 0.75,
+      ease: 'power3.out',
+      stagger: 0.08,
+      scrollTrigger: {
+        trigger: '#agent',
+        start: 'top 75%',
+        end: 'bottom 75%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    gsap.to('#agent .agent-chip', {
+      y: 0,
+      opacity: 1,
+      duration: 0.5,
+      stagger: 0.08,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#agent .agent-prompts',
+        start: 'top 80%',
+        end: 'bottom 80%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+  });
+</script>
+
+<style>
+  .agent {
+    padding: 5rem 2rem;
+    background: var(--bg-light);
+    color: var(--text);
+    overflow: hidden;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .agent-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .agent-copy,
+  .agent-panel {
+    border: 1px solid var(--border-muted);
+    border-radius: 1.2rem;
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
+    box-shadow: var(--shadow-card);
+  }
+
+  .agent-copy {
+    padding: 2.2rem;
+  }
+
+  .agent-kicker {
+    margin: 0 0 0.8rem;
+    color: var(--primary);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    margin: 0;
+    text-align: left;
+  }
+
+  .agent-description {
+    margin: 1rem 0 0;
+    max-width: 34rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+    font-size: 1.02rem;
+  }
+
+  .agent-panel {
+    padding: 1.2rem;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .agent-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .agent-status {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+
+  .agent-open {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 0.7rem 1rem;
+    cursor: pointer;
+    transition: transform 180ms var(--ease-out-quart), border-color 180ms var(--ease-out-quart);
+  }
+
+  .agent-open:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--primary) 36%, var(--border));
+  }
+
+  .agent-panel-body {
+    display: grid;
+    gap: 0.8rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--bg-light) 72%, transparent);
+    border: 1px solid var(--border-muted);
+  }
+
+  .agent-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+  }
+
+  .agent-line span {
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .agent-line strong {
+    color: var(--text);
+    font-weight: 500;
+    text-align: right;
+  }
+
+  .agent-prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+
+  .agent-chip {
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    color: var(--text-muted);
+    border-radius: 999px;
+    padding: 0.72rem 0.95rem;
+    cursor: pointer;
+    text-align: left;
+    font-size: 0.86rem;
+    line-height: 1.3;
+    transition:
+      transform 180ms var(--ease-out-quart),
+      border-color 180ms var(--ease-out-quart),
+      color 180ms var(--ease-out-quart);
+  }
+
+  .agent-chip:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--primary) 32%, var(--border));
+    color: var(--text);
+  }
+
+  @media (max-width: 900px) {
+    .agent-shell {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .agent {
+      padding-inline: 1rem;
+    }
+
+    .agent-copy,
+    .agent-panel {
+      padding: 1.25rem;
+    }
+
+    .agent-line {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .agent-line strong {
+      text-align: left;
+    }
+
+    .agent-open {
+      width: 100%;
+    }
+  }
+</style>

@@ -30,44 +30,28 @@ import { Icon } from 'astro-icon/components';
 
 <style>
   #theme-toggle {
-    position: fixed;
-    top: calc(var(--safe-area-top) + 16px);
-    right: calc(var(--safe-area-right) + 16px);
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 24px;
-    width: 44px;
-    height: 44px;
-    z-index: 9999;
+    width: 2.25rem;
+    height: 2.25rem;
     padding: 0;
-    border-radius: 999px;
     transition:
       transform 180ms ease,
-      background-color 180ms ease,
-      border-color 180ms ease,
-      box-shadow 180ms ease,
       color 180ms ease;
     color: var(--text);
     display: grid;
     place-items: center;
-    border: 1px solid color-mix(in srgb, var(--border) 90%, transparent);
-    background: color-mix(in srgb, var(--bg-light) 78%, transparent);
-    backdrop-filter: blur(14px);
-    box-shadow: var(--shadow-card);
   }
 
   #theme-toggle:hover {
     transform: scale(1.08);
-    border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
     color: var(--primary);
   }
 
   #theme-toggle:focus-visible {
     outline: none;
-    box-shadow:
-      var(--shadow-card),
-      0 0 0 3px color-mix(in srgb, var(--primary) 24%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 24%, transparent);
   }
 
   .sun-icon,
@@ -96,5 +80,17 @@ import { Icon } from 'astro-icon/components';
 
   body:not(.light) #theme-toggle {
     color: color-mix(in srgb, var(--primary) 88%, white 12%);
+  }
+
+  @media (max-width: 640px) {
+    #theme-toggle {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    #theme-toggle svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
   }
 </style>

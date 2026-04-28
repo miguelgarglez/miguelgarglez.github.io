@@ -135,6 +135,11 @@
     pointer-events: none;
   }
 
+  body.chat-page-open .site-nav {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
   body.chat-page-open #theme-toggle {
     visibility: hidden;
     pointer-events: none;

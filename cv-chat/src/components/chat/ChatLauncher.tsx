@@ -73,6 +73,31 @@ export default function ChatLauncher({
     }
   };
 
+  const openPanel = () => {
+    if (isOpen) return;
+
+    clearCloseTimeout();
+
+    if (!hasOpened) {
+      setHasOpened(true);
+      setIsHidden(false);
+      setIsOpen(true);
+      return;
+    }
+
+    setIsHidden(false);
+    setIsOpen(true);
+  };
+
+  const togglePanel = () => {
+    if (isOpen) {
+      closePanel();
+      return;
+    }
+
+    openPanel();
+  };
+
   useEffect(() => {
     // Safari can mis-report this breakpoint after the page-content visibility toggle.
     // If we revisit the bug, this is the first place to harden the compact-mode decision.
@@ -138,25 +163,33 @@ export default function ChatLauncher({
     }
   }, [hasOpened, isOpen]);
 
-  const toggleOpen = () => {
-    if (isOpen) {
-      closePanel();
-      return;
-    }
+  useEffect(() => {
+    const handleShortcut = (event: KeyboardEvent) => {
+      if (!(event.metaKey || event.ctrlKey)) return;
+      if (event.key.toLowerCase() !== "k") return;
+      event.preventDefault();
+      togglePanel();
+    };
 
-    clearCloseTimeout();
+    const handleOpen = () => openPanel();
+    const handleClose = () => closePanel();
+    const handleToggle = () => togglePanel();
 
-    if (!hasOpened) {
-      setHasOpened(true);
-      setIsHidden(false);
-      // Opening immediately avoids iOS delays when waiting for the next animation frame.
-      setIsOpen(true);
-      return;
-    }
+    window.addEventListener("keydown", handleShortcut);
+    window.addEventListener("cv-chat:open", handleOpen as EventListener);
+    window.addEventListener("cv-chat:close", handleClose as EventListener);
+    window.addEventListener("cv-chat:toggle", handleToggle as EventListener);
 
-    setIsHidden(false);
-    setIsOpen(true);
-  };
+    return () => {
+      window.removeEventListener("keydown", handleShortcut);
+      window.removeEventListener("cv-chat:open", handleOpen as EventListener);
+      window.removeEventListener("cv-chat:close", handleClose as EventListener);
+      window.removeEventListener(
+        "cv-chat:toggle",
+        handleToggle as EventListener,
+      );
+    };
+  }, [isOpen, hasOpened, isCompact]);
 
   return (
     <>
@@ -171,10 +204,10 @@ export default function ChatLauncher({
         aria-expanded={isOpen}
         aria-pressed={isOpen}
         aria-controls={panelId}
-        aria-label={isOpen ? "Close chat" : "Open chat"}
+        aria-label={isOpen ? "Close agent" : "Open agent"}
         aria-hidden={isCompact && isOpen}
         tabIndex={isCompact && isOpen ? -1 : 0}
-        onClick={toggleOpen}
+        onClick={togglePanel}
         ref={buttonRef}
       >
         <span

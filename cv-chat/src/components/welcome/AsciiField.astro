@@ -1,0 +1,459 @@
+---
+
+---
+
+<div class="ascii-field" aria-hidden="true" data-ascii-field>
+    <div class="ascii-field-surface">
+        <div class="ascii-field-glow"></div>
+        <pre
+            class="ascii-field-art"
+            data-ascii-art>  ..::---===+++***+++===---::..
+ ..::--==+++***###***+++==--::..
+..::--==++***#####***++==--::..
+.::--==++***#######***++==--::.
+::--==++***#######***++==--::..
+::--==++***#####***++==--::..
+.::--==++***#######***++==--::.
+..::--==++***#####***++==--::..
+ ..::--==+++***###***+++==--::..
+  ..::---===+++***+++===---::..</pre>
+    </div>
+</div>
+
+<script>
+    import { prefersReducedMotion } from "../../lib/motion";
+
+    const glyphs = [" ", ".", ":", "-", "=", "+", "*", "#"];
+    const compactGlyphs = [" ", ".", ":", "-", "="];
+
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+    const buildField = (
+        x,
+        y,
+        compact = false,
+        largeDesktop = false,
+        smallMobile = false,
+    ) => {
+        const cols = smallMobile ? 64 : compact ? 72 : largeDesktop ? 120 : 96;
+        const rows = smallMobile ? 56 : compact ? 72 : largeDesktop ? 104 : 84;
+        const chars = compact ? compactGlyphs : glyphs;
+
+        let output = "";
+
+        for (let row = 0; row < rows; row += 1) {
+            const ny = rows === 1 ? 0.5 : row / (rows - 1);
+            let line = "";
+
+            for (let col = 0; col < cols; col += 1) {
+                const nx = cols === 1 ? 0.5 : col / (cols - 1);
+                const dx = nx - x;
+                const dy = ny - y;
+                const distance = Math.hypot(dx * 1.15, dy * 0.9);
+                const wave =
+                    Math.sin((nx * 8.5 + y * 2.8) * Math.PI) * 0.32 +
+                    Math.cos((ny * 7.2 - x * 3.4) * Math.PI) * 0.24 +
+                    Math.sin((nx + ny + x * 1.5 - y * 1.2) * Math.PI * 2) *
+                        0.18;
+                const focus = clamp(1.15 - distance * 2.2, 0, 1);
+                const energy = clamp(0.35 + focus * 0.92 + wave * 0.2, 0, 1);
+                const index = Math.min(
+                    chars.length - 1,
+                    Math.max(0, Math.floor(energy * (chars.length - 1))),
+                );
+
+                line += chars[index];
+            }
+
+            output += line + (row < rows - 1 ? "\n" : "");
+        }
+
+        return output;
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const field = document.querySelector("[data-ascii-field]");
+        const art = document.querySelector("[data-ascii-art]");
+
+        if (!(field instanceof HTMLElement) || !(art instanceof HTMLElement)) {
+            return;
+        }
+
+        const compactQuery = window.matchMedia("(max-width: 640px)");
+        const smallMobileQuery = window.matchMedia(
+            "(max-width: 350px) and (max-height: 775px)",
+        );
+        const largeDesktopQuery = window.matchMedia("(min-width: 1440px)");
+        const shouldReduce = prefersReducedMotion();
+        const shouldAnimate =
+            !shouldReduce &&
+            window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+        const centerX = 0.5;
+        const centerY = 0.48;
+        const frameInterval = 1000 / 30;
+        let artRect = null;
+
+        const render = (x, y) => {
+            const normalizedX = clamp(x, 0, 1);
+            const normalizedY = clamp(y, 0, 1);
+            const isCompact = compactQuery.matches;
+            const isSmallMobile = smallMobileQuery.matches;
+            const isLargeDesktop = largeDesktopQuery.matches;
+
+            art.textContent = buildField(
+                normalizedX,
+                normalizedY,
+                isCompact,
+                isLargeDesktop,
+                isSmallMobile,
+            );
+            field.style.setProperty(
+                "--field-x",
+                `${(normalizedX * 100).toFixed(2)}%`,
+            );
+            field.style.setProperty(
+                "--field-y",
+                `${(normalizedY * 100).toFixed(2)}%`,
+            );
+        };
+
+        // Keep the glow locked to the rendered ASCII bounds so it reads as a
+        // material highlight over the characters, not as a floating blob.
+        const syncGlowBounds = () => {
+            artRect = art.getBoundingClientRect();
+
+            field.style.setProperty("--glow-width", `${artRect.width}px`);
+            field.style.setProperty("--glow-height", `${artRect.height}px`);
+        };
+
+        const syncResponsiveState = () => {
+            render(centerX, centerY);
+            syncGlowBounds();
+        };
+
+        syncResponsiveState();
+
+        window.addEventListener("resize", syncResponsiveState, { passive: true });
+        window.addEventListener("orientationchange", syncResponsiveState, {
+            passive: true,
+        });
+
+        if (!shouldAnimate) {
+            return;
+        }
+
+        let renderFrame = 0;
+        let idleFrame = 0;
+        let resumeIdleTimer = 0;
+        let glowFrame = 0;
+        let nextX = centerX;
+        let nextY = centerY;
+        let phase = 0;
+        let lastIdleRender = 0;
+        let lastPointerRender = 0;
+        let isHovering = false;
+        let isVisible = true;
+
+        const setGlow = (value) => {
+            field.style.setProperty("--glow-opacity", `${value}`);
+        };
+
+        const tickIdle = (now) => {
+            if (!isVisible) {
+                idleFrame = 0;
+                return;
+            }
+
+            if (now - lastIdleRender < frameInterval) {
+                idleFrame = window.requestAnimationFrame(tickIdle);
+                return;
+            }
+
+            lastIdleRender = now;
+            phase += 0.03;
+
+            const x = centerX + Math.sin(phase * 1.1) * 0.045;
+            const y = centerY + Math.cos(phase * 0.9) * 0.03;
+
+            render(x, y);
+
+            if (!isHovering) {
+                idleFrame = window.requestAnimationFrame(tickIdle);
+            } else {
+                idleFrame = 0;
+            }
+        };
+
+        const startIdle = () => {
+            if (idleFrame || isHovering || !isVisible) return;
+            idleFrame = window.requestAnimationFrame(tickIdle);
+        };
+
+        const stopIdle = () => {
+            if (idleFrame) {
+                window.cancelAnimationFrame(idleFrame);
+                idleFrame = 0;
+            }
+        };
+
+        const scheduleIdleResume = () => {
+            if (resumeIdleTimer) {
+                window.clearTimeout(resumeIdleTimer);
+            }
+
+            resumeIdleTimer = window.setTimeout(() => {
+                resumeIdleTimer = 0;
+                startIdle();
+            }, 1200);
+        };
+
+        const schedule = () => {
+            if (renderFrame) return;
+
+            renderFrame = window.requestAnimationFrame((now) => {
+                renderFrame = 0;
+                if (now - lastPointerRender < frameInterval) return;
+                lastPointerRender = now;
+                render(nextX, nextY);
+            });
+        };
+
+        const updateFromEvent = (event) => {
+            isHovering = true;
+            stopIdle();
+            if (resumeIdleTimer) {
+                window.clearTimeout(resumeIdleTimer);
+                resumeIdleTimer = 0;
+            }
+            if (glowFrame) {
+                window.cancelAnimationFrame(glowFrame);
+                glowFrame = 0;
+            }
+            setGlow(1);
+            artRect ??= art.getBoundingClientRect();
+            nextX = (event.clientX - artRect.left) / artRect.width;
+            nextY = (event.clientY - artRect.top) / artRect.height;
+            schedule();
+        };
+
+        const fadeGlowOut = () => {
+            if (glowFrame) return;
+
+            const start = window.performance.now();
+            const duration = 240;
+
+            const tick = (now) => {
+                const progress = clamp((now - start) / duration, 0, 1);
+                setGlow(1 - progress);
+
+                if (progress < 1 && !isHovering) {
+                    glowFrame = window.requestAnimationFrame(tick);
+                } else {
+                    glowFrame = 0;
+                }
+            };
+
+            glowFrame = window.requestAnimationFrame(tick);
+        };
+
+        art.addEventListener("pointermove", updateFromEvent);
+        art.addEventListener("pointerenter", (event) => {
+            syncGlowBounds();
+            updateFromEvent(event);
+        });
+        art.addEventListener("pointerleave", () => {
+            isHovering = false;
+            nextX = centerX;
+            nextY = centerY;
+            fadeGlowOut();
+            scheduleIdleResume();
+        });
+
+        art.addEventListener("pointercancel", () => {
+            isHovering = false;
+            fadeGlowOut();
+            scheduleIdleResume();
+        });
+
+        if ("IntersectionObserver" in window) {
+            const observer = new IntersectionObserver(
+                ([entry]) => {
+                    isVisible = entry.isIntersecting;
+
+                    if (isVisible) {
+                        syncResponsiveState();
+                        startIdle();
+                    } else {
+                        stopIdle();
+                    }
+                },
+                { threshold: 0.05 },
+            );
+
+            observer.observe(field);
+        }
+
+        setGlow(0);
+        startIdle();
+    });
+</script>
+
+<style>
+    .ascii-field {
+        position: relative;
+        justify-self: center;
+        align-self: stretch;
+        width: min(100%, 41rem);
+        height: calc(100% - clamp(0.85rem, 2vw, 1.75rem));
+        margin-block: auto;
+    }
+
+    .ascii-field::before {
+        content: "";
+        position: absolute;
+        inset: -10% -6%;
+        background:
+            radial-gradient(
+                circle at 22% 32%,
+                color-mix(in srgb, var(--primary) 12%, transparent),
+                transparent 44%
+            ),
+            radial-gradient(
+                circle at 74% 24%,
+                color-mix(in srgb, var(--secondary) 8%, transparent),
+                transparent 38%
+            ),
+            radial-gradient(
+                circle at 52% 66%,
+                color-mix(in srgb, var(--warning) 6%, transparent),
+                transparent 48%
+            );
+        filter: blur(20px);
+        opacity: 0.16;
+        pointer-events: none;
+    }
+
+    .ascii-field-surface {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: grid;
+        align-items: center;
+        justify-items: center;
+        transform: translateY(-0.15rem);
+    }
+
+    .ascii-field-glow {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: var(--glow-width, 100%);
+        height: var(--glow-height, 100%);
+        transform: translate(-50%, -50%);
+        background:
+            radial-gradient(
+                circle at var(--field-x, 50%) var(--field-y, 48%),
+                color-mix(in srgb, var(--primary) 18%, transparent),
+                transparent 34%
+            ),
+            radial-gradient(
+                circle at calc(var(--field-x, 50%) + 8%)
+                    calc(var(--field-y, 48%) + 10%),
+                color-mix(in srgb, var(--secondary) 11%, transparent),
+                transparent 26%
+            );
+        filter: blur(12px);
+        opacity: var(--glow-opacity, 0);
+        pointer-events: none;
+    }
+
+    .ascii-field-art {
+        position: relative;
+        margin: 0;
+        color: color-mix(in srgb, var(--text-muted) 78%, var(--bg-light));
+        font-family: var(--font-mono);
+        font-size: 0.4rem;
+        line-height: 0.87;
+        letter-spacing: 0.006em;
+        white-space: pre;
+        text-shadow: 0 0 20px color-mix(in srgb, var(--primary) 8%, transparent);
+        transform: translate3d(0, 0, 0);
+        user-select: none;
+        display: inline-block;
+        animation: field-breathe 8s var(--ease-out-quart) infinite alternate;
+    }
+
+    @media (min-width: 1440px) {
+        .ascii-field {
+            width: min(100%, 48rem);
+            height: calc(100% - 0.35rem);
+        }
+
+        .ascii-field-art {
+            font-size: 0.47rem;
+            line-height: 0.84;
+            letter-spacing: 0.004em;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .ascii-field-glow {
+            opacity: 0.45;
+        }
+
+        .ascii-field-art {
+            animation: none;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .ascii-field {
+            justify-self: stretch;
+            width: 100%;
+            height: auto;
+            max-height: min(52svh, 32rem);
+            margin-block: 0;
+            overflow: clip;
+        }
+
+        .ascii-field-surface {
+            min-height: 0;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .ascii-field {
+            max-height: min(43svh, 22rem);
+        }
+
+        .ascii-field-art {
+            font-size: 0.27rem;
+            letter-spacing: 0.005em;
+            line-height: 0.93;
+            opacity: 0.86;
+        }
+    }
+
+    @media (max-width: 350px) and (max-height: 775px) {
+        .ascii-field {
+            height: auto;
+            max-height: 39svh;
+        }
+
+        .ascii-field-art {
+            font-size: 0.265rem;
+            line-height: 0.91;
+            letter-spacing: 0.004em;
+        }
+    }
+
+    @keyframes field-breathe {
+        from {
+            transform: translate3d(-1px, -1px, 0);
+        }
+        to {
+            transform: translate3d(1px, 1px, 0);
+        }
+    }
+</style>

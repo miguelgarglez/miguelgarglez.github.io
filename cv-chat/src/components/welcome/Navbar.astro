@@ -1,0 +1,118 @@
+---
+import ThemeToggle from "../ThemeToggle.astro";
+---
+
+<header class="site-nav" aria-label="Primary navigation">
+    <div class="page-shell site-nav-shell">
+        <div class="site-nav-inner">
+            <a class="site-brand" href="#main-content">/miguelgarglez</a>
+
+            <nav class="site-links" aria-label="Section navigation">
+                <a href="#about">About</a>
+                <a href="#experience">Experience</a>
+                <a href="#skills">Skills</a>
+                <a href="#contact">Contact</a>
+            </nav>
+
+            <ThemeToggle />
+        </div>
+    </div>
+</header>
+
+<script>
+    import { getMotionTools, prefersReducedMotion } from "../../lib/motion";
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        if (prefersReducedMotion()) {
+            return;
+        }
+
+        const { gsap } = await getMotionTools();
+
+        gsap.set(".site-nav", { y: -16, opacity: 0 });
+        gsap.to(".site-nav", {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            ease: "power3.out",
+        });
+    });
+</script>
+
+<style>
+    .site-nav {
+        position: fixed;
+        display: flex;
+        width: 100%;
+        z-index: 20;
+        padding: 0.75rem 1.25rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .site-nav-shell {
+        width: 100%;
+    }
+
+    .site-nav-inner {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .site-brand,
+    .site-links a {
+        font-family: var(--font-mono);
+        letter-spacing: 0.02em;
+    }
+
+    .site-brand {
+        color: var(--text);
+        text-decoration: none;
+        font-size: 0.95rem;
+        opacity: 0.95;
+    }
+
+    .site-links {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .site-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.88rem;
+        transition:
+            color 180ms var(--ease-out-quart),
+            opacity 180ms var(--ease-out-quart);
+    }
+
+    .site-links a:hover,
+    .site-brand:hover {
+        color: var(--text);
+    }
+
+    @media (max-width: 900px) {
+        .site-links {
+            display: none;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .site-nav {
+            padding: 0.5rem 1rem;
+        }
+
+        .site-nav-inner {
+            gap: 0.75rem;
+        }
+
+        .site-brand {
+            font-size: 0.9rem;
+        }
+    }
+</style>

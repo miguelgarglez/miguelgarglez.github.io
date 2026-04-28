@@ -1,317 +1,341 @@
 ---
-import ThemeToggle from '../components/ThemeToggle.astro';
-import '../styles/global.css';
+import Navbar from "../components/welcome/Navbar.astro";
+import "../styles/global.css";
 ---
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
-    <meta
-      name="description"
-      content="Miguel García's digital CV. Frontend platform engineer focused on accessible interfaces, scalable design systems, and practical AI workflows."
-    />
-    <meta
-      name="theme-color"
-      media="(prefers-color-scheme: dark)"
-      content="#09111c"
-    />
-    <meta
-      name="theme-color"
-      media="(prefers-color-scheme: light)"
-      content="#f5efe5"
-    />
-    <meta name="theme-color" content="#09111c" data-dynamic-theme-color />
-    <link rel="icon" type="image/png" href="/cv-chat/favicon.png" />
-    <meta name="generator" content={Astro.generator} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-    />
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+        />
+        <meta
+            name="description"
+            content="Miguel García's digital CV. Frontend platform engineer focused on accessible interfaces, scalable design systems, and practical AI workflows."
+        />
+        <meta
+            name="theme-color"
+            media="(prefers-color-scheme: dark)"
+            content="#12100e"
+        />
+        <meta
+            name="theme-color"
+            media="(prefers-color-scheme: light)"
+            content="#f4ede2"
+        />
+        <meta name="theme-color" content="#12100e" data-dynamic-theme-color />
+        <link rel="icon" type="image/png" href="/cv-chat/favicon.png" />
+        <meta name="generator" content={Astro.generator} />
 
-    <title>Miguel García</title>
-  </head>
-  <body>
-    <a class="skip-link" href="#main-content">Skip to content</a>
-    <ThemeToggle />
-    <slot />
-  </body>
+        <title>Miguel García</title>
+    </head>
+    <body>
+        <a class="skip-link" href="#main-content">Skip to content</a>
+        <Navbar />
+        <slot />
+    </body>
 </html>
 
 <script is:inline>
-  const themeMediaQuery = window.matchMedia('(prefers-color-scheme: light)');
-  const themeColorMeta = document.querySelector(
-    'meta[data-dynamic-theme-color]'
-  );
+    const themeMediaQuery = window.matchMedia("(prefers-color-scheme: light)");
+    const themeColorMeta = document.querySelector(
+        "meta[data-dynamic-theme-color]",
+    );
 
-  const applyTheme = (theme) => {
-    const isLight = theme === 'light';
-    document.body.classList.toggle('light', isLight);
-    document.documentElement.style.colorScheme = isLight ? 'light' : 'dark';
-    document.documentElement.style.backgroundColor = isLight
-      ? '#f5efe5'
-      : '#09111c';
+    const applyTheme = (theme) => {
+        const isLight = theme === "light";
+        document.body.classList.toggle("light", isLight);
+        document.documentElement.style.colorScheme = isLight ? "light" : "dark";
+        document.documentElement.style.backgroundColor = isLight
+            ? "#f4ede2"
+            : "#12100e";
 
-    if (themeColorMeta) {
-      themeColorMeta.setAttribute('content', isLight ? '#f5efe5' : '#09111c');
-    }
-  };
+        if (themeColorMeta) {
+            themeColorMeta.setAttribute(
+                "content",
+                isLight ? "#f4ede2" : "#12100e",
+            );
+        }
+    };
 
-  const getPreferredTheme = () => {
-    const storedTheme = localStorage.getItem('miguel-theme');
+    const getPreferredTheme = () => {
+        const storedTheme = localStorage.getItem("miguel-theme");
 
-    if (storedTheme === 'light' || storedTheme === 'dark') {
-      return storedTheme;
-    }
+        if (storedTheme === "light" || storedTheme === "dark") {
+            return storedTheme;
+        }
 
-    return themeMediaQuery.matches ? 'light' : 'dark';
-  };
+        return themeMediaQuery.matches ? "light" : "dark";
+    };
 
-  applyTheme(getPreferredTheme());
+    applyTheme(getPreferredTheme());
 
-  window['__setPreferredTheme'] = (theme) => {
-    localStorage.setItem('miguel-theme', theme);
-    applyTheme(theme);
-  };
+    window["__setPreferredTheme"] = (theme) => {
+        localStorage.setItem("miguel-theme", theme);
+        applyTheme(theme);
+    };
 
-  themeMediaQuery.addEventListener('change', (event) => {
-    if (!localStorage.getItem('miguel-theme')) {
-      applyTheme(event.matches ? 'light' : 'dark');
-    }
-  });
+    themeMediaQuery.addEventListener("change", (event) => {
+        if (!localStorage.getItem("miguel-theme")) {
+            applyTheme(event.matches ? "light" : "dark");
+        }
+    });
 </script>
 
 <style>
-  html {
-    color-scheme: dark;
-    scroll-behavior: smooth;
-    background: #09111c;
-  }
-
-  @media (prefers-color-scheme: light) {
     html {
-      background: #f5efe5;
-    }
-  }
-
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-  }
-  * {
-    box-sizing: border-box;
-  }
-
-  /* Asegurar que ningún elemento cause scroll horizontal */
-  body {
-    max-width: 100vw;
-    font-family: var(--font-body);
-    background: var(--bg);
-    color: var(--text);
-    overflow-x: hidden;
-    -webkit-tap-highlight-color: rgba(217, 139, 20, 0.18);
-    text-rendering: optimizeLegibility;
-  }
-
-  :root {
-    --safe-area-top: env(safe-area-inset-top);
-    --safe-area-right: env(safe-area-inset-right);
-    --safe-area-bottom: env(safe-area-inset-bottom);
-    --safe-area-left: env(safe-area-inset-left);
-    --font-body: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
-    --font-display:
-      'Sora', 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
-    --bg-dark: #050b14;
-    --bg: #09111c;
-    --bg-light: #101b2b;
-    --text: #edf2ff;
-    --text-muted: #9ea8bb;
-    --highlight: #162338;
-    --border: #22324a;
-    --border-muted: #152133;
-    --primary: #d98b14;
-    --secondary: #76bfff;
-    --danger: #e66b6b;
-    --warning: #f2c84b;
-    --success: #5bd69f;
-    --info: #78b0ff;
-    --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
-    --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
-    --radius-sm: 10px;
-    --radius-md: 14px;
-    --radius-lg: 20px;
-    --shadow-soft: 0 18px 50px rgba(0, 0, 0, 0.35);
-    --shadow-card: 0 14px 30px rgba(0, 0, 0, 0.2);
-    --shadow-glow: 0 0 40px rgba(242, 169, 59, 0.2);
-    --container-max: 1120px;
-    --radius: var(--radius-md);
-    --background: var(--bg);
-    --foreground: var(--text);
-    --card: var(--bg-light);
-    --card-foreground: var(--text);
-    --popover: var(--bg-light);
-    --popover-foreground: var(--text);
-    --primary-foreground: var(--bg-dark);
-    --secondary-foreground: var(--text);
-    --muted: var(--highlight);
-    --muted-foreground: var(--text-muted);
-    --accent: var(--secondary);
-    --accent-foreground: var(--bg-dark);
-    --destructive: var(--danger);
-    --input: var(--border-muted);
-    --ring: var(--primary);
-  }
-  body.light {
-    --bg-dark: #ebe3d5;
-    --bg: #f5efe5;
-    --bg-light: #fffaf3;
-    --text: #171513;
-    --text-muted: #5e584f;
-    --highlight: #e9dfd1;
-    --border: #dacdbd;
-    --border-muted: #e9dece;
-    --primary: #b8740b;
-    --secondary: #2e74b8;
-    --danger: #b54343;
-    --warning: #b9860c;
-    --success: #2f8a61;
-    --info: #2d6ab7;
-    --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
-    --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
-    --shadow-soft: 0 18px 50px rgba(69, 50, 30, 0.15);
-    --shadow-card: 0 14px 30px rgba(69, 50, 30, 0.12);
-    --shadow-glow: 0 0 30px rgba(176, 106, 6, 0.18);
-    --background: var(--bg);
-    --foreground: var(--text);
-    --card: var(--bg-light);
-    --card-foreground: var(--text);
-    --popover: var(--bg-light);
-    --popover-foreground: var(--text);
-    --primary-foreground: var(--bg-dark);
-    --secondary-foreground: var(--text);
-    --muted: var(--highlight);
-    --muted-foreground: var(--text-muted);
-    --accent: var(--secondary);
-    --accent-foreground: var(--bg-dark);
-    --destructive: var(--danger);
-    --input: var(--border-muted);
-    --ring: var(--primary);
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(
-        circle at 15% 20%,
-        color-mix(in srgb, var(--primary) 12%, transparent),
-        transparent 32%
-      ),
-      radial-gradient(
-        circle at 82% 14%,
-        color-mix(in srgb, var(--secondary) 9%, transparent),
-        transparent 28%
-      ),
-      linear-gradient(180deg, color-mix(in srgb, var(--bg-dark) 60%, transparent), transparent 24%);
-    pointer-events: none;
-    z-index: -1;
-  }
-
-  main[id],
-  section[id] {
-    scroll-margin-top: 96px;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4 {
-    text-wrap: balance;
-  }
-
-  p,
-  li {
-    text-wrap: pretty;
-  }
-
-  a,
-  button {
-    touch-action: manipulation;
-  }
-
-  .skip-link {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    z-index: 10000;
-    padding: 0.75rem 1rem;
-    border-radius: 999px;
-    background: var(--bg-light);
-    color: var(--text);
-    border: 1px solid var(--border);
-    text-decoration: none;
-    transform: translateY(-140%);
-    transition:
-      transform 180ms ease,
-      box-shadow 180ms ease;
-    box-shadow: var(--shadow-card);
-    pointer-events: none;
-  }
-
-  .skip-link:focus-visible {
-    position: fixed;
-    transform: translateY(0);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 24%, transparent);
-    outline: none;
-    pointer-events: auto;
-  }
-
-  .page-shell {
-    max-width: var(--container-max);
-    margin: 0 auto;
-    padding: 0 24px;
-  }
-
-  .section {
-    padding: 96px 0;
-  }
-
-  .section-title {
-    font-size: clamp(1.8rem, 3vw, 2.6rem);
-    margin-bottom: 40px;
-    text-align: center;
-    color: var(--text);
-  }
-
-  .card {
-    background: var(--bg-light);
-    border: 1px solid var(--border-muted);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
+        color-scheme: dark;
+        scroll-behavior: smooth;
+        background: #12100e;
     }
 
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
+    @media (prefers-color-scheme: light) {
+        html {
+            background: #f4ede2;
+        }
     }
-  }
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+    }
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Asegurar que ningún elemento cause scroll horizontal */
+    body {
+        max-width: 100vw;
+        font-family: var(--font-body);
+        background: transparent;
+        color: var(--text);
+        overflow-x: hidden;
+        -webkit-tap-highlight-color: rgba(200, 117, 61, 0.18);
+        text-rendering: optimizeLegibility;
+    }
+
+    :root {
+        --safe-area-top: env(safe-area-inset-top);
+        --safe-area-right: env(safe-area-inset-right);
+        --safe-area-bottom: env(safe-area-inset-bottom);
+        --safe-area-left: env(safe-area-inset-left);
+        --font-body:
+            Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+            "Segoe UI", sans-serif;
+        --font-display:
+            Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+            "Segoe UI", sans-serif;
+        --font-mono:
+            "SFMono-Regular", ui-monospace, "Cascadia Code", "Segoe UI Mono",
+            Menlo, Consolas, monospace;
+        --bg-dark: #0f0d0b;
+        --bg: #12100e;
+        --bg-light: #1a1714;
+        --text: #f3ebe1;
+        --text-muted: #bcafa0;
+        --highlight: #211d19;
+        --border: #332c26;
+        --border-muted: #25201c;
+        --primary: #c8753d;
+        --secondary: #9bbf9a;
+        --danger: #e66b6b;
+        --warning: #d6a24f;
+        --success: #84b88b;
+        --info: #8ba9c9;
+        --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+        --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+        --radius-sm: 10px;
+        --radius-md: 14px;
+        --radius-lg: 20px;
+        --shadow-soft: 0 18px 50px rgba(0, 0, 0, 0.32);
+        --shadow-card: 0 14px 30px rgba(0, 0, 0, 0.18);
+        --shadow-glow: 0 0 40px rgba(200, 117, 61, 0.2);
+        --container-max: 1120px;
+        --radius: var(--radius-md);
+        --background: var(--bg);
+        --foreground: var(--text);
+        --card: var(--bg-light);
+        --card-foreground: var(--text);
+        --popover: var(--bg-light);
+        --popover-foreground: var(--text);
+        --primary-foreground: var(--bg-dark);
+        --secondary-foreground: var(--text);
+        --muted: var(--highlight);
+        --muted-foreground: var(--text-muted);
+        --accent: var(--secondary);
+        --accent-foreground: var(--bg-dark);
+        --destructive: var(--danger);
+        --input: var(--border-muted);
+        --ring: var(--primary);
+    }
+    body.light {
+        --bg-dark: #ece2d4;
+        --bg: #f4ede2;
+        --bg-light: #fff9f1;
+        --text: #181512;
+        --text-muted: #60584e;
+        --highlight: #e8ddcf;
+        --border: #d8cabb;
+        --border-muted: #e5d9c9;
+        --primary: #a8652a;
+        --secondary: #66836a;
+        --danger: #b54343;
+        --warning: #a47623;
+        --success: #4e8760;
+        --info: #4f6e8b;
+        --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+        --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+        --shadow-soft: 0 18px 50px rgba(69, 50, 30, 0.15);
+        --shadow-card: 0 14px 30px rgba(69, 50, 30, 0.12);
+        --shadow-glow: 0 0 30px rgba(168, 101, 42, 0.18);
+        --background: var(--bg);
+        --foreground: var(--text);
+        --card: var(--bg-light);
+        --card-foreground: var(--text);
+        --popover: var(--bg-light);
+        --popover-foreground: var(--text);
+        --primary-foreground: var(--bg-dark);
+        --secondary-foreground: var(--text);
+        --muted: var(--highlight);
+        --muted-foreground: var(--text-muted);
+        --accent: var(--secondary);
+        --accent-foreground: var(--bg-dark);
+        --destructive: var(--danger);
+        --input: var(--border-muted);
+        --ring: var(--primary);
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-color: var(--bg);
+        background:
+            radial-gradient(
+                circle at 15% 20%,
+                color-mix(in srgb, var(--primary) 10%, transparent),
+                transparent 32%
+            ),
+            radial-gradient(
+                circle at 82% 14%,
+                color-mix(in srgb, var(--secondary) 8%, transparent),
+                transparent 28%
+            ),
+            radial-gradient(
+                circle at 18% 18%,
+                color-mix(in srgb, var(--primary) 18%, transparent),
+                transparent 34%
+            ),
+            radial-gradient(
+                circle at 82% 22%,
+                color-mix(in srgb, var(--secondary) 12%, transparent),
+                transparent 28%
+            ),
+            linear-gradient(
+                180deg,
+                var(--bg),
+                color-mix(in srgb, var(--bg-dark) 72%, transparent)
+            ),
+            linear-gradient(
+                180deg,
+                color-mix(in srgb, var(--bg-dark) 68%, transparent),
+                transparent 24%
+            );
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    main[id],
+    section[id] {
+        scroll-margin-top: 96px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+        text-wrap: balance;
+    }
+
+    p,
+    li {
+        text-wrap: pretty;
+    }
+
+    a,
+    button {
+        touch-action: manipulation;
+    }
+
+    .skip-link {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        z-index: 10000;
+        padding: 0.75rem 1rem;
+        border-radius: 999px;
+        background: var(--bg-light);
+        color: var(--text);
+        border: 1px solid var(--border);
+        text-decoration: none;
+        transform: translateY(-140%);
+        transition:
+            transform 180ms ease,
+            box-shadow 180ms ease;
+        box-shadow: var(--shadow-card);
+        pointer-events: none;
+    }
+
+    .skip-link:focus-visible {
+        position: fixed;
+        transform: translateY(0);
+        box-shadow: 0 0 0 3px
+            color-mix(in srgb, var(--primary) 24%, transparent);
+        outline: none;
+        pointer-events: auto;
+    }
+
+    .page-shell {
+        max-width: var(--container-max);
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    .section {
+        padding: 96px 0;
+    }
+
+    .section-title {
+        font-size: clamp(1.8rem, 3vw, 2.6rem);
+        margin-bottom: 40px;
+        text-align: center;
+        color: var(--text);
+    }
+
+    .card {
+        background: var(--bg-light);
+        border: 1px solid var(--border-muted);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-card);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
 </style>
