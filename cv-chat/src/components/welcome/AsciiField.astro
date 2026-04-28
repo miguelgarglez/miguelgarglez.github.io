@@ -24,7 +24,7 @@
     import { prefersReducedMotion } from "../../lib/motion";
 
     const glyphs = [" ", ".", ":", "-", "=", "+", "*", "#"];
-    const compactGlyphs = [" ", ".", ":", "-", "="];
+    const compactGlyphs = [" ", ".", ":", "-", "=", "+"];
 
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
@@ -34,6 +34,8 @@
         compact = false,
         largeDesktop = false,
         smallMobile = false,
+        ripples = [],
+        now = 0,
     ) => {
         const cols = smallMobile ? 64 : compact ? 72 : largeDesktop ? 120 : 96;
         const rows = smallMobile ? 56 : compact ? 72 : largeDesktop ? 104 : 84;
@@ -47,16 +49,57 @@
 
             for (let col = 0; col < cols; col += 1) {
                 const nx = cols === 1 ? 0.5 : col / (cols - 1);
-                const dx = nx - x;
-                const dy = ny - y;
-                const distance = Math.hypot(dx * 1.15, dy * 0.9);
+                const dx = (nx - x) * 1.12;
+                const dy = (ny - y) * 0.92;
+                const distance = Math.hypot(dx, dy);
+                const aperture = Math.abs(distance - 0.28);
+                const innerDistance = Math.hypot((nx - 0.5) * 0.82, ny - 0.52);
+                const diagonalCut = Math.abs(nx * 0.68 - ny + 0.12);
+                const shelf =
+                    Math.sin((ny * 14.5 + x * 1.8) * Math.PI) * 0.18 +
+                    Math.sin((ny * 27 + nx * 2.2) * Math.PI) * 0.08;
                 const wave =
-                    Math.sin((nx * 8.5 + y * 2.8) * Math.PI) * 0.32 +
-                    Math.cos((ny * 7.2 - x * 3.4) * Math.PI) * 0.24 +
-                    Math.sin((nx + ny + x * 1.5 - y * 1.2) * Math.PI * 2) *
-                        0.18;
-                const focus = clamp(1.15 - distance * 2.2, 0, 1);
-                const energy = clamp(0.35 + focus * 0.92 + wave * 0.2, 0, 1);
+                    Math.sin((nx * 6.8 + y * 1.8) * Math.PI) * 0.16 +
+                    Math.cos((ny * 5.6 - x * 2.6) * Math.PI) * 0.12;
+                const apertureEnergy = clamp(1 - aperture * 4.1, 0, 1) * 0.46;
+                const coreEnergy = clamp(1 - innerDistance * 2.15, 0, 1) * 0.34;
+                const cutEnergy = clamp(1 - diagonalCut * 11, 0, 1) * 0.28;
+                let rippleEnergy = 0;
+
+                for (const ripple of ripples) {
+                    for (let echo = 0; echo < 3; echo += 1) {
+                        const age = now - ripple.startedAt - echo * 135;
+                        if (age < 0 || age > 1050) continue;
+
+                        const progress = age / 1050;
+                        const rippleDistance = Math.hypot(
+                            (nx - ripple.x) * 1.12,
+                            (ny - ripple.y) * 0.92,
+                        );
+                        const ring = Math.abs(
+                            rippleDistance - progress * (0.48 + echo * 0.08),
+                        );
+                        const echoStrength = 1 - echo * 0.22;
+                        const envelope =
+                            (1 - progress) *
+                            echoStrength *
+                            clamp(1 - ring * 24, 0, 1);
+
+                        rippleEnergy += envelope * 0.58;
+                    }
+                }
+
+                const energy = clamp(
+                    0.2 +
+                        apertureEnergy +
+                        coreEnergy +
+                        cutEnergy +
+                        shelf +
+                        wave +
+                        rippleEnergy,
+                    0,
+                    1,
+                );
                 const index = Math.min(
                     chars.length - 1,
                     Math.max(0, Math.floor(energy * (chars.length - 1))),
@@ -85,16 +128,19 @@
         );
         const largeDesktopQuery = window.matchMedia("(min-width: 1440px)");
         const shouldReduce = prefersReducedMotion();
-        const shouldAnimate =
+        const canFollowPointer =
             !shouldReduce &&
             window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+        const canRipple = !shouldReduce;
 
         const centerX = 0.5;
         const centerY = 0.48;
-        const frameInterval = 1000 / 30;
+        const interactionFrameInterval = 1000 / 30;
+        const idleFrameInterval = 1000 / 20;
         let artRect = null;
+        let ripples = [];
 
-        const render = (x, y) => {
+        const render = (x, y, now = window.performance.now()) => {
             const normalizedX = clamp(x, 0, 1);
             const normalizedY = clamp(y, 0, 1);
             const isCompact = compactQuery.matches;
@@ -107,6 +153,8 @@
                 isCompact,
                 isLargeDesktop,
                 isSmallMobile,
+                ripples,
+                now,
             );
             field.style.setProperty(
                 "--field-x",
@@ -132,19 +180,33 @@
             syncGlowBounds();
         };
 
+        let responsiveFrame = 0;
+
+        const scheduleResponsiveState = () => {
+            if (responsiveFrame) return;
+
+            responsiveFrame = window.requestAnimationFrame(() => {
+                responsiveFrame = 0;
+                syncResponsiveState();
+            });
+        };
+
         syncResponsiveState();
 
-        window.addEventListener("resize", syncResponsiveState, { passive: true });
-        window.addEventListener("orientationchange", syncResponsiveState, {
+        window.addEventListener("resize", scheduleResponsiveState, {
+            passive: true,
+        });
+        window.addEventListener("orientationchange", scheduleResponsiveState, {
             passive: true,
         });
 
-        if (!shouldAnimate) {
+        if (shouldReduce) {
             return;
         }
 
         let renderFrame = 0;
         let idleFrame = 0;
+        let rippleFrame = 0;
         let resumeIdleTimer = 0;
         let glowFrame = 0;
         let nextX = centerX;
@@ -152,6 +214,7 @@
         let phase = 0;
         let lastIdleRender = 0;
         let lastPointerRender = 0;
+        let lastRippleRender = 0;
         let isHovering = false;
         let isVisible = true;
 
@@ -165,7 +228,7 @@
                 return;
             }
 
-            if (now - lastIdleRender < frameInterval) {
+            if (now - lastIdleRender < idleFrameInterval) {
                 idleFrame = window.requestAnimationFrame(tickIdle);
                 return;
             }
@@ -176,7 +239,7 @@
             const x = centerX + Math.sin(phase * 1.1) * 0.045;
             const y = centerY + Math.cos(phase * 0.9) * 0.03;
 
-            render(x, y);
+            render(x, y, now);
 
             if (!isHovering) {
                 idleFrame = window.requestAnimationFrame(tickIdle);
@@ -208,18 +271,60 @@
             }, 1200);
         };
 
+        const stopRipples = () => {
+            if (rippleFrame) {
+                window.cancelAnimationFrame(rippleFrame);
+                rippleFrame = 0;
+            }
+        };
+
+        const pruneRipples = (now) => {
+            ripples = ripples.filter((ripple) => now - ripple.startedAt <= 1100);
+        };
+
+        const tickRipples = (now) => {
+            if (!isVisible) {
+                rippleFrame = 0;
+                return;
+            }
+
+            if (now - lastRippleRender < interactionFrameInterval) {
+                rippleFrame = window.requestAnimationFrame(tickRipples);
+                return;
+            }
+
+            lastRippleRender = now;
+            pruneRipples(now);
+            render(centerX, centerY, now);
+
+            if (ripples.length > 0) {
+                rippleFrame = window.requestAnimationFrame(tickRipples);
+            } else {
+                rippleFrame = 0;
+                if (!isHovering) startIdle();
+            }
+        };
+
+        const startRipples = () => {
+            if (rippleFrame || !isVisible) return;
+            stopIdle();
+            rippleFrame = window.requestAnimationFrame(tickRipples);
+        };
+
         const schedule = () => {
             if (renderFrame) return;
 
             renderFrame = window.requestAnimationFrame((now) => {
                 renderFrame = 0;
-                if (now - lastPointerRender < frameInterval) return;
+                if (now - lastPointerRender < interactionFrameInterval) return;
                 lastPointerRender = now;
-                render(nextX, nextY);
+                render(nextX, nextY, now);
             });
         };
 
         const updateFromEvent = (event) => {
+            if (event.pointerType !== "mouse") return;
+
             isHovering = true;
             stopIdle();
             if (resumeIdleTimer) {
@@ -257,24 +362,54 @@
             glowFrame = window.requestAnimationFrame(tick);
         };
 
-        art.addEventListener("pointermove", updateFromEvent);
-        art.addEventListener("pointerenter", (event) => {
-            syncGlowBounds();
-            updateFromEvent(event);
-        });
-        art.addEventListener("pointerleave", () => {
-            isHovering = false;
-            nextX = centerX;
-            nextY = centerY;
-            fadeGlowOut();
-            scheduleIdleResume();
-        });
+        const rippleFromEvent = (event) => {
+            if (!canRipple || event.pointerType === "mouse") return;
 
-        art.addEventListener("pointercancel", () => {
             isHovering = false;
+            if (renderFrame) {
+                window.cancelAnimationFrame(renderFrame);
+                renderFrame = 0;
+            }
+            if (resumeIdleTimer) {
+                window.clearTimeout(resumeIdleTimer);
+                resumeIdleTimer = 0;
+            }
+            syncGlowBounds();
+
+            const x = clamp((event.clientX - artRect.left) / artRect.width, 0, 1);
+            const y = clamp((event.clientY - artRect.top) / artRect.height, 0, 1);
+
+            nextX = x;
+            nextY = y;
+            ripples = [{ x, y, startedAt: window.performance.now() }];
+
+            setGlow(0.65);
             fadeGlowOut();
-            scheduleIdleResume();
-        });
+            startRipples();
+        };
+
+        if (canFollowPointer) {
+            art.addEventListener("pointermove", updateFromEvent);
+            art.addEventListener("pointerenter", (event) => {
+                syncGlowBounds();
+                updateFromEvent(event);
+            });
+            art.addEventListener("pointerleave", () => {
+                isHovering = false;
+                nextX = centerX;
+                nextY = centerY;
+                fadeGlowOut();
+                scheduleIdleResume();
+            });
+
+            art.addEventListener("pointercancel", () => {
+                isHovering = false;
+                fadeGlowOut();
+                scheduleIdleResume();
+            });
+        }
+
+        art.addEventListener("pointerdown", rippleFromEvent);
 
         if ("IntersectionObserver" in window) {
             const observer = new IntersectionObserver(
@@ -286,6 +421,7 @@
                         startIdle();
                     } else {
                         stopIdle();
+                        stopRipples();
                     }
                 },
                 { threshold: 0.05 },
@@ -380,6 +516,7 @@
         text-shadow: 0 0 20px color-mix(in srgb, var(--primary) 8%, transparent);
         transform: translate3d(0, 0, 0);
         user-select: none;
+        touch-action: manipulation;
         display: inline-block;
         animation: field-breathe 8s var(--ease-out-quart) infinite alternate;
     }
