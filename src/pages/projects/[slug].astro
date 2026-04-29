@@ -1,0 +1,97 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { projects } from "../../data/projects";
+import type { Project } from "../../data/projects";
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+type Props = {
+  project: Project;
+};
+
+const { project } = Astro.props;
+const detailLinks = [
+  project.liveUrl && { label: "Live URL", href: project.liveUrl },
+  project.repositoryUrl && { label: "Repository", href: project.repositoryUrl },
+].filter(Boolean) as Array<{ label: string; href: string }>;
+---
+
+<BaseLayout title={`${project.displayName} - Miguel Garcia`}>
+  <main class="layout">
+    <div class="page-shell">
+      <aside class="sidebar" aria-label="Project navigation">
+        <nav class="sidebar-nav">
+          <a class="sidebar-link" href="/">Home</a>
+          <a class="sidebar-link is-active" href={`/projects/${project.slug}`} aria-current="true">
+            Project
+          </a>
+        </nav>
+      </aside>
+
+      <article class="content-column project-detail">
+        <header class="masthead">
+          <p class="eyebrow">Miguel Garcia • Project</p>
+          <a class="text-link" href="/">Back home</a>
+        </header>
+
+        <section class="detail-hero">
+          <p class="section-label">{project.category.replaceAll("-", " ")}</p>
+          <h1>{project.displayName}</h1>
+          <p class="lead">{project.summary}</p>
+        </section>
+
+        <section class="detail-section" aria-labelledby="project-context-title">
+          <p class="section-label" id="project-context-title">Context</p>
+          <dl class="detail-meta">
+            <div>
+              <dt>Role</dt>
+              <dd>{project.role}</dd>
+            </div>
+            <div>
+              <dt>Year</dt>
+              <dd>{project.year}</dd>
+            </div>
+            <div>
+              <dt>Stage</dt>
+              <dd>{project.stage}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="detail-section" aria-labelledby="project-capabilities-title">
+          <p class="section-label" id="project-capabilities-title">Capabilities</p>
+          <ul class="detail-list">
+            {project.capabilities.map((capability) => <li>{capability}</li>)}
+          </ul>
+        </section>
+
+        <section class="detail-section" aria-labelledby="project-stack-title">
+          <p class="section-label" id="project-stack-title">Stack</p>
+          <ul class="stack" aria-label="Tech stack">
+            {project.stack.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+
+        {
+          detailLinks.length > 0 && (
+            <section class="detail-section" aria-labelledby="project-links-title">
+              <p class="section-label" id="project-links-title">Links</p>
+              <div class="project-links">
+                {detailLinks.map((link) => (
+                  <a href={link.href} target="_blank" rel="noopener noreferrer">
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </section>
+          )
+        }
+      </article>
+    </div>
+  </main>
+</BaseLayout>

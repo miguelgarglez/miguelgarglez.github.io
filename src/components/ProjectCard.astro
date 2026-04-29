@@ -38,6 +38,11 @@ const titleTarget = project.external
     }
     <div class="project-links">
       {
+        project.caseStudyUrl && (
+          <a href={project.caseStudyUrl}>View details</a>
+        )
+      }
+      {
         project.links.map((link) => (
           <a
             href={link.href}

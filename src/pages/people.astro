@@ -1,0 +1,78 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { people } from "../data/people";
+import type { PersonArea } from "../data/people";
+
+const areaLabels: Record<PersonArea, string> = {
+  design: "Design",
+  engineering: "Engineering",
+  education: "Education",
+  product: "Product",
+  "design-systems": "Design systems",
+};
+
+const groupedPeople = Object.entries(
+  people.reduce(
+    (groups, person) => {
+      groups[person.area] = [...(groups[person.area] ?? []), person];
+      return groups;
+    },
+    {} as Record<PersonArea, typeof people>,
+  ),
+) as Array<[PersonArea, typeof people]>;
+---
+
+<BaseLayout title="People - Miguel Garcia">
+  <main class="layout">
+    <div class="page-shell">
+      <aside class="sidebar" aria-label="People navigation">
+        <nav class="sidebar-nav">
+          <a class="sidebar-link" href="/">Home</a>
+          <a class="sidebar-link is-active" href="/people" aria-current="true">People</a>
+        </nav>
+      </aside>
+
+      <article class="content-column project-detail">
+        <header class="masthead">
+          <p class="eyebrow">Miguel Garcia • People</p>
+          <a class="text-link" href="/">Back home</a>
+        </header>
+
+        <section class="detail-hero">
+          <p class="section-label">References</p>
+          <h1>People who shape my taste.</h1>
+          <p class="lead">
+            A small map of designers, engineers, educators, and product-minded builders whose work helps me sharpen how I think and build.
+          </p>
+        </section>
+
+        {
+          groupedPeople.map(([area, areaPeople]) => (
+            <section class="detail-section" aria-labelledby={`${area}-title`}>
+              <p class="section-label" id={`${area}-title`}>
+                {areaLabels[area]}
+              </p>
+              <ol class="people-detail-list">
+                {areaPeople.map((person) => (
+                  <li class="people-detail-item">
+                    <div>
+                      <h2 class="reference-title">
+                        <a href={person.href} target="_blank" rel="noopener noreferrer">
+                          {person.name}
+                        </a>
+                      </h2>
+                      <p class="reference-note">{person.summary}</p>
+                    </div>
+                    <ul class="detail-list">
+                      {person.learns.map((lesson) => <li>{lesson}</li>)}
+                    </ul>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ))
+        }
+      </article>
+    </div>
+  </main>
+</BaseLayout>
