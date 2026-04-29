@@ -3,36 +3,46 @@ import { Icon } from "astro-icon/components";
 import AsciiField from "./AsciiField.astro";
 ---
 
+<script is:inline>
+    document.documentElement.classList.add("js");
+</script>
+
 <section class="hero" aria-labelledby="hero-name">
     <div class="hero-shell">
         <div class="page-shell hero-stage">
             <div class="hero-content">
                 <div class="hero-copy">
-                    <h1 id="hero-name" class="hero-name">Miguel García</h1>
-                    <p class="hero-summary">
+                    <h1
+                        id="hero-name"
+                        class="hero-name"
+                        data-hero-entrance="name"
+                    >
+                        Miguel García
+                    </h1>
+                    <p class="hero-summary" data-hero-entrance="summary">
                         Frontend platform engineer building design systems and
                         practical AI workflows.
                     </p>
 
                     <div class="hero-meta" aria-label="Profile metadata">
-                        <span>
+                        <span data-hero-entrance="meta">
                             <span class="hero-meta-index">01</span>
                             <span class="hero-meta-label">location</span>
                             <span class="hero-meta-value">Madrid</span>
                         </span>
-                        <span>
+                        <span data-hero-entrance="meta">
                             <span class="hero-meta-index">02</span>
                             <span class="hero-meta-label">currently</span>
                             <span class="hero-meta-value"
                                 >Frontend Platform</span
                             >
                         </span>
-                        <span>
+                        <span data-hero-entrance="meta">
                             <span class="hero-meta-index">03</span>
                             <span class="hero-meta-label">craft</span>
                             <span class="hero-meta-value">Interface Systems</span>
                         </span>
-                        <span>
+                        <span data-hero-entrance="meta">
                             <span class="hero-meta-index">04</span>
                             <span class="hero-meta-label">ai</span>
                             <span class="hero-meta-value">Applied</span>
@@ -45,8 +55,14 @@ import AsciiField from "./AsciiField.astro";
         </div>
 
         <a class="hero-scroll" href="#about" aria-label="Scroll to About">
-            <span class="hero-scroll-label">See more</span>
-            <Icon name="lucide:chevron-down" aria-hidden="true" />
+            <span class="hero-scroll-label" data-hero-entrance="scroll-label"
+                >See more</span
+            >
+            <Icon
+                name="lucide:chevron-down"
+                aria-hidden="true"
+                data-hero-entrance="scroll-arrow"
+            />
         </a>
     </div>
 </section>
@@ -83,24 +99,131 @@ import AsciiField from "./AsciiField.astro";
         }
 
         if (prefersReducedMotion()) {
+            document
+                .querySelectorAll("[data-hero-entrance]")
+                .forEach((element) => element.removeAttribute("style"));
             return;
         }
 
         const { gsap } = await getMotionTools();
 
-        gsap.set(".hero-name, .hero-summary, .hero-meta, .hero-scroll", {
-            y: 24,
+        /*
+         * HERO ENTRANCE STORYBOARD
+         *
+         * Read top-to-bottom. Each value is seconds after the timeline starts.
+         *
+         * 0.18s   name lands with authority: opacity 0 -> 1, y 18 -> 0
+         * 0.36s   summary follows softer: opacity 0 -> 1, y 12 -> 0
+         * 0.52s   metadata rows draw in with a short technical stagger
+         * 0.82s   scroll label appears
+         * 0.96s   scroll arrow settles into place
+         *
+         * The ASCII field owns its character-level intro wave internally.
+         */
+        const TIMING = {
+            name: 0.18,
+            summary: 0.36,
+            meta: 0.52,
+            scrollLabel: 0.82,
+            scrollArrow: 0.96,
+        };
+
+        const MOTION = {
+            enterEase: "power4.out",
+            settleEase: "back.out(1.18)",
+            name: {
+                y: 18,
+                duration: 0.72,
+            },
+            summary: {
+                y: 12,
+                duration: 0.52,
+            },
+            meta: {
+                y: 10,
+                duration: 0.46,
+                stagger: 0.055,
+            },
+            scrollLabel: {
+                y: 8,
+                duration: 0.34,
+            },
+            scrollArrow: {
+                y: -4,
+                duration: 0.38,
+            },
+        };
+
+        gsap.set("[data-hero-entrance='name']", {
+            y: MOTION.name.y,
             opacity: 0,
         });
-        gsap.set(".ascii-field", { y: 18, opacity: 0 });
+        gsap.set("[data-hero-entrance='summary']", {
+            y: MOTION.summary.y,
+            opacity: 0,
+        });
+        gsap.set("[data-hero-entrance='meta']", {
+            y: MOTION.meta.y,
+            opacity: 0,
+        });
+        gsap.set("[data-hero-entrance='scroll-label']", {
+            y: MOTION.scrollLabel.y,
+            opacity: 0,
+        });
+        gsap.set(".hero-scroll svg", {
+            y: MOTION.scrollArrow.y,
+            opacity: 0,
+        });
 
-        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        const tl = gsap.timeline({ defaults: { ease: MOTION.enterEase } });
 
-        tl.to(".hero-name", { y: 0, opacity: 1, duration: 0.7 }, "-=0.04")
-            .to(".hero-summary", { y: 0, opacity: 1, duration: 0.48 }, "-=0.22")
-            .to(".hero-meta", { y: 0, opacity: 1, duration: 0.48 }, "-=0.18")
-            .to(".ascii-field", { y: 0, opacity: 1, duration: 0.62 }, "-=0.3")
-            .to(".hero-scroll", { y: 0, opacity: 1, duration: 0.42 }, "-=0.12");
+        tl.to(
+            "[data-hero-entrance='name']",
+            {
+                y: 0,
+                opacity: 1,
+                duration: MOTION.name.duration,
+            },
+            TIMING.name,
+        )
+            .to(
+                "[data-hero-entrance='summary']",
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: MOTION.summary.duration,
+                },
+                TIMING.summary,
+            )
+            .to(
+                "[data-hero-entrance='meta']",
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: MOTION.meta.duration,
+                    stagger: MOTION.meta.stagger,
+                },
+                TIMING.meta,
+            )
+            .to(
+                "[data-hero-entrance='scroll-label']",
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: MOTION.scrollLabel.duration,
+                },
+                TIMING.scrollLabel,
+            )
+            .to(
+                ".hero-scroll svg",
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: MOTION.scrollArrow.duration,
+                    ease: MOTION.settleEase,
+                },
+                TIMING.scrollArrow,
+            );
     });
 </script>
 
@@ -109,6 +232,16 @@ import AsciiField from "./AsciiField.astro";
         position: relative;
         min-height: 100svh;
         overflow: clip;
+    }
+
+    :global(.js) .hero [data-hero-entrance] {
+        opacity: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        :global(.js) .hero [data-hero-entrance] {
+            opacity: 1;
+        }
     }
 
     .hero-shell {

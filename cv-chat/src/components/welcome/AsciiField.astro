@@ -2,7 +2,11 @@
 
 ---
 
-<div class="ascii-field" aria-hidden="true" data-ascii-field>
+<div
+    class="ascii-field"
+    aria-hidden="true"
+    data-ascii-field
+>
     <div class="ascii-field-surface">
         <div class="ascii-field-glow"></div>
         <pre
@@ -28,6 +32,45 @@
 
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
+    const buildBootFrame = (cols, rows, now) => {
+        const label = "loading";
+        const cycle = (now % 1420) / 1420;
+        const typedLength =
+            cycle < 0.42
+                ? Math.ceil((cycle / 0.42) * label.length)
+                : cycle < 0.64
+                  ? label.length
+                  : cycle < 0.9
+                    ? Math.max(
+                          0,
+                          label.length -
+                              Math.ceil(((cycle - 0.64) / 0.26) * label.length),
+                      )
+                    : 0;
+        const cursor = Math.floor(now / 180) % 2 === 0 ? "_" : " ";
+        const text =
+            typedLength > 0 ? `${label.slice(0, typedLength)}${cursor}` : cursor;
+        const rowIndex = Math.floor(rows * 0.48);
+        const colIndex = Math.max(0, Math.floor((cols - text.length) / 2));
+
+        let output = "";
+
+        for (let row = 0; row < rows; row += 1) {
+            if (row === rowIndex) {
+                output +=
+                    " ".repeat(colIndex) +
+                    text +
+                    " ".repeat(Math.max(0, cols - colIndex - text.length));
+            } else {
+                output += " ".repeat(cols);
+            }
+
+            output += row < rows - 1 ? "\n" : "";
+        }
+
+        return output;
+    };
+
     const buildField = (
         x,
         y,
@@ -36,10 +79,15 @@
         smallMobile = false,
         ripples = [],
         now = 0,
+        introRevealProgress = 1,
     ) => {
         const cols = smallMobile ? 64 : compact ? 72 : largeDesktop ? 120 : 96;
         const rows = smallMobile ? 56 : compact ? 72 : largeDesktop ? 104 : 84;
         const chars = compact ? compactGlyphs : glyphs;
+
+        if (introRevealProgress < 0) {
+            return buildBootFrame(cols, rows, now);
+        }
 
         let output = "";
 
@@ -61,6 +109,10 @@
                 const wave =
                     Math.sin((nx * 6.8 + y * 1.8) * Math.PI) * 0.16 +
                     Math.cos((ny * 5.6 - x * 2.6) * Math.PI) * 0.12;
+                const revealDistance = Math.hypot(
+                    (nx - 0.5) * 1.04,
+                    (ny - 0.48) * 0.9,
+                );
                 const apertureEnergy = clamp(1 - aperture * 4.1, 0, 1) * 0.46;
                 const coreEnergy = clamp(1 - innerDistance * 2.15, 0, 1) * 0.34;
                 const cutEnergy = clamp(1 - diagonalCut * 11, 0, 1) * 0.28;
@@ -105,6 +157,38 @@
                     Math.max(0, Math.floor(energy * (chars.length - 1))),
                 );
 
+                if (introRevealProgress < 1) {
+                    const easedReveal =
+                        1 - Math.pow(1 - introRevealProgress, 2.4);
+                    const threshold = easedReveal * 0.9 - 0.08;
+                    const edge = Math.abs(revealDistance - threshold);
+                    const feather = clamp(1 - edge / 0.062, 0, 1);
+                    const grain =
+                        Math.sin((nx * 36 + ny * 28 + now * 0.004) * Math.PI) *
+                        0.018;
+                    const hasArrived = revealDistance < threshold + grain;
+                    const isWaveEdge = feather > 0;
+
+                    if (!hasArrived && !isWaveEdge) {
+                        line += " ";
+                        continue;
+                    }
+
+                    if (isWaveEdge) {
+                        const edgeIndex = Math.min(
+                            chars.length - 1,
+                            Math.max(
+                                index,
+                                Math.floor(
+                                    (chars.length - 2) * Math.pow(feather, 0.55),
+                                ),
+                            ),
+                        );
+                        line += chars[edgeIndex];
+                        continue;
+                    }
+                }
+
                 line += chars[index];
             }
 
@@ -139,6 +223,7 @@
         const idleFrameInterval = 1000 / 20;
         let artRect = null;
         let ripples = [];
+        let introRevealProgress = shouldReduce ? 1 : -1;
 
         const render = (x, y, now = window.performance.now()) => {
             const normalizedX = clamp(x, 0, 1);
@@ -155,6 +240,7 @@
                 isSmallMobile,
                 ripples,
                 now,
+                introRevealProgress,
             );
             field.style.setProperty(
                 "--field-x",
@@ -206,6 +292,7 @@
 
         let renderFrame = 0;
         let idleFrame = 0;
+        let introFrame = 0;
         let rippleFrame = 0;
         let resumeIdleTimer = 0;
         let glowFrame = 0;
@@ -220,6 +307,46 @@
 
         const setGlow = (value) => {
             field.style.setProperty("--glow-opacity", `${value}`);
+        };
+
+        const startIntroReveal = () => {
+            const startedAt = window.performance.now();
+            const delay = 1560;
+            const duration = 1580;
+            let lastIntroRender = 0;
+
+            const tick = (now) => {
+                if (!isVisible) {
+                    introFrame = 0;
+                    return;
+                }
+
+                if (now - lastIntroRender < interactionFrameInterval) {
+                    introFrame = window.requestAnimationFrame(tick);
+                    return;
+                }
+
+                lastIntroRender = now;
+                const revealElapsed = now - startedAt - delay;
+                introRevealProgress =
+                    revealElapsed < 0
+                        ? -1
+                        : clamp(revealElapsed / duration, 0, 1);
+                render(centerX, centerY, now);
+
+                if (introRevealProgress < 1) {
+                    introFrame = window.requestAnimationFrame(tick);
+                    return;
+                }
+
+                introFrame = 0;
+                startIdle();
+            };
+
+            if (!introFrame) {
+                stopIdle();
+                introFrame = window.requestAnimationFrame(tick);
+            }
         };
 
         const tickIdle = (now) => {
@@ -257,6 +384,13 @@
             if (idleFrame) {
                 window.cancelAnimationFrame(idleFrame);
                 idleFrame = 0;
+            }
+        };
+
+        const stopIntroReveal = () => {
+            if (introFrame) {
+                window.cancelAnimationFrame(introFrame);
+                introFrame = 0;
             }
         };
 
@@ -418,8 +552,13 @@
 
                     if (isVisible) {
                         syncResponsiveState();
-                        startIdle();
+                        if (introRevealProgress < 1) {
+                            startIntroReveal();
+                        } else {
+                            startIdle();
+                        }
                     } else {
+                        stopIntroReveal();
                         stopIdle();
                         stopRipples();
                     }
@@ -431,7 +570,7 @@
         }
 
         setGlow(0);
-        startIdle();
+        startIntroReveal();
     });
 </script>
 
