@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.0](https://github.com/miguelgarglez/miguelgarglez.github.io/compare/v0.5.0...v0.6.0) (2026-04-29)
+
+
+### Features
+
+* add project and people detail pages ([9a158d1](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/9a158d1fddecfe2319e6848485f0bcec39e2bd82))
+* **cv-chat:** enhance ascii field interaction ([3a1c86a](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/3a1c86a390b690f11616f2142213a6ed3d46c52b))
+* **cv-chat:** polish hero motion ([262145a](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/262145a6567348b60d96090718f35bdbf863318a))
+* **cv-chat:** refine hero experience ([d47ca23](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/d47ca238130b7c40beb7fccb13ba992745de82b8))
+* **cv-chat:** renew dossier experience ([90922e4](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/90922e4373b1dd849050b9670be7b30af043d1b9))
+* **cv-chat:** renew profile sections ([cb6afec](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/cb6afec230748e9471a46207f60d19ce7d620cb0))
+* sync chat worker and cv-chat redesign notes ([34c7817](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/34c78174c2f60d5d3d1a5f78c9e692109bb42a90))
+
 ## [0.5.0](https://github.com/miguelgarglez/miguelgarglez.github.io/compare/v0.4.0...v0.5.0) (2026-04-25)
 
 
