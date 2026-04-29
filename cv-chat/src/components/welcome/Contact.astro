@@ -4,15 +4,22 @@ import { Icon } from 'astro-icon/components';
 
 <section id="contact" class="contact">
   <div class="container">
-    <h2 class="section-title">Let's Connect</h2>
+    <div class="section-heading">
+      <p class="section-kicker">/contact</p>
+      <h2 class="section-title editorial-title">Let's Connect</h2>
+      <p class="section-copy">
+        Open to product-minded engineering conversations, frontend platform
+        work, and thoughtful teams building useful software.
+      </p>
+    </div>
 
     <div class="contact-content">
       <div class="contact-info">
+        <p class="panel-index">01</p>
         <h3>Get in Touch</h3>
         <p class="contact-description">
-          I'm always interested in discussing new opportunities, exciting
-          projects, or just having a conversation about technology and software
-          engineering.
+          The fastest way to reach me is through LinkedIn. I also keep X around
+          for software notes, tools, and the occasional build log.
         </p>
 
         <div class="contact-methods">
@@ -57,13 +64,14 @@ import { Icon } from 'astro-icon/components';
       </div>
 
       <div class="hobbies-section">
+        <p class="panel-index">02</p>
         <h3>Beyond Code</h3>
         <div class="hobbies">
           <div class="hobby-item-reveal">
             <div class="hobby-item">
               <Icon class="hobby-icon" name="lucide:trophy" aria-hidden="true" />
               <div class="hobby-text">
-                <h4>Sports Enthusiast</h4>
+                <h4>Team Sports</h4>
                 <p>
                   Playing football since age seven, passionate about physical
                   well-being and team sports.
@@ -76,7 +84,7 @@ import { Icon } from 'astro-icon/components';
             <div class="hobby-item">
               <Icon class="hobby-icon" name="lucide:cpu" aria-hidden="true" />
               <div class="hobby-text">
-                <h4>Tech Explorer</h4>
+                <h4>Technical Curiosity</h4>
                 <p>
                   Regular reader of software engineering blogs, always eager to
                   learn about new technologies and innovations.
@@ -93,7 +101,7 @@ import { Icon } from 'astro-icon/components';
                 aria-hidden="true"
               />
               <div class="hobby-text">
-                <h4>Growth Mindset</h4>
+                <h4>Deliberate Growth</h4>
                 <p>
                   Always seeking new activities that push me out of my comfort
                   zone and help me grow as a person.
@@ -117,17 +125,17 @@ import { Icon } from 'astro-icon/components';
 
     const { gsap } = await getScrollMotionTools();
 
-    gsap.set('#contact .section-title', { y: 50, opacity: 0 });
-    gsap.set('#contact .contact-info', { x: -100, opacity: 0 });
-    gsap.set('#contact .contact-method-reveal', { y: 30, opacity: 0 });
-    gsap.set('#contact .hobbies-section', { x: 100, opacity: 0 });
-    gsap.set('#contact .hobby-item-reveal', { y: 30, opacity: 0 });
+    gsap.set('#contact .section-heading', { y: 44, opacity: 0 });
+    gsap.set('#contact .contact-info', { y: 42, opacity: 0 });
+    gsap.set('#contact .contact-method-reveal', { y: 20, opacity: 0 });
+    gsap.set('#contact .hobbies-section', { y: 42, opacity: 0 });
+    gsap.set('#contact .hobby-item-reveal', { y: 20, opacity: 0 });
 
-    gsap.to('#contact .section-title', {
+    gsap.to('#contact .section-heading', {
       y: 0,
       opacity: 1,
-      duration: 1,
-      ease: 'power2.out',
+      duration: 0.72,
+      ease: 'power3.out',
       scrollTrigger: {
         trigger: '#contact',
         start: 'top 70%',
@@ -137,10 +145,10 @@ import { Icon } from 'astro-icon/components';
     });
 
     gsap.to('#contact .contact-info', {
-      x: 0,
+      y: 0,
       opacity: 1,
-      duration: 0.8,
-      ease: 'power2.out',
+      duration: 0.62,
+      ease: 'power3.out',
       scrollTrigger: {
         trigger: '#contact .contact-content',
         start: 'top 80%',
@@ -152,8 +160,8 @@ import { Icon } from 'astro-icon/components';
     gsap.to('#contact .contact-method-reveal', {
       y: 0,
       opacity: 1,
-      duration: 0.62,
-      stagger: 0.12,
+      duration: 0.5,
+      stagger: 0.08,
       ease: 'power3.out',
       force3D: true,
       scrollTrigger: {
@@ -165,10 +173,10 @@ import { Icon } from 'astro-icon/components';
     });
 
     gsap.to('#contact .hobbies-section', {
-      x: 0,
+      y: 0,
       opacity: 1,
-      duration: 0.8,
-      ease: 'power2.out',
+      duration: 0.62,
+      ease: 'power3.out',
       scrollTrigger: {
         trigger: '#contact .contact-content',
         start: 'top 80%',
@@ -180,8 +188,8 @@ import { Icon } from 'astro-icon/components';
     gsap.to('#contact .hobby-item-reveal', {
       y: 0,
       opacity: 1,
-      duration: 0.62,
-      stagger: 0.14,
+      duration: 0.5,
+      stagger: 0.08,
       ease: 'power3.out',
       force3D: true,
       scrollTrigger: {
@@ -196,51 +204,114 @@ import { Icon } from 'astro-icon/components';
 
 <style>
   .contact {
-    padding: 5rem 2rem;
-    background: var(--bg);
+    padding: clamp(4.5rem, 9vw, 7rem) 1.25rem;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--bg-light) 45%, transparent),
+        var(--bg) 34%
+      );
     color: var(--text);
     overflow: hidden;
+    position: relative;
+  }
+
+  .contact::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--border) 34%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--border) 22%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 96px 96px;
+    mask-image: linear-gradient(180deg, transparent, black 18%, black 82%, transparent);
+    opacity: 0.14;
+    pointer-events: none;
   }
 
   .container {
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
   }
 
-  .section-title {
-    font-size: clamp(2rem, 4vw, 3rem);
+  .section-heading {
+    max-width: 760px;
+    margin: 0 auto 3rem;
     text-align: center;
-    margin-bottom: 4rem;
-    color: var(--text);
-    font-weight: 700;
+  }
+
+  .section-copy {
+    max-width: 58ch;
+    margin: 1.15rem auto 0;
+    color: var(--text-muted);
+    font-size: clamp(1rem, 1.35vw, 1.1rem);
+    line-height: 1.7;
   }
 
   .contact-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: start;
+    gap: 1px;
+    align-items: stretch;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .contact-info,
+  .hobbies-section {
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--bg-light) 88%, transparent),
+        color-mix(in srgb, var(--bg) 96%, transparent)
+      );
+    padding: clamp(1.5rem, 3vw, 2rem);
+    min-width: 0;
+  }
+
+  .panel-index {
+    margin: 0 0 2rem;
+    color: var(--primary);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
   }
 
   .contact-info h3,
   .hobbies-section h3 {
-    font-size: 1.8rem;
-    color: var(--primary);
-    margin: 0 0 1.5rem 0;
-    font-weight: 700;
+    font-family: var(--font-mono, monospace);
+    font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+    color: var(--text);
+    margin: 0 0 1rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
   }
 
   .contact-description {
-    font-size: 1.1rem;
-    line-height: 1.6;
+    max-width: 42rem;
+    font-size: clamp(1rem, 1.35vw, 1.12rem);
+    line-height: 1.7;
     color: var(--text-muted);
-    margin: 0 0 2.5rem 0;
+    margin: 0 0 2rem;
   }
 
   .contact-methods {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1px;
+    background: var(--border-muted);
+    border: 1px solid var(--border-muted);
   }
 
   .contact-method-reveal,
@@ -252,35 +323,47 @@ import { Icon } from 'astro-icon/components';
   .contact-method {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    background: var(--bg-light);
-    border-radius: 12px;
-    border: 1px solid var(--border-muted);
+    gap: 1.25rem;
+    padding: 1.15rem 1.25rem;
+    background: var(--bg);
+    border-radius: 0;
+    border: 1px solid transparent;
     text-decoration: none;
     transition:
-      border-color 220ms ease,
-      box-shadow 240ms var(--ease-out-quart),
-      transform 240ms var(--ease-out-quart);
+      background-color 180ms ease,
+      border-color 180ms ease,
+      transform 160ms var(--ease-out-quart);
   }
 
-  .contact-method:hover {
-    transform: translateY(-3px);
-    border-color: var(--primary);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  @media (hover: hover) and (pointer: fine) {
+    .contact-method:hover,
+    .hobby-item:hover {
+      background: color-mix(in srgb, var(--bg-light) 92%, var(--primary) 8%);
+      border-color: color-mix(in srgb, var(--primary) 38%, var(--border));
+    }
+
+    .contact-method:hover {
+      transform: translateY(-2px);
+    }
+
+    .hobby-item:hover {
+      transform: translateX(4px);
+    }
+  }
+
+  .contact-method:active {
+    transform: scale(0.985);
   }
 
   .contact-method:focus-visible {
     outline: none;
     border-color: color-mix(in srgb, var(--primary) 60%, var(--border));
-    box-shadow:
-      0 10px 25px rgba(0, 0, 0, 0.2),
-      0 0 0 3px color-mix(in srgb, var(--primary) 22%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 22%, transparent);
   }
 
   .method-icon {
-    width: 32px;
-    height: 32px;
+    width: 1.65rem;
+    height: 1.65rem;
     color: var(--primary);
     stroke: currentColor;
     stroke-width: 1.8;
@@ -297,49 +380,50 @@ import { Icon } from 'astro-icon/components';
   .method-content {
     display: flex;
     flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
   }
 
   .method-label {
-    font-size: 0.9rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.72rem;
     color: var(--text-muted);
     font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .method-value {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: var(--text);
-    font-weight: 600;
+    font-weight: 500;
   }
 
   .hobbies {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1px;
+    background: var(--border-muted);
+    border: 1px solid var(--border-muted);
   }
 
   .hobby-item {
     display: flex;
     align-items: flex-start;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    background: var(--bg-light);
-    border-radius: 12px;
-    border: 1px solid var(--border-muted);
+    gap: 1.25rem;
+    padding: 1.15rem 1.25rem;
+    background: var(--bg);
+    border-radius: 0;
+    border: 1px solid transparent;
     transition:
-      border-color 220ms ease,
-      box-shadow 240ms var(--ease-out-quart),
-      transform 240ms var(--ease-out-quart);
-  }
-
-  .hobby-item:hover {
-    transform: translateX(5px);
-    border-color: var(--primary);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      background-color 180ms ease,
+      border-color 180ms ease,
+      transform 160ms var(--ease-out-quart);
   }
 
   .hobby-icon {
-    width: 40px;
-    height: 40px;
+    width: 1.65rem;
+    height: 1.65rem;
     flex-shrink: 0;
     color: var(--primary);
     stroke: currentColor;
@@ -350,27 +434,36 @@ import { Icon } from 'astro-icon/components';
   }
 
   .hobby-text h4 {
-    font-size: 1.2rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.72rem;
     color: var(--text);
-    margin: 0 0 0.5rem 0;
-    font-weight: 600;
+    margin: 0 0 0.45rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .hobby-text p {
-    font-size: 1rem;
+    font-size: 0.98rem;
     color: var(--text-muted);
-    line-height: 1.5;
+    line-height: 1.6;
     margin: 0;
+  }
+
+  @media (max-width: 900px) {
+    .contact-content {
+      grid-template-columns: 1fr;
+    }
   }
 
   @media (max-width: 768px) {
     .contact {
-      padding: 3rem 1rem;
+      padding: 3.5rem 1rem;
     }
 
-    .contact-content {
-      grid-template-columns: 1fr;
-      gap: 3rem;
+    .section-heading {
+      margin-bottom: 2rem;
+      text-align: left;
     }
 
     .contact-method,
@@ -379,14 +472,13 @@ import { Icon } from 'astro-icon/components';
     }
 
     .hobby-item {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
+      align-items: flex-start;
+      text-align: left;
     }
 
     .hobby-icon {
-      width: 32px;
-      height: 32px;
+      width: 1.55rem;
+      height: 1.55rem;
     }
   }
 </style>

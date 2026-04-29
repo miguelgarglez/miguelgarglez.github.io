@@ -129,7 +129,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'experience-ods',
     title: 'Experience - Open Digital Services (Santander Group)',
     content:
-      'Frontend UI Platform Engineer (Sep 2024 - Current). Member of the Kubit Web UI components platform team, building and maintaining the component library used by web developers across Grupo Santander banks. Leads implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem. Contributes to the open-source charting library with new features and continuous improvements. Manages releases with semantic versioning, branch strategy, and Storybook documentation; supports Kubit public presence through product landing pages. Drives AI-enabled workflows with tools such as Windsurf and Devin at work, and Codex and GitHub Copilot personally. He uses MCP servers, context engineering, structured prompts, and reusable skills to accelerate recurring development tasks, standardize team workflows, improve code quality, and make AI-assisted development easier to adopt without losing code ownership.',
+      'Frontend UI Platform Engineer (Sep 2024 - Current). Member of the Kubit Web UI components platform team, building and maintaining the component library used by web developers across Grupo Santander banks. Leads implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem. Contributes to the open-source charting library with new features and continuous improvements. Manages releases with semantic versioning, branch strategy, and Storybook documentation; supports Kubit public presence through product landing pages. Built an MCP server to support consumers of the component library with contextual guidance, integration patterns, troubleshooting, and migration help. Drives AI-enabled workflows with tools such as Windsurf and Devin at work, and Codex and GitHub Copilot personally. He uses MCP servers, context engineering, structured prompts, and reusable skills to accelerate recurring development tasks, standardize team workflows, improve code quality, and make AI-assisted development easier to adopt without losing code ownership.',
     tags: ['experiencia', 'impacto', 'proyectos', 'frontend', 'ai', 'skills'],
     type: 'example',
     lang: 'en',
@@ -172,36 +172,36 @@ export const profileSections: ProfileBlock[] = [
   },
   {
     id: 'skills-frontend',
-    title: 'Skills - Frontend Development',
+    title: 'Skills - Frontend Platform',
     content:
-      'React and TypeScript with component libraries at scale. Design systems with tokens, components, and UI governance. Accessibility with WCAG compliance and inclusive patterns. Performance-focused UI quality, profiling, and optimization.',
+      "Miguel's strongest professional skill area is frontend platform engineering: React and TypeScript component-library work for frontend teams, design systems with tokens and component APIs, Storybook documentation, accessibility-minded implementation, refactoring, semantic versioning, and adoption support.",
     tags: ['skills', 'frontend', 'impacto'],
     type: 'answer',
     lang: 'en',
   },
   {
     id: 'skills-backend',
-    title: 'Skills - Backend and Data',
+    title: 'Skills - Backend and Data Foundations',
     content:
-      'Python with Flask, Django, Pandas, NumPy, Matplotlib. Databases including SQL (PostgreSQL, SQLite) and NoSQL (MongoDB). Node.js with MERN stack experience.',
+      'Backend and data are solid foundations from his Computer Science background and project work: Python with Flask, Django, Pandas, NumPy, and Matplotlib; SQL foundations with PostgreSQL and SQLite; MongoDB; Node.js; REST/GraphQL exposure; and distributed-system basics.',
     tags: ['skills', 'backend', 'datos'],
     type: 'answer',
     lang: 'en',
   },
   {
-    id: 'skills-mobile',
-    title: 'Skills - Mobile and Cross-Platform',
+    id: 'skills-exploratory',
+    title: 'Skills - Exploratory Engineering',
     content:
-      'Flutter, including a Spotify API client. React Native mobile app development. Cross-platform UX and mobile interface patterns.',
-    tags: ['skills', 'mobile', 'frontend'],
+      'Mobile and native work should be understood as exploratory tinkering rather than a primary professional specialty. Miguel has experimented with Flutter, React Native, cross-platform interface patterns, and light native iOS/macOS work with Swift and SwiftUI.',
+    tags: ['skills', 'mobile', 'frontend', 'aprendizaje'],
     type: 'answer',
     lang: 'en',
   },
   {
     id: 'skills-devops',
-    title: 'Skills - Engineering Tools and AI',
+    title: 'Skills - AI and Developer Tooling',
     content:
-      'AI-assisted development with Windsurf, Devin, Codex, GitHub Copilot, MCP servers, context engineering, structured prompts, and reusable skills. Miguel uses AI tools pragmatically to accelerate implementation, refactoring, debugging, documentation, and repeated team workflows while keeping human review and code ownership. CI/CD with GitHub Actions and Microsoft Azure pipelines. Cloud and APIs with AWS, Vercel, Cloudflare Workers, Docker, and GraphQL.',
+      'AI and developer tooling are a practical work area, not just a tool list. Miguel uses Windsurf, Devin, Codex, GitHub Copilot, MCP servers, context engineering, structured prompts, and reusable skills to accelerate implementation, refactoring, debugging, documentation, and recurring team workflows while keeping human review and code ownership. In his current role, he built an MCP server to support component-library consumers with contextual guidance, integration patterns, troubleshooting, and migration help. He also has CI/CD and delivery exposure with GitHub Actions, Microsoft Azure pipelines, Vercel, Cloudflare Workers, Docker, and GraphQL.',
     tags: ['skills', 'devops', 'infra', 'ai', 'forma-de-trabajar'],
     type: 'answer',
     lang: 'en',

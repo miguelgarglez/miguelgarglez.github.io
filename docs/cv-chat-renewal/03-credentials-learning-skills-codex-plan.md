@@ -7,7 +7,7 @@ This document defines the third implementation phase for the `cv-chat` renewal.
 Focus on:
 
 1. Reducing the visual weight of Education and Certifications.
-2. Reframing them as `Credentials & Learning`.
+2. Reframing them as an independent `Credentials & Learning` section.
 3. Preserving and refining the existing Technical Skills section, because its collapsible/vertical-card interaction is one of the stronger current visual ideas.
 
 Do not redesign Hero, Experience, `How this CV works`, or `AI Engineering Fluency` in this phase unless small spacing or ordering adjustments are needed.
@@ -86,28 +86,34 @@ The formal background and recent learning that support my engineering practice.
 
 ### Content structure
 
-Split into two or three compact columns/blocks:
+Split into two compact columns/blocks:
 
 ```text
 Academic foundation
-MSc Computer Science · Universidad Autónoma de Madrid
-Exchange Program · Aalto University, Helsinki
-BSc Computer Science · Universidad Autónoma de Madrid
+2022-2024  Master's Degree in Computer Science · Universidad Autónoma de Madrid
+2023       Exchange Program · Aalto University, Helsinki, Finland
+2018-2022  Bachelor's Degree in Computer Science · Universidad Autónoma de Madrid
 
-Recent learning
-Professional Scrum Master I
-Animations on the Web
-Google GenAI Intensive / practical RAG exposure, if represented in profile knowledge
-AI-assisted development workflows
-
-Current focus
-Frontend platform engineering
-Design systems
-Context engineering
-Agentic interfaces
+Professional learning
+Professional Scrum Master I · Scrum.org
+Animations on the Web · Emil Kowalski
+Google GenAI Intensive · Kaggle
+Responsible AI and Prompt Engineering · Founderz
+Full Stack Open · University of Helsinki
+TOEIC - C1 CEFR Level · Capman Testing Solutions
 ```
 
 Use only accurate items already represented in the site's content or profile knowledge. Do not invent certifications.
+
+Decision: do not include a `Current focus` block here. That territory is already covered by Work Signals, Experience, and Skills. This section should act as supporting evidence: formal education plus verified professional learning.
+
+Decision: keep years for academic foundation, because they clarify the formal education timeline. Do not show years for professional learning, because the section is curated by relevance rather than chronological history and each linked credential provides verification.
+
+Decision: keep Aalto University as its own academic row. The exchange program is a useful international signal and is easier to scan when it is not hidden inside the master's degree row.
+
+Decision: show all professional learning items at once. There are only six, and the old collapse interaction adds attention to a secondary section. The redesign should solve weight through layout, not by hiding content.
+
+Decision: link all credential rows that already have URLs. The interaction should be quiet: the whole row can be clickable, with a small `lucide:arrow-up-right` affordance instead of repeated button text.
 
 ### Visual direction
 
@@ -128,17 +134,31 @@ Example visual pattern:
 Credentials & Learning
 
 [Academic foundation]
-2022—2024  MSc Computer Science · Universidad Autónoma de Madrid
-2023       Exchange Program · Aalto University, Helsinki
-2018—2022  BSc Computer Science · Universidad Autónoma de Madrid
+2022-2024  Master's Degree in Computer Science
+           Universidad Autónoma de Madrid
 
-[Recent learning]
-2025       Professional Scrum Master I
-2025       Animations on the Web
-ongoing    AI-assisted development workflows
+2023       Exchange Program
+           Aalto University · Helsinki, Finland
+
+2018-2022  Bachelor's Degree in Computer Science
+           Universidad Autónoma de Madrid
+
+[Professional learning]
+Professional Scrum Master I · Scrum.org ↗
+Animations on the Web · Emil Kowalski ↗
+Google GenAI Intensive · Kaggle ↗
+Responsible AI and Prompt Engineering · Founderz ↗
+Full Stack Open · University of Helsinki ↗
+TOEIC - C1 CEFR Level · Capman Testing Solutions ↗
 ```
 
 The section should be scannable and visually lighter than Experience or AI Fluency.
+
+Recommended intro copy:
+
+```text
+Formal education and recent professional learning behind the engineering practice shown above.
+```
 
 ## Technical Skills refinement
 
@@ -150,47 +170,35 @@ It is one of the few sections that already feels less generic.
 
 ### Suggested category model
 
-Consider renaming/reordering categories to better match the renewed positioning:
+Decision: keep the distinctive expandable/vertical-card interaction, but update the content model to be more honest about strength levels.
+
+Final category model:
 
 ```text
 Frontend Platform
-Backend & Data
-AI Engineering
-Mobile & Cross-platform
-Engineering Tools
+Backend & Data Foundations
+AI & Developer Tooling
+Exploratory Engineering
 ```
 
-Or:
-
-```text
-UI Platform & Frontend
-Backend, Data & APIs
-AI-Assisted Engineering
-Mobile & Cross-Platform
-Engineering Quality
-```
-
-The exact categories should reflect the actual current skills and avoid exaggeration.
+Frontend Platform is the strongest professional area. Backend & Data Foundations are solid from Computer Science background and project work. AI & Developer Tooling should highlight practical work, especially the MCP server built to support component-library consumers with contextual guidance, integration patterns, troubleshooting, and migrations. Mobile/native should be framed as exploratory tinkering, not primary professional specialization.
 
 ### Suggested skill grouping
 
 Example grouping:
 
 ```text
-UI Platform & Frontend
-React · Astro · TypeScript/JavaScript · Design systems · Storybook · Accessibility · Component APIs
+Frontend Platform
+React · Astro · TypeScript/JavaScript · Design systems · Storybook · Accessibility · Component APIs · release quality
 
-Backend, Data & APIs
-Node.js · Python · Flask/Django · SQL/PostgreSQL/SQLite · MongoDB · REST APIs
+Backend & Data Foundations
+Node.js · Python · Flask/Django · SQL/PostgreSQL/SQLite · MongoDB · REST/GraphQL exposure · data analysis
 
-AI-Assisted Engineering
-GitHub Copilot · LLM APIs · Prompt/context engineering · MCP workflows · Lightweight profile agents
+AI & Developer Tooling
+GitHub Copilot · Windsurf · Devin · Codex · Prompt/context engineering · MCP workflows · component-consumer support tooling
 
-Mobile & Cross-Platform
-React Native / Expo, if already present and accurate
-
-Engineering Quality
-Testing · Documentation · Semantic versioning · Git/GitHub · Release workflows
+Exploratory Engineering
+Flutter · React Native · Swift/iOS/macOS tinkering · CI/CD · Vercel · Cloudflare Workers
 ```
 
 Only include technologies that are already true and supported by the current profile.
@@ -218,8 +226,8 @@ Add prompt chips if the pattern exists from earlier phases.
 Suggested prompts for Credentials & Learning:
 
 ```text
-What is Miguel's academic background?
-What has Miguel been learning recently?
+Ask about academic background
+Ask about recent learning
 ```
 
 Suggested prompts for Skills:
@@ -350,33 +358,31 @@ style(cv-chat): polish credentials and skills responsive layout
 ```text
 Credentials & Learning
 
-Academic foundation, recent learning, and ongoing areas of professional growth.
+Formal education and recent professional learning behind the engineering practice shown above.
 ```
 
 ### Academic foundation
 
 ```text
-MSc Computer Science · Universidad Autónoma de Madrid
-Exchange Program · Aalto University, Helsinki
-BSc Computer Science · Universidad Autónoma de Madrid
+2022-2024  Master's Degree in Computer Science
+           Universidad Autónoma de Madrid
+
+2023       Exchange Program
+           Aalto University · Helsinki, Finland
+
+2018-2022  Bachelor's Degree in Computer Science
+           Universidad Autónoma de Madrid
 ```
 
-### Recent learning
+### Professional learning
 
 ```text
-Professional Scrum Master I
-Animations on the Web
-AI-assisted development workflows
-Frontend architecture and design systems
-```
-
-### Current focus
-
-```text
-Frontend platform engineering
-Design systems
-Context engineering
-Agentic interfaces
+Professional Scrum Master I · Scrum.org
+Animations on the Web · Emil Kowalski
+Google GenAI Intensive · Kaggle
+Responsible AI and Prompt Engineering · Founderz
+Full Stack Open · University of Helsinki
+TOEIC - C1 CEFR Level · Capman Testing Solutions
 ```
 
 ### Development philosophy

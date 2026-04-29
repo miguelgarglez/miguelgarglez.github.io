@@ -49,6 +49,7 @@ const roles = [
             "Lead implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem.",
             "Contribute to the open-source charting library, adding new features and continuous improvements.",
             "Manage releases with semantic versioning, branch strategy, and Storybook documentation; support Kubit's public presence through product landing pages.",
+            "Built an MCP server to support consumers of the component library with contextual guidance, integration patterns, troubleshooting, and migration help.",
             "Drive AI-enabled workflows with tools like GitHub Copilot, MCP servers, and context engineering to improve productivity, code quality, and collaborative development.",
         ],
         prompt: "What has Miguel built at Santander?",
@@ -361,7 +362,7 @@ const roles = [
         margin-bottom: 1rem;
     }
 
-    .dossier-index p {
+    .dossier-index p:not(.section-kicker) {
         margin: 0;
         color: var(--text-muted);
         font-size: clamp(1rem, 1.4vw, 1.15rem);

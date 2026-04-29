@@ -21,6 +21,12 @@ This file records the decisions closed so far for the radical redesign of `cv-ch
 - About: brief positioning section.
 - Experience: dossier-style blocks, not a plain timeline.
 - Skills: functional and clean.
+- Skills model: keep expandable vertical cards, but frame categories as `Frontend Platform`, `Backend & Data Foundations`, `AI & Developer Tooling`, and `Exploratory Engineering`.
+- Skills honesty: frontend is the strongest professional area; backend/data are solid foundations; mobile/native is exploratory tinkering rather than a primary specialty.
+- Current experience: include the MCP server built to support component-library consumers with context, integration patterns, troubleshooting, and migrations.
+- Credentials & Learning: independent supporting section after Skills, covering only formal education and professional learning.
+- Credentials academic rows: keep compact years and keep Aalto University as its own row.
+- Credentials professional learning rows: show all items, link all available credentials, and omit years so the list reads as curated evidence rather than a mini chronology.
 - Contact: elegant exit rather than a loud CTA.
 - Scroll motion: very subtle reveals.
 - Agent section order: placed just before Contact.
