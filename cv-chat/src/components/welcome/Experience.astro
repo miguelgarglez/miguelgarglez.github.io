@@ -1,529 +1,736 @@
-<section id="experience" class="experience">
-  <div class="container">
-    <div class="section-heading">
-      <h2 class="section-title">Experience</h2>
-      <p class="section-copy">
-        Product-facing engineering roles across frontend platforms, QA, and early-stage software delivery.
-      </p>
+---
+import { Icon } from "astro-icon/components";
+
+const workNotes = [
+    {
+        index: "01",
+        title: "Design systems at scale",
+        body: "Reusable UI infrastructure, Storybook documentation, accessibility practices, release workflows, and component quality for frontend teams.",
+        prompt: "Explain Miguel's design system experience",
+    },
+    {
+        index: "02",
+        title: "AI-assisted engineering",
+        body: "Using coding agents, MCP servers, context engineering, and structured prompts to move faster without losing code ownership.",
+        prompt: "How does Miguel use AI in engineering?",
+    },
+    {
+        index: "03",
+        title: "Product-minded delivery",
+        body: "Balancing technical quality, maintainability, team adoption, UX, and business value across product-facing engineering work.",
+        prompt: "Summarize Miguel's work style",
+    },
+    {
+        index: "04",
+        title: "Cross-team collaboration",
+        body: "Supporting developers through components, documentation, conventions, agile coordination, and practical implementation guidance.",
+        prompt: "What makes Miguel a strong frontend platform engineer?",
+    },
+];
+
+const roles = [
+    {
+        status: "current role",
+        period: "Sep 2024 - Current",
+        title: "Frontend UI Platform Engineer",
+        company: "Open Digital Services (Santander Group)",
+        summary:
+            "Building and maintaining UI components for frontend teams across Grupo Santander.",
+        tags: [
+            "Design systems",
+            "Accessibility",
+            "Storybook",
+            "Release workflows",
+            "Semantic versioning",
+            "AI-assisted development",
+        ],
+        achievements: [
+            "Member of the Kubit Web UI components platform team, building and maintaining the component library used by web developers across Grupo Santander banks.",
+            "Lead implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem.",
+            "Contribute to the open-source charting library, adding new features and continuous improvements.",
+            "Manage releases with semantic versioning, branch strategy, and Storybook documentation; support Kubit's public presence through product landing pages.",
+            "Drive AI-enabled workflows with tools like GitHub Copilot, MCP servers, and context engineering to improve productivity, code quality, and collaborative development.",
+        ],
+        prompt: "What has Miguel built at Santander?",
+    },
+    {
+        status: "quality foundation",
+        period: "Sep 2023 - Jul 2024",
+        title: "QA Software Engineer",
+        company: "Jember Engineering Solutions",
+        summary:
+            "Worked close to product quality, validation, and delivery, strengthening attention to detail, reliability, and user-facing impact.",
+        tags: [
+            "Quality mindset",
+            "Testing",
+            "Product validation",
+            "Agile coordination",
+            "Automation recovery",
+        ],
+        achievements: [
+            "Worked and coordinated with the app frontend development team using agile methodologies, keeping different parties aligned to successfully complete new features.",
+            "Reported hundreds of bugs, leading to noticeable improvements on the app's performance and UX.",
+            "Worked with another QA to refactor and relaunch a test automation project for company apps that had been abandoned for more than 2 years, leading to a 50% improvement in person-day cost for regression tests.",
+        ],
+        prompt: "Summarize Miguel's QA background",
+    },
+    {
+        status: "early delivery",
+        period: "Jan 2022 - May 2022",
+        title: "Software Developer",
+        company: "Electric-Save",
+        summary:
+            "Early-stage B2B software work across customer support, product demos, and web application delivery.",
+        tags: [
+            "B2B product",
+            "Client communication",
+            "Proof of concept",
+            "Remote demos",
+            "Software support",
+        ],
+        achievements: [
+            "Attended clients directly in a B2B startup context, reporting and fixing errors with the company's software and contributing to customer satisfaction and continuity.",
+            "Created a web application proof of concept for an important potential client, moving the proposal to the next selection stage.",
+            "Ran remote meetings to show the software product to new potential clients, opening new challenges and growth opportunities for the company.",
+        ],
+        prompt: "How did Miguel's early role shape his product mindset?",
+    },
+];
+---
+
+<section id="experience" class="experience" aria-labelledby="experience-title">
+    <div class="experience-shell section-shell">
+        <aside
+            class="dossier-index section-rail"
+            aria-label="Experience dossier index"
+        >
+            <p class="section-kicker">/experience</p>
+            <h2 id="experience-title" class="editorial-title">Working Notes</h2>
+            <p>
+                Four working patterns that show up across my roles: systems
+                thinking, AI leverage, product judgment, and team enablement.
+            </p>
+        </aside>
+
+        <div class="experience-content">
+            <div class="notes-grid" aria-label="Working notes">
+                {
+                    workNotes.map((note) => (
+                        <article class="note-card dossier-reveal">
+                            <span class="note-index">{note.index}</span>
+                            <h3>{note.title}</h3>
+                            <p>{note.body}</p>
+                            <button
+                                class="agent-link"
+                                type="button"
+                                data-chat-prompt={note.prompt}
+                            >
+                                <span>Ask the agent</span>
+                                <Icon
+                                    name="lucide:arrow-up-right"
+                                    aria-hidden="true"
+                                />
+                            </button>
+                        </article>
+                    ))
+                }
+            </div>
+
+            <div class="role-stack" aria-label="Professional experience">
+                <div class="role-stack-heading dossier-reveal">
+                    <p class="section-kicker">/role_archive</p>
+                    <h3>Roles</h3>
+                </div>
+
+                {
+                    roles.map((role, roleIndex) => (
+                        <article
+                            class={`role-card dossier-reveal ${roleIndex === 0 ? "current" : ""}`}
+                        >
+                            <header class="role-header">
+                                <div>
+                                    <p class="role-status">{role.status}</p>
+                                    <h4>{role.title}</h4>
+                                    <p class="role-company">{role.company}</p>
+                                </div>
+                                <p class="role-period">{role.period}</p>
+                            </header>
+
+                            <p class="role-summary">{role.summary}</p>
+
+                            <div
+                                class="role-tags"
+                                aria-label={`${role.title} focus areas`}
+                            >
+                                {role.tags.map((tag) => (
+                                    <span>{tag}</span>
+                                ))}
+                            </div>
+
+                            <button
+                                class="expand-btn"
+                                type="button"
+                                aria-expanded={
+                                    roleIndex === 0 ? "true" : "false"
+                                }
+                                aria-controls={`experience-achievements-${roleIndex + 1}`}
+                            >
+                                <span class="expand-text">
+                                    {roleIndex === 0
+                                        ? "Show less"
+                                        : "Show details"}
+                                </span>
+                                <span class="expand-icon" aria-hidden="true">
+                                    {roleIndex === 0 ? "-" : "+"}
+                                </span>
+                            </button>
+
+                            <ul
+                                class={`achievements ${roleIndex === 0 ? "expanded" : ""}`}
+                                id={`experience-achievements-${roleIndex + 1}`}
+                            >
+                                {role.achievements.map((achievement) => (
+                                    <li>{achievement}</li>
+                                ))}
+                            </ul>
+
+                            <button
+                                class="agent-link role-prompt"
+                                type="button"
+                                data-chat-prompt={role.prompt}
+                            >
+                                <span>{role.prompt}</span>
+                                <Icon
+                                    name="lucide:arrow-up-right"
+                                    aria-hidden="true"
+                                />
+                            </button>
+                        </article>
+                    ))
+                }
+            </div>
+        </div>
     </div>
-
-    <div class="timeline">
-      <div class="timeline-item current">
-        <div class="timeline-marker"></div>
-        <div class="timeline-content">
-          <div class="period">Sep 2024 - Current</div>
-          <h3 class="job-title">Frontend UI Platform Engineer</h3>
-          <p class="company">Open Digital Services (Santander Group)</p>
-          <button
-            class="expand-btn mobile-only"
-            type="button"
-            aria-expanded="false"
-            aria-controls="experience-achievements-1"
-            aria-label="Show details for Frontend UI Platform Engineer"
-          >
-            <span class="expand-text">Show more</span>
-            <span class="expand-icon">+</span>
-          </button>
-          <ul class="achievements expandable" id="experience-achievements-1">
-            <li>
-              Member of the <strong>Kubit Web UI components platform team</strong>,
-              building and maintaining the component library used by web developers
-              across <strong>Grupo Santander</strong> banks.
-            </li>
-            <li>
-              Lead implementation, maintenance, and refactoring of UI components,
-              ensuring <strong>consistency, performance, and accessibility</strong>
-              across the product ecosystem.
-            </li>
-            <li>
-              Contribute to the <strong>open-source charting library</strong>,
-              adding new features and continuous improvements.
-            </li>
-            <li>
-              Manage releases with <strong>semantic versioning</strong>, branch
-              strategy, and <strong>Storybook documentation</strong>; support
-              Kubit's public presence through product landing pages.
-            </li>
-            <li>
-              Drive <strong>AI-enabled workflows</strong> with tools like GitHub
-              Copilot, MCP servers, and context engineering to improve productivity,
-              code quality, and collaborative development.
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-marker"></div>
-        <div class="timeline-content">
-          <div class="period">Sep 2023 - Jul 2024</div>
-          <h3 class="job-title">QA Software Engineer</h3>
-          <p class="company">Jember Engineering Solutions</p>
-          <button
-            class="expand-btn mobile-only"
-            type="button"
-            aria-expanded="false"
-            aria-controls="experience-achievements-2"
-            aria-label="Show details for QA Software Engineer"
-          >
-            <span class="expand-text">Show more</span>
-            <span class="expand-icon">+</span>
-          </button>
-          <ul class="achievements expandable" id="experience-achievements-2">
-            <li>
-              Work and coordinate with <strong
-                >app frontend development team</strong
-              > with <strong>agile methodologies</strong>, ensuring that the
-              different parties are aligned to successfully complete the
-              development of new features.
-            </li>
-            <li>
-              Report <strong>hundreds of bugs</strong>, leading to noticeable
-              improvements on app's <strong>performance and UX</strong>.
-            </li>
-            <li>
-              Working together with another QA to <strong
-                >refactor and relaunch a test automation project</strong
-              > for the company apps that had been abandoned for more than 2 years,
-              leading to an improvement of <strong
-                >50% in cost of person days</strong
-              > for regression tests.
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-marker"></div>
-        <div class="timeline-content">
-          <div class="period">Jan 2022 - May 2022</div>
-          <h3 class="job-title">Software Developer</h3>
-          <p class="company">Electric-Save</p>
-          <button
-            class="expand-btn mobile-only"
-            type="button"
-            aria-expanded="false"
-            aria-controls="experience-achievements-3"
-            aria-label="Show details for Software Developer"
-          >
-            <span class="expand-text">Show more</span>
-            <span class="expand-icon">+</span>
-          </button>
-          <ul class="achievements expandable" id="experience-achievements-3">
-            <li>
-              Attend <strong>clients directly</strong> (was a <strong
-                >B2B startup company</strong
-              >), reporting and fixing errors with the software provided by the
-              company, contributing to <strong>customer satisfaction</strong> and continuity
-              using the company's software product.
-            </li>
-            <li>
-              Create a <strong>web application</strong> to make a <strong
-                >proof of concept</strong
-              > to an important potential client, which took our proposal to the
-              <strong>next stage of selection</strong>.
-            </li>
-            <li>
-              Run <strong>remote meetings</strong> to show the software product to
-              new potential clients, leading to new challenges and <strong
-                >growth of the company</strong
-              >.
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
 </section>
 
 <script>
-  import { getScrollMotionTools, prefersReducedMotion } from '../../lib/motion';
+    import {
+        getScrollMotionTools,
+        prefersReducedMotion,
+    } from "../../lib/motion";
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    if (!prefersReducedMotion()) {
-      const { gsap } = await getScrollMotionTools();
+    document.addEventListener("DOMContentLoaded", async () => {
+        const expandBtns = document.querySelectorAll("#experience .expand-btn");
 
-      gsap.set('#experience .section-heading', { y: 50, opacity: 0 });
-      gsap.set('#experience .timeline-item', { x: -80, opacity: 0 });
-      gsap.set('#experience .timeline-marker', { scale: 0 });
+        expandBtns.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const achievements = btn.nextElementSibling;
+                const expandText = btn.querySelector(".expand-text");
+                const expandIcon = btn.querySelector(".expand-icon");
+                if (!(achievements instanceof HTMLElement)) return;
+                if (!expandText) return;
+                if (!expandIcon) return;
 
-      gsap.to('#experience .section-heading', {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: '#experience',
-          start: 'top 70%',
-          end: 'bottom 70%',
-          toggleActions: 'play none none reverse',
-        },
-      });
+                const nextExpanded =
+                    !achievements.classList.contains("expanded");
 
-      gsap.to('#experience .timeline-item', {
-        x: 0,
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.18,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: '#experience .timeline',
-          start: 'top 80%',
-          end: 'bottom 80%',
-          toggleActions: 'play none none reverse',
-        },
-      });
+                achievements.classList.toggle("expanded", nextExpanded);
+                btn.classList.toggle("expanded", nextExpanded);
+                btn.setAttribute("aria-expanded", String(nextExpanded));
+                expandText.textContent = nextExpanded
+                    ? "Show less"
+                    : "Show details";
+                expandIcon.textContent = nextExpanded ? "-" : "+";
+            });
+        });
 
-      gsap.to('#experience .timeline-marker', {
-        scale: 1,
-        duration: 0.5,
-        stagger: 0.18,
-        ease: 'back.out(1.7)',
-        scrollTrigger: {
-          trigger: '#experience .timeline',
-          start: 'top 80%',
-          end: 'bottom 80%',
-          toggleActions: 'play none none reverse',
-        },
-      });
-    }
+        document
+            .querySelectorAll("#experience [data-chat-prompt]")
+            .forEach((button) => {
+                button.addEventListener("click", () => {
+                    const prompt =
+                        button.getAttribute("data-chat-prompt") ?? "";
+                    window.dispatchEvent(new CustomEvent("cv-chat:open"));
+                    window.dispatchEvent(
+                        new CustomEvent("cv-chat:prompt", {
+                            detail: { prompt },
+                        }),
+                    );
+                });
+            });
 
-    const expandBtns = document.querySelectorAll('.expand-btn');
+        if (prefersReducedMotion()) {
+            return;
+        }
 
-    expandBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const achievements = btn.nextElementSibling;
-        const expandText = btn.querySelector('.expand-text');
-        const expandIcon = btn.querySelector('.expand-icon');
-        if (!expandText) return;
-        if (!expandIcon) return;
-        if (!achievements) return;
-        const isExpanded = achievements.classList.contains('expanded');
-        const nextExpanded = !isExpanded;
+        const { gsap } = await getScrollMotionTools();
 
-        achievements.classList.toggle('expanded', nextExpanded);
-        btn.classList.toggle('expanded', nextExpanded);
-        btn.setAttribute('aria-expanded', String(nextExpanded));
-        expandText.textContent = nextExpanded ? 'Show less' : 'Show more';
-        expandIcon.textContent = nextExpanded ? '-' : '+';
-      });
+        gsap.set("#experience .dossier-index", { y: 28, opacity: 0 });
+        gsap.set("#experience .dossier-reveal", { y: 36, opacity: 0 });
+
+        gsap.to("#experience .dossier-index", {
+            y: 0,
+            opacity: 1,
+            duration: 0.72,
+            ease: "power3.out",
+            scrollTrigger: {
+                trigger: "#experience",
+                start: "top 72%",
+                toggleActions: "play none none reverse",
+            },
+        });
+
+        gsap.to("#experience .dossier-reveal", {
+            y: 0,
+            opacity: 1,
+            duration: 0.68,
+            stagger: 0.08,
+            ease: "power3.out",
+            scrollTrigger: {
+                trigger: "#experience .experience-content",
+                start: "top 78%",
+                toggleActions: "play none none reverse",
+            },
+        });
     });
-  });
 </script>
 
 <style>
-  .experience {
-    padding: 5rem 2rem;
-    background: var(--bg-light);
-    color: var(--text);
-    overflow: hidden;
-  }
-
-  .container {
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-
-  .section-title {
-    font-size: clamp(2rem, 4vw, 3rem);
-    text-align: center;
-    margin: 0;
-    color: var(--text);
-    font-weight: 700;
-  }
-
-  .section-heading {
-    max-width: 760px;
-    margin: 0 auto 4rem;
-    text-align: center;
-    display: grid;
-    gap: 0.9rem;
-  }
-
-  .section-copy {
-    margin: 0;
-    color: var(--text-muted);
-    font-size: 1.05rem;
-    line-height: 1.7;
-  }
-
-  .timeline {
-    --timeline-padding: 3rem;
-    --timeline-line-x: 1.5rem;
-    --marker-size: 1rem;
-    position: relative;
-    padding-left: var(--timeline-padding);
-    max-width: 980px;
-    margin: 0 auto;
-  }
-
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: var(--timeline-line-x);
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(180deg, transparent 0%, var(--border) 12%, var(--border) 88%, transparent 100%);
-  }
-
-  .timeline-item {
-    position: relative;
-    margin-bottom: 3rem;
-    padding-left: 2rem;
-  }
-
-  .timeline-marker {
-    position: absolute;
-    left: calc(
-      (var(--timeline-line-x) - var(--timeline-padding)) -
-        (var(--marker-size) / 2)
-    );
-    top: 0.5rem;
-    width: var(--marker-size);
-    height: var(--marker-size);
-    box-sizing: border-box;
-    background: var(--bg);
-    border-radius: 50%;
-    border: 3px solid var(--primary);
-    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.15);
-    z-index: 1;
-  }
-
-  .timeline-content {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0) 100%);
-    padding: 2rem;
-    border-radius: 16px;
-    border: 1px solid var(--border-muted);
-    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
-    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .timeline-content:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    border-color: var(--primary);
-  }
-
-  .timeline-content:focus-within {
-    border-color: color-mix(in srgb, var(--primary) 60%, var(--border));
-    box-shadow:
-      0 14px 40px rgba(0, 0, 0, 0.12),
-      0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
-  }
-
-  .timeline-item.current .timeline-content {
-    border-color: rgba(255, 171, 45, 0.45);
-    box-shadow: 0 18px 50px rgba(255, 171, 45, 0.12);
-  }
-
-  .timeline-item.current .timeline-content:hover {
-    border-color: var(--primary);
-    box-shadow: 0 22px 60px rgba(255, 171, 45, 0.18);
-  }
-
-  .timeline-item.current .timeline-marker {
-    background: var(--primary);
-    box-shadow: 0 0 0 6px rgba(255, 171, 45, 0.18);
-  }
-
-  .timeline-item.current .period {
-    border-color: rgba(255, 171, 45, 0.45);
-    background: rgba(255, 171, 45, 0.12);
-  }
-
-  body.light .timeline::before {
-    background: linear-gradient(180deg, transparent 0%, rgba(176, 106, 6, 0.2) 12%, rgba(176, 106, 6, 0.2) 88%, transparent 100%);
-  }
-
-  body.light .timeline-marker {
-    background: var(--bg-light);
-    border-color: var(--primary);
-    box-shadow: none;
-  }
-
-  body.light .timeline-content {
-    background: var(--bg-light);
-    border-color: rgba(176, 106, 6, 0.18);
-    box-shadow: 0 16px 40px rgba(97, 70, 33, 0.08);
-  }
-
-  body.light .timeline-content:hover {
-    box-shadow: 0 20px 50px rgba(97, 70, 33, 0.12);
-  }
-
-  body.light .period {
-    border-color: rgba(176, 106, 6, 0.25);
-    background: rgba(176, 106, 6, 0.08);
-  }
-
-  body.light .achievements li::before {
-    background: var(--primary);
-  }
-
-  body.light .timeline-item.current .timeline-content {
-    border-color: rgba(176, 106, 6, 0.35);
-    box-shadow: 0 20px 50px rgba(176, 106, 6, 0.14);
-  }
-
-  body.light .timeline-item.current .timeline-marker {
-    background: var(--primary);
-    box-shadow: 0 0 0 8px rgba(176, 106, 6, 0.18);
-  }
-
-  .period {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    color: var(--primary);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(0, 0, 0, 0.2);
-    font-weight: 600;
-    font-size: 0.9rem;
-    padding: 0.35rem 0.85rem;
-    border-radius: 999px;
-    margin-bottom: 0.5rem;
-  }
-
-  .job-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--text);
-    margin: 0 0 0.5rem 0;
-  }
-
-  .company {
-    color: var(--text-muted);
-    font-style: italic;
-    margin: 0 0 1.5rem 0;
-  }
-
-  .achievements {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .achievements li {
-    position: relative;
-    padding-left: 1.2rem;
-    margin-bottom: 0.8rem;
-    line-height: 1.6;
-    color: var(--text-muted);
-  }
-
-  .achievements li strong {
-    color: var(--primary);
-    font-weight: 600;
-  }
-
-  .achievements li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.55rem;
-    width: 0.4rem;
-    height: 0.4rem;
-    border-radius: 999px;
-    background: var(--primary);
-  }
-
-  .achievements li:last-child {
-    margin-bottom: 0;
-  }
-
-  /* Estilos para funcionalidad expandible en móvil */
-  .expand-btn {
-    display: none;
-    background: var(--primary);
-    color: var(--bg);
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    margin-bottom: 1rem;
-    transition:
-      transform 0.3s ease,
-      box-shadow 0.3s ease,
-      background-color 0.3s ease;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .expand-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.16);
-  }
-
-  .expand-btn:focus-visible {
-    outline: none;
-    box-shadow:
-      0 10px 20px rgba(0, 0, 0, 0.16),
-      0 0 0 3px color-mix(in srgb, var(--primary) 24%, transparent);
-  }
-
-  .expand-icon {
-    transition: transform 0.3s ease;
-    display: inline-block;
-    font-weight: bold;
-    font-size: 1rem;
-  }
-
-  .expand-btn.expanded .expand-icon {
-    transform: rotate(360deg);
-  }
-
-  @media (max-width: 768px) {
     .experience {
-      padding: 3rem 1rem;
+        position: relative;
+        padding: clamp(4.5rem, 9vw, 8rem) 1.25rem;
+        color: var(--text);
+        overflow: clip;
     }
 
-    .section-heading {
-      margin-bottom: 3rem;
+    .experience::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(
+                90deg,
+                color-mix(in srgb, var(--border) 34%, transparent) 1px,
+                transparent 1px
+            ),
+            linear-gradient(
+                180deg,
+                color-mix(in srgb, var(--border) 28%, transparent) 1px,
+                transparent 1px
+            );
+        background-size: 96px 96px;
+        mask-image: linear-gradient(
+            180deg,
+            transparent,
+            black 16%,
+            black 82%,
+            transparent
+        );
+        opacity: 0.18;
+        pointer-events: none;
     }
 
-    .timeline {
-      --timeline-padding: 2.5rem;
-      --timeline-line-x: 1.25rem;
-      max-width: 100%;
+    .experience-shell {
+        position: relative;
+        z-index: 1;
     }
 
-    .timeline::before {
-      left: var(--timeline-line-x);
+    .dossier-index {
+        position: sticky;
+        top: 7rem;
+        align-self: start;
     }
 
-    .timeline-content {
-      padding: 1.5rem;
+    .note-index,
+    .role-status,
+    .role-period,
+    .agent-link {
+        font-family: var(--font-mono);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
     }
 
-    /* Mostrar botón expandible en móvil */
-    .mobile-only {
-      display: flex !important;
+    .note-index,
+    .role-status {
+        margin: 0;
+        color: var(--primary);
+        font-size: 0.72rem;
     }
 
-    /* Ocultar logros por defecto en móvil */
-    .achievements.expandable {
-      display: none;
-      margin-top: 0;
+    .dossier-index h2 {
+        margin-bottom: 1rem;
     }
 
-    /* Mostrar cuando está expandido */
-    .achievements.expandable.expanded {
-      display: block;
-      animation: slideDown 0.3s ease-out;
+    .dossier-index p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: clamp(1rem, 1.4vw, 1.15rem);
+        line-height: 1.7;
     }
 
-    @keyframes slideDown {
-      from {
+    .experience-content {
+        display: grid;
+        gap: clamp(3rem, 6vw, 5rem);
+        min-width: 0;
+    }
+
+    .notes-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1px;
+        background: var(--border);
+        border: 1px solid var(--border);
+    }
+
+    .note-card,
+    .role-card {
+        background: linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--bg-light) 88%, transparent),
+            color-mix(in srgb, var(--bg) 96%, transparent)
+        );
+    }
+
+    .note-card {
+        position: relative;
+        min-height: 17rem;
+        padding: clamp(1.35rem, 2.5vw, 2rem);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .note-index {
+        position: absolute;
+        top: clamp(1rem, 2vw, 1.45rem);
+        right: clamp(1rem, 2vw, 1.45rem);
+        color: color-mix(in srgb, var(--primary) 72%, var(--text-muted));
+        font-size: 0.78rem;
+    }
+
+    .note-card h3 {
+        max-width: 12ch;
+        margin: 1.8rem 0 1rem;
+        font-size: clamp(1.45rem, 2.4vw, 2.1rem);
+        line-height: 1.02;
+    }
+
+    .note-card p {
+        margin: 0 0 1.5rem;
+        color: var(--text-muted);
+        line-height: 1.65;
+    }
+
+    .agent-link {
+        margin-top: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45rem;
+        min-height: 2.35rem;
+        padding: 0.1rem 0;
+        border: 0;
+        border-bottom: 1px solid
+            color-mix(in srgb, var(--primary) 45%, transparent);
+        background: transparent;
+        color: var(--text);
+        font-size: 0.7rem;
+        cursor: pointer;
+        transition:
+            color 180ms ease,
+            border-color 180ms ease,
+            transform 180ms var(--ease-out-quart);
+    }
+
+    .agent-link svg {
+        width: 0.85rem;
+        height: 0.85rem;
+        color: var(--primary);
+        transition: transform 180ms var(--ease-out-quart);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .agent-link:hover {
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .agent-link:hover svg {
+            transform: translate(2px, -2px);
+        }
+    }
+
+    .agent-link:active,
+    .expand-btn:active {
+        transform: scale(0.97);
+    }
+
+    .agent-link:hover {
+        border-color: var(--primary);
+    }
+
+    .agent-link:focus-visible,
+    .expand-btn:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px
+            color-mix(in srgb, var(--primary) 24%, transparent);
+    }
+
+    .role-stack {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .role-stack-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .role-stack-heading h3 {
+        margin: 0;
+        font-size: clamp(2rem, 4vw, 3.6rem);
+        line-height: 1;
+    }
+
+    .role-card {
+        position: relative;
+        padding: clamp(1.4rem, 3vw, 2.35rem);
+        border: 1px solid var(--border);
+        overflow: hidden;
+    }
+
+    .role-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto;
+        height: 2px;
+        background: linear-gradient(90deg, var(--primary), transparent 62%);
         opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
-  }
+
+    .role-card.current::before {
+        opacity: 1;
+    }
+
+    .role-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 1.5rem;
+        align-items: start;
+    }
+
+    .role-card h4 {
+        margin: 0.55rem 0 0.35rem;
+        font-size: clamp(1.55rem, 3vw, 2.55rem);
+        line-height: 1.04;
+    }
+
+    .role-company,
+    .role-summary,
+    .achievements {
+        color: var(--text-muted);
+    }
+
+    .role-company {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    .role-period {
+        margin: 0;
+        color: var(--text);
+        font-size: 0.76rem;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .role-summary {
+        max-width: 44rem;
+        margin: 1.5rem 0 1.2rem;
+        font-size: 1.06rem;
+        line-height: 1.7;
+    }
+
+    .role-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+        margin-bottom: 1.35rem;
+    }
+
+    .role-tags span {
+        display: inline-flex;
+        border: 1px solid var(--border-muted);
+        border-radius: 999px;
+        padding: 0.38rem 0.65rem;
+        color: var(--text-muted);
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+    }
+
+    .expand-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        min-height: 2.4rem;
+        padding: 0.58rem 0.9rem;
+        border: 1px solid color-mix(in srgb, var(--primary) 48%, var(--border));
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--primary) 10%, transparent);
+        color: var(--text);
+        font-family: var(--font-mono);
+        font-size: 0.76rem;
+        cursor: pointer;
+        box-shadow: inset 0 0 0 1px
+            color-mix(in srgb, var(--primary) 8%, transparent);
+        transition:
+            background-color 180ms ease,
+            border-color 180ms ease,
+            box-shadow 180ms ease,
+            transform 160ms var(--ease-out-quart);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .expand-btn:hover {
+            border-color: color-mix(in srgb, var(--primary) 72%, var(--border));
+            background: color-mix(in srgb, var(--primary) 14%, transparent);
+            box-shadow:
+                inset 0 0 0 1px
+                    color-mix(in srgb, var(--primary) 14%, transparent),
+                0 0 24px color-mix(in srgb, var(--primary) 10%, transparent);
+        }
+    }
+
+    .expand-icon {
+        display: inline-grid;
+        width: 1rem;
+        place-items: center;
+        color: var(--primary);
+        font-weight: 700;
+    }
+
+    .achievements {
+        display: grid;
+        gap: 0.85rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        max-width: 48rem;
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition:
+            max-height 280ms cubic-bezier(0.23, 1, 0.32, 1),
+            opacity 180ms ease,
+            margin-top 280ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .achievements.expanded {
+        margin-top: 1.35rem;
+        max-height: 34rem;
+        opacity: 1;
+    }
+
+    .achievements li {
+        position: relative;
+        padding-left: 1.1rem;
+        line-height: 1.65;
+    }
+
+    .achievements li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.7rem;
+        width: 0.34rem;
+        height: 0.34rem;
+        border-radius: 999px;
+        background: var(--primary);
+    }
+
+    .role-prompt {
+        margin-top: 1.35rem;
+        max-width: 100%;
+        text-align: left;
+        justify-content: flex-start;
+    }
+
+    body.light .experience::before {
+        opacity: 0.24;
+    }
+
+    body.light .note-card,
+    body.light .role-card {
+        background: linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--bg-light) 92%, transparent),
+            color-mix(in srgb, var(--bg) 95%, transparent)
+        );
+    }
+
+    @media (max-width: 980px) {
+        .experience-shell {
+            grid-template-columns: 1fr;
+        }
+
+        .dossier-index {
+            position: relative;
+            top: auto;
+            min-height: 0;
+            padding-right: 0;
+            padding-bottom: 2rem;
+            border-right: 0;
+            border-bottom: 1px solid var(--border);
+        }
+    }
+
+    @media (max-width: 720px) {
+        .experience {
+            padding: 4rem 1rem;
+        }
+
+        .notes-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .note-card {
+            min-height: 14rem;
+        }
+
+        .role-stack-heading {
+            display: grid;
+            align-items: start;
+        }
+
+        .role-header {
+            grid-template-columns: 1fr;
+            gap: 0.9rem;
+        }
+
+        .role-period {
+            text-align: left;
+            white-space: normal;
+        }
+
+        .role-prompt {
+            width: 100%;
+            justify-content: flex-start;
+            line-height: 1.4;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .agent-link,
+        .expand-btn {
+            transition: none;
+        }
+
+        .achievements {
+            transition: opacity 160ms ease;
+        }
+    }
 </style>

@@ -155,7 +155,14 @@ import "../styles/global.css";
         --shadow-soft: 0 18px 50px rgba(0, 0, 0, 0.32);
         --shadow-card: 0 14px 30px rgba(0, 0, 0, 0.18);
         --shadow-glow: 0 0 40px rgba(200, 117, 61, 0.2);
-        --container-max: 1120px;
+        --container-max: 1180px;
+        --container-gutter: 1.25rem;
+        --section-rail-min: 220px;
+        --section-rail-share: 0.34fr;
+        --section-shell-gap: clamp(2rem, 5vw, 5.5rem);
+        --section-rail-padding: clamp(1rem, 3vw, 2.5rem);
+        --editorial-title-size: clamp(2.35rem, 3.9vw, 4.25rem);
+        --editorial-title-tracking: -0.055em;
         --radius: var(--radius-md);
         --background: var(--bg);
         --foreground: var(--text);
@@ -300,10 +307,44 @@ import "../styles/global.css";
         pointer-events: auto;
     }
 
-    .page-shell {
+    :global(.page-shell) {
+        max-width: calc(var(--container-max) + (var(--container-gutter) * 2));
+        margin: 0 auto;
+        padding: 0 var(--container-gutter);
+    }
+
+    :global(.section-shell) {
+        display: grid;
+        grid-template-columns:
+            minmax(var(--section-rail-min), var(--section-rail-share))
+            minmax(0, 1fr);
+        gap: var(--section-shell-gap);
         max-width: var(--container-max);
         margin: 0 auto;
-        padding: 0 24px;
+    }
+
+    :global(.section-rail) {
+        padding-right: var(--section-rail-padding);
+        border-right: 1px solid var(--border);
+    }
+
+    :global(.section-kicker),
+    :global(.metadata-label) {
+        margin: 0;
+        color: var(--primary);
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    :global(.editorial-title) {
+        margin: 1.15rem 0 0;
+        color: var(--text);
+        font-family: var(--font-display);
+        font-size: var(--editorial-title-size);
+        line-height: 0.95;
+        letter-spacing: var(--editorial-title-tracking);
     }
 
     .section {

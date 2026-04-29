@@ -257,7 +257,7 @@ import AsciiField from "./AsciiField.astro";
 
     .hero-content {
         --hero-padding-top: 2.5rem;
-        --hero-padding-inline: 2.5rem;
+        --hero-padding-inline: 0;
         --hero-padding-bottom: 2rem;
 
         display: grid;
@@ -431,7 +431,6 @@ import AsciiField from "./AsciiField.astro";
     @media (max-width: 900px) {
         .hero-content {
             --hero-padding-top: 2rem;
-            --hero-padding-inline: 1.25rem;
             --hero-padding-bottom: 3.5rem;
 
             grid-template-columns: 1fr;
@@ -471,7 +470,6 @@ import AsciiField from "./AsciiField.astro";
 
         .hero-content {
             --hero-padding-top: 1.25rem;
-            --hero-padding-inline: 1rem;
             --hero-padding-bottom: 2.5rem;
             gap: clamp(1rem, 3svh, 1.55rem);
         }
@@ -661,15 +659,15 @@ import AsciiField from "./AsciiField.astro";
 
     @media (min-width: 1440px) {
         .hero-content {
-            --hero-padding-inline: 4rem;
-        }
-
-        .hero-content {
-            grid-template-columns: minmax(0, 0.9fr) minmax(44rem, 1.1fr);
+            grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
         }
 
         .hero-content :global(.ascii-field) {
-            width: min(100%, 56rem);
+            width: min(100%, 48rem);
+        }
+
+        .hero-name {
+            font-size: clamp(2.95rem, 6vw, 5.75rem);
         }
     }
 </style>

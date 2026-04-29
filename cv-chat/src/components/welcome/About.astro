@@ -1,296 +1,268 @@
 ---
-import { Icon } from 'astro-icon/components';
+const personalNotes = [
+    {
+        index: "01",
+        ascii: "[team]",
+        title: "Team rhythm",
+        body: "I grew up playing federated football, which shaped how I understand discipline, roles, feedback, and showing up for a group over time.",
+    },
+    {
+        index: "02",
+        ascii: "{learn}",
+        title: "Learning mode",
+        body: "I tend to follow curiosity into tools, interfaces, AI workflows, and implementation details until I can turn them into practical habits.",
+    },
+    {
+        index: "03",
+        ascii: "<voice>",
+        title: "Communication range",
+        body: "I work comfortably across technical and product contexts, with C1 English, public speaking experience, and a preference for clear explanations.",
+    },
+];
 ---
 
 <section id="about" class="about">
-  <div class="container">
-    <h2 class="section-title">About Me</h2>
-    <div class="about-content">
-      <div class="about-text">
-        <p class="intro">
-          <span class="accent-underline">
-            Building scalable, user-centered products with practical AI leverage.
-          </span>
-        </p>
-        <p class="description">
-          I'm a product-minded software developer focused on delivering real
-          business value through scalable, user-centered digital products. I
-          make practical use of AI tools to optimize workflows, improve software
-          quality, and boost team productivity, and I actively share best
-          practices to help teams adopt them. I aim to keep a global view of the
-          product, balancing engineering best practices, maintainability, and
-          cross-team collaboration. I'm motivated to keep growing as a
-          technical professional while contributing to projects where quality,
-          innovation, and impact are the core.
-        </p>
-      </div>
-
-      <div class="qualities">
-        <div class="quality-card-reveal">
-          <div class="quality-item">
-            <Icon class="quality-icon" name="lucide:users" aria-hidden="true" />
-            <h3>Team Player</h3>
-            <p>
-              Used to belonging to teams, having played football in federated
-              teams from the age of seven to the present day.
-            </p>
-          </div>
+    <div class="about-shell section-shell">
+        <div class="about-heading section-rail">
+            <p class="section-kicker">/about</p>
+            <h2 class="section-title editorial-title">A Human Layer</h2>
         </div>
 
-        <div class="quality-card-reveal">
-          <div class="quality-item">
-            <Icon class="quality-icon" name="lucide:shield" aria-hidden="true" />
-            <h3>Resilient</h3>
-            <p>
-              With great tolerance for failure and defeat, they always bring
-              something positive and motivate me to keep working to find
-              solutions.
-            </p>
-          </div>
-        </div>
+        <div class="about-content">
+            <div class="about-text">
+                <p class="intro">
+                    I care about building useful software with people, not just
+                    shipping isolated pieces of code.
+                </p>
+                <p class="description">
+                    My engineering taste comes from product work, platform
+                    thinking, and a habit of making tools understandable for the
+                    teams around them. The professional story is in the next
+                    section; this is the quieter layer behind it.
+                </p>
+            </div>
 
-        <div class="quality-card-reveal">
-          <div class="quality-item">
-            <Icon class="quality-icon" name="lucide:brain" aria-hidden="true" />
-            <h3>Fast Learner</h3>
-            <p>
-              With insatiable interest in acquiring new knowledge, attention to
-              detail and proactive approach.
-            </p>
-          </div>
+            <div class="personal-notes" aria-label="Personal notes">
+                {
+                    personalNotes.map((note) => (
+                        <article class="personal-note about-reveal">
+                            <div class="note-meta">
+                                <span>{note.index}</span>
+                                <code>{note.ascii}</code>
+                            </div>
+                            <h3>{note.title}</h3>
+                            <p>{note.body}</p>
+                        </article>
+                    ))
+                }
+            </div>
         </div>
-
-        <div class="quality-card-reveal">
-          <div class="quality-item">
-            <Icon class="quality-icon" name="lucide:globe" aria-hidden="true" />
-            <h3>Global Mindset</h3>
-            <p>
-              English C1 level certified by the British Council (Aptis
-              certificate). Experience speaking in public and communication.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 </section>
 
 <script>
-  import { getScrollMotionTools, prefersReducedMotion } from '../../lib/motion';
+    import {
+        getScrollMotionTools,
+        prefersReducedMotion,
+    } from "../../lib/motion";
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    if (prefersReducedMotion()) {
-      return;
-    }
+    document.addEventListener("DOMContentLoaded", async () => {
+        if (prefersReducedMotion()) {
+            return;
+        }
 
-    const { gsap } = await getScrollMotionTools();
+        const { gsap } = await getScrollMotionTools();
 
-    gsap.set('#about .section-title', { y: 50, opacity: 0 });
-    gsap.set('#about .about-text p', { y: 30, opacity: 0 });
-    gsap.set('#about .quality-card-reveal', { y: 44, opacity: 0 });
+        gsap.set("#about .about-heading", { y: 34, opacity: 0 });
+        gsap.set("#about .about-text p", { y: 26, opacity: 0 });
+        gsap.set("#about .about-reveal", { y: 34, opacity: 0 });
 
-    gsap.to('#about .section-title', {
-      y: 0,
-      opacity: 1,
-      duration: 1,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '#about',
-        start: 'top 70%',
-        end: 'bottom 70%',
-        toggleActions: 'play none none reverse',
-      },
+        gsap.to("#about .about-heading", {
+            y: 0,
+            opacity: 1,
+            duration: 0.72,
+            ease: "power3.out",
+            scrollTrigger: {
+                trigger: "#about",
+                start: "top 70%",
+                toggleActions: "play none none reverse",
+            },
+        });
+
+        gsap.to("#about .about-text p", {
+            y: 0,
+            opacity: 1,
+            duration: 0.62,
+            stagger: 0.12,
+            ease: "power3.out",
+            scrollTrigger: {
+                trigger: "#about .about-text",
+                start: "top 80%",
+                toggleActions: "play none none reverse",
+            },
+        });
+
+        gsap.to("#about .about-reveal", {
+            y: 0,
+            opacity: 1,
+            duration: 0.64,
+            stagger: 0.12,
+            ease: "power3.out",
+            force3D: true,
+            scrollTrigger: {
+                trigger: "#about .personal-notes",
+                start: "top 80%",
+                toggleActions: "play none none reverse",
+            },
+        });
     });
-
-    gsap.to('#about .about-text p', {
-      y: 0,
-      opacity: 1,
-      duration: 0.6,
-      stagger: 0.15,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '#about .about-text',
-        start: 'top 80%',
-        end: 'bottom 80%',
-        toggleActions: 'play none none reverse',
-      },
-    });
-
-    gsap.to('#about .quality-card-reveal', {
-      y: 0,
-      opacity: 1,
-      duration: 0.72,
-      stagger: 0.12,
-      ease: 'power3.out',
-      force3D: true,
-      scrollTrigger: {
-        trigger: '#about .qualities',
-        start: 'top 80%',
-        end: 'bottom 80%',
-        toggleActions: 'play none none reverse',
-      },
-    });
-  });
 </script>
 
 <style>
-  .about {
-    padding: 5rem 2rem;
-    background: var(--bg);
-    color: var(--text);
-  }
-
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .section-title {
-    font-size: clamp(2rem, 4vw, 3rem);
-    text-align: center;
-    margin-bottom: 3rem;
-    color: var(--text);
-    font-weight: 700;
-  }
-
-  .about-content {
-    display: grid;
-    gap: 4rem;
-    align-items: start;
-  }
-
-  .about-text {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .intro {
-    font-size: 1.3rem;
-    line-height: 1.6;
-    color: var(--text);
-    margin-bottom: 2rem;
-    font-weight: 500;
-  }
-
-  .accent-underline {
-    text-decoration: underline;
-    text-decoration-color: var(--primary);
-    text-decoration-thickness: 2px;
-    text-underline-offset: 5px;
-  }
-
-  .description {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    color: var(--text-muted);
-    margin: 0;
-  }
-
-  .qualities {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-    margin-top: 2rem;
-  }
-
-  .quality-card-reveal {
-    display: block;
-    height: 100%;
-    will-change: transform, opacity;
-  }
-
-  .quality-item {
-    background: var(--bg-light);
-    padding: 2rem;
-    border-radius: 12px;
-    text-align: center;
-    border: 1px solid var(--border-muted);
-    transition:
-      border-color 220ms ease,
-      box-shadow 260ms var(--ease-out-quart),
-      transform 260ms var(--ease-out-quart);
-    position: relative;
-    overflow: hidden;
-    height: 100%;
-  }
-
-  .quality-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.1),
-      transparent
-    );
-    transition: left 0.6s ease;
-  }
-
-  .quality-item:hover::before {
-    left: 100%;
-  }
-
-  .quality-item:hover {
-    transform: translateY(-5px);
-    border-color: var(--primary);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  }
-
-  .quality-icon {
-    width: 56px;
-    height: 56px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-    color: var(--primary);
-    stroke: currentColor;
-    stroke-width: 1.8;
-    fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .quality-item h3 {
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-    color: var(--text);
-    font-weight: 600;
-  }
-
-  .quality-item p {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: var(--text-muted);
-    margin: 0;
-  }
-
-  @media (max-width: 1023px) {
-    .qualities {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (max-width: 768px) {
     .about {
-      padding: 3rem 1rem;
+        position: relative;
+        padding: clamp(4.5rem, 9vw, 7rem) 1.25rem;
+        background: var(--bg);
+        color: var(--text);
+        overflow: clip;
+    }
+
+    .about::before {
+        content: "";
+        position: absolute;
+        inset: auto 0 0;
+        height: 1px;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            color-mix(in srgb, var(--border) 70%, transparent),
+            transparent
+        );
+    }
+
+    .about-shell {
+        --section-rail-min: 220px;
+    }
+
+    .note-meta {
+        font-family: var(--font-mono);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .about-content {
+        display: grid;
+        gap: clamp(2rem, 4vw, 3.25rem);
+        min-width: 0;
     }
 
     .about-text {
-      text-align: center;
+        max-width: 52rem;
     }
 
-    .qualities {
-      grid-template-columns: 1fr;
+    .intro {
+        margin: 0;
+        color: var(--text);
+        font-family: var(--font-display);
+        font-size: clamp(1.7rem, 3vw, 3.1rem);
+        line-height: 1.04;
+        letter-spacing: -0.045em;
     }
 
-    .quality-item {
-      padding: 1.5rem;
+    .description {
+        max-width: 42rem;
+        margin: 1.35rem 0 0;
+        color: var(--text-muted);
+        font-size: clamp(1rem, 1.35vw, 1.15rem);
+        line-height: 1.75;
     }
-  }
+
+    .personal-notes {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1px;
+        background: var(--border);
+        border: 1px solid var(--border);
+    }
+
+    .personal-note {
+        min-height: 16rem;
+        padding: clamp(1.25rem, 2.4vw, 1.85rem);
+        background: linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--bg-light) 92%, transparent),
+            color-mix(in srgb, var(--bg) 96%, transparent)
+        );
+        will-change: transform, opacity;
+    }
+
+    .note-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        color: color-mix(in srgb, var(--primary) 78%, var(--text-muted));
+        font-size: 0.72rem;
+    }
+
+    .note-meta code {
+        color: var(--text-subtle, var(--text-muted));
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        text-transform: none;
+    }
+
+    .personal-note h3 {
+        margin: clamp(2.4rem, 5vw, 4.25rem) 0 0.9rem;
+        color: var(--text);
+        font-family: var(--font-display);
+        font-size: clamp(1.35rem, 2vw, 1.8rem);
+        line-height: 1.05;
+        letter-spacing: -0.045em;
+    }
+
+    .personal-note p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.98rem;
+        line-height: 1.65;
+    }
+
+    .personal-note:hover {
+        background: linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--primary) 8%, var(--bg-light)),
+            color-mix(in srgb, var(--bg) 96%, transparent)
+        );
+    }
+
+    @media (max-width: 1023px) {
+        .about-shell {
+            grid-template-columns: 1fr;
+        }
+
+        .about-heading {
+            max-width: 36rem;
+            padding-right: 0;
+            border-right: 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .about {
+            padding: 4rem 1rem;
+        }
+
+        .personal-notes {
+            grid-template-columns: 1fr;
+        }
+
+        .personal-note {
+            min-height: auto;
+        }
+
+        .personal-note h3 {
+            margin-top: 2.4rem;
+        }
+    }
 </style>

@@ -1,7 +1,7 @@
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { MessageSquareIcon } from 'lucide-react';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Conversation,
   ConversationContent,
@@ -27,6 +27,7 @@ type ChatProps = {
   secondaryApiUrl?: string;
   className?: string;
   autoFocus?: boolean;
+  suggestedPrompt?: string;
 };
 
 type ChatErrorKind =
@@ -113,6 +114,7 @@ export default function Chat({
   secondaryApiUrl,
   className,
   autoFocus,
+  suggestedPrompt,
 }: ChatProps) {
   const [input, setInput] = useState('');
   const [lastSubmittedText, setLastSubmittedText] = useState('');
@@ -313,6 +315,12 @@ export default function Chat({
   });
   const isBusy = status === 'submitted' || status === 'streaming';
   const submitStatus = isBusy ? status : 'ready';
+
+  useEffect(() => {
+    const prompt = suggestedPrompt?.trim();
+    if (!prompt) return;
+    setInput(prompt);
+  }, [suggestedPrompt]);
 
   const handleSubmit = (message: PromptInputMessage) => {
     const trimmed = message.text?.trim();

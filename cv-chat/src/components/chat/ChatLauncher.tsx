@@ -18,6 +18,7 @@ export default function ChatLauncher({
   const [hasOpened, setHasOpened] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
   const [isHidden, setIsHidden] = useState(true);
+  const [suggestedPrompt, setSuggestedPrompt] = useState("");
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const closeTimeoutRef = useRef<number | null>(null);
@@ -174,11 +175,23 @@ export default function ChatLauncher({
     const handleOpen = () => openPanel();
     const handleClose = () => closePanel();
     const handleToggle = () => togglePanel();
+    const handlePrompt = (event: Event) => {
+      const prompt =
+        event instanceof CustomEvent &&
+        typeof event.detail?.prompt === "string"
+          ? event.detail.prompt
+          : "";
+      if (prompt.trim()) {
+        setSuggestedPrompt(prompt);
+      }
+      openPanel();
+    };
 
     window.addEventListener("keydown", handleShortcut);
     window.addEventListener("cv-chat:open", handleOpen as EventListener);
     window.addEventListener("cv-chat:close", handleClose as EventListener);
     window.addEventListener("cv-chat:toggle", handleToggle as EventListener);
+    window.addEventListener("cv-chat:prompt", handlePrompt);
 
     return () => {
       window.removeEventListener("keydown", handleShortcut);
@@ -188,6 +201,7 @@ export default function ChatLauncher({
         "cv-chat:toggle",
         handleToggle as EventListener,
       );
+      window.removeEventListener("cv-chat:prompt", handlePrompt);
     };
   }, [isOpen, hasOpened, isCompact]);
 
@@ -284,6 +298,7 @@ export default function ChatLauncher({
               secondaryApiUrl={secondaryApiUrl}
               className="flex-1 min-h-0 h-auto"
               autoFocus={isOpen}
+              suggestedPrompt={suggestedPrompt}
             />
           </section>
         </div>
