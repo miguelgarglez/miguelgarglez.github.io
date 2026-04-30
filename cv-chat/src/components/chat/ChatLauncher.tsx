@@ -19,6 +19,7 @@ export default function ChatLauncher({
   const [isCompact, setIsCompact] = useState(false);
   const [isHidden, setIsHidden] = useState(true);
   const [suggestedPrompt, setSuggestedPrompt] = useState("");
+  const [forceLauncherFocus, setForceLauncherFocus] = useState(false);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const closeTimeoutRef = useRef<number | null>(null);
@@ -26,9 +27,9 @@ export default function ChatLauncher({
   // The panel stays mounted for open/close animations; we only hide it once the close animation ends.
   // These class groups keep timing, easing, and transforms consistent across both states.
   const panelBaseClass =
-    "relative flex w-full flex-col bg-card motion-reduce:transition-none lg:p-3";
+    "relative flex w-full max-w-full flex-col bg-card motion-reduce:transition-none lg:p-3";
   const panelSizeClass =
-    "h-full w-full lg:h-[700px] lg:w-[600px] lg:max-w-[600px]";
+    "h-full w-full lg:h-[min(700px,calc(100dvh-7.5rem))] lg:max-h-[700px] lg:w-[min(600px,calc(100vw-3rem))] lg:max-w-[600px]";
   const panelShellClass =
     "border-0 shadow-none rounded-none lg:rounded-[var(--radius-lg)] lg:border lg:shadow-[var(--shadow-card)]";
   const panelTransformClass = isCompact
@@ -55,10 +56,11 @@ export default function ChatLauncher({
     }
   };
 
-  const closePanel = () => {
+  const closePanel = ({ restoreFocusVisible = false } = {}) => {
     if (!isOpen) return;
 
     clearCloseTimeout();
+    setForceLauncherFocus(restoreFocusVisible);
 
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
@@ -78,6 +80,7 @@ export default function ChatLauncher({
     if (isOpen) return;
 
     clearCloseTimeout();
+    setForceLauncherFocus(false);
 
     if (!hasOpened) {
       setHasOpened(true);
@@ -140,7 +143,7 @@ export default function ChatLauncher({
     if (!isOpen) return;
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        closePanel();
+        closePanel({ restoreFocusVisible: true });
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -169,6 +172,10 @@ export default function ChatLauncher({
       if (!(event.metaKey || event.ctrlKey)) return;
       if (event.key.toLowerCase() !== "k") return;
       event.preventDefault();
+      if (isOpen) {
+        closePanel({ restoreFocusVisible: true });
+        return;
+      }
       togglePanel();
     };
 
@@ -211,7 +218,9 @@ export default function ChatLauncher({
         type="button"
         className={cn(
           "fixed bottom-[calc(var(--safe-area-bottom)+1.5rem)] right-[calc(var(--safe-area-right)+1.5rem)] z-[9998] grid size-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-card)] transition-all duration-300 ease-in-out will-change-transform lg:bottom-6 lg:right-6",
-          "cursor-pointer hover:scale-[1.08] hover:shadow-[var(--shadow-glow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)]",
+          "[--focus-radius:999px] cursor-pointer hover:scale-[1.08] hover:shadow-[var(--shadow-glow)] focus-visible:rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)]",
+          forceLauncherFocus &&
+            "rounded-full ring-2 ring-[color:var(--focus-ring)] ring-offset-2 ring-offset-[color:var(--bg)]",
           isOpen && "shadow-[var(--shadow-glow)]",
           isCompact && isOpen && "pointer-events-none opacity-0 scale-90",
         )}
@@ -222,6 +231,7 @@ export default function ChatLauncher({
         aria-hidden={isCompact && isOpen}
         tabIndex={isCompact && isOpen ? -1 : 0}
         onClick={togglePanel}
+        onBlur={() => setForceLauncherFocus(false)}
         ref={buttonRef}
       >
         <span
@@ -253,7 +263,7 @@ export default function ChatLauncher({
           className={cn(
             "fixed left-0 right-0 top-0 z-[9997] flex items-stretch justify-stretch p-0",
             "h-[100dvh] min-h-[100svh]",
-            "lg:inset-auto lg:h-auto lg:min-h-0 lg:bottom-24 lg:right-6 lg:items-end lg:justify-end lg:p-0",
+            "lg:inset-auto lg:h-auto lg:min-h-0 lg:bottom-24 lg:right-6 lg:max-w-[calc(100vw-3rem)] lg:items-end lg:justify-end lg:p-0",
             !isOpen && "pointer-events-none",
           )}
           aria-hidden={!isOpen}
@@ -287,7 +297,7 @@ export default function ChatLauncher({
               <button
                 type="button"
                 onClick={closePanel}
-                className="grid size-8 place-items-center rounded-full bg-primary text-primary-foreground transition-all duration-300 ease-in-out will-change-transform cursor-pointer hover:scale-[1.08] hover:shadow-[var(--shadow-glow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] lg:hidden"
+                className="grid size-8 place-items-center rounded-full bg-primary text-primary-foreground transition-all duration-300 ease-in-out will-change-transform [--focus-radius:999px] cursor-pointer hover:scale-[1.08] hover:shadow-[var(--shadow-glow)] focus-visible:rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] lg:hidden"
                 aria-label="Close chat"
               >
                 <XIcon className="size-4" />

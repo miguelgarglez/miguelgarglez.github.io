@@ -36,6 +36,15 @@ export const profileSections: ProfileBlock[] = [
     lang: 'en',
   },
   {
+    id: 'cv-chat-agent',
+    title: 'How the CV chat agent works',
+    content:
+      'The cv-chat agent is a lightweight profile assistant opened from a drawer so it stays accessible without taking over the page. It answers from curated profile context: visible CV sections, current experience, work signals, skills, education, certifications, selected projects, and recent AI-related memories. Suggested prompts on the site are entry points into that same knowledge base, not separate content.',
+    tags: ['agent', 'chat', 'directorio', 'proyectos', 'recruiting', 'skills'],
+    type: 'answer',
+    lang: 'en',
+  },
+  {
     id: 'about',
     title: 'About Miguel',
     content:

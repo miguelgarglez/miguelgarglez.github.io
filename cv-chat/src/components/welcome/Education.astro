@@ -184,7 +184,7 @@ const learningItems = [
         trigger: '#education',
         start: 'top 72%',
         end: 'bottom 72%',
-        toggleActions: 'play none none reverse',
+        toggleActions: 'play none none none',
       },
     });
 
@@ -199,7 +199,7 @@ const learningItems = [
         trigger: '#education .credentials-layout',
         start: 'top 78%',
         end: 'bottom 78%',
-        toggleActions: 'play none none reverse',
+        toggleActions: 'play none none none',
       },
     });
   });
@@ -310,9 +310,10 @@ const learningItems = [
   }
 
   .credential-row--link:focus-visible {
-    outline: 2px solid var(--primary);
-    outline-offset: 6px;
+    outline: none;
+    border-color: var(--focus-ring);
     border-radius: 8px;
+    box-shadow: 0 0 0 3px var(--focus-ring-soft);
   }
 
   .credential-period {
@@ -399,8 +400,7 @@ const learningItems = [
 
   .agent-link:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--primary) 24%, transparent);
+    box-shadow: 0 0 0 3px var(--focus-ring-soft);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -442,29 +442,45 @@ const learningItems = [
 
     .credentials-layout {
       grid-template-columns: 1fr;
+      gap: 0;
     }
 
     .credentials-prompts {
       justify-content: flex-start;
+      gap: 0.9rem;
+    }
+
+    .credentials-panel {
+      border-radius: 0;
+      border-left-width: 0;
+      border-right-width: 0;
+      border-top-width: 0;
+      background: transparent;
+      padding: 1.2rem 0;
+    }
+
+    .credentials-panel:first-child {
+      border-top-width: 1px;
     }
   }
 
   @media (max-width: 560px) {
     .credentials-panel {
-      padding: 1rem;
-      border-radius: 8px;
+      padding: 1rem 0;
     }
 
     .panel-heading {
       display: grid;
       gap: 0.35rem;
+      margin-bottom: 0.55rem;
+      padding-bottom: 0.7rem;
     }
 
     .credential-row {
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 0.75rem;
       min-height: auto;
-      padding: 0.95rem 0;
+      padding: 0.8rem 0;
     }
 
     .credential-list--academic .credential-row {
@@ -474,11 +490,20 @@ const learningItems = [
 
     .credential-period {
       min-width: 0;
+      font-size: 0.72rem;
+    }
+
+    .credential-title {
+      font-size: 0.95rem;
+    }
+
+    .credential-meta {
+      font-size: 0.86rem;
     }
 
     .agent-link {
       width: 100%;
-      justify-content: center;
+      justify-content: flex-start;
     }
   }
 </style>

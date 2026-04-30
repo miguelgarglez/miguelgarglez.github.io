@@ -48,6 +48,7 @@ Contexto: Worker de Cloudflare que hace streaming SSE hacia un proveedor LLM Ope
 - No introducir tool loops, KV, D1, Vectorize o MCP runtime sin una razon clara.
 - El contexto se compone de facts criticos, bloques de perfil, proyectos y memorias.
 - Si cambia contenido del sitio o posicionamiento profesional, actualizar `src/knowledge/*`.
+- Para mantener alineados prompts visibles, knowledge y tests, seguir `../docs/cv-chat-agent-maintenance.md`.
 - La experiencia RAG debe describirse como exposicion ligera y practica del Google GenAI Intensive de 5 dias con capstone, no como experiencia RAG productiva profunda.
 
 ## Tests

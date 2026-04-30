@@ -52,6 +52,10 @@ These tests protect critical context selection for questions about current role,
 contact, AI projects, lightweight RAG/GenAI exposure, and frontend experience.
 They do not call the LLM.
 
+For the maintenance workflow that keeps visible `cv-chat` prompts, profile
+knowledge, and retrieval tests aligned, see
+[`../docs/cv-chat-agent-maintenance.md`](../docs/cv-chat-agent-maintenance.md).
+
 ## Deploy
 
 ```bash

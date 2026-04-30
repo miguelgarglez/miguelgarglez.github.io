@@ -72,4 +72,61 @@ describe('profile agent context retrieval', () => {
     assert.ok(blockIds.includes('skills-devops'));
     assert.ok(blockIds.includes('experience-ods'));
   });
+
+  it('grounds the visible academic-background prompt in education', () => {
+    const context = run("What is Miguel's academic background?");
+    const blockIds = ids(context.selectedProfileBlocks);
+
+    assert.equal(context.intent, 'education');
+    assert.ok(blockIds.includes('education'));
+  });
+
+  it('grounds the visible recent-learning prompt in certifications', () => {
+    const context = run('What has Miguel been learning recently?');
+    const blockIds = ids(context.selectedProfileBlocks);
+
+    assert.equal(context.intent, 'education');
+    assert.ok(blockIds.includes('education-certifications'));
+  });
+
+  it('grounds the visible frontend-platform prompt in frontend and current work', () => {
+    const context = run('What makes Miguel a strong frontend platform engineer?');
+    const blockIds = ids(context.selectedProfileBlocks);
+
+    assert.equal(context.intent, 'skills');
+    assert.ok(blockIds.includes('skills-frontend'));
+    assert.ok(blockIds.includes('experience-ods'));
+  });
+
+  it('grounds the visible MCP and AI prompt in current experience', () => {
+    const context = run('How does Miguel use AI in engineering?');
+    const factIds = ids(context.selectedFacts);
+    const blockIds = ids(context.selectedProfileBlocks);
+
+    assert.equal(context.intent, 'skills');
+    assert.ok(factIds.includes('ai-tools-workflow'));
+    assert.ok(blockIds.includes('skills-devops'));
+    assert.ok(blockIds.includes('experience-ods'));
+  });
+
+  it('grounds the visible CV chat prompt in agent context', () => {
+    const context = run('How does this CV chat work?');
+    const factIds = ids(context.selectedFacts);
+    const blockIds = ids(context.selectedProfileBlocks);
+
+    assert.ok(['projects', 'summary'].includes(context.intent));
+    assert.ok(factIds.includes('agent-context'));
+    assert.ok(blockIds.includes('cv-chat-agent'));
+  });
+
+  it('does not frame mobile work as a primary specialty', () => {
+    const context = run('Does Miguel have mobile or native app experience?');
+    const block = context.selectedProfileBlocks.find(
+      (item) => item.id === 'skills-exploratory'
+    );
+
+    assert.equal(context.intent, 'experience');
+    assert.ok(block);
+    assert.match(block.content, /exploratory tinkering/i);
+  });
 });

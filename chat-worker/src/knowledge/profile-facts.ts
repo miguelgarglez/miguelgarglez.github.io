@@ -72,4 +72,12 @@ export const profileFacts: ProfileFact[] = [
     tags: ['skills', 'ai', 'experience', 'work_style', 'current-role'],
     priority: 88,
   },
+  {
+    id: 'agent-context',
+    label: 'CV chat agent context',
+    value:
+      'The cv-chat agent answers from curated profile context aligned with the visible CV: experience, work signals, technical skills, education, certifications, projects, and selected recent AI-related memories.',
+    tags: ['portfolio', 'projects', 'ai', 'summary'],
+    priority: 80,
+  },
 ];

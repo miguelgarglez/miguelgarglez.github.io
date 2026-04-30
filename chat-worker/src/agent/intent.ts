@@ -73,6 +73,17 @@ export function classifyIntent(question: string): Intent {
       'skills',
       'technologies',
       'stack',
+      'frontend',
+      'platform',
+      'design system',
+      'design systems',
+      'react',
+      'typescript',
+      'mobile',
+      'native',
+      'ios',
+      'macos',
+      'swift',
       'ai',
       'artificial intelligence',
       'tools',
@@ -90,7 +101,33 @@ export function classifyIntent(question: string): Intent {
   if (matchesAny(question, ['work style', 'collaboration', 'forma de trabajar', 'metodo', 'método'])) return 'work_style';
   if (matchesAny(question, ['contact', 'linkedin', 'email', 'reach', 'contacto'])) return 'contact';
   if (matchesAny(question, ['available', 'availability', 'remote', 'hybrid', 'disponibilidad'])) return 'availability';
-  if (matchesAny(question, ['education', 'degree', 'university', 'educacion', 'educación', 'universidad'])) return 'education';
+  if (
+    matchesAny(question, [
+      'education',
+      'degree',
+      'university',
+      'certification',
+      'certifications',
+      'course',
+      'courses',
+      'learning',
+      'learned',
+      'academic',
+      'educacion',
+      'educación',
+      'universidad',
+      'certificacion',
+      'certificación',
+      'certificaciones',
+      'curso',
+      'cursos',
+      'aprendizaje',
+      'formacion',
+      'formación',
+      'academico',
+      'académico',
+    ])
+  ) return 'education';
   if (matchesAny(question, ['recent', 'latest', 'now', 'actualidad', 'ultimo', 'último', 'ultimamente', 'últimamente'])) return 'recent_updates';
 
   return 'summary';

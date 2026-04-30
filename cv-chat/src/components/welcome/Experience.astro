@@ -222,6 +222,23 @@ const roles = [
 
     document.addEventListener("DOMContentLoaded", async () => {
         const expandBtns = document.querySelectorAll("#experience .expand-btn");
+        let scrollTrigger = null;
+        let layoutRefreshTimeout = 0;
+
+        const refreshScrollLayout = () => {
+            if (!scrollTrigger) return;
+
+            scrollTrigger.refresh();
+        };
+
+        const scheduleScrollLayoutRefresh = () => {
+            window.requestAnimationFrame(refreshScrollLayout);
+            window.clearTimeout(layoutRefreshTimeout);
+            layoutRefreshTimeout = window.setTimeout(
+                refreshScrollLayout,
+                340,
+            );
+        };
 
         expandBtns.forEach((btn) => {
             btn.addEventListener("click", () => {
@@ -242,6 +259,22 @@ const roles = [
                     ? "Show less"
                     : "Show details";
                 expandIcon.textContent = nextExpanded ? "-" : "+";
+
+                const handleAchievementsTransitionEnd = (event) => {
+                    if (event.propertyName !== "max-height") return;
+
+                    achievements.removeEventListener(
+                        "transitionend",
+                        handleAchievementsTransitionEnd,
+                    );
+                    refreshScrollLayout();
+                };
+
+                achievements.addEventListener(
+                    "transitionend",
+                    handleAchievementsTransitionEnd,
+                );
+                scheduleScrollLayoutRefresh();
             });
         });
 
@@ -264,7 +297,8 @@ const roles = [
             return;
         }
 
-        const { gsap } = await getScrollMotionTools();
+        const { gsap, ScrollTrigger } = await getScrollMotionTools();
+        scrollTrigger = ScrollTrigger;
 
         gsap.set("#experience .dossier-index", { y: 28, opacity: 0 });
         gsap.set("#experience .dossier-reveal", { y: 36, opacity: 0 });
@@ -378,9 +412,7 @@ const roles = [
     .notes-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 1px;
-        background: var(--border);
-        border: 1px solid var(--border);
+        gap: 0;
     }
 
     .note-card,
@@ -396,9 +428,15 @@ const roles = [
         position: relative;
         min-height: 17rem;
         padding: clamp(1.35rem, 2.5vw, 2rem);
+        border: 1px solid var(--border);
+        border-left-width: 0;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .note-card:nth-child(odd) {
+        border-left-width: 1px;
     }
 
     .note-index {
@@ -473,8 +511,7 @@ const roles = [
     .agent-link:focus-visible,
     .expand-btn:focus-visible {
         outline: none;
-        box-shadow: 0 0 0 3px
-            color-mix(in srgb, var(--primary) 24%, transparent);
+        box-shadow: 0 0 0 3px var(--focus-ring-soft);
     }
 
     .role-stack {
@@ -691,7 +728,11 @@ const roles = [
 
     @media (max-width: 720px) {
         .experience {
-            padding: 4rem 1rem;
+            padding: 3.5rem 1rem;
+        }
+
+        .dossier-index {
+            padding-bottom: 1.5rem;
         }
 
         .notes-grid {
@@ -699,12 +740,81 @@ const roles = [
         }
 
         .note-card {
-            min-height: 14rem;
+            padding: 1rem 0;
+            border-left-width: 0;
+            border-right-width: 0;
+            border-top-width: 0;
+            min-height: 0;
+            background: transparent;
+        }
+
+        .note-card:nth-child(odd) {
+            border-left-width: 0;
+        }
+
+        .note-card:first-child {
+            border-top-width: 1px;
+        }
+
+        body.light .note-card {
+            background: transparent;
+        }
+
+        .note-index {
+            position: static;
+            margin-bottom: 1.15rem;
+            font-size: 0.72rem;
+        }
+
+        .note-card h3 {
+            max-width: 100%;
+            margin: 0 0 0.7rem;
+            font-size: clamp(1.2rem, 6vw, 1.45rem);
+            letter-spacing: -0.035em;
+        }
+
+        .note-card p {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.58;
+        }
+
+        .role-card {
+            padding: 1.15rem 0;
+            border-left-width: 0;
+            border-right-width: 0;
+            background: transparent;
+        }
+
+        body.light .role-card {
+            background: transparent;
+        }
+
+        .role-card h4 {
+            font-size: clamp(1.35rem, 7vw, 1.65rem);
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+        }
+
+        .role-summary {
+            margin: 1.05rem 0 1rem;
+            font-size: 0.98rem;
+            line-height: 1.6;
+        }
+
+        .role-tags {
+            gap: 0.45rem;
+        }
+
+        .role-tags span {
+            padding: 0.35rem 0.55rem;
+            font-size: 0.72rem;
         }
 
         .role-stack-heading {
             display: grid;
             align-items: start;
+            margin-bottom: 0;
         }
 
         .role-header {

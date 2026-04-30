@@ -180,20 +180,24 @@ const personalNotes = [
     .personal-notes {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 1px;
-        background: var(--border);
-        border: 1px solid var(--border);
+        gap: 0;
     }
 
     .personal-note {
         min-height: 16rem;
         padding: clamp(1.25rem, 2.4vw, 1.85rem);
+        border: 1px solid var(--border);
+        border-left-width: 0;
         background: linear-gradient(
             180deg,
             color-mix(in srgb, var(--bg-light) 92%, transparent),
             color-mix(in srgb, var(--bg) 96%, transparent)
         );
         will-change: transform, opacity;
+    }
+
+    .personal-note:first-child {
+        border-left-width: 1px;
     }
 
     .note-meta {
@@ -250,7 +254,7 @@ const personalNotes = [
 
     @media (max-width: 768px) {
         .about {
-            padding: 4rem 1rem;
+            padding: 3.5rem 1rem;
         }
 
         .personal-notes {
@@ -258,11 +262,42 @@ const personalNotes = [
         }
 
         .personal-note {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            gap: 0.5rem 1rem;
+            align-items: start;
+            padding: 1rem 0;
+            border-top-width: 0;
+            border-right-width: 0;
+            border-left-width: 0;
+            border-bottom-width: 1px;
             min-height: auto;
+            background: transparent;
+        }
+
+        .personal-note:first-child {
+            border-top-width: 1px;
+            border-left-width: 0;
+        }
+
+        .note-meta {
+            grid-column: 1;
+            display: grid;
+            gap: 0.3rem;
+            justify-content: start;
         }
 
         .personal-note h3 {
-            margin-top: 2.4rem;
+            grid-column: 2;
+            margin: 0 0 0.45rem;
+            font-size: 1.2rem;
+            letter-spacing: -0.035em;
+        }
+
+        .personal-note p {
+            grid-column: 2;
+            font-size: 0.95rem;
+            line-height: 1.58;
         }
     }
 </style>

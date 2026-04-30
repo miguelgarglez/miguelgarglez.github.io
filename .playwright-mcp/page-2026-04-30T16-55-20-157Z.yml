@@ -1,0 +1,394 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content":
+    - /url: "#main-content"
+  - banner "Primary navigation" [ref=e2]:
+    - generic [ref=e4]:
+      - link "/miguelgarglez" [ref=e5] [cursor=pointer]:
+        - /url: "#main-content"
+      - navigation "Section navigation" [ref=e6]:
+        - link "About" [ref=e7] [cursor=pointer]:
+          - /url: "#about"
+        - link "Experience" [ref=e8] [cursor=pointer]:
+          - /url: "#experience"
+        - link "Skills" [ref=e9] [cursor=pointer]:
+          - /url: "#skills"
+        - link "Contact" [ref=e10] [cursor=pointer]:
+          - /url: "#contact"
+      - button "Switch theme" [ref=e11] [cursor=pointer]:
+        - img [ref=e13]
+  - generic [ref=e15]:
+    - generic [ref=e16]:
+      - main [ref=e17]:
+        - region "Miguel García" [ref=e18]:
+          - generic [ref=e19]:
+            - generic [ref=e21]:
+              - generic [ref=e22]:
+                - heading "Miguel García" [level=1] [ref=e23]
+                - paragraph [ref=e24]: Frontend platform engineer building design systems and practical AI workflows.
+                - generic "Profile metadata" [ref=e25]:
+                  - generic [ref=e26]:
+                    - generic [ref=e27]: "01"
+                    - generic [ref=e28]: location
+                    - generic [ref=e29]: Madrid
+                  - generic [ref=e30]:
+                    - generic [ref=e31]: "02"
+                    - generic [ref=e32]: currently
+                    - generic [ref=e33]: Frontend Platform
+                  - generic [ref=e34]:
+                    - generic [ref=e35]: "03"
+                    - generic [ref=e36]: craft
+                    - generic [ref=e37]: Interface Systems
+                  - generic [ref=e38]:
+                    - generic [ref=e39]: "04"
+                    - generic [ref=e40]: ai
+                    - generic [ref=e41]: Applied
+              - generic [ref=e44]: load
+            - link "Scroll to About" [ref=e45] [cursor=pointer]:
+              - /url: "#about"
+              - generic [ref=e46]: See more
+              - img [ref=e47]
+        - generic [ref=e50]:
+          - generic [ref=e51]:
+            - paragraph [ref=e52]: /about
+            - heading "A Human Layer" [level=2] [ref=e53]
+          - generic [ref=e54]:
+            - generic [ref=e55]:
+              - paragraph [ref=e56]: I care about building useful software with people, not just shipping isolated pieces of code.
+              - paragraph [ref=e57]: My engineering taste comes from product work, platform thinking, and a habit of making tools understandable for the teams around them. The professional story is in the next section; this is the quieter layer behind it.
+            - generic "Personal notes" [ref=e58]:
+              - article [ref=e59]:
+                - generic [ref=e60]:
+                  - generic [ref=e61]: "01"
+                  - code [ref=e62]: "[team]"
+                - heading "Team rhythm" [level=3] [ref=e63]
+                - paragraph [ref=e64]: I grew up playing federated football, which shaped how I understand discipline, roles, feedback, and showing up for a group over time.
+              - article [ref=e65]:
+                - generic [ref=e66]:
+                  - generic [ref=e67]: "02"
+                  - code [ref=e68]: "{learn}"
+                - heading "Learning mode" [level=3] [ref=e69]
+                - paragraph [ref=e70]: I tend to follow curiosity into tools, interfaces, AI workflows, and implementation details until I can turn them into practical habits.
+              - article [ref=e71]:
+                - generic [ref=e72]:
+                  - generic [ref=e73]: "03"
+                  - code [ref=e74]: <voice>
+                - heading "Communication range" [level=3] [ref=e75]
+                - paragraph [ref=e76]: I work comfortably across technical and product contexts, with C1 English, public speaking experience, and a preference for clear explanations.
+        - region "Working Notes" [ref=e77]:
+          - generic [ref=e78]:
+            - complementary "Experience dossier index" [ref=e79]:
+              - paragraph [ref=e80]: /experience
+              - heading "Working Notes" [level=2] [ref=e81]
+              - paragraph [ref=e82]: "Four working patterns that show up across my roles: systems thinking, AI leverage, product judgment, and team enablement."
+            - generic [ref=e83]:
+              - generic "Working notes" [ref=e84]:
+                - article [ref=e85]:
+                  - generic [ref=e86]: "01"
+                  - heading "Design systems at scale" [level=3] [ref=e87]
+                  - paragraph [ref=e88]: Reusable UI infrastructure, Storybook documentation, accessibility practices, release workflows, and component quality for frontend teams.
+                  - button "Ask the agent" [ref=e89] [cursor=pointer]:
+                    - generic [ref=e90]: Ask the agent
+                    - img [ref=e91]
+                - article [ref=e93]:
+                  - generic [ref=e94]: "02"
+                  - heading "AI-assisted engineering" [level=3] [ref=e95]
+                  - paragraph [ref=e96]: Using coding agents, MCP servers, context engineering, and structured prompts to move faster without losing code ownership.
+                  - button "Ask the agent" [ref=e97] [cursor=pointer]:
+                    - generic [ref=e98]: Ask the agent
+                    - img [ref=e99]
+                - article [ref=e101]:
+                  - generic [ref=e102]: "03"
+                  - heading "Product-minded delivery" [level=3] [ref=e103]
+                  - paragraph [ref=e104]: Balancing technical quality, maintainability, team adoption, UX, and business value across product-facing engineering work.
+                  - button "Ask the agent" [ref=e105] [cursor=pointer]:
+                    - generic [ref=e106]: Ask the agent
+                    - img [ref=e107]
+                - article [ref=e109]:
+                  - generic [ref=e110]: "04"
+                  - heading "Cross-team collaboration" [level=3] [ref=e111]
+                  - paragraph [ref=e112]: Supporting developers through components, documentation, conventions, agile coordination, and practical implementation guidance.
+                  - button "Ask the agent" [ref=e113] [cursor=pointer]:
+                    - generic [ref=e114]: Ask the agent
+                    - img [ref=e115]
+              - generic "Professional experience" [ref=e117]:
+                - generic [ref=e118]:
+                  - paragraph [ref=e119]: /role_archive
+                  - heading "Roles" [level=3] [ref=e120]
+                - article [ref=e121]:
+                  - generic [ref=e122]:
+                    - generic [ref=e123]:
+                      - paragraph [ref=e124]: current role
+                      - heading "Frontend UI Platform Engineer" [level=4] [ref=e125]
+                      - paragraph [ref=e126]: Open Digital Services (Santander Group)
+                    - paragraph [ref=e127]: Sep 2024 - Current
+                  - paragraph [ref=e128]: Building and maintaining UI components for frontend teams across Grupo Santander.
+                  - generic "Frontend UI Platform Engineer focus areas" [ref=e129]:
+                    - generic [ref=e130]: Design systems
+                    - generic [ref=e131]: Accessibility
+                    - generic [ref=e132]: Storybook
+                    - generic [ref=e133]: Release workflows
+                    - generic [ref=e134]: Semantic versioning
+                    - generic [ref=e135]: AI-assisted development
+                  - button "Show less" [expanded] [ref=e136] [cursor=pointer]:
+                    - generic [ref=e137]: Show less
+                    - generic [ref=e138]: "-"
+                  - list [ref=e139]:
+                    - listitem [ref=e140]: Member of the Kubit Web UI components platform team, building and maintaining the component library used by web developers across Grupo Santander banks.
+                    - listitem [ref=e141]: Lead implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem.
+                    - listitem [ref=e142]: Contribute to the open-source charting library, adding new features and continuous improvements.
+                    - listitem [ref=e143]: Manage releases with semantic versioning, branch strategy, and Storybook documentation; support Kubit's public presence through product landing pages.
+                    - listitem [ref=e144]: Built an MCP server to support consumers of the component library with contextual guidance, integration patterns, troubleshooting, and migration help.
+                    - listitem [ref=e145]: Drive AI-enabled workflows with tools like GitHub Copilot, MCP servers, and context engineering to improve productivity, code quality, and collaborative development.
+                  - button "What has Miguel built at Santander?" [ref=e146] [cursor=pointer]:
+                    - generic [ref=e147]: What has Miguel built at Santander?
+                    - img [ref=e148]
+                - article [ref=e150]:
+                  - generic [ref=e151]:
+                    - generic [ref=e152]:
+                      - paragraph [ref=e153]: quality foundation
+                      - heading "QA Software Engineer" [level=4] [ref=e154]
+                      - paragraph [ref=e155]: Jember Engineering Solutions
+                    - paragraph [ref=e156]: Sep 2023 - Jul 2024
+                  - paragraph [ref=e157]: Worked close to product quality, validation, and delivery, strengthening attention to detail, reliability, and user-facing impact.
+                  - generic "QA Software Engineer focus areas" [ref=e158]:
+                    - generic [ref=e159]: Quality mindset
+                    - generic [ref=e160]: Testing
+                    - generic [ref=e161]: Product validation
+                    - generic [ref=e162]: Agile coordination
+                    - generic [ref=e163]: Automation recovery
+                  - button "Show details" [ref=e164] [cursor=pointer]:
+                    - generic [ref=e165]: Show details
+                    - generic [ref=e166]: +
+                  - list:
+                    - listitem [ref=e167]: Worked and coordinated with the app frontend development team using agile methodologies, keeping different parties aligned to successfully complete new features.
+                    - listitem [ref=e168]: Reported hundreds of bugs, leading to noticeable improvements on the app's performance and UX.
+                    - listitem [ref=e169]: Worked with another QA to refactor and relaunch a test automation project for company apps that had been abandoned for more than 2 years, leading to a 50% improvement in person-day cost for regression tests.
+                  - button "Summarize Miguel's QA background" [ref=e170] [cursor=pointer]:
+                    - generic [ref=e171]: Summarize Miguel's QA background
+                    - img [ref=e172]
+                - article [ref=e174]:
+                  - generic [ref=e175]:
+                    - generic [ref=e176]:
+                      - paragraph [ref=e177]: early delivery
+                      - heading "Software Developer" [level=4] [ref=e178]
+                      - paragraph [ref=e179]: Electric-Save
+                    - paragraph [ref=e180]: Jan 2022 - May 2022
+                  - paragraph [ref=e181]: Early-stage B2B software work across customer support, product demos, and web application delivery.
+                  - generic "Software Developer focus areas" [ref=e182]:
+                    - generic [ref=e183]: B2B product
+                    - generic [ref=e184]: Client communication
+                    - generic [ref=e185]: Proof of concept
+                    - generic [ref=e186]: Remote demos
+                    - generic [ref=e187]: Software support
+                  - button "Show details" [ref=e188] [cursor=pointer]:
+                    - generic [ref=e189]: Show details
+                    - generic [ref=e190]: +
+                  - list:
+                    - listitem [ref=e191]: Attended clients directly in a B2B startup context, reporting and fixing errors with the company's software and contributing to customer satisfaction and continuity.
+                    - listitem [ref=e192]: Created a web application proof of concept for an important potential client, moving the proposal to the next selection stage.
+                    - listitem [ref=e193]: Ran remote meetings to show the software product to new potential clients, opening new challenges and growth opportunities for the company.
+                  - button "How did Miguel's early role shape his product mindset?" [ref=e194] [cursor=pointer]:
+                    - generic [ref=e195]: How did Miguel's early role shape his product mindset?
+                    - img [ref=e196]
+        - region "Credentials & Learning" [ref=e198]:
+          - generic [ref=e199]:
+            - generic [ref=e200]:
+              - paragraph [ref=e201]: /credentials
+              - heading "Credentials & Learning" [level=2] [ref=e202]
+              - paragraph [ref=e203]: Formal education and recent professional learning behind the engineering practice shown above.
+            - generic [ref=e204]:
+              - region "Academic foundation" [ref=e205]:
+                - generic [ref=e206]:
+                  - paragraph [ref=e207]: "01"
+                  - heading "Academic foundation" [level=3] [ref=e208]
+                - list [ref=e209]:
+                  - listitem [ref=e210]:
+                    - generic [ref=e211]: 2022-2024
+                    - generic [ref=e212]:
+                      - generic [ref=e213]: Master's Degree in Computer Science
+                      - generic [ref=e214]: Universidad Autónoma de Madrid
+                  - listitem [ref=e215]:
+                    - generic [ref=e216]: "2023"
+                    - generic [ref=e217]:
+                      - generic [ref=e218]: Exchange Program
+                      - generic [ref=e219]: Aalto University · Helsinki, Finland
+                  - listitem [ref=e220]:
+                    - generic [ref=e221]: 2018-2022
+                    - generic [ref=e222]:
+                      - generic [ref=e223]: Bachelor's Degree in Computer Science
+                      - generic [ref=e224]: Universidad Autónoma de Madrid
+              - region "Professional learning" [ref=e225]:
+                - generic [ref=e226]:
+                  - paragraph [ref=e227]: "02"
+                  - heading "Professional learning" [level=3] [ref=e228]
+                - list [ref=e229]:
+                  - listitem [ref=e230]:
+                    - link "View credential for Professional Scrum Master I" [ref=e231] [cursor=pointer]:
+                      - /url: https://www.credly.com/badges/78c42e63-cb83-4914-8607-4073c40599a3/linked_in_profile
+                      - generic [ref=e232]:
+                        - generic [ref=e233]: Professional Scrum Master I
+                        - generic [ref=e234]: Scrum.org
+                      - img [ref=e235]
+                  - listitem [ref=e237]:
+                    - link "View credential for Animations on the Web" [ref=e238] [cursor=pointer]:
+                      - /url: https://animations.dev/certificate/6372ea11-f38d-45be-9c2f-9817e68b90a6
+                      - generic [ref=e239]:
+                        - generic [ref=e240]: Animations on the Web
+                        - generic [ref=e241]: Emil Kowalski
+                      - img [ref=e242]
+                  - listitem [ref=e244]:
+                    - link "View credential for Google GenAI Intensive" [ref=e245] [cursor=pointer]:
+                      - /url: https://www.kaggle.com/certification/badges/miguelgarglez/96
+                      - generic [ref=e246]:
+                        - generic [ref=e247]: Google GenAI Intensive
+                        - generic [ref=e248]: Kaggle
+                      - img [ref=e249]
+                  - listitem [ref=e251]:
+                    - link "View credential for Responsible AI and Prompt Engineering" [ref=e252] [cursor=pointer]:
+                      - /url: https://learn.founderz.com/certificate/curso-generacion-ia-comunidad-madrid/7ca969ab-1671-4608-9c40-8b87d3bbfddf
+                      - generic [ref=e253]:
+                        - generic [ref=e254]: Responsible AI and Prompt Engineering
+                        - generic [ref=e255]: Founderz
+                      - img [ref=e256]
+                  - listitem [ref=e258]:
+                    - link "View credential for Full Stack Open" [ref=e259] [cursor=pointer]:
+                      - /url: https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/db1060c383cd09cd6ab128fb5f864156
+                      - generic [ref=e260]:
+                        - generic [ref=e261]: Full Stack Open
+                        - generic [ref=e262]: University of Helsinki
+                      - img [ref=e263]
+                  - listitem [ref=e265]:
+                    - link "View credential for TOEIC - C1 CEFR Level" [ref=e266] [cursor=pointer]:
+                      - /url: https://www.linkedin.com/in/miguel-garciag/details/certifications/
+                      - generic [ref=e267]:
+                        - generic [ref=e268]: TOEIC - C1 CEFR Level
+                        - generic [ref=e269]: Capman Testing Solutions
+                      - img [ref=e270]
+            - generic "Suggested chat prompts" [ref=e272]:
+              - button "Ask about academic background" [ref=e273] [cursor=pointer]:
+                - generic [ref=e274]: Ask about academic background
+                - img [ref=e275]
+              - button "Ask about recent learning" [ref=e277] [cursor=pointer]:
+                - generic [ref=e278]: Ask about recent learning
+                - img [ref=e279]
+        - generic [ref=e282]:
+          - generic [ref=e283]:
+            - paragraph [ref=e284]: /skill_matrix
+            - heading "Technical Skills" [level=2] [ref=e285]
+            - paragraph [ref=e286]: A practical map of where my experience is strongest, where my academic foundation supports the work, and where I keep exploring.
+          - list [ref=e287]:
+            - button "Show Frontend Platform skills" [expanded] [ref=e288] [cursor=pointer]:
+              - article [ref=e290]:
+                - heading "FRONTEND PLATFORM" [level=3] [ref=e292]
+                - list [ref=e295]:
+                  - listitem [ref=e296]:
+                    - generic [ref=e297]: React & TypeScript
+                    - generic [ref=e298]: Professional component-library work for frontend teams
+                  - listitem [ref=e299]:
+                    - generic [ref=e300]: Design Systems
+                    - generic [ref=e301]: Tokens, component APIs, Storybook, and UI governance
+                  - listitem [ref=e302]:
+                    - generic [ref=e303]: Accessibility
+                    - generic [ref=e304]: Inclusive patterns, WCAG-minded implementation, and QA
+                  - listitem [ref=e305]:
+                    - generic [ref=e306]: Release quality
+                    - generic [ref=e307]: Semantic versioning, refactoring, docs, and adoption support
+            - button "Show Backend and Data Foundations skills" [ref=e308] [cursor=pointer]:
+              - article [ref=e310]:
+                - heading "BACKEND & DATA FOUNDATIONS" [level=3] [ref=e312]
+            - button "Show AI and Developer Tooling skills" [ref=e313] [cursor=pointer]:
+              - article [ref=e315]:
+                - heading "AI & DEVELOPER TOOLING" [level=3] [ref=e317]
+            - button "Show Exploratory Engineering skills" [ref=e318] [cursor=pointer]:
+              - article [ref=e320]:
+                - heading "EXPLORATORY ENGINEERING" [level=3] [ref=e322]
+          - generic [ref=e325]:
+            - heading "Development Philosophy" [level=3] [ref=e326]
+            - paragraph [ref=e327]: “Strong knowledge fundamentals are the key. Technologies and frameworks come and go; they are tools that help engineers solve business problems.”
+        - generic [ref=e330]:
+          - generic [ref=e331]:
+            - paragraph [ref=e332]: /agent
+            - heading "Ask the Dossier" [level=2] [ref=e333]
+            - paragraph [ref=e334]: "A lightweight CV agent that can answer from the same professional story shown on the page: experience, signals, skills, education, and working style."
+          - generic [ref=e335]:
+            - generic [ref=e336]:
+              - generic [ref=e337]:
+                - text: "status: ready"
+                - paragraph [ref=e338]: Profile context loaded
+              - button "Open agent" [ref=e339] [cursor=pointer]:
+                - img [ref=e340]
+                - text: Open agent
+            - generic [ref=e342]:
+              - generic [ref=e343]:
+                - generic [ref=e344]: context
+                - strong [ref=e345]: profile / experience / signals
+              - generic [ref=e346]:
+                - generic [ref=e347]: mode
+                - strong [ref=e348]: dossier
+            - generic "Suggested prompts" [ref=e349]:
+              - button "What kind of engineer is Miguel?" [ref=e350] [cursor=pointer]:
+                - generic [ref=e351]: What kind of engineer is Miguel?
+                - img [ref=e352]
+              - button "How does Miguel use AI in engineering?" [ref=e354] [cursor=pointer]:
+                - generic [ref=e355]: How does Miguel use AI in engineering?
+                - img [ref=e356]
+              - button "How does this CV chat work?" [ref=e358] [cursor=pointer]:
+                - generic [ref=e359]: How does this CV chat work?
+                - img [ref=e360]
+        - generic [ref=e363]:
+          - generic [ref=e364]:
+            - paragraph [ref=e365]: /contact
+            - heading "Let's Connect" [level=2] [ref=e366]
+            - paragraph [ref=e367]: Open to product-minded engineering conversations, frontend platform work, and thoughtful teams building useful software.
+          - generic [ref=e368]:
+            - generic [ref=e369]:
+              - paragraph [ref=e370]: "01"
+              - heading "Get in Touch" [level=3] [ref=e371]
+              - paragraph [ref=e372]: The fastest way to reach me is through LinkedIn. I also keep X around for software notes, tools, and the occasional build log.
+              - generic [ref=e373]:
+                - link "LinkedIn miguel-garciag" [ref=e375] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/in/miguel-garciag
+                  - img [ref=e376]
+                  - generic [ref=e378]:
+                    - generic [ref=e379]: LinkedIn
+                    - generic [ref=e380]: miguel-garciag
+                - link "X (Twitter) miguel_garglez" [ref=e382] [cursor=pointer]:
+                  - /url: https://x.com/miguel_garglez
+                  - img [ref=e383]
+                  - generic [ref=e385]:
+                    - generic [ref=e386]: X (Twitter)
+                    - generic [ref=e387]: miguel_garglez
+            - generic [ref=e388]:
+              - paragraph [ref=e389]: "02"
+              - heading "Beyond Code" [level=3] [ref=e390]
+              - generic [ref=e391]:
+                - generic [ref=e393]:
+                  - img [ref=e394]
+                  - generic [ref=e396]:
+                    - heading "Team Sports" [level=4] [ref=e397]
+                    - paragraph [ref=e398]: Playing football since age seven, passionate about physical well-being and team sports.
+                - generic [ref=e400]:
+                  - img [ref=e401]
+                  - generic [ref=e403]:
+                    - heading "Technical Curiosity" [level=4] [ref=e404]
+                    - paragraph [ref=e405]: Regular reader of software engineering blogs, always eager to learn about new technologies and innovations.
+                - generic [ref=e407]:
+                  - img [ref=e408]
+                  - generic [ref=e410]:
+                    - heading "Deliberate Growth" [level=4] [ref=e411]
+                    - paragraph [ref=e412]: Always seeking new activities that push me out of my comfort zone and help me grow as a person.
+      - contentinfo [ref=e413]:
+        - generic [ref=e414]:
+          - generic [ref=e415]:
+            - paragraph [ref=e416]: /miguelgarglez
+            - heading "Miguel García" [level=3] [ref=e417]
+            - paragraph [ref=e418]: Software engineer
+          - generic [ref=e419]:
+            - link "LinkedIn" [ref=e420] [cursor=pointer]:
+              - /url: https://www.linkedin.com/in/miguel-garciag
+            - link "X (Twitter)" [ref=e421] [cursor=pointer]:
+              - /url: https://x.com/miguel_garglez
+          - paragraph [ref=e423]: © 2026 Miguel García. Built with Astro and GSAP.
+    - button "Open agent" [ref=e425] [cursor=pointer]:
+      - img [ref=e427]
+      - img [ref=e430]

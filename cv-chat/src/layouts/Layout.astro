@@ -119,6 +119,61 @@ import "../styles/global.css";
         text-rendering: optimizeLegibility;
     }
 
+    :global(html) {
+        accent-color: var(--primary);
+        scrollbar-color: color-mix(in srgb, var(--primary) 58%, var(--border))
+            transparent;
+        scroll-padding-top: 5.5rem;
+    }
+
+    :global(::selection) {
+        background: color-mix(in srgb, var(--primary) 42%, transparent);
+        color: var(--text);
+    }
+
+    :global(body.light ::selection) {
+        background: color-mix(in srgb, var(--primary) 28%, var(--bg-light));
+        color: var(--text);
+    }
+
+    :global(:where(input, textarea, [contenteditable="true"])) {
+        caret-color: var(--primary);
+    }
+
+    :global(:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible) {
+        outline: none;
+        border-color: var(--focus-ring);
+        border-radius: var(--focus-radius, var(--radius-sm));
+        box-shadow: 0 0 0 3px var(--focus-ring-soft);
+    }
+
+    :global(::marker) {
+        color: var(--primary);
+    }
+
+    @supports selector(::-webkit-scrollbar) {
+        :global(::-webkit-scrollbar) {
+            width: 0.75rem;
+            height: 0.75rem;
+        }
+
+        :global(::-webkit-scrollbar-track) {
+            background: transparent;
+        }
+
+        :global(::-webkit-scrollbar-thumb) {
+            background: color-mix(in srgb, var(--primary) 38%, var(--border));
+            border: 3px solid transparent;
+            border-radius: 999px;
+            background-clip: content-box;
+        }
+
+        :global(::-webkit-scrollbar-thumb:hover) {
+            background: color-mix(in srgb, var(--primary) 62%, var(--border));
+            background-clip: content-box;
+        }
+    }
+
     :root {
         --safe-area-top: env(safe-area-inset-top);
         --safe-area-right: env(safe-area-inset-right);
@@ -142,6 +197,12 @@ import "../styles/global.css";
         --border: #332c26;
         --border-muted: #25201c;
         --primary: #c8753d;
+        --focus-ring: color-mix(in srgb, var(--primary) 90%, white 10%);
+        --focus-ring-soft: color-mix(
+            in srgb,
+            var(--focus-ring) 34%,
+            transparent
+        );
         --secondary: #9bbf9a;
         --danger: #e66b6b;
         --warning: #d6a24f;
@@ -190,6 +251,12 @@ import "../styles/global.css";
         --border: #d8cabb;
         --border-muted: #e5d9c9;
         --primary: #a8652a;
+        --focus-ring: color-mix(in srgb, var(--primary) 86%, black 14%);
+        --focus-ring-soft: color-mix(
+            in srgb,
+            var(--focus-ring) 28%,
+            transparent
+        );
         --secondary: #66836a;
         --danger: #b54343;
         --warning: #a47623;
@@ -301,8 +368,7 @@ import "../styles/global.css";
     .skip-link:focus-visible {
         position: fixed;
         transform: translateY(0);
-        box-shadow: 0 0 0 3px
-            color-mix(in srgb, var(--primary) 24%, transparent);
+        box-shadow: 0 0 0 3px var(--focus-ring-soft);
         outline: none;
         pointer-events: auto;
     }

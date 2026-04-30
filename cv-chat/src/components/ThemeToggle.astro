@@ -30,6 +30,7 @@ import { Icon } from 'astro-icon/components';
 
 <style>
   #theme-toggle {
+    --focus-radius: 999px;
     background: none;
     border: none;
     cursor: pointer;
@@ -51,7 +52,7 @@ import { Icon } from 'astro-icon/components';
 
   #theme-toggle:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 24%, transparent);
+    box-shadow: 0 0 0 3px var(--focus-ring-soft);
   }
 
   .sun-icon,
