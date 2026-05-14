@@ -20,8 +20,63 @@ const { title } = Astro.props;
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..700,0..100&family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script is:inline>
+      (() => {
+        const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+
+        try {
+          document.documentElement.dataset.theme =
+            localStorage.getItem("theme") || preferredTheme;
+        } catch {
+          document.documentElement.dataset.theme = preferredTheme;
+        }
+      })();
+    </script>
   </head>
   <body>
     <slot />
+    <script>
+      const THEME_STORAGE_KEY = "theme";
+      const DARK_THEME = "dark";
+      const LIGHT_THEME = "light";
+
+      const root = document.documentElement;
+      const toggle = document.querySelector("[data-theme-toggle]");
+
+      function initializeThemeToggle() {
+        if (!toggle) {
+          return;
+        }
+
+        const setThemeToggleState = (theme: string) => {
+          const isDark = theme === DARK_THEME;
+          const label = isDark ? "Switch to light theme" : "Switch to dark theme";
+          toggle.setAttribute("aria-pressed", String(isDark));
+          toggle.setAttribute("aria-label", label);
+          toggle.setAttribute("title", label);
+        };
+
+        const applyTheme = (theme: string) => {
+          root.dataset.theme = theme;
+          setThemeToggleState(theme);
+        };
+
+        applyTheme(root.dataset.theme || LIGHT_THEME);
+
+        toggle.addEventListener("click", () => {
+          const nextTheme = root.dataset.theme === DARK_THEME ? LIGHT_THEME : DARK_THEME;
+          try {
+            localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+          } catch {
+            // Keep the current page interactive even when storage is unavailable.
+          }
+          applyTheme(nextTheme);
+        });
+      }
+
+      initializeThemeToggle();
+    </script>
   </body>
 </html>

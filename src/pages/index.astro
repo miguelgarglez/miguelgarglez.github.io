@@ -70,50 +70,12 @@ import { projects } from "../data/projects";
   </main>
 
   <script>
-    const THEME_STORAGE_KEY = "theme";
-    const DARK_THEME = "dark";
-    const LIGHT_THEME = "light";
     const SIDEBAR_SCROLL_THRESHOLD = 36;
     const SECTION_OBSERVER_ROOT_MARGIN = "-22% 0px -58% 0px";
 
-    const root = document.documentElement;
-    const toggle = document.querySelector("[data-theme-toggle]");
     const sidebar = document.querySelector("[data-sidebar]");
     const navLinks = Array.from(document.querySelectorAll("[data-nav-link]"));
     const sections = Array.from(document.querySelectorAll("[data-section-anchor]"));
-
-    function initializeThemeToggle() {
-      if (!toggle) {
-        return;
-      }
-
-      const setThemeToggleState = (theme) => {
-        const isDark = theme === DARK_THEME;
-        const label = isDark ? "Switch to light theme" : "Switch to dark theme";
-        toggle.setAttribute("aria-pressed", String(isDark));
-        toggle.setAttribute("aria-label", label);
-        toggle.setAttribute("title", label);
-      };
-
-      const applyTheme = (theme) => {
-        root.dataset.theme = theme;
-        setThemeToggleState(theme);
-      };
-
-      const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? DARK_THEME
-        : LIGHT_THEME;
-      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-      const initialTheme = savedTheme || preferredTheme;
-
-      applyTheme(initialTheme);
-
-      toggle.addEventListener("click", () => {
-        const nextTheme = root.dataset.theme === DARK_THEME ? LIGHT_THEME : DARK_THEME;
-        localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
-        applyTheme(nextTheme);
-      });
-    }
 
     function initializeSidebarFade() {
       if (!sidebar) {
@@ -168,7 +130,6 @@ import { projects } from "../data/projects";
       setActiveLink(sections[0].id);
     }
 
-    initializeThemeToggle();
     initializeSidebarFade();
     initializeSectionNavigation();
   </script>
