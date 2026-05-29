@@ -560,6 +560,12 @@ h1 {
   animation: rise 450ms ease both;
 }
 
+.reading {
+  padding: 1.2rem 0 1.35rem;
+  border-bottom: 1px solid var(--line);
+  animation: rise 450ms ease both;
+}
+
 .reference:nth-child(1) {
   animation-delay: 160ms;
 }
@@ -595,6 +601,19 @@ h1 {
   color: var(--ink-muted);
   font-size: 0.96rem;
   line-height: 1.65;
+}
+
+.reading-subtitle,
+.reading-author {
+  margin: 0.5rem 0 0;
+  max-width: 66ch;
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.reading-author {
+  color: var(--ink);
 }
 
 .people-detail-list {
@@ -657,7 +676,18 @@ footer {
   }
 
   .sidebar {
-    display: none;
+    position: static;
+    grid-column: 1;
+    width: 100%;
+    opacity: 1;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1rem;
+    padding-bottom: 0.95rem;
+    border-bottom: 1px solid var(--line);
   }
 
   .content-column {

@@ -14,6 +14,7 @@ export type PersonReference = {
   area: PersonArea;
   summary: string;
   learns: string[];
+  featured: boolean;
 };
 
 export const people: PersonReference[] = [
@@ -31,6 +32,7 @@ export const people: PersonReference[] = [
       "Calm visual pacing",
       "Design decisions with restraint",
     ],
+    featured: true,
   },
   {
     slug: "gergely-orosz",
@@ -46,6 +48,7 @@ export const people: PersonReference[] = [
       "Pragmatic technical leadership",
       "Clear writing about industry patterns",
     ],
+    featured: true,
   },
   {
     slug: "midudev",
@@ -61,6 +64,7 @@ export const people: PersonReference[] = [
       "Community-first communication",
       "Practical frontend craft",
     ],
+    featured: false,
   },
   {
     slug: "guillermo-rauch",
@@ -76,6 +80,7 @@ export const people: PersonReference[] = [
       "Platform thinking",
       "Shipping speed with craft",
     ],
+    featured: false,
   },
   {
     slug: "emil-kowalski",
@@ -91,6 +96,7 @@ export const people: PersonReference[] = [
       "Interaction detail",
       "High-craft frontend execution",
     ],
+    featured: true,
   },
   {
     slug: "shadcn",
@@ -106,5 +112,6 @@ export const people: PersonReference[] = [
       "Design-system distribution",
       "Practical component APIs",
     ],
+    featured: false,
   },
 ];

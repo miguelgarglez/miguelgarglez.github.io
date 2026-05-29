@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import DirectoryNav from "../../components/DirectoryNav.astro";
 import { projects } from "../../data/projects";
 import type { Project } from "../../data/projects";
 
@@ -24,14 +25,7 @@ const detailLinks = [
 <BaseLayout title={`${project.displayName} - Miguel Garcia`}>
   <main class="layout">
     <div class="page-shell">
-      <aside class="sidebar" aria-label="Project navigation">
-        <nav class="sidebar-nav">
-          <a class="sidebar-link" href="/">Home</a>
-          <a class="sidebar-link is-active" href={`/projects/${project.slug}`} aria-current="true">
-            Project
-          </a>
-        </nav>
-      </aside>
+      <DirectoryNav active="projects" />
 
       <article class="content-column project-detail">
         <header class="masthead">

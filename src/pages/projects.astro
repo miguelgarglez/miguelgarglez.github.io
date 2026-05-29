@@ -1,0 +1,63 @@
+---
+import ProjectCard from "../components/ProjectCard.astro";
+import DirectoryNav from "../components/DirectoryNav.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { projects } from "../data/projects";
+import type { ProjectCategory } from "../data/projects";
+
+const categoryLabels: Record<ProjectCategory, string> = {
+  "personal-site": "Personal site",
+  "product-platform": "Product platforms",
+  "frontend-case-study": "Frontend case studies",
+  "open-source": "Open source",
+  "native-app": "Native apps",
+};
+
+const groupedProjects = Object.entries(
+  projects.reduce(
+    (groups, project) => {
+      groups[project.category] = [...(groups[project.category] ?? []), project];
+      return groups;
+    },
+    {} as Record<ProjectCategory, typeof projects>,
+  ),
+) as Array<[ProjectCategory, typeof projects]>;
+---
+
+<BaseLayout title="Projects - Miguel Garcia">
+  <main class="layout">
+    <div class="page-shell">
+      <DirectoryNav active="projects" />
+
+      <article class="content-column project-detail">
+        <header class="masthead">
+          <p class="eyebrow">Miguel Garcia • Projects</p>
+          <a class="text-link" href="/">Back home</a>
+        </header>
+
+        <section class="detail-hero">
+          <p class="section-label">Project Directory</p>
+          <h1>Things I build and maintain.</h1>
+          <p class="lead">
+            A fuller view of active projects, case studies, open-source work, and product experiments connected to my engineering practice.
+          </p>
+        </section>
+
+        {
+          groupedProjects.map(([category, categoryProjects]) => (
+            <section class="detail-section" aria-labelledby={`${category}-title`}>
+              <p class="section-label" id={`${category}-title`}>
+                {categoryLabels[category]}
+              </p>
+              <ol class="project-list">
+                {categoryProjects.map((project) => (
+                  <ProjectCard project={project} index={projects.indexOf(project)} />
+                ))}
+              </ol>
+            </section>
+          ))
+        }
+      </article>
+    </div>
+  </main>
+</BaseLayout>

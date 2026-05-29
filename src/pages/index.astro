@@ -1,24 +1,23 @@
 ---
 import ProjectCard from "../components/ProjectCard.astro";
 import PersonReference from "../components/PersonReference.astro";
+import ReadingCard from "../components/ReadingCard.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
+import DirectoryNav from "../components/DirectoryNav.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { people } from "../data/people";
 import { projects } from "../data/projects";
+import { readings } from "../data/readings";
+
+const featuredProjects = projects.filter((project) => project.featured).slice(0, 3);
+const featuredReadings = readings.filter((reading) => reading.featured).slice(0, 3);
+const featuredPeople = people.filter((person) => person.featured).slice(0, 3);
 ---
 
 <BaseLayout title="Miguel Garcia - Project Directory">
   <main class="layout">
     <div class="page-shell">
-      <aside class="sidebar" data-sidebar aria-label="Section index">
-        <nav class="sidebar-nav">
-          <a class="sidebar-link" data-nav-link href="#overview">Overview</a>
-          <a class="sidebar-link" data-nav-link href="#projects">Projects</a>
-          <a class="sidebar-link" data-nav-link href="#inspiring-people">
-            Inspiring people
-          </a>
-        </nav>
-      </aside>
+      <DirectoryNav active="home" label="Directory sections" />
       <div class="content-column">
         <header class="masthead">
           <p class="eyebrow">Miguel Garcia • Directory</p>
@@ -38,13 +37,26 @@ import { projects } from "../data/projects";
         </section>
 
         <section id="projects" data-section-anchor aria-labelledby="projects-title">
-          <p class="section-label" id="projects-title">Projects</p>
+          <div class="section-heading">
+            <p class="section-label" id="projects-title">Projects</p>
+            <a class="text-link" href="/projects">View all projects</a>
+          </div>
           <ol class="project-list">
             {
-              projects.map((project, index) => (
+              featuredProjects.map((project, index) => (
                 <ProjectCard project={project} index={index} />
               ))
             }
+          </ol>
+        </section>
+
+        <section id="readings" data-section-anchor aria-labelledby="readings-title">
+          <div class="section-heading">
+            <p class="section-label" id="readings-title">Readings</p>
+            <a class="text-link" href="/readings">View all readings</a>
+          </div>
+          <ol class="reference-list">
+            {featuredReadings.map((reading) => <ReadingCard reading={reading} />)}
           </ol>
         </section>
 
@@ -58,7 +70,7 @@ import { projects } from "../data/projects";
             <a class="text-link" href="/people">View all people</a>
           </div>
           <ol class="reference-list">
-            {people.map((person) => <PersonReference person={person} />)}
+            {featuredPeople.map((person) => <PersonReference person={person} />)}
           </ol>
         </section>
 
@@ -71,11 +83,8 @@ import { projects } from "../data/projects";
 
   <script>
     const SIDEBAR_SCROLL_THRESHOLD = 36;
-    const SECTION_OBSERVER_ROOT_MARGIN = "-22% 0px -58% 0px";
 
     const sidebar = document.querySelector("[data-sidebar]");
-    const navLinks = Array.from(document.querySelectorAll("[data-nav-link]"));
-    const sections = Array.from(document.querySelectorAll("[data-section-anchor]"));
 
     function initializeSidebarFade() {
       if (!sidebar) {
@@ -92,45 +101,6 @@ import { projects } from "../data/projects";
       });
     }
 
-    function initializeSectionNavigation() {
-      if (!sections.length || !navLinks.length) {
-        return;
-      }
-
-      const setActiveLink = (id) => {
-        for (const link of navLinks) {
-          const isActive = link.getAttribute("href") === `#${id}`;
-          link.classList.toggle("is-active", isActive);
-          if (isActive) {
-            link.setAttribute("aria-current", "true");
-          } else {
-            link.removeAttribute("aria-current");
-          }
-        }
-      };
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              setActiveLink(entry.target.id);
-            }
-          }
-        },
-        {
-          rootMargin: SECTION_OBSERVER_ROOT_MARGIN,
-          threshold: 0,
-        },
-      );
-
-      for (const section of sections) {
-        observer.observe(section);
-      }
-
-      setActiveLink(sections[0].id);
-    }
-
     initializeSidebarFade();
-    initializeSectionNavigation();
   </script>
 </BaseLayout>

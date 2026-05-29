@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import DirectoryNav from "../components/DirectoryNav.astro";
 import { people } from "../data/people";
 import type { PersonArea } from "../data/people";
 
@@ -25,12 +26,7 @@ const groupedPeople = Object.entries(
 <BaseLayout title="People - Miguel Garcia">
   <main class="layout">
     <div class="page-shell">
-      <aside class="sidebar" aria-label="People navigation">
-        <nav class="sidebar-nav">
-          <a class="sidebar-link" href="/">Home</a>
-          <a class="sidebar-link is-active" href="/people" aria-current="true">People</a>
-        </nav>
-      </aside>
+      <DirectoryNav active="people" />
 
       <article class="content-column project-detail">
         <header class="masthead">
