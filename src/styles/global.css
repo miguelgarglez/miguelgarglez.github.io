@@ -566,6 +566,12 @@ h1 {
   animation: rise 450ms ease both;
 }
 
+.post-card {
+  padding: 1.2rem 0 1.35rem;
+  border-bottom: 1px solid var(--line);
+  animation: rise 450ms ease both;
+}
+
 .reference:nth-child(1) {
   animation-delay: 160ms;
 }
@@ -614,6 +620,47 @@ h1 {
 
 .reading-author {
   color: var(--ink);
+}
+
+.post-date {
+  margin: 0.5rem 0 0;
+  max-width: 66ch;
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  line-height: 1.55;
+  text-transform: uppercase;
+}
+
+.post-hero {
+  padding-bottom: clamp(1.2rem, 2.4vw, 1.8rem);
+}
+
+.post-body {
+  max-width: 720px;
+  color: var(--ink);
+  font-size: clamp(1.02rem, 1.4vw, 1.12rem);
+  line-height: 1.85;
+}
+
+.post-body p {
+  margin: 0;
+}
+
+.post-body p + p {
+  margin-top: 1.15rem;
+}
+
+.post-body a {
+  color: var(--ink);
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.post-body a:hover {
+  color: var(--accent);
 }
 
 .people-detail-list {

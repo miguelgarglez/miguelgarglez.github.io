@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+type Props = {
+  post: CollectionEntry<"posts">;
+};
+
+const { post } = Astro.props;
+const formattedDate = post.data.date.toLocaleDateString("en", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+});
+---
+
+<li class="post-card">
+  <p class="reference-type">{post.data.kind} / {post.data.lang}</p>
+  <h2 class="reference-title">
+    <a href={`/posts/${post.id}`}>{post.data.title}</a>
+  </h2>
+  <p class="post-date">{formattedDate}</p>
+  <p class="reference-note">{post.data.description}</p>
+  <ul class="stack" aria-label="Post tags">
+    {post.data.tags.map((tag) => <li>{tag}</li>)}
+  </ul>
+</li>
