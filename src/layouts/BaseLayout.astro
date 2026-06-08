@@ -44,19 +44,28 @@ const { title } = Astro.props;
       const LIGHT_THEME = "light";
 
       const root = document.documentElement;
-      const toggle = document.querySelector("[data-theme-toggle]");
+      const themeToggles = Array.from(document.querySelectorAll("[data-theme-toggle]"));
+      const themeLabels = Array.from(document.querySelectorAll("[data-theme-label]"));
+      const menuTrigger = document.querySelector("[data-menu-trigger]");
+      const menuPanel = document.querySelector("[data-menu-panel]");
+      const menuClose = document.querySelector("[data-menu-close]");
 
       function initializeThemeToggle() {
-        if (!toggle) {
+        if (themeToggles.length === 0) {
           return;
         }
 
         const setThemeToggleState = (theme: string) => {
           const isDark = theme === DARK_THEME;
           const label = isDark ? "Switch to light theme" : "Switch to dark theme";
-          toggle.setAttribute("aria-pressed", String(isDark));
-          toggle.setAttribute("aria-label", label);
-          toggle.setAttribute("title", label);
+          themeToggles.forEach((toggle) => {
+            toggle.setAttribute("aria-pressed", String(isDark));
+            toggle.setAttribute("aria-label", label);
+            toggle.setAttribute("title", label);
+          });
+          themeLabels.forEach((themeLabel) => {
+            themeLabel.textContent = isDark ? "Dark" : "Light";
+          });
         };
 
         const applyTheme = (theme: string) => {
@@ -66,18 +75,75 @@ const { title } = Astro.props;
 
         applyTheme(root.dataset.theme || LIGHT_THEME);
 
-        toggle.addEventListener("click", () => {
-          const nextTheme = root.dataset.theme === DARK_THEME ? LIGHT_THEME : DARK_THEME;
-          try {
-            localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
-          } catch {
-            // Keep the current page interactive even when storage is unavailable.
+        themeToggles.forEach((toggle) => {
+          toggle.addEventListener("click", () => {
+            const nextTheme = root.dataset.theme === DARK_THEME ? LIGHT_THEME : DARK_THEME;
+            try {
+              localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+            } catch {
+              // Keep the current page interactive even when storage is unavailable.
+            }
+            applyTheme(nextTheme);
+          });
+        });
+      }
+
+      function initializeMobileMenu() {
+        if (!menuTrigger || !menuPanel) {
+          return;
+        }
+
+        const openMenu = () => {
+          menuPanel.hidden = false;
+          menuTrigger.setAttribute("aria-expanded", "true");
+          document.body.dataset.menuOpen = "true";
+          requestAnimationFrame(() => {
+            menuPanel.setAttribute("data-open", "true");
+            const firstTarget =
+              menuPanel.querySelector<HTMLElement>(".mobile-menu-link.is-active") ??
+              menuPanel.querySelector<HTMLElement>("a, button");
+            firstTarget?.focus();
+          });
+        };
+
+        const closeMenu = () => {
+          menuPanel.removeAttribute("data-open");
+          menuTrigger.setAttribute("aria-expanded", "false");
+          delete document.body.dataset.menuOpen;
+          window.setTimeout(() => {
+            if (!menuPanel.hasAttribute("data-open")) {
+              menuPanel.hidden = true;
+            }
+          }, 180);
+        };
+
+        menuTrigger.addEventListener("click", () => {
+          if (menuPanel.hidden) {
+            openMenu();
+            return;
           }
-          applyTheme(nextTheme);
+
+          closeMenu();
+        });
+
+        menuClose?.addEventListener("click", closeMenu);
+
+        menuPanel.addEventListener("click", (event) => {
+          if (event.target === menuPanel) {
+            closeMenu();
+          }
+        });
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !menuPanel.hidden) {
+            closeMenu();
+            (menuTrigger as HTMLElement).focus();
+          }
         });
       }
 
       initializeThemeToggle();
+      initializeMobileMenu();
     </script>
   </body>
 </html>

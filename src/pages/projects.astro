@@ -3,25 +3,13 @@ import ProjectCard from "../components/ProjectCard.astro";
 import DirectoryNav from "../components/DirectoryNav.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { projects } from "../data/projects";
-import type { ProjectCategory } from "../data/projects";
+const orderedProjects = [...projects].sort((a, b) => {
+  if (a.featured !== b.featured) {
+    return Number(b.featured) - Number(a.featured);
+  }
 
-const categoryLabels: Record<ProjectCategory, string> = {
-  "personal-site": "Personal site",
-  "product-platform": "Product platforms",
-  "frontend-case-study": "Frontend case studies",
-  "open-source": "Open source",
-  "native-app": "Native apps",
-};
-
-const groupedProjects = Object.entries(
-  projects.reduce(
-    (groups, project) => {
-      groups[project.category] = [...(groups[project.category] ?? []), project];
-      return groups;
-    },
-    {} as Record<ProjectCategory, typeof projects>,
-  ),
-) as Array<[ProjectCategory, typeof projects]>;
+  return b.year - a.year;
+});
 ---
 
 <BaseLayout title="Projects - Miguel Garcia">
@@ -37,26 +25,22 @@ const groupedProjects = Object.entries(
 
         <section class="detail-hero">
           <p class="section-label">Project Directory</p>
-          <h1>Things I build and maintain.</h1>
+          <h1>Projects.</h1>
           <p class="lead">
-            A fuller view of active projects, case studies, open-source work, and product experiments connected to my engineering practice.
+            A selection of projects I find worth showing: things I have built, explored, learned from, or still think say something about how I work.
           </p>
         </section>
 
-        {
-          groupedProjects.map(([category, categoryProjects]) => (
-            <section class="detail-section" aria-labelledby={`${category}-title`}>
-              <p class="section-label" id={`${category}-title`}>
-                {categoryLabels[category]}
-              </p>
-              <ol class="project-list">
-                {categoryProjects.map((project) => (
-                  <ProjectCard project={project} index={projects.indexOf(project)} />
-                ))}
-              </ol>
-            </section>
-          ))
-        }
+        <section class="detail-section" aria-labelledby="all-projects-title">
+          <p class="section-label" id="all-projects-title">All projects</p>
+          <ol class="project-list">
+            {
+              orderedProjects.map((project, index) => (
+                <ProjectCard project={project} index={index} />
+              ))
+            }
+          </ol>
+        </section>
       </article>
     </div>
   </main>
