@@ -1,123 +1,105 @@
 ---
-import ProjectCard from "../components/ProjectCard.astro";
-import PersonReference from "../components/PersonReference.astro";
-import PostCard from "../components/PostCard.astro";
-import ReadingCard from "../components/ReadingCard.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import DirectoryNav from "../components/DirectoryNav.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getCollection } from "astro:content";
-import { people } from "../data/people";
-import { projects } from "../data/projects";
-import { readings } from "../data/readings";
 
-const posts = await getCollection("posts", ({ data }) => !data.draft);
-const featuredProjects = projects.filter((project) => project.featured).slice(0, 3);
-const featuredPosts = posts
-  .filter((post) => post.data.featured)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 2);
-const featuredReadings = readings.filter((reading) => reading.featured).slice(0, 3);
-const featuredPeople = people.filter((person) => person.featured).slice(0, 3);
+const directoryLinks = [
+  {
+    href: "/projects",
+    label: "Projects",
+    note: "Software, products, and experiments.",
+  },
+  {
+    href: "/readings",
+    label: "Readings",
+    note: "References that shape my judgment.",
+  },
+  {
+    href: "/people",
+    label: "People",
+    note: "People I learn from.",
+  },
+  {
+    href: "/posts",
+    label: "Posts",
+    note: "Short notes on engineering and process.",
+  },
+];
+
+const socialLinks = [
+  {
+    href: "https://github.com/miguelgarglez",
+    label: "GitHub",
+  },
+  {
+    href: "https://www.linkedin.com/in/miguel-garciag",
+    label: "LinkedIn",
+  },
+  {
+    href: "https://x.com/miguel_garglez",
+    label: "X",
+  },
+  {
+    href: "/cv-chat",
+    label: "CV Chat",
+  },
+];
 ---
 
 <BaseLayout title="Miguel Garcia - Project Directory">
-  <main class="layout">
+  <main class="layout home-layout">
     <div class="page-shell">
       <DirectoryNav active="home" label="Directory sections" />
-      <div class="content-column">
+      <div class="content-column home-content">
         <header class="masthead">
           <p class="eyebrow">Miguel Garcia • Directory</p>
           <ThemeToggle />
         </header>
 
-        <section
-          class="intro"
-          id="overview"
-          data-section-anchor
-          aria-labelledby="directory-title"
-        >
-          <h1 id="directory-title">An index of projects, people, and ideas.</h1>
-          <p class="lead">
-            A directory of things I build and the work that inspires them.
-          </p>
-        </section>
-
-        <section id="projects" data-section-anchor aria-labelledby="projects-title">
-          <div class="section-heading">
-            <p class="section-label" id="projects-title">Projects</p>
-            <a class="text-link" href="/projects">View all projects</a>
+        <section class="home-hero" aria-labelledby="directory-title">
+          <p class="section-label">Personal directory</p>
+          <h1 id="directory-title" class="home-title">Welcome.</h1>
+          <div class="home-copy">
+            <p>
+              I'm Miguel Garcia, a software engineer based in Madrid.
+            </p>
+            <p>
+              I care about technical quality, product clarity, and the small details
+              that make software easier to use. This directory collects projects,
+              notes, readings, and references around that way of working.
+            </p>
+            <p>
+              If you want the professional version of the story, start with
+              <a href="/cv-chat">CV Chat</a>. Otherwise, explore the sections below.
+            </p>
           </div>
-          <ol class="project-list">
+
+          <nav class="home-link-grid" aria-label="Directory areas">
             {
-              featuredProjects.map((project, index) => (
-                <ProjectCard project={project} index={index} />
+              directoryLinks.map((link) => (
+                <a href={link.href} class="home-link-card">
+                  <span>{link.label}</span>
+                  <small>{link.note}</small>
+                </a>
               ))
             }
-          </ol>
-        </section>
+          </nav>
 
-        <section id="posts" data-section-anchor aria-labelledby="posts-title">
-          <div class="section-heading">
-            <p class="section-label" id="posts-title">Posts</p>
-            <a class="text-link" href="/posts">View all posts</a>
+          <div class="home-socials" aria-label="External links">
+            {
+              socialLinks.map((link) => (
+                <a
+                  href={link.href}
+                  target={link.href.startsWith("http") ? "_blank" : undefined}
+                  rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                >
+                  {link.label}
+                </a>
+              ))
+            }
           </div>
-          <ol class="reference-list">
-            {featuredPosts.map((post) => <PostCard post={post} />)}
-          </ol>
         </section>
-
-        <section id="readings" data-section-anchor aria-labelledby="readings-title">
-          <div class="section-heading">
-            <p class="section-label" id="readings-title">Readings</p>
-            <a class="text-link" href="/readings">View all readings</a>
-          </div>
-          <ol class="reference-list">
-            {featuredReadings.map((reading) => <ReadingCard reading={reading} />)}
-          </ol>
-        </section>
-
-        <section
-          id="inspiring-people"
-          data-section-anchor
-          aria-labelledby="inspiring-people-title"
-        >
-          <div class="section-heading">
-            <p class="section-label" id="inspiring-people-title">Inspiring people</p>
-            <a class="text-link" href="/people">View all people</a>
-          </div>
-          <ol class="reference-list">
-            {featuredPeople.map((person) => <PersonReference person={person} />)}
-          </ol>
-        </section>
-
-        <footer>
-          <p class="footer-note">Last update: April 2026.</p>
-        </footer>
       </div>
     </div>
   </main>
-
-  <script>
-    const SIDEBAR_SCROLL_THRESHOLD = 36;
-
-    const sidebar = document.querySelector("[data-sidebar]");
-
-    function initializeSidebarFade() {
-      if (!sidebar) {
-        return;
-      }
-
-      const syncSidebarOpacity = () => {
-        sidebar.classList.toggle("is-scrolled", window.scrollY > SIDEBAR_SCROLL_THRESHOLD);
-      };
-
-      syncSidebarOpacity();
-      window.addEventListener("scroll", syncSidebarOpacity, {
-        passive: true,
-      });
-    }
-
-    initializeSidebarFade();
-  </script>
 </BaseLayout>
