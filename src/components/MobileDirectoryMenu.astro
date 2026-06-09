@@ -1,0 +1,87 @@
+---
+type NavItem = {
+  label: string;
+  href: string;
+  key: string;
+};
+
+type Props = {
+  active: "home" | "projects" | "posts" | "readings" | "people";
+  label?: string;
+};
+
+const { active, label = "Directory navigation" } = Astro.props;
+
+const items: NavItem[] = [
+  { label: "Home", href: "/", key: "home" },
+  { label: "Projects", href: "/projects", key: "projects" },
+  { label: "Readings", href: "/readings", key: "readings" },
+  { label: "People", href: "/people", key: "people" },
+  { label: "Posts", href: "/posts", key: "posts" },
+];
+
+const activeItem = items.find((item) => item.key === active) ?? items[0];
+---
+
+<div class="mobile-directory">
+  <button
+    class="mobile-menu-trigger"
+    type="button"
+    data-menu-trigger
+    aria-expanded="false"
+    aria-controls="mobile-directory-panel"
+    aria-label={`Open directory menu. Current section: ${activeItem.label}`}
+  >
+    <span class="sr-only">Open directory menu. Current section: {activeItem.label}</span>
+    <span class="mobile-menu-icon" aria-hidden="true"></span>
+  </button>
+
+  <div
+    class="mobile-menu-panel"
+    id="mobile-directory-panel"
+    data-menu-panel
+    hidden
+  >
+    <div class="mobile-menu-surface" role="dialog" aria-modal="true" aria-label={label}>
+      <div class="mobile-menu-header">
+        <button class="mobile-menu-close" type="button" data-menu-close aria-label="Close menu">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+
+      <nav class="mobile-menu-nav" aria-label={label}>
+        {
+          items.map((item) => (
+            <a
+              class:list={["mobile-menu-link", { "is-active": item.key === active }]}
+              href={item.href}
+              aria-current={item.key === active ? "page" : undefined}
+            >
+              <span>{item.label}</span>
+              {item.key === active && <span class="mobile-menu-state" aria-hidden="true"></span>}
+            </a>
+          ))
+        }
+      </nav>
+
+      <button
+        class="mobile-theme-toggle"
+        type="button"
+        data-theme-toggle
+        aria-pressed="false"
+        aria-label="Switch to dark theme"
+      >
+        <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 1 0 9.8 9.8Z"></path>
+        </svg>
+        <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.3"></circle>
+          <path
+            d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"
+          ></path>
+        </svg>
+        <span class="sr-only">Toggle color theme</span>
+      </button>
+    </div>
+  </div>
+</div>

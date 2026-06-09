@@ -44,13 +44,13 @@ const { title } = Astro.props;
       const LIGHT_THEME = "light";
 
       const root = document.documentElement;
-      const themeToggles = Array.from(document.querySelectorAll("[data-theme-toggle]"));
-      const themeLabels = Array.from(document.querySelectorAll("[data-theme-label]"));
       const menuTrigger = document.querySelector("[data-menu-trigger]");
       const menuPanel = document.querySelector("[data-menu-panel]");
-      const menuClose = document.querySelector("[data-menu-close]");
 
       function initializeThemeToggle() {
+        const themeToggles = Array.from(document.querySelectorAll("[data-theme-toggle]"));
+        const themeLabels = Array.from(document.querySelectorAll("[data-theme-label]"));
+
         if (themeToggles.length === 0) {
           return;
         }
@@ -93,6 +93,9 @@ const { title } = Astro.props;
           return;
         }
 
+        document.body.append(menuPanel);
+        const menuClose = menuPanel.querySelector("[data-menu-close]");
+
         const openMenu = () => {
           menuPanel.hidden = false;
           menuTrigger.setAttribute("aria-expanded", "true");
@@ -102,7 +105,7 @@ const { title } = Astro.props;
             const firstTarget =
               menuPanel.querySelector<HTMLElement>(".mobile-menu-link.is-active") ??
               menuPanel.querySelector<HTMLElement>("a, button");
-            firstTarget?.focus();
+            firstTarget?.focus({ preventScroll: true });
           });
         };
 
@@ -137,7 +140,7 @@ const { title } = Astro.props;
         window.addEventListener("keydown", (event) => {
           if (event.key === "Escape" && !menuPanel.hidden) {
             closeMenu();
-            (menuTrigger as HTMLElement).focus();
+            (menuTrigger as HTMLElement).focus({ preventScroll: true });
           }
         });
       }

@@ -1,6 +1,7 @@
 ---
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import DirectoryNav from "../../components/DirectoryNav.astro";
+import MobileDirectoryMenu from "../../components/MobileDirectoryMenu.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 export async function getStaticPaths() {
@@ -32,12 +33,13 @@ const formattedDate = post.data.date.toLocaleDateString("en", {
 
       <article class="content-column project-detail">
         <header class="masthead">
-          <p class="eyebrow">Miguel Garcia • Posts</p>
-          <a class="text-link" href="/posts">Back to posts</a>
+          <a class="eyebrow masthead-home" href="/">Miguel Garcia • Posts</a>
+          <div class="masthead-actions">
+            <MobileDirectoryMenu active="posts" />
+          </div>
         </header>
 
         <section class="detail-hero post-hero">
-          <p class="section-label">{post.data.kind} / {post.data.lang}</p>
           <h1>{post.data.title}</h1>
           <p class="lead">{post.data.description}</p>
           <p class="post-date">{formattedDate}</p>

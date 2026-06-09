@@ -1,6 +1,7 @@
 ---
 import ThemeToggle from "../components/ThemeToggle.astro";
 import DirectoryNav from "../components/DirectoryNav.astro";
+import MobileDirectoryMenu from "../components/MobileDirectoryMenu.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const directoryLinks = [
@@ -52,12 +53,14 @@ const socialLinks = [
       <DirectoryNav active="home" label="Directory sections" />
       <div class="content-column home-content">
         <header class="masthead">
-          <p class="eyebrow">Miguel Garcia • Directory</p>
-          <ThemeToggle />
+          <a class="eyebrow masthead-home" href="/" aria-current="page">Miguel Garcia • Directory</a>
+          <div class="masthead-actions">
+            <ThemeToggle />
+            <MobileDirectoryMenu active="home" label="Directory sections" />
+          </div>
         </header>
 
         <section class="home-hero" aria-labelledby="directory-title">
-          <p class="section-label">Personal directory</p>
           <h1 id="directory-title" class="home-title">Welcome.</h1>
           <div class="home-copy">
             <p>

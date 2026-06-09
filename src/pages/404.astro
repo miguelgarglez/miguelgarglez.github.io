@@ -1,5 +1,6 @@
 ---
 import DirectoryNav from "../components/DirectoryNav.astro";
+import MobileDirectoryMenu from "../components/MobileDirectoryMenu.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
@@ -10,11 +11,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       <div class="content-column home-content">
         <header class="masthead">
-          <p class="eyebrow">Miguel Garcia • Not found</p>
+          <a class="eyebrow masthead-home" href="/">Miguel Garcia • Not found</a>
+          <div class="masthead-actions">
+            <MobileDirectoryMenu active="home" label="Directory sections" />
+          </div>
         </header>
 
         <section class="home-hero not-found" aria-labelledby="not-found-title">
-          <p class="section-label">404</p>
           <h1 id="not-found-title" class="home-title">Not found.</h1>
           <div class="home-copy">
             <p>This route does not have anything here yet.</p>

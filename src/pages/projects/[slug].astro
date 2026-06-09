@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import DirectoryNav from "../../components/DirectoryNav.astro";
+import MobileDirectoryMenu from "../../components/MobileDirectoryMenu.astro";
 import { projects } from "../../data/projects";
 import type { Project } from "../../data/projects";
 
@@ -29,12 +30,13 @@ const detailLinks = [
 
       <article class="content-column project-detail">
         <header class="masthead">
-          <p class="eyebrow">Miguel Garcia • Project</p>
-          <a class="text-link" href="/">Back home</a>
+          <a class="eyebrow masthead-home" href="/">Miguel Garcia • Project</a>
+          <div class="masthead-actions">
+            <MobileDirectoryMenu active="projects" />
+          </div>
         </header>
 
         <section class="detail-hero">
-          <p class="section-label">{project.category.replaceAll("-", " ")}</p>
           <h1>{project.displayName}</h1>
           <p class="lead">{project.summary}</p>
         </section>

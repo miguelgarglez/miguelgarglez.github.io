@@ -8,6 +8,8 @@
   --line-soft: rgba(18, 21, 28, 0.11);
   --accent: #1d5fd9;
   --accent-soft: rgba(29, 95, 217, 0.11);
+  --selection-bg: #0c1119;
+  --selection-ink: #ecf1f9;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --font-sans: "Plus Jakarta Sans", "Segoe UI", sans-serif;
   --font-serif: "Fraunces", "Times New Roman", serif;
@@ -23,11 +25,18 @@
   --line-soft: rgba(236, 241, 249, 0.16);
   --accent: #95b7ff;
   --accent-soft: rgba(149, 183, 255, 0.15);
+  --selection-bg: #eceeea;
+  --selection-ink: #12151c;
 }
 
 /* Base */
 * {
   box-sizing: border-box;
+}
+
+::selection {
+  color: var(--selection-ink);
+  background: var(--selection-bg);
 }
 
 body {
@@ -225,7 +234,9 @@ body {
 .mobile-menu-panel {
   position: fixed;
   inset: 0;
-  z-index: 20;
+  z-index: 100;
+  height: 100dvh;
+  overflow: hidden;
   background: var(--bg);
   opacity: 0;
   pointer-events: none;
@@ -238,7 +249,8 @@ body {
 }
 
 .mobile-menu-surface {
-  min-height: 100%;
+  min-height: 0;
+  height: 100%;
   background: var(--bg);
   padding: clamp(1rem, 3.8vw, 2rem);
   position: relative;
@@ -259,7 +271,7 @@ body {
 
 .mobile-menu-header {
   position: absolute;
-  top: clamp(0.85rem, 3vw, 1.35rem);
+  top: calc(clamp(0.85rem, 3vw, 1.35rem) + 0.875rem);
   right: clamp(1.75rem, 5.2vw, 3.5rem);
   z-index: 1;
 }
@@ -296,7 +308,7 @@ body {
   align-content: center;
   justify-items: center;
   gap: 0.2rem;
-  min-height: 100%;
+  min-height: 0;
 }
 
 .mobile-menu-link {
@@ -442,12 +454,38 @@ body[data-menu-open="true"] {
 
 /* Masthead + theme switch */
 .masthead {
+  position: relative;
+  z-index: 30;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--line);
+}
+
+.masthead-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(0.85rem, 2vw, 1.2rem);
+  margin-left: auto;
+}
+
+.masthead-home {
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 140ms ease;
+}
+
+.masthead-home:hover {
+  color: var(--ink);
+}
+
+.masthead-home:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 .eyebrow,
@@ -1157,13 +1195,7 @@ footer {
   }
 
   .sidebar {
-    position: absolute;
-    top: -0.45rem;
-    right: 0;
-    grid-column: 1;
-    width: auto;
-    opacity: 1;
-    z-index: 12;
+    display: none;
   }
 
   .mobile-directory {
@@ -1180,7 +1212,6 @@ footer {
 
   .masthead {
     min-height: 2.45rem;
-    padding-right: 3.25rem;
   }
 
   .content-column {
@@ -1207,7 +1238,7 @@ footer {
 
 @media (min-width: 641px) and (max-width: 980px) {
   .mobile-menu-surface {
-    min-height: 100%;
+    min-height: 0;
   }
 }
 
