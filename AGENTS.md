@@ -15,6 +15,15 @@ Contexto del repo: sitio personal publicado en GitHub Pages. La home vive en Ast
 
 ## Tareas comunes
 
+### Codex remoto / cloud
+
+- Leer tambien `docs/codex-cloud-setup.md` antes de arrancar tareas delegadas en la nube.
+- Setup recomendado del entorno remoto: `bash scripts/codex-cloud-setup.sh`.
+- Verificacion completa antes de abrir PR: `bash scripts/codex-cloud-verify.sh`.
+- Para cambios visuales, arrancar el servidor de desarrollo correspondiente y verificar en navegador real la vista desktop y mobile.
+- Pedir acceso externo solo cuando la tarea lo justifique: GitHub para PRs/checks, Cloudflare para Worker/deploy/logs, Linear para contexto de issues, Supabase/Vercel solo si la tarea toca esos sistemas.
+- No asumir que las skills locales del usuario existen en Codex cloud; las instrucciones persistentes del repo deben vivir en `AGENTS.md` y `docs/codex-cloud-setup.md`.
+
 ### Trabajar en la home Astro
 
 - Usar `npm` como package manager en la raíz.

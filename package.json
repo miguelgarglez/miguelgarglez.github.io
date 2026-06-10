@@ -7,7 +7,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "test:profile-agent": "node scripts/test-profile-agent.mjs"
+    "test:profile-agent": "node scripts/test-profile-agent.mjs",
+    "codex:setup": "bash scripts/codex-cloud-setup.sh",
+    "codex:verify": "bash scripts/codex-cloud-verify.sh"
   },
   "devDependencies": {
     "astro": "^6.1.9"
