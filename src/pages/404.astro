@@ -1,0 +1,35 @@
+---
+import DirectoryNav from "../components/DirectoryNav.astro";
+import MobileDirectoryMenu from "../components/MobileDirectoryMenu.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="404 - Miguel Garcia">
+  <main class="layout home-layout">
+    <div class="page-shell">
+      <DirectoryNav active="home" label="Directory sections" />
+
+      <div class="content-column home-content">
+        <header class="masthead">
+          <a class="eyebrow masthead-home" href="/">Miguel Garcia • Not found</a>
+          <div class="masthead-actions">
+            <MobileDirectoryMenu active="home" label="Directory sections" />
+          </div>
+        </header>
+
+        <section class="home-hero not-found" aria-labelledby="not-found-title">
+          <h1 id="not-found-title" class="home-title">Not found.</h1>
+          <div class="home-copy">
+            <p>This route does not have anything here yet.</p>
+            <p>
+              You can head back home and reorient from the directory.
+            </p>
+          </div>
+          <div class="home-socials">
+            <a href="/">Back home</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</BaseLayout>

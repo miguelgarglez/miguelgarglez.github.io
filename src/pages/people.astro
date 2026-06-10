@@ -1,5 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import DirectoryNav from "../components/DirectoryNav.astro";
+import MobileDirectoryMenu from "../components/MobileDirectoryMenu.astro";
 import { people } from "../data/people";
 import type { PersonArea } from "../data/people";
 
@@ -25,21 +27,17 @@ const groupedPeople = Object.entries(
 <BaseLayout title="People - Miguel Garcia">
   <main class="layout">
     <div class="page-shell">
-      <aside class="sidebar" aria-label="People navigation">
-        <nav class="sidebar-nav">
-          <a class="sidebar-link" href="/">Home</a>
-          <a class="sidebar-link is-active" href="/people" aria-current="true">People</a>
-        </nav>
-      </aside>
+      <DirectoryNav active="people" />
 
       <article class="content-column project-detail">
         <header class="masthead">
-          <p class="eyebrow">Miguel Garcia • People</p>
-          <a class="text-link" href="/">Back home</a>
+          <a class="eyebrow masthead-home" href="/">Miguel Garcia • People</a>
+          <div class="masthead-actions">
+            <MobileDirectoryMenu active="people" />
+          </div>
         </header>
 
         <section class="detail-hero">
-          <p class="section-label">References</p>
           <h1>People who shape my taste.</h1>
           <p class="lead">
             A small map of designers, engineers, educators, and product-minded builders whose work helps me sharpen how I think and build.

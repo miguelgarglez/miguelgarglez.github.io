@@ -217,7 +217,7 @@ export const projects: Project[] = [
     year: 2026,
     category: "native-app",
     stage: "active",
-    featured: false,
+    featured: true,
     role: "Product and native app builder",
     summary:
       "A native macOS productivity app for structuring work around projects, progress, and execution rhythm.",

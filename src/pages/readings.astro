@@ -1,0 +1,61 @@
+---
+import DirectoryNav from "../components/DirectoryNav.astro";
+import MobileDirectoryMenu from "../components/MobileDirectoryMenu.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ReadingCard from "../components/ReadingCard.astro";
+import { readings } from "../data/readings";
+import type { ReadingArea } from "../data/readings";
+
+const areaLabels: Record<ReadingArea, string> = {
+  engineering: "Engineering",
+  product: "Product",
+  design: "Design",
+};
+
+const groupedReadings = Object.entries(
+  readings.reduce(
+    (groups, reading) => {
+      groups[reading.area] = [...(groups[reading.area] ?? []), reading];
+      return groups;
+    },
+    {} as Record<ReadingArea, typeof readings>,
+  ),
+) as Array<[ReadingArea, typeof readings]>;
+---
+
+<BaseLayout title="Readings - Miguel Garcia">
+  <main class="layout">
+    <div class="page-shell">
+      <DirectoryNav active="readings" />
+
+      <article class="content-column project-detail">
+        <header class="masthead">
+          <a class="eyebrow masthead-home" href="/">Miguel Garcia • Readings</a>
+          <div class="masthead-actions">
+            <MobileDirectoryMenu active="readings" />
+          </div>
+        </header>
+
+        <section class="detail-hero">
+          <h1>Books and references that shape my taste.</h1>
+          <p class="lead">
+            A curated map of books, articles, newsletters, papers, and resources that shape how I think about engineering, product craft, and design.
+          </p>
+        </section>
+
+        {
+          groupedReadings.map(([area, areaReadings]) => (
+            <section class="detail-section" aria-labelledby={`${area}-title`}>
+              <p class="section-label" id={`${area}-title`}>
+                {areaLabels[area]}
+              </p>
+              <ol class="reference-list">
+                {areaReadings.map((reading) => <ReadingCard reading={reading} />)}
+              </ol>
+            </section>
+          ))
+        }
+      </article>
+    </div>
+  </main>
+</BaseLayout>

@@ -1,0 +1,59 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import DirectoryNav from "../../components/DirectoryNav.astro";
+import MobileDirectoryMenu from "../../components/MobileDirectoryMenu.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
+
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+type Props = {
+  post: CollectionEntry<"posts">;
+};
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const formattedDate = post.data.date.toLocaleDateString("en", {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+});
+---
+
+<BaseLayout title={`${post.data.title} - Miguel Garcia`}>
+  <main class="layout">
+    <div class="page-shell">
+      <DirectoryNav active="posts" />
+
+      <article class="content-column project-detail">
+        <header class="masthead">
+          <a class="eyebrow masthead-home" href="/">Miguel Garcia • Posts</a>
+          <div class="masthead-actions">
+            <MobileDirectoryMenu active="posts" />
+          </div>
+        </header>
+
+        <section class="detail-hero post-hero">
+          <h1>{post.data.title}</h1>
+          <p class="lead">{post.data.description}</p>
+          <p class="post-date">{formattedDate}</p>
+          <ul class="stack" aria-label="Post tags">
+            {post.data.tags.map((tag) => <li>{tag}</li>)}
+          </ul>
+        </section>
+
+        <section class="detail-section">
+          <div class="post-body">
+            <Content />
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+</BaseLayout>

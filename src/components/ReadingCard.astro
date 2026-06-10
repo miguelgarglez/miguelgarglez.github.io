@@ -1,0 +1,22 @@
+---
+import type { Reading } from "../data/readings";
+
+type Props = {
+  reading: Reading;
+};
+
+const { reading } = Astro.props;
+---
+
+<li class="reading">
+  <p class="reference-type">{reading.type} / {reading.area}</p>
+  <h2 class="reference-title">
+    <a href={reading.href} target="_blank" rel="noopener noreferrer">{reading.title}</a>
+  </h2>
+  {reading.subtitle && <p class="reading-subtitle">{reading.subtitle}</p>}
+  <p class="reading-author">By {reading.author}</p>
+  <p class="reference-note">{reading.note}</p>
+  <ul class="stack" aria-label="Reading tags">
+    {reading.tags.map((tag) => <li>{tag}</li>)}
+  </ul>
+</li>

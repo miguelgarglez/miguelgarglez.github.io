@@ -9,12 +9,20 @@ Miguel's public web presence, including the home, professional CV experience, ch
 _Avoid_: portfolio, blog, app
 
 **Home**:
-The root Astro experience that acts as the main directory for projects, people, and ideas.
+The root Astro experience that acts as the main curated directory for projects, people, readings, posts, and ideas. It should read first as a directory, not as a chronological publication feed.
 _Avoid_: landing page, homepage app
 
 **Project Directory**:
 The structured collection of projects shown from the Home.
 _Avoid_: portfolio grid, project list
+
+**Reading**:
+An external or referenced book, article, newsletter, paper, video, or similar resource that Miguel curates because it shaped his taste, learning, or thinking.
+_Avoid_: link, bookmark, content item
+
+**Person Reference**:
+A person Miguel curates because their work, writing, teaching, product judgment, or craft shapes his taste and thinking.
+_Avoid_: resource, link, influencer
 
 **CV Chat**:
 The independent Astro experience under `cv-chat/` that presents Miguel's professional profile and chat interface.
@@ -40,6 +48,10 @@ _Avoid_: copy tweak, profile refresh
 A code change that alters behavior, structure, workflow, UI interaction, or functionality of the Personal Site.
 _Avoid_: task, implementation, code tweak
 
+**Post**:
+A future authored article or short note published from the Personal Site once the Home supports writing. A Post can be substantial or lightweight, but it is always authored by Miguel.
+_Avoid_: project, page, update
+
 **Remote Codex Environment**:
 The full-access cloud environment used by Codex to work asynchronously on this repository.
 _Avoid_: CI, runner, agent machine
@@ -56,20 +68,20 @@ _Avoid_: visual test, design review
 A test that sends a real request through the Chat Worker to the configured LLM provider.
 _Avoid_: chat test, agent test
 
-**Post**:
-A future authored article or note published from the Personal Site once the Home supports blog-style content.
-_Avoid_: project, page, update
-
 ## Relationships
 
 - The **Personal Site** includes the **Home**, **CV Chat**, and **Chat Worker**.
 - The **Home** exposes the **Project Directory**.
+- The **Home** can expose **Readings** as a curated section alongside projects, people, posts, and ideas.
+- The **Home** should show curated selections and route visitors to dedicated section pages for deeper browsing.
+- A **Person Reference** is reserved for people, while **Readings** cover external resources that are not people.
 - **CV Chat** uses the **Chat Worker** for chat responses.
 - The **Chat Worker** uses **Profile Knowledge** to ground answers.
 - **Profile Knowledge** should stay aligned with **Professional Facts** visible in **CV Chat**.
 - A **Product Change** can affect the **Home**, **CV Chat**, **Chat Worker**, workflows, or supporting documentation.
 - A **Professional Experience Update** may change **CV Chat**, **Profile Knowledge**, and deterministic profile-agent tests together.
 - A **Post** belongs to the **Personal Site** once publishing support exists, but it is distinct from a **Project Directory** entry.
+- A **Reading** is curated from outside Miguel's authored content, while a **Post** is authored by Miguel.
 - The **Remote Codex Environment** changes the **Personal Site** through branches and PRs.
 - An **External Project System** is not part of the **Personal Site** unless a task explicitly brings it into scope.
 - **Visual Evidence** supports review of UI changes made by the **Remote Codex Environment**.
@@ -78,7 +90,7 @@ _Avoid_: project, page, update
 ## Example dialogue
 
 > **Dev:** "If I update Miguel's current role in **CV Chat**, should I also update **Profile Knowledge**?"
-> **Domain expert:** "Yes - **CV Chat** is the visible source, and **Profile Knowledge** should stay aligned so the **Chat Worker** answers consistently."
+> **Domain expert:** "Yes — **CV Chat** is the visible source, and **Profile Knowledge** should stay aligned so the **Chat Worker** answers consistently."
 
 ## Flagged ambiguities
 
@@ -89,5 +101,6 @@ _Avoid_: project, page, update
 - "Professional update" means a **Professional Experience Update**, not just a visual copy edit.
 - "Programming task" usually means a **Product Change** and should still follow branch, PR, validation, and visual evidence rules when applicable.
 - "Post" is reserved for future authored content, not current **Project Directory** entries.
+- "Ideas" describes the broader editorial intent of the **Home**, not a dedicated section until a clearer need emerges.
 - "Supabase" currently refers to an **External Project System**, not a direct dependency of the **Personal Site**.
 - "Vercel" currently refers to a secondary fallback surface for `chat-backup-vercel/`, not the primary deployment path.
