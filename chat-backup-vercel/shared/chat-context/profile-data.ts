@@ -39,8 +39,8 @@ export const profileSections: ProfileBlock[] = [
     id: 'about',
     title: 'About Miguel',
     content:
-      "I'm a product-minded software developer focused on delivering real business value through scalable, user-centered digital products. I use AI tools in practical ways to improve workflows, software quality, and team productivity, and I actively help others adopt what works. I try to keep a global view of the product, balancing engineering quality, maintainability, and cross-team collaboration. I'm especially motivated by work where quality, innovation, and measurable impact matter.",
-    tags: ['trayectoria', 'motivacion', 'valores'],
+      "I'm a product-minded software developer focused on delivering real business value through scalable, user-centered digital products. I use AI tools in practical ways to improve workflows, software quality, and team productivity, and I actively help others adopt what works. I try to keep a global view of the product, balancing engineering quality, maintainability, and cross-team collaboration. I'm also getting closer to Spain's technology and startup ecosystem through Exponential Community, using it as a way to learn how current builders think and meet people with similar curiosity.",
+    tags: ['trayectoria', 'motivacion', 'valores', 'startup', 'aprendizaje'],
     type: 'story',
     lang: 'en',
   },
@@ -48,7 +48,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'qualities',
     title: 'Personal qualities',
     content:
-      'Team player with a long history in federated football teams since age seven. Resilient and motivated by failure to keep improving. Fast learner with attention to detail and a proactive approach. Global mindset with English C1 level certified by the British Council (Aptis) and experience speaking in public.',
+      'Team player with a long history in federated football teams since age seven. Resilient and motivated by failure to keep improving. Fast learner with attention to detail and a proactive approach. Global mindset with TOEIC C1 CEFR certification through Capman Testing Solutions and experience speaking in public.',
     tags: ['fortalezas', 'equipo', 'forma-de-trabajar'],
     type: 'answer',
     lang: 'en',
@@ -57,7 +57,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'recruiter-value-proposition',
     title: 'Recruiter snapshot - Why Miguel',
     content:
-      'Miguel combines product mindset, frontend platform execution, and strong collaboration habits. He brings a generalist mentality: he is motivated by solving real problems, does not back away from unfamiliar challenges, and is comfortable moving across product, quality, delivery, and technical depth as needed. He is especially valuable in environments that need consistent, accessible, high-performance interfaces without losing sight of adoption, delivery, and business value.',
+      'Miguel combines product mindset, frontend platform execution, product-facing delivery, and strong collaboration habits. He brings a generalist mentality: he is motivated by solving real problems, does not back away from unfamiliar challenges, and is comfortable moving across product, quality, delivery, and technical depth as needed. He is especially valuable in environments that need consistent, accessible, high-performance interfaces without losing sight of adoption, delivery, and business value.',
     tags: ['recruiting', 'impacto', 'fortalezas', 'forma-de-trabajar'],
     type: 'answer',
     lang: 'en',
@@ -102,7 +102,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'leadership-and-ownership',
     title: 'Leadership and ownership examples',
     content:
-      'At Open Digital Services, he leads implementation, maintenance, and refactoring of shared UI components used by web developers across Grupo Santander banks. At Jember, he co-led the recovery of a stalled test automation initiative and helped turn it into a practical regression asset with around 50% reduction in person-day cost. These examples reflect the type of ownership he wants to expand: technical direction that improves product delivery and raises the level of the team around him.',
+      'At Open Digital Services, he now works closer to final product delivery on business-account onboarding flows for Santander Spain, Mexico, and the UK. Previously, he led implementation, maintenance, and refactoring of shared UI components used by web developers across Grupo Santander banks. At Jember, he co-led the recovery of a stalled test automation initiative and helped turn it into a practical regression asset with around 50% reduction in person-day cost. These examples reflect the type of ownership he wants to expand: technical direction that improves product delivery and raises the level of the team around him.',
     tags: ['liderazgo', 'impacto', 'proyectos', 'ownership', 'recruiting'],
     type: 'example',
     lang: 'en',
@@ -121,7 +121,7 @@ export const profileSections: ProfileBlock[] = [
     title: 'Problem-solving example',
     content:
       'At Jember, the test automation project had been inactive for more than two years. He partnered with another QA engineer to refactor and relaunch it, improving regression efficiency and reducing manual regression cost by about 50% in person days.',
-    tags: ['impacto', 'proyectos', 'calidad', 'aprendizaje', 'recruiting'],
+    tags: ['impacto', 'proyectos', 'calidad', 'qa', 'testing', 'jember', 'aprendizaje', 'recruiting'],
     type: 'example',
     lang: 'en',
   },
@@ -129,8 +129,8 @@ export const profileSections: ProfileBlock[] = [
     id: 'experience-ods',
     title: 'Experience - Open Digital Services (Santander Group)',
     content:
-      'Frontend UI Platform Engineer (Sep 2024 - Current). Member of the Kubit Web UI components platform team, building and maintaining the component library used by web developers across Grupo Santander banks. Leads implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem. Contributes to the open-source charting library with new features and continuous improvements. Manages releases with semantic versioning, branch strategy, and Storybook documentation; supports Kubit public presence through product landing pages. Drives AI-enabled workflows with tools like GitHub Copilot, MCP servers, and context engineering to improve productivity, code quality, and collaborative development.',
-    tags: ['experiencia', 'impacto', 'proyectos', 'frontend'],
+      "Frontend Engineer (Sep 2024 - Current). Currently works in a final product team for Santander's business-account onboarding flow, serving Spain, Mexico, and the UK. This role brings him closer to product delivery, financial onboarding complexity, regional requirements, and cross-functional execution. Previously worked in the Kubit Web UI components platform team, building and maintaining the component library used by web developers across Grupo Santander banks. Led implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem. Contributed to the open-source charting library with new features and continuous improvements. Managed releases with semantic versioning, branch strategy, and Storybook documentation; supported Kubit public presence through product landing pages. Drives AI-enabled workflows with tools like GitHub Copilot, MCP servers, and context engineering to improve productivity, code quality, and collaborative development.",
+    tags: ['experiencia', 'impacto', 'proyectos', 'frontend', 'product', 'onboarding'],
     type: 'example',
     lang: 'en',
   },
@@ -139,7 +139,7 @@ export const profileSections: ProfileBlock[] = [
     title: 'Experience - Jember Engineering Solutions',
     content:
       'QA Software Engineer (Sep 2023 - Jul 2024). Coordinated with app frontend teams using agile methodologies. Reported hundreds of bugs, improving performance and UX. Co-led a refactor and relaunch of a test automation project, improving regression testing cost by about 50% in person days.',
-    tags: ['experiencia', 'impacto', 'calidad', 'proyectos'],
+    tags: ['experiencia', 'impacto', 'calidad', 'qa', 'testing', 'jember', 'proyectos'],
     type: 'example',
     lang: 'en',
   },
@@ -165,17 +165,17 @@ export const profileSections: ProfileBlock[] = [
     id: 'education-certifications',
     title: 'Courses and certifications',
     content:
-      'Professional Scrum Master I (PSM I) — Scrum.org (Oct 2025). Credential: https://www.credly.com/badges/78c42e63-cb83-4914-8607-4073c40599a3/linked_in_profile. Animations on the Web — Emil Kowalski (Aug 2025). Credential: https://animations.dev/certificate/6372ea11-f38d-45be-9c2f-9817e68b90a6. Google GenAI Intensive — Kaggle (Apr 2025). Credential: https://www.kaggle.com/certification/badges/miguelgarglez/96. Responsible AI and Prompt Engineering (Online Course) — Founderz (Mar 2025). Credential: https://learn.founderz.com/certificate/curso-generacion-ia-comunidad-madrid/7ca969ab-1671-4608-9c40-8b87d3bbfddf. TOEIC - C1 CEFR Level — Capman Testing Solutions (Feb 2025). Credential: https://www.linkedin.com/in/miguel-garciag/details/certifications/. Full Stack Open — University of Helsinki (Apr 2024). Credential: https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/db1060c383cd09cd6ab128fb5f864156.',
-    tags: ['educacion', 'certificaciones', 'cursos'],
+      'Exponential Community — Exponential Fellowship (2026). Miguel joined this young technology community in Spain to get closer to current technology and startup thinking, learn from builders, and meet people with similar ambition and curiosity. Professional Scrum Master I (PSM I) — Scrum.org (Oct 2025). Credential: https://www.credly.com/badges/78c42e63-cb83-4914-8607-4073c40599a3/linked_in_profile. Animations on the Web — Emil Kowalski (Aug 2025). Credential: https://animations.dev/certificate/6372ea11-f38d-45be-9c2f-9817e68b90a6. Google GenAI Intensive — Kaggle (Apr 2025). Credential: https://www.kaggle.com/certification/badges/miguelgarglez/96. Responsible AI and Prompt Engineering (Online Course) — Founderz (Mar 2025). Credential: https://learn.founderz.com/certificate/curso-generacion-ia-comunidad-madrid/7ca969ab-1671-4608-9c40-8b87d3bbfddf. TOEIC - C1 CEFR Level — Capman Testing Solutions (Feb 2025). Credential: https://www.linkedin.com/in/miguel-garciag/details/certifications/. Full Stack Open — University of Helsinki (Apr 2024). Credential: https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/db1060c383cd09cd6ab128fb5f864156.',
+    tags: ['educacion', 'certificaciones', 'cursos', 'startup', 'aprendizaje'],
     type: 'fact',
     lang: 'en',
   },
   {
     id: 'skills-frontend',
-    title: 'Skills - Frontend Development',
+    title: 'Skills - Frontend Product and Platform',
     content:
-      'React and TypeScript with component libraries at scale. Design systems with tokens, components, and UI governance. Accessibility with WCAG compliance and inclusive patterns. Performance-focused UI quality, profiling, and optimization.',
-    tags: ['skills', 'frontend', 'impacto'],
+      'React and TypeScript across product UI, financial onboarding flows, and component libraries at scale. Design systems with tokens, components, and UI governance. Accessibility with WCAG compliance and inclusive patterns. Performance-focused UI quality, profiling, and optimization.',
+    tags: ['skills', 'frontend', 'product', 'onboarding', 'impacto'],
     type: 'answer',
     lang: 'en',
   },
@@ -210,8 +210,8 @@ export const profileSections: ProfileBlock[] = [
     id: 'growth-areas',
     title: 'Growth areas and continuous improvement',
     content:
-      'He is actively growing in two directions: deeper backend and system design breadth, and better leverage of AI workflows in day-to-day engineering. His approach is iterative: test ideas in real tasks, document what works, share practices, and standardize successful patterns with the team.',
-    tags: ['debilidades', 'aprendizaje', 'futuro', 'forma-de-trabajar', 'recruiting'],
+      'He is actively growing in three directions: deeper backend and system design breadth, better leverage of AI workflows in day-to-day engineering, and a sharper understanding of technology/startup thinking through Exponential Community. His approach is iterative: test ideas in real tasks, document what works, share practices, and standardize successful patterns with the team.',
+    tags: ['debilidades', 'aprendizaje', 'futuro', 'forma-de-trabajar', 'startup', 'recruiting'],
     type: 'answer',
     lang: 'en',
   },
@@ -228,7 +228,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'career-direction',
     title: 'Career direction and leadership ambition',
     content:
-      'Miguel wants to grow into a technical leadership role with clear business influence. The direction he is aiming for is to help shape technical decisions, improve how teams deliver, contribute to product outcomes, and actively support other engineers as they grow. He is motivated by the idea of being a trusted technical leader who raises both the quality of the work and the level of the people around him.',
+      'Miguel wants to grow into a technical leadership role with clear business influence. The direction he is aiming for is to help shape technical decisions, improve how teams deliver, contribute to product outcomes, and actively support other engineers as they grow. His interest in startup communities is not primarily about presenting himself as a founder, but about understanding how ambitious builders think, how technology opportunities emerge, and how that perspective can sharpen his engineering judgement.',
     tags: ['futuro', 'liderazgo', 'impacto', 'recruiting', 'ownership'],
     type: 'answer',
     lang: 'en',

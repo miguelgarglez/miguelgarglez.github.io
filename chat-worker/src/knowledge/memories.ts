@@ -14,6 +14,32 @@ export type MemoryBlock = {
 
 export const memories: MemoryBlock[] = [
   {
+    id: 'santander-product-onboarding-team',
+    title: 'Moved to Santander business onboarding product team',
+    content:
+      "Miguel moved from frontend UI platform work into a final product team focused on Santander's business-account onboarding flows for Spain, Mexico, and the UK. This gives him closer exposure to product delivery, financial onboarding complexity, regional requirements, and cross-functional execution.",
+    source: 'manual',
+    tags: ['frontend', 'product', 'santander', 'onboarding', 'business-accounts'],
+    createdAt: '2026-06-11',
+    status: 'in_progress',
+    visibility: 'public',
+    confidence: 'verified',
+    priority: 98,
+  },
+  {
+    id: 'exponential-community-joined',
+    title: 'Joined Exponential Community',
+    content:
+      'Miguel joined Exponential Community, part of Exponential Fellowship in Spain, to learn from the current technology and startup ecosystem and meet young builders with similar curiosity. He is not framing it as a founder commitment, but as a way to understand startup thinking, ambition, and modern technology perspectives.',
+    source: 'manual',
+    tags: ['startup', 'community', 'learning', 'technology', 'network'],
+    createdAt: '2026-06-11',
+    status: 'in_progress',
+    visibility: 'public',
+    confidence: 'verified',
+    priority: 92,
+  },
+  {
     id: 'opencode-zen-chat-migration',
     title: 'Migrated profile chat to opencode Zen',
     content:

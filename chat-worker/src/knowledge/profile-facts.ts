@@ -24,8 +24,9 @@ export const profileFacts: ProfileFact[] = [
   {
     id: 'current-role',
     label: 'Current role',
-    value: 'Frontend UI Platform Engineer at Open Digital Services, Santander Group',
-    tags: ['experience', 'current-role', 'recruiting', 'frontend'],
+    value:
+      'Frontend Engineer at Open Digital Services, Santander Group, working on business-account onboarding flows for Santander Spain, Mexico, and the UK',
+    tags: ['experience', 'current-role', 'recruiting', 'frontend', 'product', 'onboarding'],
     priority: 100,
   },
   {
@@ -60,8 +61,8 @@ export const profileFacts: ProfileFact[] = [
     id: 'primary-stack',
     label: 'Primary stack',
     value:
-      'React, TypeScript, Astro, design systems, accessibility, Cloudflare Workers, AI-assisted engineering workflows with Windsurf, Devin, Codex, GitHub Copilot, MCP servers, context engineering, reusable skills, and an MCP server built to support component-library consumers',
-    tags: ['skills', 'frontend', 'ai', 'summary'],
+      'React, TypeScript, product frontend, financial onboarding flows, Astro, design systems, accessibility, Cloudflare Workers, AI-assisted engineering workflows with Windsurf, Devin, Codex, GitHub Copilot, MCP servers, context engineering, reusable skills, and an MCP server built to support component-library consumers',
+    tags: ['skills', 'frontend', 'product', 'onboarding', 'ai', 'summary'],
     priority: 85,
   },
   {
@@ -73,11 +74,27 @@ export const profileFacts: ProfileFact[] = [
     priority: 88,
   },
   {
+    id: 'qa-experience',
+    label: 'QA experience',
+    value:
+      'Miguel worked as a QA Software Engineer at Jember Engineering Solutions from Sep 2023 to Jul 2024. He coordinated with app frontend teams, reported hundreds of bugs that improved performance and UX, and co-led the recovery of an abandoned test automation project, reducing regression testing cost by about 50% in person days.',
+    tags: ['experience', 'qa', 'quality', 'testing', 'jember', 'impact'],
+    priority: 82,
+  },
+  {
     id: 'agent-context',
     label: 'CV chat agent context',
     value:
       'The cv-chat agent answers from curated profile context aligned with the visible CV: experience, work signals, technical skills, education, certifications, projects, and selected recent AI-related memories.',
     tags: ['portfolio', 'projects', 'ai', 'summary'],
     priority: 80,
+  },
+  {
+    id: 'exponential-community',
+    label: 'Exponential Community',
+    value:
+      'Miguel joined Exponential Community, part of Exponential Fellowship in Spain, to get closer to current technology and startup thinking, learn from builders, and meet young people with similar curiosity. He is not framing it as founder intent.',
+    tags: ['learning', 'startup', 'community', 'technology', 'summary'],
+    priority: 72,
   },
 ];
