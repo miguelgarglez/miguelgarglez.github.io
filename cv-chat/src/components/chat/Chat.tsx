@@ -1,6 +1,6 @@
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
-import { FileTextIcon, MessageSquareIcon, SparklesIcon } from 'lucide-react';
+import { MessageSquareIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Conversation,
@@ -315,6 +315,11 @@ export default function Chat({
   });
   const isBusy = status === 'submitted' || status === 'streaming';
   const submitStatus = isBusy ? status : 'ready';
+  const suggestedQuestions = [
+    'What kind of engineer is Miguel?',
+    'How does Miguel use AI in engineering?',
+    'How does this CV chat work?',
+  ];
 
   useEffect(() => {
     const prompt = suggestedPrompt?.trim();
@@ -345,26 +350,27 @@ export default function Chat({
               className="justify-start gap-5 pt-18 sm:justify-center sm:pt-8"
             >
               <div className="grid size-12 place-items-center rounded-full border border-border bg-background text-primary">
-                <MessageSquareIcon className="size-6" />
+                <MessageSquareIcon className="size-5" />
               </div>
-              <div className="max-w-md space-y-2">
+              <div className="space-y-1">
                 <h3 className="text-base font-semibold text-foreground">
-                  Start with the profile dossier
+                  Ask Miguel
                 </h3>
-                <p className="text-sm leading-6 text-muted-foreground">
-                  Ask about Miguel&apos;s current role, frontend platform work,
-                  AI/MCP workflows, education, or project examples.
+                <p className="text-sm text-muted-foreground">
+                  Try a focused question about the CV.
                 </p>
               </div>
-              <div className="grid w-full max-w-md gap-2 text-left text-xs text-muted-foreground sm:grid-cols-2">
-                <div className="flex items-center gap-2 rounded-[var(--radius-md)] border border-border bg-background/60 px-3 py-2">
-                  <FileTextIcon className="size-3.5 text-primary" />
-                  <span>Grounded in curated CV context</span>
-                </div>
-                <div className="flex items-center gap-2 rounded-[var(--radius-md)] border border-border bg-background/60 px-3 py-2">
-                  <SparklesIcon className="size-3.5 text-primary" />
-                  <span>Best for specific questions</span>
-                </div>
+              <div className="flex max-w-md flex-wrap justify-center gap-2">
+                {suggestedQuestions.map((question) => (
+                  <button
+                    type="button"
+                    key={question}
+                    className="rounded-full border border-border bg-background/60 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-[color:var(--primary)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)]"
+                    onClick={() => setInput(question)}
+                  >
+                    <span>{question}</span>
+                  </button>
+                ))}
               </div>
             </ConversationEmptyState>
           ) : (

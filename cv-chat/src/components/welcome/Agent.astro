@@ -1,57 +1,70 @@
 ---
 import { Icon } from 'astro-icon/components';
+
+const engineeringNotes = [
+  {
+    title: 'Grounded retrieval',
+    body: 'The worker selects profile facts, CV sections, projects, and recent public updates before calling the model.',
+  },
+  {
+    title: 'Context engineering',
+    body: 'Questions are classified by likely audience and intent, then assembled into a compact system prompt with explicit answer rules.',
+  },
+  {
+    title: 'Deterministic evals',
+    body: 'Node tests verify that key questions retrieve the expected profile context without depending on a live LLM response.',
+  },
+  {
+    title: 'Streaming UX',
+    body: 'The Cloudflare Worker adapts upstream SSE into the AI SDK UI message stream used by the drawer chat.',
+  },
+  {
+    title: 'Operational guardrails',
+    body: 'CORS, rate limits, upstream retries, timeout handling, and a secondary backend keep failures visible and recoverable.',
+  },
+];
+
+const prompts = [
+  'How does this CV chat work?',
+  'How does Miguel use AI in engineering?',
+];
 ---
 
 <section id="agent" class="agent">
   <div class="container">
-    <div class="agent-shell">
+    <div class="agent-layout">
       <div class="agent-copy">
         <p class="section-kicker">/agent</p>
-        <h2 class="section-title editorial-title">Ask the Dossier</h2>
+        <h2 class="section-title editorial-title">Profile Chat</h2>
         <p class="agent-description">
-          A lightweight CV agent that can answer from the same professional
-          story shown on the page: experience, signals, skills, education, and
-          working style.
+          A small AI interface over Miguel&apos;s curated CV data. It is meant
+          to answer focused questions about experience, projects, working style,
+          education, and AI engineering practice.
         </p>
-      </div>
-
-      <div class="agent-panel">
-        <div class="agent-panel-head">
-          <div>
-            <span class="agent-status">status: ready</span>
-            <p class="agent-panel-title">Profile context loaded</p>
-          </div>
+        <div class="agent-actions">
           <button type="button" class="agent-open" data-agent-open>
             <Icon name="lucide:message-circle" aria-hidden="true" />
-            Open agent
+            Try the chat
           </button>
+          {
+            prompts.map((prompt) => (
+              <button type="button" class="agent-prompt" data-chat-prompt={prompt}>
+                {prompt}
+              </button>
+            ))
+          }
         </div>
+      </div>
 
-        <div class="agent-panel-body">
-          <div class="agent-line">
-            <span>context</span>
-            <strong>profile / experience / signals</strong>
-          </div>
-          <div class="agent-line">
-            <span>mode</span>
-            <strong>dossier</strong>
-          </div>
-        </div>
-
-        <div class="agent-prompts" aria-label="Suggested prompts">
-          <button type="button" class="agent-link" data-chat-prompt="What kind of engineer is Miguel?">
-            <span>What kind of engineer is Miguel?</span>
-            <Icon name="lucide:arrow-up-right" aria-hidden="true" />
-          </button>
-          <button type="button" class="agent-link" data-chat-prompt="How does Miguel use AI in engineering?">
-            <span>How does Miguel use AI in engineering?</span>
-            <Icon name="lucide:arrow-up-right" aria-hidden="true" />
-          </button>
-          <button type="button" class="agent-link" data-chat-prompt="How does this CV chat work?">
-            <span>How does this CV chat work?</span>
-            <Icon name="lucide:arrow-up-right" aria-hidden="true" />
-          </button>
-        </div>
+      <div class="agent-notes" aria-label="AI engineering highlights">
+        {
+          engineeringNotes.map((note) => (
+            <article class="agent-note">
+              <h3>{note.title}</h3>
+              <p>{note.body}</p>
+            </article>
+          ))
+        }
       </div>
     </div>
   </div>
@@ -89,33 +102,18 @@ import { Icon } from 'astro-icon/components';
 
     const { gsap } = await getScrollMotionTools();
 
-    gsap.set('#agent .agent-copy, #agent .agent-panel', { y: 42, opacity: 0 });
-    gsap.set('#agent .agent-link', { y: 14, opacity: 0 });
+    gsap.set('#agent .agent-copy, #agent .agent-note', { y: 28, opacity: 0 });
 
-    gsap.to('#agent .agent-copy, #agent .agent-panel', {
+    gsap.to('#agent .agent-copy, #agent .agent-note', {
       y: 0,
       opacity: 1,
-      duration: 0.75,
+      duration: 0.65,
       ease: 'power3.out',
-      stagger: 0.08,
+      stagger: 0.06,
       scrollTrigger: {
         trigger: '#agent',
         start: 'top 75%',
         end: 'bottom 75%',
-        toggleActions: 'play none none reverse',
-      },
-    });
-
-    gsap.to('#agent .agent-link', {
-      y: 0,
-      opacity: 1,
-      duration: 0.5,
-      stagger: 0.08,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '#agent .agent-prompts',
-        start: 'top 80%',
-        end: 'bottom 80%',
         toggleActions: 'play none none reverse',
       },
     });
@@ -128,8 +126,8 @@ import { Icon } from 'astro-icon/components';
     background:
       linear-gradient(
         180deg,
-        color-mix(in srgb, var(--bg-light) 52%, transparent),
-        var(--bg) 78%
+        color-mix(in srgb, var(--bg-light) 42%, transparent),
+        var(--bg) 76%
       );
     color: var(--text);
     overflow: hidden;
@@ -143,17 +141,17 @@ import { Icon } from 'astro-icon/components';
     background:
       linear-gradient(
         90deg,
-        color-mix(in srgb, var(--border) 34%, transparent) 1px,
+        color-mix(in srgb, var(--border) 28%, transparent) 1px,
         transparent 1px
       ),
       linear-gradient(
         180deg,
-        color-mix(in srgb, var(--border) 22%, transparent) 1px,
+        color-mix(in srgb, var(--border) 18%, transparent) 1px,
         transparent 1px
       );
     background-size: 96px 96px;
-    mask-image: linear-gradient(180deg, transparent, black 18%, black 84%, transparent);
-    opacity: 0.14;
+    mask-image: linear-gradient(180deg, transparent, black 20%, black 82%, transparent);
+    opacity: 0.12;
     pointer-events: none;
   }
 
@@ -163,30 +161,16 @@ import { Icon } from 'astro-icon/components';
     position: relative;
   }
 
-  .agent-shell {
+  .agent-layout {
     display: grid;
-    grid-template-columns: minmax(16rem, 0.82fr) minmax(0, 1.18fr);
-    gap: 0;
-    align-items: stretch;
-  }
-
-  .agent-copy,
-  .agent-panel {
-    border: 1px solid var(--border);
-    background:
-      linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--bg-light) 84%, transparent),
-        color-mix(in srgb, var(--bg) 96%, transparent)
-      );
-    min-width: 0;
+    grid-template-columns: minmax(18rem, 0.82fr) minmax(0, 1.18fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: start;
   }
 
   .agent-copy {
-    padding: clamp(1.5rem, 3vw, 2rem);
     display: grid;
-    align-content: start;
-    min-height: 17rem;
+    gap: 1.2rem;
   }
 
   .section-title {
@@ -196,42 +180,30 @@ import { Icon } from 'astro-icon/components';
   }
 
   .agent-description {
-    margin: 1.2rem 0 0;
+    margin: 0;
     max-width: 38rem;
     color: var(--text-muted);
-    line-height: 1.7;
     font-size: clamp(1rem, 1.35vw, 1.12rem);
+    line-height: 1.7;
   }
 
-  .agent-panel {
-    padding: clamp(1.25rem, 2.5vw, 1.65rem);
-    border-left-width: 0;
-    display: grid;
-    gap: 1.25rem;
-  }
-
-  .agent-panel-head {
+  .agent-actions {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 0.4rem;
   }
 
-  .agent-status {
-    color: var(--text-muted);
-    font-family: var(--font-mono, monospace);
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  .agent-panel-title {
-    margin: 0.5rem 0 0;
-    color: var(--text);
-    font-family: var(--font-mono, monospace);
-    font-size: clamp(1rem, 1.5vw, 1.15rem);
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
+  .agent-open,
+  .agent-prompt {
+    border: 1px solid color-mix(in srgb, var(--primary) 42%, var(--border));
+    border-radius: 999px;
+    cursor: pointer;
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease,
+      transform 160ms var(--ease-out-quart);
   }
 
   .agent-open {
@@ -239,156 +211,96 @@ import { Icon } from 'astro-icon/components';
     align-items: center;
     justify-content: center;
     gap: 0.45rem;
-    border: 1px solid color-mix(in srgb, var(--primary) 42%, var(--border));
-    background: color-mix(in srgb, var(--bg) 86%, transparent);
-    color: var(--text);
-    border-radius: 999px;
-    padding: 0.68rem 0.95rem;
-    cursor: pointer;
-    font-weight: 600;
-    transition:
-      background-color 160ms ease,
-      transform 160ms var(--ease-out-quart),
-      border-color 160ms var(--ease-out-quart);
+    background: var(--primary);
+    color: var(--primary-foreground);
+    padding: 0.68rem 1rem;
+    font-weight: 650;
   }
 
   .agent-open svg {
     width: 1rem;
     height: 1rem;
-    color: var(--primary);
   }
 
-  .agent-open:active {
-    transform: scale(0.97);
-  }
-
-  .agent-open:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px var(--focus-ring-soft);
-  }
-
-  .agent-panel-body {
-    display: grid;
-    gap: 0;
-    padding: 0;
-  }
-
-  .agent-line {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.95rem 1rem;
-    border: 1px solid var(--border-muted);
-    border-top-width: 0;
-    background: color-mix(in srgb, var(--bg) 92%, transparent);
-    font-family: var(--font-mono, monospace);
-    font-size: 0.85rem;
-  }
-
-  .agent-line:first-child {
-    border-top-width: 1px;
-  }
-
-  .agent-line span {
+  .agent-prompt {
+    background: color-mix(in srgb, var(--bg-light) 64%, transparent);
     color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
+    padding: 0.64rem 0.9rem;
+    font-size: 0.82rem;
   }
 
-  .agent-line strong {
-    color: var(--text);
-    font-weight: 500;
-    text-align: right;
-  }
-
-  .agent-prompts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.1rem 1.35rem;
-  }
-
-  .agent-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.45rem;
-    min-height: 2.35rem;
-    padding: 0.1rem 0;
-    border: 0;
-    border-bottom: 1px solid
-      color-mix(in srgb, var(--primary) 45%, transparent);
-    background: transparent;
-    color: var(--text);
-    font-family: var(--font-mono, monospace);
-    font-size: 0.7rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    cursor: pointer;
-    text-align: left;
-    line-height: 1.3;
-    transition:
-      color 180ms ease,
-      border-color 180ms ease,
-      transform 180ms var(--ease-out-quart);
-  }
-
-  .agent-link svg {
-    width: 0.85rem;
-    height: 0.85rem;
-    color: var(--primary);
-    transition: transform 180ms var(--ease-out-quart);
-  }
-
-  .agent-link:active {
+  .agent-open:active,
+  .agent-prompt:active {
     transform: scale(0.97);
   }
 
-  .agent-link:focus-visible {
+  .agent-open:focus-visible,
+  .agent-prompt:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px var(--focus-ring-soft);
+  }
+
+  .agent-notes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--border);
+  }
+
+  .agent-note {
+    min-height: 8.2rem;
+    padding: 1.05rem 1rem 1.2rem 0;
+    border-bottom: 1px solid var(--border-muted);
+  }
+
+  .agent-note:nth-child(odd) {
+    padding-right: 1.25rem;
+    border-right: 1px solid var(--border-muted);
+  }
+
+  .agent-note:nth-child(even) {
+    padding-left: 1.25rem;
+  }
+
+  .agent-note h3 {
+    margin: 0;
+    color: var(--text);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    line-height: 1.35;
+    text-transform: uppercase;
+  }
+
+  .agent-note p {
+    margin: 0.55rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    line-height: 1.58;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .agent-open:hover {
-      background: color-mix(in srgb, var(--bg-light) 92%, var(--primary) 8%);
-      transform: translateY(-1px);
-      border-color: color-mix(in srgb, var(--primary) 60%, var(--border));
-    }
-
-    .agent-link:hover {
-      color: var(--primary);
       border-color: var(--primary);
+      box-shadow: var(--shadow-glow);
       transform: translateY(-1px);
     }
 
-    .agent-link:hover svg {
-      transform: translate(2px, -2px);
+    .agent-prompt:hover {
+      border-color: color-mix(in srgb, var(--primary) 62%, var(--border));
+      color: var(--text);
+      transform: translateY(-1px);
     }
   }
 
   @media (max-width: 900px) {
-    .agent-shell {
+    .agent-layout {
       grid-template-columns: 1fr;
-    }
-
-    .agent-panel {
-      border-left-width: 1px;
-      border-top-width: 0;
     }
   }
 
   @media (max-width: 640px) {
     .agent {
       padding: 3.5rem 1rem;
-    }
-
-    .agent-copy,
-    .agent-panel {
-      padding: 1.15rem 0;
-      border-right-width: 0;
-      border-left-width: 0;
-      background: transparent;
     }
 
     .section-title {
@@ -400,26 +312,25 @@ import { Icon } from 'astro-icon/components';
       line-height: 1.58;
     }
 
-    .agent-panel-head {
-      align-items: flex-start;
-      flex-direction: column;
+    .agent-actions {
+      display: grid;
     }
 
-    .agent-line {
-      align-items: flex-start;
-      flex-direction: column;
-      padding: 0.8rem 0;
-      border-right-width: 0;
-      border-left-width: 0;
-      background: transparent;
-    }
-
-    .agent-line strong {
-      text-align: left;
-    }
-
-    .agent-open {
+    .agent-open,
+    .agent-prompt {
       width: 100%;
+    }
+
+    .agent-notes {
+      grid-template-columns: 1fr;
+    }
+
+    .agent-note,
+    .agent-note:nth-child(odd),
+    .agent-note:nth-child(even) {
+      min-height: 0;
+      padding: 1rem 0;
+      border-right: 0;
     }
   }
 </style>
