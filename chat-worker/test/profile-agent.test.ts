@@ -22,6 +22,22 @@ describe('profile agent context retrieval', () => {
     assert.equal(context.selectedProfileBlocks[0]?.id, 'experience-ods');
   });
 
+  it('grounds the current role in Santander business onboarding', () => {
+    const context = run('What is Miguel working on now at Santander?');
+    const currentRole = context.selectedFacts.find(
+      (fact) => fact.id === 'current-role'
+    );
+    const experience = context.selectedProfileBlocks.find(
+      (block) => block.id === 'experience-ods'
+    );
+
+    assert.ok(currentRole);
+    assert.match(currentRole.value, /business-account onboarding/i);
+    assert.match(currentRole.value, /Spain, Mexico, and the UK/i);
+    assert.ok(experience);
+    assert.match(experience.content, /final product team/i);
+  });
+
   it('grounds contact questions in contact facts', () => {
     const context = run('How can I contact Miguel?');
     const factIds = ids(context.selectedFacts);
@@ -62,6 +78,31 @@ describe('profile agent context retrieval', () => {
     assert.ok(blockIds.includes('skills-frontend'));
   });
 
+  it('answers QA engineer questions with Jember context', () => {
+    const context = run('Tell me about Miguel as a QA engineer');
+    const factIds = ids(context.selectedFacts);
+    const blockIds = ids(context.selectedProfileBlocks);
+
+    assert.equal(context.intent, 'experience');
+    assert.ok(factIds.includes('qa-experience'));
+    assert.ok(blockIds.includes('experience-jember'));
+  });
+
+  it('answers Jember questions with QA and automation impact', () => {
+    const context = run('What did Miguel do at Jember?');
+    const fact = context.selectedFacts.find(
+      (item) => item.id === 'qa-experience'
+    );
+    const blockIds = ids(context.selectedProfileBlocks);
+
+    assert.equal(context.intent, 'experience');
+    assert.ok(fact);
+    assert.match(fact.value, /test automation/i);
+    assert.match(fact.value, /50%/);
+    assert.ok(blockIds.includes('experience-jember'));
+    assert.ok(blockIds.includes('problem-solving-example'));
+  });
+
   it('selects AI tooling context for AI tools questions', () => {
     const context = run('What AI tools does Miguel use in his workflow?');
     const factIds = ids(context.selectedFacts);
@@ -87,6 +128,21 @@ describe('profile agent context retrieval', () => {
 
     assert.equal(context.intent, 'education');
     assert.ok(blockIds.includes('education-certifications'));
+  });
+
+  it('retrieves Exponential as startup learning, not founder intent', () => {
+    const context = run('Why did Miguel join Exponential Fellowship?');
+    const fact = context.selectedFacts.find(
+      (item) => item.id === 'exponential-community'
+    );
+    const memory = context.selectedMemories.find(
+      (item) => item.id === 'exponential-community-joined'
+    );
+
+    assert.ok(fact);
+    assert.match(fact.value, /startup thinking/i);
+    assert.match(fact.value, /not framing it as founder intent/i);
+    assert.ok(memory);
   });
 
   it('grounds the visible frontend-platform prompt in frontend and current work', () => {

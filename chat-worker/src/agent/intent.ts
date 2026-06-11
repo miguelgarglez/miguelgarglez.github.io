@@ -66,6 +66,13 @@ export function classifyIntent(question: string): Intent {
       'current position',
       'puesto actual',
       'cargo actual',
+      'qa',
+      'quality assurance',
+      'testing',
+      'tester',
+      'jember',
+      'calidad',
+      'pruebas',
     ])
   ) return 'experience';
   if (

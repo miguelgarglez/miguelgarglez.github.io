@@ -18,6 +18,11 @@ function shouldIncludeMemories(question: string, intent: Intent) {
       'rag',
       'opencode',
       'worker',
+      'startup',
+      'startups',
+      'exponential',
+      'onboarding',
+      'santander',
     ])
   );
 }
