@@ -145,8 +145,50 @@ const { title } = Astro.props;
         });
       }
 
+      function initializeReadingProgress() {
+        const progress = document.querySelector<HTMLElement>("[data-reading-progress]");
+        const progressBar = document.querySelector<HTMLElement>("[data-reading-progress-bar]");
+        const postBody = document.querySelector<HTMLElement>("[data-post-body]");
+
+        if (!progress || !progressBar || !postBody) {
+          return;
+        }
+
+        let frameId = 0;
+
+        const clamp = (value: number) => Math.min(1, Math.max(0, value));
+
+        const updateProgress = () => {
+          frameId = 0;
+
+          const bodyRect = postBody.getBoundingClientRect();
+          const articleTop = bodyRect.top + window.scrollY;
+          const readableDistance = Math.max(1, bodyRect.height - window.innerHeight);
+          const progressValue = clamp((window.scrollY - articleTop) / readableDistance);
+          const viewportOffset = Math.max(0, window.visualViewport?.offsetTop ?? 0);
+
+          progress.style.setProperty("--reading-progress-offset", `${viewportOffset}px`);
+          progress.style.setProperty("--reading-progress", progressValue.toFixed(4));
+        };
+
+        const requestProgressUpdate = () => {
+          if (frameId) {
+            return;
+          }
+
+          frameId = window.requestAnimationFrame(updateProgress);
+        };
+
+        updateProgress();
+        window.addEventListener("scroll", requestProgressUpdate, { passive: true });
+        window.addEventListener("resize", requestProgressUpdate);
+        window.visualViewport?.addEventListener("scroll", requestProgressUpdate, { passive: true });
+        window.visualViewport?.addEventListener("resize", requestProgressUpdate);
+      }
+
       initializeThemeToggle();
       initializeMobileMenu();
+      initializeReadingProgress();
     </script>
   </body>
 </html>

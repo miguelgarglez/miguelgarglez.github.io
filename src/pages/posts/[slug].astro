@@ -3,6 +3,7 @@ import { getCollection, render, type CollectionEntry } from "astro:content";
 import DirectoryNav from "../../components/DirectoryNav.astro";
 import MobileDirectoryMenu from "../../components/MobileDirectoryMenu.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { formatReadingTime } from "../../lib/reading-time.js";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts", ({ data }) => !data.draft);
@@ -24,9 +25,14 @@ const formattedDate = post.data.date.toLocaleDateString("en", {
   day: "numeric",
   year: "numeric",
 });
+const readingTime = formatReadingTime(post.body ?? "");
 ---
 
 <BaseLayout title={`${post.data.title} - Miguel Garcia`}>
+  <div class="reading-progress" data-reading-progress aria-hidden="true">
+    <span class="reading-progress-bar" data-reading-progress-bar></span>
+  </div>
+
   <main class="layout">
     <div class="page-shell">
       <DirectoryNav active="posts" />
@@ -42,14 +48,18 @@ const formattedDate = post.data.date.toLocaleDateString("en", {
         <section class="detail-hero post-hero">
           <h1>{post.data.title}</h1>
           <p class="lead">{post.data.description}</p>
-          <p class="post-date">{formattedDate}</p>
+          <ul class="post-meta" aria-label="Post metadata">
+            <li>{formattedDate}</li>
+            <li>{readingTime}</li>
+            <li>{post.data.kind}</li>
+          </ul>
           <ul class="stack" aria-label="Post tags">
             {post.data.tags.map((tag) => <li>{tag}</li>)}
           </ul>
         </section>
 
         <section class="detail-section">
-          <div class="post-body">
+          <div class="post-body" data-post-body>
             <Content />
           </div>
         </section>
