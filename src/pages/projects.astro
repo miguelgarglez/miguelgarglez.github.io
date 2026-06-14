@@ -2,6 +2,7 @@
 import ProjectCard from "../components/ProjectCard.astro";
 import DirectoryNav from "../components/DirectoryNav.astro";
 import MobileDirectoryMenu from "../components/MobileDirectoryMenu.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { projects } from "../data/projects";
 const orderedProjects = [...projects].sort((a, b) => {
@@ -22,6 +23,7 @@ const orderedProjects = [...projects].sort((a, b) => {
         <header class="masthead">
           <a class="eyebrow masthead-home" href="/">Miguel Garcia • Projects</a>
           <div class="masthead-actions">
+            <ThemeToggle />
             <MobileDirectoryMenu active="projects" />
           </div>
         </header>

@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import DirectoryNav from "../../components/DirectoryNav.astro";
 import MobileDirectoryMenu from "../../components/MobileDirectoryMenu.astro";
+import ThemeToggle from "../../components/ThemeToggle.astro";
 import { projects } from "../../data/projects";
 import type { Project } from "../../data/projects";
 
@@ -32,6 +33,7 @@ const detailLinks = [
         <header class="masthead">
           <a class="eyebrow masthead-home" href="/">Miguel Garcia • Project</a>
           <div class="masthead-actions">
+            <ThemeToggle />
             <MobileDirectoryMenu active="projects" />
           </div>
         </header>

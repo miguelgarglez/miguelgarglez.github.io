@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import DirectoryNav from "../components/DirectoryNav.astro";
 import MobileDirectoryMenu from "../components/MobileDirectoryMenu.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
 import { people } from "../data/people";
 import type { PersonArea } from "../data/people";
 
@@ -33,6 +34,7 @@ const groupedPeople = Object.entries(
         <header class="masthead">
           <a class="eyebrow masthead-home" href="/">Miguel Garcia • People</a>
           <div class="masthead-actions">
+            <ThemeToggle />
             <MobileDirectoryMenu active="people" />
           </div>
         </header>

@@ -1,6 +1,7 @@
 ---
 import DirectoryNav from "../components/DirectoryNav.astro";
 import MobileDirectoryMenu from "../components/MobileDirectoryMenu.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ReadingCard from "../components/ReadingCard.astro";
 import { readings } from "../data/readings";
@@ -32,6 +33,7 @@ const groupedReadings = Object.entries(
         <header class="masthead">
           <a class="eyebrow masthead-home" href="/">Miguel Garcia • Readings</a>
           <div class="masthead-actions">
+            <ThemeToggle />
             <MobileDirectoryMenu active="readings" />
           </div>
         </header>

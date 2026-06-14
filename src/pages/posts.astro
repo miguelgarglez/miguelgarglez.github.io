@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import DirectoryNav from "../components/DirectoryNav.astro";
 import MobileDirectoryMenu from "../components/MobileDirectoryMenu.astro";
 import PostCard from "../components/PostCard.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
@@ -19,6 +20,7 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
         <header class="masthead">
           <a class="eyebrow masthead-home" href="/">Miguel Garcia • Posts</a>
           <div class="masthead-actions">
+            <ThemeToggle />
             <MobileDirectoryMenu active="posts" />
           </div>
         </header>

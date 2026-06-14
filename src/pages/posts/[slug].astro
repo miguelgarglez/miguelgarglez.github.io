@@ -2,6 +2,7 @@
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import DirectoryNav from "../../components/DirectoryNav.astro";
 import MobileDirectoryMenu from "../../components/MobileDirectoryMenu.astro";
+import ThemeToggle from "../../components/ThemeToggle.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { formatReadingTime } from "../../lib/reading-time.js";
 
@@ -41,6 +42,7 @@ const readingTime = formatReadingTime(post.body ?? "");
         <header class="masthead">
           <a class="eyebrow masthead-home" href="/">Miguel Garcia • Posts</a>
           <div class="masthead-actions">
+            <ThemeToggle />
             <MobileDirectoryMenu active="posts" />
           </div>
         </header>
