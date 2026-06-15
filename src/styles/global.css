@@ -1096,7 +1096,6 @@ h1 {
 
 .reading-progress {
   --reading-progress: 0;
-  --reading-progress-offset: 0px;
   position: fixed;
   top: env(safe-area-inset-top, 0px);
   left: 0;
@@ -1105,8 +1104,6 @@ h1 {
   height: 3px;
   pointer-events: none;
   background: transparent;
-  transform: translateY(var(--reading-progress-offset));
-  will-change: transform;
 }
 
 .reading-progress-bar {
