@@ -165,9 +165,7 @@ const { title } = Astro.props;
           const articleTop = bodyRect.top + window.scrollY;
           const readableDistance = Math.max(1, bodyRect.height - window.innerHeight);
           const progressValue = clamp((window.scrollY - articleTop) / readableDistance);
-          const viewportOffset = Math.max(0, window.visualViewport?.offsetTop ?? 0);
 
-          progress.style.setProperty("--reading-progress-offset", `${viewportOffset}px`);
           progress.style.setProperty("--reading-progress", progressValue.toFixed(4));
         };
 
@@ -182,8 +180,6 @@ const { title } = Astro.props;
         updateProgress();
         window.addEventListener("scroll", requestProgressUpdate, { passive: true });
         window.addEventListener("resize", requestProgressUpdate);
-        window.visualViewport?.addEventListener("scroll", requestProgressUpdate, { passive: true });
-        window.visualViewport?.addEventListener("resize", requestProgressUpdate);
       }
 
       initializeThemeToggle();
