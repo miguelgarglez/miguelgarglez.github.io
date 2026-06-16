@@ -51,6 +51,22 @@ export const people: PersonReference[] = [
     featured: true,
   },
   {
+    slug: "mitchell-hashimoto",
+    name: "Mitchell Hashimoto",
+    href: "https://mitchellh.com",
+    type: "Engineering / Writing",
+    area: "engineering",
+    note: "Infrastructure-minded engineering, open-source product craft, and measured writing about Ghostty, agents, and building real software.",
+    summary:
+      "A reference for builder-led infrastructure work, Ghostty's terminal craft, and a hands-on approach to agentic software development.",
+    learns: [
+      "Builder-led infrastructure product thinking",
+      "Agentic development with human judgment",
+      "Technical writing grounded in shipped work",
+    ],
+    featured: true,
+  },
+  {
     slug: "midudev",
     name: "midudev",
     href: "https://www.youtube.com/midudev",
