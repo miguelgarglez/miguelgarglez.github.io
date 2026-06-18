@@ -24,8 +24,8 @@ const RATE_LIMIT_MAX = 20;
 const RETRYABLE_UPSTREAM_STATUS = new Set([408, 429, 500, 502, 503, 504]);
 
 const prodOrigins = [
-  'https://miguelgarglez.github.io',
   'https://miguelgarglez.com',
+  'https://miguelgarglez.github.io',
 ];
 const localhostOrigins = ['http://localhost:4321', 'http://127.0.0.1:4321'];
 
@@ -181,7 +181,7 @@ function getLlmConfig(env: Env): LlmConfig | null {
     apiKey,
     baseUrl: normalizeBaseUrl(rawBaseUrl),
     model,
-    siteUrl: env.LLM_SITE_URL?.trim() || 'https://miguelgarglez.github.io',
+    siteUrl: env.LLM_SITE_URL?.trim() || 'https://miguelgarglez.com',
     appTitle: env.LLM_APP_TITLE?.trim() || 'Miguel Garcia Profile Chat',
   };
 }

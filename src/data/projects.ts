@@ -63,7 +63,7 @@ export const projects: Project[] = [
       { label: "Open project", href: "/cv-chat" },
       {
         label: "Public URL",
-        href: "https://miguelgarglez.github.io/cv-chat",
+        href: "https://miguelgarglez.com/cv-chat",
         external: true,
       },
     ],
@@ -82,7 +82,7 @@ export const projects: Project[] = [
       "Animated content-focused CV",
       "Cloudflare Worker chat endpoint",
     ],
-    liveUrl: "https://miguelgarglez.github.io/cv-chat",
+    liveUrl: "https://miguelgarglez.com/cv-chat",
     caseStudyUrl: projectDetailPath("cv-chat"),
   },
   {
@@ -123,14 +123,14 @@ export const projects: Project[] = [
     slug: "frontend-dual-layout-showcase",
     title: "frontend_dual_layout_showcase",
     displayName: "Frontend Dual Layout Showcase",
-    href: "https://miguelgarglez.github.io/frontend-dual-layout-showcase",
+    href: "https://miguelgarglez.com/frontend-dual-layout-showcase",
     external: true,
     description:
       "Frontend case study with two UI flows: desktop dashboard and mobile-first request form.",
     links: [
       {
         label: "Live demo",
-        href: "https://miguelgarglez.github.io/frontend-dual-layout-showcase",
+        href: "https://miguelgarglez.com/frontend-dual-layout-showcase",
         external: true,
       },
       {
@@ -155,7 +155,7 @@ export const projects: Project[] = [
       "Validation and interaction patterns",
     ],
     repositoryUrl: "https://github.com/miguelgarglez/frontend-dual-layout-showcase",
-    liveUrl: "https://miguelgarglez.github.io/frontend-dual-layout-showcase",
+    liveUrl: "https://miguelgarglez.com/frontend-dual-layout-showcase",
     caseStudyUrl: projectDetailPath("frontend-dual-layout-showcase"),
   },
   {

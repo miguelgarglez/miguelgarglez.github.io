@@ -21,7 +21,7 @@ npx wrangler secret put LLM_MODEL
 # gpt-5.4-nano or the exact opencode Zen model id configured for production
 
 npx wrangler secret put LLM_SITE_URL
-# https://miguelgarglez.github.io
+# https://miguelgarglez.com
 
 npx wrangler secret put LLM_APP_TITLE
 # Miguel Garcia Profile Chat

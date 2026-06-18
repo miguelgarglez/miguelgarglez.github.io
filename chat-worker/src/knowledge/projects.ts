@@ -30,7 +30,7 @@ export const projects: ProjectBlock[] = [
       'Acts as both a professional website and a live demo of practical AI and product engineering.',
     technologies: ['Astro', 'React', 'TypeScript', 'AI SDK UI', 'Cloudflare Workers', 'opencode Zen'],
     links: {
-      demo: 'https://miguelgarglez.github.io/cv-chat/',
+      demo: 'https://miguelgarglez.com/cv-chat/',
     },
     tags: ['ai', 'agents', 'portfolio', 'frontend', 'cloudflare', 'personal-site'],
     visibility: 'public',
@@ -71,7 +71,7 @@ export const projects: ProjectBlock[] = [
       'Frontend case study with two UI flows: desktop dashboard and mobile-first request form.',
     technologies: ['React', 'TypeScript', 'Tailwind CSS', 'Vitest'],
     links: {
-      demo: 'https://miguelgarglez.github.io/frontend-dual-layout-showcase',
+      demo: 'https://miguelgarglez.com/frontend-dual-layout-showcase',
       repo: 'https://github.com/miguelgarglez/frontend-dual-layout-showcase',
     },
     tags: ['frontend', 'react', 'testing', 'case-study', 'ui'],

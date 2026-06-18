@@ -25,6 +25,7 @@ Contexto: backend de backup en Vercel para el chat del `cv-chat`. Este servicio 
 
 - Origenes permitidos se toman de `ALLOWED_ORIGINS` (CSV).
 - Si `ALLOWED_ORIGINS` no existe, usar defaults:
+  - `https://miguelgarglez.com`
   - `https://miguelgarglez.github.io`
   - `http://localhost:4321`
   - `http://localhost:4321/cv-chat`

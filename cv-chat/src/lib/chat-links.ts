@@ -1,5 +1,5 @@
-const SITE_ORIGIN = "https://miguelgarglez.github.io";
-const KNOWN_LINK_HOSTS = ["miguelgarglez.github.io", "linkedin.com", "x.com"];
+const SITE_ORIGIN = "https://miguelgarglez.com";
+const KNOWN_LINK_HOSTS = ["miguelgarglez.com", "miguelgarglez.github.io", "linkedin.com", "x.com"];
 const INLINE_CODE_OR_FENCE_PATTERN = /```[\s\S]*?```|`[^`\n]+`/g;
 const MARKDOWN_LINK_PATTERN = /\[([^\]]+)\]\(([^)\s]+)\)/g;
 const URL_PLACEHOLDER_PREFIX = "__chat_url_placeholder__";

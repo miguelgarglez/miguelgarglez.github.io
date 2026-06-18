@@ -78,7 +78,7 @@ function buildMarkup(input: {
   subtitle: string;
   footer?: string;
 }) {
-  const { theme, kicker, title, subtitle, footer = "miguelgarglez.github.io" } = input;
+  const { theme, kicker, title, subtitle, footer = "miguelgarglez.com" } = input;
 
   return {
     type: "div",
@@ -304,7 +304,7 @@ async function main() {
         title: "Miguel García",
         subtitle:
           "Frontend platform engineer building design systems and practical AI workflows.",
-        footer: "miguelgarglez.github.io/cv-chat",
+        footer: "miguelgarglez.com/cv-chat",
       }),
     },
   ];

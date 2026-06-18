@@ -15,7 +15,7 @@ Contexto: Worker de Cloudflare que hace streaming SSE hacia un proveedor LLM Ope
 
 ## Reglas de CORS
 
-- Produccion: solo se permite `https://miguelgarglez.github.io`.
+- Produccion: se permite `https://miguelgarglez.com` y `https://miguelgarglez.github.io`.
 - Desarrollo local: habilitar `DEV=true` en el entorno para permitir `localhost`.
 - Requests sin `Origin` se bloquean en prod; si `DEV=true`, se permiten para facilitar `curl` en dev.
 

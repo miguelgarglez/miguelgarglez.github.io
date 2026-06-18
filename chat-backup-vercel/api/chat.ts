@@ -138,7 +138,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const upstreamHeaders = {
     Authorization: `Bearer ${apiToken}`,
     'Content-Type': 'application/json',
-    'HTTP-Referer': process.env.OPENROUTER_SITE_URL ?? 'https://miguelgarglez.github.io',
+    'HTTP-Referer': process.env.OPENROUTER_SITE_URL ?? 'https://miguelgarglez.com',
     'X-Title': process.env.OPENROUTER_APP_TITLE ?? 'Miguel Garcia Profile Chat',
   };
 

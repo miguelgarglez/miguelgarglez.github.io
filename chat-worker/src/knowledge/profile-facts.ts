@@ -53,7 +53,7 @@ export const profileFacts: ProfileFact[] = [
   {
     id: 'site',
     label: 'Personal site',
-    value: 'https://miguelgarglez.github.io',
+    value: 'https://miguelgarglez.com',
     tags: ['contact', 'portfolio', 'projects'],
     priority: 85,
   },

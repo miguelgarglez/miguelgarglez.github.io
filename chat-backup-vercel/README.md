@@ -18,9 +18,9 @@ Optional:
 
 - `OPENROUTER_MODEL` (default: `openrouter/free`)
 - `OPENROUTER_FALLBACK_MODELS` (CSV fallback chain)
-- `OPENROUTER_SITE_URL` (default: `https://miguelgarglez.github.io`)
+- `OPENROUTER_SITE_URL` (default: `https://miguelgarglez.com`)
 - `OPENROUTER_APP_TITLE` (default: `Miguel Garcia Profile Chat`)
-- `ALLOWED_ORIGINS` (comma-separated, defaults include `https://miguelgarglez.github.io` and localhost)
+- `ALLOWED_ORIGINS` (comma-separated, defaults include `https://miguelgarglez.com`, `https://miguelgarglez.github.io`, and localhost)
 
 ## Local checks
 

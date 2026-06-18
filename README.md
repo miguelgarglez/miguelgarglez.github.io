@@ -25,7 +25,7 @@ Content lives in:
 
 <div style="border: 1px solid #d0d7de; border-radius: 6px; padding: 16px; margin: 16px 0;">
 
-Visit my digital CV: **[miguelgarglez.github.io/cv-chat](https://miguelgarglez.github.io/cv-chat)**
+Visit my digital CV: **[miguelgarglez.com/cv-chat](https://miguelgarglez.com/cv-chat)**
 
 Built with [**Astro**](https://astro.build/) - a modern web framework for building fast, content-focused websites.
 
