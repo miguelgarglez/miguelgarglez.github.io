@@ -31,6 +31,87 @@
     const compactGlyphs = [" ", ".", ":", "-", "=", "+"];
 
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    const smoothstep = (t) => {
+        const x = clamp(t, 0, 1);
+        return x * x * (3 - 2 * x);
+    };
+
+    const hash2 = (x, y) => {
+        const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
+        return s - Math.floor(s);
+    };
+
+    const noise2d = (x, y) => {
+        const ix = Math.floor(x);
+        const iy = Math.floor(y);
+        const fx = smoothstep(x - ix);
+        const fy = smoothstep(y - iy);
+        const a = hash2(ix, iy);
+        const b = hash2(ix + 1, iy);
+        const c = hash2(ix, iy + 1);
+        const d = hash2(ix + 1, iy + 1);
+        return lerp(lerp(a, b, fx), lerp(c, d, fx), fy);
+    };
+
+    const fbm = (x, y, octaves = 2) => {
+        let value = 0;
+        let amplitude = 0.5;
+        let frequency = 1;
+
+        for (let i = 0; i < octaves; i += 1) {
+            value += amplitude * noise2d(x * frequency, y * frequency);
+            amplitude *= 0.5;
+            frequency *= 2.1;
+        }
+
+        return value;
+    };
+
+    const sampleAtmosphere = (nx, ny, pointerX, pointerY) => {
+        const px = (pointerX - 0.5) * 0.62;
+        const py = (pointerY - 0.48) * 0.52;
+
+        const warpA = fbm(nx * 2.5 + px * 1.35 + 1.4, ny * 2.3 + py * 1.2, 3);
+        const warpB = fbm(
+            nx * 2.5 + 4.8 - px * 0.95,
+            ny * 2.3 + 2.4 + py * 0.85,
+            3,
+        );
+        const wx = nx + px * 0.88 + (warpA - 0.5) * 0.32;
+        const wy = ny + py * 0.76 + (warpB - 0.5) * 0.26;
+
+        const cloudA = fbm(wx * 3.0 + px * 0.4, wy * 1.9 + py * 0.35, 4);
+        const cloudB = fbm(wx * 1.6 + 3.1, wy * 4.0, 3);
+        const cloudC = fbm(wx * 5.2 + 0.8, wy * 3.2, 2);
+
+        const bands =
+            Math.sin((wy + cloudA * 0.2) * Math.PI * 3.8) * 0.5 + 0.5;
+        const turbulence = (cloudB - 0.5) * 0.42 + (cloudC - 0.5) * 0.2;
+        const vortex =
+            Math.sin((wx * 2.6 + wy * 1.3 + px * 3.4) * Math.PI) * 0.09;
+
+        const limb = Math.hypot((nx - 0.5) * 0.96, (ny - 0.48) * 0.9);
+        const atmosphere = clamp(1 - Math.pow(limb / 0.54, 2.4), 0, 1);
+
+        const cursorDist = Math.hypot(
+            (nx - pointerX) * 1.14,
+            (ny - pointerY) * 0.98,
+        );
+        const cursorPull = Math.pow(clamp(1 - cursorDist * 3.4, 0, 1), 1.6) * 0.26;
+
+        const energy =
+            0.14 +
+            bands * 0.44 +
+            cloudA * 0.2 +
+            turbulence +
+            vortex +
+            atmosphere * 0.16 +
+            cursorPull;
+
+        return clamp(energy * (0.7 + atmosphere * 0.3), 0, 1);
+    };
 
     const buildBootFrame = (cols, rows, now) => {
         const label = "loading";
@@ -97,25 +178,11 @@
 
             for (let col = 0; col < cols; col += 1) {
                 const nx = cols === 1 ? 0.5 : col / (cols - 1);
-                const dx = (nx - x) * 1.12;
-                const dy = (ny - y) * 0.92;
-                const distance = Math.hypot(dx, dy);
-                const aperture = Math.abs(distance - 0.28);
-                const innerDistance = Math.hypot((nx - 0.5) * 0.82, ny - 0.52);
-                const diagonalCut = Math.abs(nx * 0.68 - ny + 0.12);
-                const shelf =
-                    Math.sin((ny * 14.5 + x * 1.8) * Math.PI) * 0.18 +
-                    Math.sin((ny * 27 + nx * 2.2) * Math.PI) * 0.08;
-                const wave =
-                    Math.sin((nx * 6.8 + y * 1.8) * Math.PI) * 0.16 +
-                    Math.cos((ny * 5.6 - x * 2.6) * Math.PI) * 0.12;
                 const revealDistance = Math.hypot(
                     (nx - 0.5) * 1.04,
                     (ny - 0.48) * 0.9,
                 );
-                const apertureEnergy = clamp(1 - aperture * 4.1, 0, 1) * 0.46;
-                const coreEnergy = clamp(1 - innerDistance * 2.15, 0, 1) * 0.34;
-                const cutEnergy = clamp(1 - diagonalCut * 11, 0, 1) * 0.28;
+                let energy = sampleAtmosphere(nx, ny, x, y);
                 let rippleEnergy = 0;
 
                 for (const ripple of ripples) {
@@ -141,17 +208,7 @@
                     }
                 }
 
-                const energy = clamp(
-                    0.2 +
-                        apertureEnergy +
-                        coreEnergy +
-                        cutEnergy +
-                        shelf +
-                        wave +
-                        rippleEnergy,
-                    0,
-                    1,
-                );
+                energy = clamp(energy + rippleEnergy, 0, 1);
                 const index = Math.min(
                     chars.length - 1,
                     Math.max(0, Math.floor(energy * (chars.length - 1))),
@@ -159,28 +216,27 @@
 
                 if (introRevealProgress < 1) {
                     const easedReveal =
-                        1 - Math.pow(1 - introRevealProgress, 2.4);
-                    const threshold = easedReveal * 0.9 - 0.08;
+                        1 - Math.pow(1 - introRevealProgress, 2.2);
+                    const noiseEdge =
+                        (fbm(nx * 8.2 + now * 0.00035, ny * 7.4, 2) - 0.5) *
+                        0.09;
+                    const threshold = easedReveal * 0.92 - 0.06 + noiseEdge;
                     const edge = Math.abs(revealDistance - threshold);
-                    const feather = clamp(1 - edge / 0.062, 0, 1);
-                    const grain =
-                        Math.sin((nx * 36 + ny * 28 + now * 0.004) * Math.PI) *
-                        0.018;
-                    const hasArrived = revealDistance < threshold + grain;
-                    const isWaveEdge = feather > 0;
+                    const feather = clamp(1 - edge / 0.085, 0, 1);
+                    const hasArrived = revealDistance < threshold;
 
-                    if (!hasArrived && !isWaveEdge) {
+                    if (!hasArrived && feather <= 0) {
                         line += " ";
                         continue;
                     }
 
-                    if (isWaveEdge) {
+                    if (!hasArrived && feather > 0) {
                         const edgeIndex = Math.min(
                             chars.length - 1,
                             Math.max(
                                 index,
                                 Math.floor(
-                                    (chars.length - 2) * Math.pow(feather, 0.55),
+                                    (chars.length - 2) * Math.pow(feather, 0.62),
                                 ),
                             ),
                         );
@@ -225,6 +281,12 @@
         let ripples = [];
         let introRevealProgress = shouldReduce ? 1 : -1;
 
+        const isIntroActive = () => introRevealProgress < 1;
+
+        const syncIntroState = () => {
+            field.toggleAttribute("data-intro", isIntroActive());
+        };
+
         const render = (x, y, now = window.performance.now()) => {
             const normalizedX = clamp(x, 0, 1);
             const normalizedY = clamp(y, 0, 1);
@@ -250,6 +312,7 @@
                 "--field-y",
                 `${(normalizedY * 100).toFixed(2)}%`,
             );
+            syncIntroState();
         };
 
         // Keep the glow locked to the rendered ASCII bounds so it reads as a
@@ -277,6 +340,7 @@
             });
         };
 
+        syncIntroState();
         syncResponsiveState();
 
         window.addEventListener("resize", scheduleResponsiveState, {
@@ -300,20 +364,24 @@
         let nextY = centerY;
         let phase = 0;
         let lastIdleRender = 0;
-        let lastPointerRender = 0;
         let lastRippleRender = 0;
+        let lastIntroRender = 0;
         let isHovering = false;
         let isVisible = true;
 
         const setGlow = (value) => {
+            if (isIntroActive()) {
+                field.style.setProperty("--glow-opacity", "0");
+                return;
+            }
+
             field.style.setProperty("--glow-opacity", `${value}`);
         };
 
         const startIntroReveal = () => {
             const startedAt = window.performance.now();
             const delay = 1560;
-            const duration = 1580;
-            let lastIntroRender = 0;
+            const duration = 1680;
 
             const tick = (now) => {
                 if (!isVisible) {
@@ -340,6 +408,7 @@
                 }
 
                 introFrame = 0;
+                syncIntroState();
                 startIdle();
             };
 
@@ -376,7 +445,7 @@
         };
 
         const startIdle = () => {
-            if (idleFrame || isHovering || !isVisible) return;
+            if (idleFrame || isHovering || !isVisible || isIntroActive()) return;
             idleFrame = window.requestAnimationFrame(tickIdle);
         };
 
@@ -440,24 +509,13 @@
         };
 
         const startRipples = () => {
-            if (rippleFrame || !isVisible) return;
+            if (rippleFrame || !isVisible || isIntroActive()) return;
             stopIdle();
             rippleFrame = window.requestAnimationFrame(tickRipples);
         };
 
-        const schedule = () => {
-            if (renderFrame) return;
-
-            renderFrame = window.requestAnimationFrame((now) => {
-                renderFrame = 0;
-                if (now - lastPointerRender < interactionFrameInterval) return;
-                lastPointerRender = now;
-                render(nextX, nextY, now);
-            });
-        };
-
         const updateFromEvent = (event) => {
-            if (event.pointerType !== "mouse") return;
+            if (event.pointerType !== "mouse" || isIntroActive()) return;
 
             isHovering = true;
             stopIdle();
@@ -471,13 +529,21 @@
             }
             setGlow(1);
             artRect ??= art.getBoundingClientRect();
-            nextX = (event.clientX - artRect.left) / artRect.width;
-            nextY = (event.clientY - artRect.top) / artRect.height;
-            schedule();
+            nextX = clamp(
+                (event.clientX - artRect.left) / artRect.width,
+                0,
+                1,
+            );
+            nextY = clamp(
+                (event.clientY - artRect.top) / artRect.height,
+                0,
+                1,
+            );
+            render(nextX, nextY);
         };
 
         const fadeGlowOut = () => {
-            if (glowFrame) return;
+            if (glowFrame || isIntroActive()) return;
 
             const start = window.performance.now();
             const duration = 240;
@@ -497,7 +563,9 @@
         };
 
         const rippleFromEvent = (event) => {
-            if (!canRipple || event.pointerType === "mouse") return;
+            if (!canRipple || event.pointerType === "mouse" || isIntroActive()) {
+                return;
+            }
 
             isHovering = false;
             if (renderFrame) {
@@ -525,6 +593,7 @@
         if (canFollowPointer) {
             art.addEventListener("pointermove", updateFromEvent);
             art.addEventListener("pointerenter", (event) => {
+                if (isIntroActive()) return;
                 syncGlowBounds();
                 updateFromEvent(event);
             });
@@ -643,6 +712,10 @@
         pointer-events: none;
     }
 
+    .ascii-field[data-intro] .ascii-field-glow {
+        opacity: 0 !important;
+    }
+
     .ascii-field-art {
         position: relative;
         margin: 0;
@@ -658,6 +731,10 @@
         touch-action: manipulation;
         display: inline-block;
         animation: field-breathe 8s var(--ease-out-quart) infinite alternate;
+    }
+
+    .ascii-field[data-intro] .ascii-field-art {
+        pointer-events: none;
     }
 
     @media (min-width: 1440px) {
