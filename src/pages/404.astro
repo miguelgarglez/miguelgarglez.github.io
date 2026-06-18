@@ -3,9 +3,10 @@ import DirectoryNav from "../components/DirectoryNav.astro";
 import MobileDirectoryMenu from "../components/MobileDirectoryMenu.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { pageTitle } from "../../shared/seo/config";
 ---
 
-<BaseLayout title="404 - Miguel Garcia">
+<BaseLayout title={pageTitle("Not found")} noindex canonicalPath="/404/">
   <main class="layout home-layout">
     <div class="page-shell">
       <DirectoryNav active="home" label="Directory sections" />

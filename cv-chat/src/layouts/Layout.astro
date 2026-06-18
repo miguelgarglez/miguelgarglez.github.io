@@ -1,6 +1,11 @@
 ---
 import Navbar from "../components/welcome/Navbar.astro";
+import SEO from "../components/SEO.astro";
+import CvJsonLd from "../components/CvJsonLd.astro";
+import { pageTitle } from "../../../shared/seo/config";
 import "../styles/global.css";
+
+const title = pageTitle("CV Chat");
 ---
 
 <!doctype html>
@@ -11,25 +16,9 @@ import "../styles/global.css";
             name="viewport"
             content="width=device-width, initial-scale=1.0, viewport-fit=cover"
         />
-        <meta
-            name="description"
-            content="Miguel García's digital CV. Frontend platform engineer focused on accessible interfaces, scalable design systems, and practical AI workflows."
-        />
-        <meta
-            name="theme-color"
-            media="(prefers-color-scheme: dark)"
-            content="#12100e"
-        />
-        <meta
-            name="theme-color"
-            media="(prefers-color-scheme: light)"
-            content="#f4ede2"
-        />
-        <meta name="theme-color" content="#12100e" data-dynamic-theme-color />
-        <link rel="icon" type="image/png" href="/cv-chat/favicon.png" />
-        <meta name="generator" content={Astro.generator} />
-
-        <title>Miguel García</title>
+        <title>{title}</title>
+        <SEO title={title} />
+        <CvJsonLd />
     </head>
     <body>
         <a class="skip-link" href="#main-content">Skip to content</a>

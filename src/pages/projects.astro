@@ -5,6 +5,9 @@ import MobileDirectoryMenu from "../components/MobileDirectoryMenu.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { projects } from "../data/projects";
+import { pageTitle } from "../../shared/seo/config";
+import { breadcrumbSchema } from "../lib/seo-schemas";
+
 const orderedProjects = [...projects].sort((a, b) => {
   if (a.featured !== b.featured) {
     return Number(b.featured) - Number(a.featured);
@@ -12,9 +15,20 @@ const orderedProjects = [...projects].sort((a, b) => {
 
   return b.year - a.year;
 });
+
+const description =
+  "A selection of projects worth showing: things I have built, explored, learned from, or still think say something about how I work.";
 ---
 
-<BaseLayout title="Projects - Miguel Garcia">
+<BaseLayout
+  title={pageTitle("Projects")}
+  description={description}
+  canonicalPath="/projects/"
+  jsonLd={breadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "Projects", path: "/projects/" },
+  ])}
+>
   <main class="layout">
     <div class="page-shell">
       <DirectoryNav active="projects" />

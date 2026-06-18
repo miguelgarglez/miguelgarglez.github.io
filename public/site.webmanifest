@@ -1,0 +1,21 @@
+{
+  "name": "Miguel García",
+  "short_name": "Miguel García",
+  "description": "Personal directory of projects, notes, readings, and references.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c1119",
+  "theme_color": "#0c1119",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

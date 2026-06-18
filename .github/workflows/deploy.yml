@@ -36,6 +36,9 @@ jobs:
               - 'astro.config.mjs'
               - 'package.json'
               - 'package-lock.json'
+              - 'public/**'
+              - 'scripts/**'
+              - 'shared/**'
               - 'src/**'
               - 'cv-chat/**'
       

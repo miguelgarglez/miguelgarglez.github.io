@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
+    "generate:og": "tsx scripts/generate-og-images.ts",
+    "prebuild": "npm run generate:og",
     "build": "astro build",
     "preview": "astro preview",
     "test:profile-agent": "node scripts/test-profile-agent.mjs",
@@ -12,6 +14,14 @@
     "codex:verify": "bash scripts/codex-cloud-verify.sh"
   },
   "devDependencies": {
-    "astro": "^6.1.9"
+    "astro": "^6.1.9",
+    "tsx": "^4.22.4"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "@fontsource/fraunces": "^5.2.9",
+    "@fontsource/plus-jakarta-sans": "^5.2.8",
+    "satori": "^0.26.0",
+    "sharp": "^0.35.1"
   }
 }

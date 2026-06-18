@@ -5,6 +5,8 @@ import MobileDirectoryMenu from "../../components/MobileDirectoryMenu.astro";
 import ThemeToggle from "../../components/ThemeToggle.astro";
 import { projects } from "../../data/projects";
 import type { Project } from "../../data/projects";
+import { pageTitle } from "../../../shared/seo/config";
+import { breadcrumbSchema, creativeWorkSchema } from "../../lib/seo-schemas";
 
 export function getStaticPaths() {
   return projects.map((project) => ({
@@ -22,9 +24,30 @@ const detailLinks = [
   project.liveUrl && { label: "Live URL", href: project.liveUrl },
   project.repositoryUrl && { label: "Repository", href: project.repositoryUrl },
 ].filter(Boolean) as Array<{ label: string; href: string }>;
+const ogImage = `/og/projects/${project.slug}.png`;
 ---
 
-<BaseLayout title={`${project.displayName} - Miguel Garcia`}>
+<BaseLayout
+  title={pageTitle(project.displayName)}
+  description={project.summary}
+  canonicalPath={`/projects/${project.slug}/`}
+  image={ogImage}
+  imageAlt={`${project.displayName} — Miguel García`}
+  jsonLd={[
+    creativeWorkSchema({
+      name: project.displayName,
+      description: project.summary,
+      slug: project.slug,
+      year: String(project.year),
+      url: project.liveUrl,
+    }),
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Projects", path: "/projects/" },
+      { name: project.displayName, path: `/projects/${project.slug}/` },
+    ]),
+  ]}
+>
   <main class="layout">
     <div class="page-shell">
       <DirectoryNav active="projects" />

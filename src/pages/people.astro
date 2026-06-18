@@ -5,6 +5,8 @@ import MobileDirectoryMenu from "../components/MobileDirectoryMenu.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import { people } from "../data/people";
 import type { PersonArea } from "../data/people";
+import { pageTitle } from "../../shared/seo/config";
+import { breadcrumbSchema } from "../lib/seo-schemas";
 
 const areaLabels: Record<PersonArea, string> = {
   design: "Design",
@@ -23,9 +25,20 @@ const groupedPeople = Object.entries(
     {} as Record<PersonArea, typeof people>,
   ),
 ) as Array<[PersonArea, typeof people]>;
+
+const description =
+  "A small map of designers, engineers, educators, and product-minded builders whose work helps me sharpen how I think and build.";
 ---
 
-<BaseLayout title="People - Miguel Garcia">
+<BaseLayout
+  title={pageTitle("People")}
+  description={description}
+  canonicalPath="/people/"
+  jsonLd={breadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "People", path: "/people/" },
+  ])}
+>
   <main class="layout">
     <div class="page-shell">
       <DirectoryNav active="people" />

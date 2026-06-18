@@ -6,6 +6,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ReadingCard from "../components/ReadingCard.astro";
 import { readings } from "../data/readings";
 import type { ReadingArea } from "../data/readings";
+import { pageTitle } from "../../shared/seo/config";
+import { breadcrumbSchema } from "../lib/seo-schemas";
 
 const areaLabels: Record<ReadingArea, string> = {
   engineering: "Engineering",
@@ -22,9 +24,20 @@ const groupedReadings = Object.entries(
     {} as Record<ReadingArea, typeof readings>,
   ),
 ) as Array<[ReadingArea, typeof readings]>;
+
+const description =
+  "A curated map of books, articles, newsletters, papers, and resources that shape how I think about engineering, product craft, and design.";
 ---
 
-<BaseLayout title="Readings - Miguel Garcia">
+<BaseLayout
+  title={pageTitle("Readings")}
+  description={description}
+  canonicalPath="/readings/"
+  jsonLd={breadcrumbSchema([
+    { name: "Home", path: "/" },
+    { name: "Readings", path: "/readings/" },
+  ])}
+>
   <main class="layout">
     <div class="page-shell">
       <DirectoryNav active="readings" />

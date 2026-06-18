@@ -3,6 +3,8 @@ import ThemeToggle from "../components/ThemeToggle.astro";
 import DirectoryNav from "../components/DirectoryNav.astro";
 import MobileDirectoryMenu from "../components/MobileDirectoryMenu.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { DEFAULT_DESCRIPTION, pageTitle } from "../../shared/seo/config";
+import { websiteSchema } from "../lib/seo-schemas";
 
 const directoryLinks = [
   {
@@ -47,7 +49,12 @@ const socialLinks = [
 ];
 ---
 
-<BaseLayout title="Miguel Garcia - Project Directory">
+<BaseLayout
+  title={pageTitle("Project Directory")}
+  description={DEFAULT_DESCRIPTION}
+  canonicalPath="/"
+  jsonLd={websiteSchema()}
+>
   <main class="layout home-layout">
     <div class="page-shell">
       <DirectoryNav active="home" label="Directory sections" />

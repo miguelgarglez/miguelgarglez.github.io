@@ -5,6 +5,8 @@ import MobileDirectoryMenu from "../../components/MobileDirectoryMenu.astro";
 import ThemeToggle from "../../components/ThemeToggle.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { formatReadingTime } from "../../lib/reading-time.js";
+import { pageTitle } from "../../../shared/seo/config";
+import { blogPostingSchema, breadcrumbSchema } from "../../lib/seo-schemas";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts", ({ data }) => !data.draft);
@@ -27,9 +29,35 @@ const formattedDate = post.data.date.toLocaleDateString("en", {
   year: "numeric",
 });
 const readingTime = formatReadingTime(post.body ?? "");
+const ogImage = `/og/posts/${post.id}.png`;
 ---
 
-<BaseLayout title={`${post.data.title} - Miguel Garcia`}>
+<BaseLayout
+  title={pageTitle(post.data.title, { suffix: false })}
+  description={post.data.description}
+  canonicalPath={`/posts/${post.id}/`}
+  image={ogImage}
+  imageAlt={`${post.data.title} — Miguel García`}
+  type="article"
+  publishedTime={post.data.date.toISOString()}
+  modifiedTime={(post.data.updatedDate ?? post.data.date).toISOString()}
+  tags={post.data.tags}
+  jsonLd={[
+    blogPostingSchema({
+      title: post.data.title,
+      description: post.data.description,
+      slug: post.id,
+      date: post.data.date,
+      updatedDate: post.data.updatedDate,
+      tags: post.data.tags,
+    }),
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Posts", path: "/posts/" },
+      { name: post.data.title, path: `/posts/${post.id}/` },
+    ]),
+  ]}
+>
   <div class="reading-progress" data-reading-progress aria-hidden="true">
     <span class="reading-progress-bar" data-reading-progress-bar></span>
   </div>

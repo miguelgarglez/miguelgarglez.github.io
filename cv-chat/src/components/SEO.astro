@@ -1,0 +1,61 @@
+---
+import {
+  absoluteUrl,
+  AUTHOR,
+  CV_CHAT_DESCRIPTION,
+  CV_CHAT_OG_IMAGE,
+  ogImageUrl,
+  SITE_HANDLE,
+  SITE_NAME,
+} from "../../../shared/seo/config";
+
+type Props = {
+  title: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+  type?: "website" | "profile";
+};
+
+const {
+  title,
+  description = CV_CHAT_DESCRIPTION,
+  image = CV_CHAT_OG_IMAGE,
+  imageAlt = `${SITE_NAME} — digital CV and interactive profile`,
+  type = "profile",
+} = Astro.props;
+
+const canonical = absoluteUrl("/cv-chat/");
+const imageAbsolute = ogImageUrl(image);
+---
+
+<meta name="description" content={description} />
+<meta name="author" content={AUTHOR.name} />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href={canonical} />
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={imageAbsolute} />
+<meta property="og:image:alt" content={imageAlt} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="en_US" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content={SITE_HANDLE} />
+<meta name="twitter:creator" content={SITE_HANDLE} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageAbsolute} />
+<meta name="twitter:image:alt" content={imageAlt} />
+
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#12100e" />
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4ede2" />
+<meta name="theme-color" content="#12100e" data-dynamic-theme-color />
+<meta name="generator" content={Astro.generator} />
+
+<link rel="icon" type="image/svg+xml" href="/cv-chat/favicon.svg" />

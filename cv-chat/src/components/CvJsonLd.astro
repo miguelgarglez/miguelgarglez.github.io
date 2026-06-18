@@ -1,0 +1,7 @@
+---
+import JsonLd from "./JsonLd.astro";
+import { CV_CHAT_DESCRIPTION } from "../../../shared/seo/config";
+import { profilePageSchema } from "../../../shared/seo/schemas";
+---
+
+<JsonLd data={profilePageSchema(CV_CHAT_DESCRIPTION)} />
