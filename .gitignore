@@ -16,6 +16,8 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+chat-worker/.env
+chat-worker/.dev.vars
 
 # macOS-specific files
 .DS_Store

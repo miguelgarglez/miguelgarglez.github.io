@@ -1,0 +1,10 @@
+# Copy to .dev.vars (preferred) or .env and fill in your API key.
+# Wrangler reads .dev.vars automatically; the dev script also accepts .env.
+
+DEV=true
+LLM_PROVIDER=opencode
+LLM_API_KEY=your-opencode-zen-api-key
+LLM_BASE_URL=https://opencode.ai/zen/v1
+LLM_MODEL=gpt-5.4-nano
+LLM_SITE_URL=https://miguelgarglez.com
+LLM_APP_TITLE="Miguel Garcia Profile Chat"

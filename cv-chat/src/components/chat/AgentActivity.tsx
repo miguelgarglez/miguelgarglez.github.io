@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { FileSearch, ListChecks, MessageSquareText, Sparkles } from 'lucide-react';
-import { Loader } from '@/components/ai-elements/loader';
 
 const EN_MESSAGES = [
   { icon: FileSearch, text: "Reviewing Miguel's profile..." },
@@ -35,12 +34,22 @@ export function AgentActivity({ language }: AgentActivityProps) {
   }, [messages.length, language]);
 
   return (
-    <div className="flex w-fit max-w-full items-center gap-3 rounded-[var(--radius-md)] border border-border bg-background/70 px-3 py-2 text-sm text-muted-foreground">
-      <span className="relative grid size-5 place-items-center text-primary">
-        <Loader className="absolute size-5 opacity-35" />
-        <ActiveIcon className="size-3.5" aria-hidden="true" />
+    <div
+      className="flex w-fit max-w-full items-center gap-3 rounded-[var(--radius-md)] border border-border bg-background/70 px-3 py-2 text-sm"
+      role="status"
+      aria-live="polite"
+      aria-label={messages[index].text}
+    >
+      <span className="grid size-5 place-items-center text-primary">
+        <ActiveIcon
+          key={index}
+          className="agent-activity-icon size-3.5"
+          aria-hidden="true"
+        />
       </span>
-      <span>{messages[index].text}</span>
+      <span key={index} className="agent-activity-text">
+        {messages[index].text}
+      </span>
     </div>
   );
 }

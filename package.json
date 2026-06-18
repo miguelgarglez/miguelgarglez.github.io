@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "test:profile-agent": "node scripts/test-profile-agent.mjs",
     "codex:setup": "bash scripts/codex-cloud-setup.sh",
-    "codex:verify": "bash scripts/codex-cloud-verify.sh"
+    "codex:verify": "bash scripts/codex-cloud-verify.sh",
+    "dev:cv-chat": "bash scripts/dev-cv-chat-local.sh"
   },
   "devDependencies": {
     "astro": "^6.1.9",
