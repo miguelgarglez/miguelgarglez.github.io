@@ -31,7 +31,7 @@ Transcript panels move. YouTube changes the page. Videos have missing captions. 
 
 So I pulled the useful part out into a local tool.
 
-It is called [`video-digest`](https://github.com/miguelgarglez/personal-video-digest).
+It is called [`video-digest`](https://npmx.dev/package/video-digest).
 
 The pitch is simple:
 
@@ -49,6 +49,9 @@ You can install the current public package with:
 ```sh
 npm install --global video-digest
 ```
+
+The source is public too, if you want the engineering archaeology:
+[`personal-video-digest`](https://github.com/miguelgarglez/personal-video-digest).
 
 Then run:
 
