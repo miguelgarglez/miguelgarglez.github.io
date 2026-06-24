@@ -13,7 +13,15 @@ I only wanted fewer unwatched YouTube videos.
 
 Naturally, I ended up publishing a macOS-only CLI.
 
-This is probably not the most reasonable path from problem to solution, but it is a very honest one. I had a playlist full of videos I was saving “for later”, which mostly meant “for never”. I wanted a way to turn some of that backlog into something I could actually use: transcripts, summaries, notes, maybe eventually entries in my knowledge base.
+This is the second chapter of a very small saga.
+
+A few days ago I wrote about [turning my YouTube backlog into email digests](/posts/turning-my-youtube-backlog-into-email-digests/). That post was about the original personal workflow: a private playlist, Codex as an operator, transcripts, emails, and a cautious little acknowledgement loop that only removed a video after the digest had actually been delivered.
+
+This post is about what happened after that workflow started feeling useful.
+
+Which is to say: I got suspicious of my own hack and started productizing it.
+
+That is probably not the most reasonable path from problem to solution, but it is a very honest one. I had a playlist full of videos I was saving “for later”, which mostly meant “for never”. I wanted a way to turn some of that backlog into something I could actually use: transcripts, summaries, notes, maybe eventually entries in my knowledge base.
 
 The first version was not a product. It was a small workflow. Codex would open a YouTube video, find the transcript, summarize it, and send me an email. It worked well enough to be exciting and badly enough to be suspicious.
 

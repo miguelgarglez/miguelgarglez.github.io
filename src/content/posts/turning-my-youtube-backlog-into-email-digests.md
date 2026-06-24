@@ -111,3 +111,6 @@ The next step is not to automate everything blindly. It is to evaluate the quali
 For now, the system does one small thing:
 
 it turns a YouTube backlog into emails I actually read.
+
+Update: this workflow later became a more product-shaped CLI. I wrote a follow-up here:
+[I accidentally turned a YouTube transcript script into a tiny product](/posts/i-accidentally-turned-a-youtube-transcript-script-into-a-tiny-product/).
