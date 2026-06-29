@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.6.0](https://github.com/miguelgarglez/miguelgarglez.github.io/compare/v0.5.0...v0.6.0) (2026-06-29)
+
+
+### Features
+
+* add project and people detail pages ([9a158d1](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/9a158d1fddecfe2319e6848485f0bcec39e2bd82))
+* **blog:** Improve post reading UI ([5edc010](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/5edc010b27c69e36837002459379e737af2e7e1f))
+* **cv-chat:** enhance ascii field interaction ([3a1c86a](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/3a1c86a390b690f11616f2142213a6ed3d46c52b))
+* **cv-chat:** polish hero motion ([262145a](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/262145a6567348b60d96090718f35bdbf863318a))
+* **cv-chat:** refine hero ASCII atmosphere and cursor feel ([24149b2](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/24149b258676f573b1176febb01a66d6f1f17267))
+* **cv-chat:** refine hero experience ([d47ca23](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/d47ca238130b7c40beb7fccb13ba992745de82b8))
+* **cv-chat:** renew dossier experience ([90922e4](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/90922e4373b1dd849050b9670be7b30af043d1b9))
+* **cv-chat:** renew profile sections ([cb6afec](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/cb6afec230748e9471a46207f60d19ce7d620cb0))
+* **directory:** add readings section ([ca68ce7](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/ca68ce785318799277fb0a67f5236639025a048e))
+* **directory:** Refine mobile navigation ([67768e7](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/67768e71e9de63aeb23bb4fdb9cf61242250ff0a))
+* **directory:** simplify home entry ([ec30ba0](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/ec30ba0b93064e051c3c90edb100fc9384cc11fb))
+* improve mobile/tablet view, uniform focus visible and improvement to agent system ([9ec7ac3](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/9ec7ac3482a0f8dc3e766e989b2982a80aa594ee))
+* **people:** Add Mitchell Hashimoto ([d187d38](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/d187d382ddd808996a6e8aa96d4e36d3fcfb694a))
+* **posts:** publish directory intro ([ff9985b](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/ff9985b0d6b3ad22651d3fd9c2b0810d4399c346))
+* **projects:** add video-digest and simplify project roles ([b5c11e9](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/b5c11e93b3768de7c7be4f6c36b7fe6a78f84820))
+* **seo:** Add Open Graph images, meta tags, sitemap, and structured data. ([8bcf6d0](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/8bcf6d077ff9e92757acee62cc7c26318b16827c))
+* sync chat worker and cv-chat redesign notes ([34c7817](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/34c78174c2f60d5d3d1a5f78c9e692109bb42a90))
+
+
+### Bug Fixes
+
+* **blog:** Anchor reading progress bar ([9c8bb13](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/9c8bb13f5321ecf2b82885aa4b33eb16413f9f26))
+* **blog:** Smooth reading progress updates ([400fe17](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/400fe1752401943ffa72196f28e302afdc3da78f))
+* **chat:** Improve profile retrieval coverage ([12f8727](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/12f8727c64009b820d22da7c8057aaec76882104))
+* **directory:** Polish mobile menu layout ([498fd57](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/498fd573d5c576c2d957980f3bc2b2eb3e2341ee))
+* **seo:** Use miguelgarglez.com as the canonical site URL. ([20bdc47](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/20bdc472d5cf1b9736e26a44deffe497bc53224b))
+* **ui:** persist theme across pages ([f680326](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/f68032682a284fad4029cb037386b589e1bd29aa))
+* **ui:** Show theme toggle on all pages ([a31ce4d](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/a31ce4d80612fbfc9bdb69fd3d42e8eeb9caa99c))
+
 ## [0.5.0](https://github.com/miguelgarglez/miguelgarglez.github.io/compare/v0.4.0...v0.5.0) (2026-04-25)
 
 
