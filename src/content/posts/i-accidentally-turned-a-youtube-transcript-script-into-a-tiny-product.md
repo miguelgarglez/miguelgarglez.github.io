@@ -51,7 +51,7 @@ npm install --global video-digest
 ```
 
 The source is public too, if you want the engineering archaeology:
-[`personal-video-digest`](https://github.com/miguelgarglez/personal-video-digest).
+[`video-digest`](https://github.com/miguelgarglez/video-digest).
 
 Then run:
 

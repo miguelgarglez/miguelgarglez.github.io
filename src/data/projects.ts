@@ -73,7 +73,7 @@ export const projects: Project[] = [
     category: "personal-site",
     stage: "active",
     featured: true,
-    role: "Product-minded full-stack builder",
+    role: "Full-stack engineer",
     summary:
       "A personal profile experience that pairs a polished CV with a grounded AI chat over curated profile data.",
     capabilities: [
@@ -84,6 +84,46 @@ export const projects: Project[] = [
     ],
     liveUrl: "https://miguelgarglez.com/cv-chat",
     caseStudyUrl: projectDetailPath("cv-chat"),
+  },
+  {
+    slug: "video-digest",
+    title: "video-digest",
+    displayName: "Video Digest",
+    href: "https://github.com/miguelgarglez/video-digest",
+    external: true,
+    description:
+      "Local macOS CLI and TUI for turning YouTube videos into transcripts and structured digests.",
+    sub: "Published on npm as a small local-first tool with agent-friendly JSON contracts and an Artifact Library on disk.",
+    links: [
+      {
+        label: "GitHub repository",
+        href: "https://github.com/miguelgarglez/video-digest",
+        external: true,
+      },
+      {
+        label: "npm package",
+        href: "https://www.npmjs.com/package/video-digest",
+        external: true,
+      },
+    ],
+    stack: ["Bun", "TypeScript", "Python", "TUI"],
+    status: "Active",
+    year: 2026,
+    category: "open-source",
+    stage: "active",
+    featured: true,
+    role: "Full-stack engineer",
+    summary:
+      "A local-first CLI that turns a YouTube URL into reviewable transcripts and Markdown digests, with a TUI for humans and stable JSON for agents.",
+    capabilities: [
+      "YouTube transcript extraction with quality checks",
+      "Structured digest generation via OpenCode",
+      "Terminal UI and scriptable commands",
+      "Local Artifact Library with Markdown and JSON outputs",
+    ],
+    repositoryUrl: "https://github.com/miguelgarglez/video-digest",
+    liveUrl: "https://www.npmjs.com/package/video-digest",
+    caseStudyUrl: projectDetailPath("video-digest"),
   },
   {
     slug: "wellstudio-platform",
@@ -107,7 +147,7 @@ export const projects: Project[] = [
     category: "product-platform",
     stage: "active",
     featured: true,
-    role: "Product and platform engineer",
+    role: "Full-stack engineer",
     summary:
       "A modular product platform for a boutique wellness studio, designed around reservations, memberships, payments, and operational workflows.",
     capabilities: [
@@ -179,7 +219,7 @@ export const projects: Project[] = [
     category: "open-source",
     stage: "active",
     featured: false,
-    role: "Open-source contributor",
+    role: "Contributor",
     summary:
       "A React chart components library contributed to as part of real product work and shared design-system needs.",
     capabilities: [
@@ -218,7 +258,7 @@ export const projects: Project[] = [
     category: "native-app",
     stage: "active",
     featured: true,
-    role: "Product and native app builder",
+    role: "Native app engineer",
     summary:
       "A native macOS productivity app for structuring work around projects, progress, and execution rhythm.",
     capabilities: [
