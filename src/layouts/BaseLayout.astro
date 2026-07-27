@@ -225,6 +225,10 @@ const { title, jsonLd, ...seo } = Astro.props;
         initializeReadingProgress(pageController.signal);
       }
 
+      document.addEventListener("astro:before-swap", (event) => {
+        const { newDocument } = event as Event & { newDocument: Document };
+        newDocument.documentElement.dataset.theme = getPreferredTheme();
+      });
       document.addEventListener("astro:page-load", initializePage);
     </script>
   </body>
