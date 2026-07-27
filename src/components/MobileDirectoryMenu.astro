@@ -55,6 +55,7 @@ const activeItem = items.find((item) => item.key === active) ?? items[0];
             <a
               class:list={["mobile-menu-link", { "is-active": item.key === active }]}
               href={item.href}
+              data-astro-prefetch="load"
               aria-current={item.key === active ? "page" : undefined}
             >
               <span>{item.label}</span>

@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
 import SEO from "../components/SEO.astro";
 import JsonLd from "../components/JsonLd.astro";
 
@@ -21,7 +22,7 @@ const { title, jsonLd, ...seo } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" transition:animate="none">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -34,6 +35,7 @@ const { title, jsonLd, ...seo } = Astro.props;
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..700,0..100&family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <ClientRouter fallback="swap" />
     <script is:inline>
       (() => {
         const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -56,11 +58,22 @@ const { title, jsonLd, ...seo } = Astro.props;
       const DARK_THEME = "dark";
       const LIGHT_THEME = "light";
 
-      const root = document.documentElement;
-      const menuTrigger = document.querySelector("[data-menu-trigger]");
-      const menuPanel = document.querySelector("[data-menu-panel]");
+      let pageController: AbortController | undefined;
 
-      function initializeThemeToggle() {
+      function getPreferredTheme() {
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? DARK_THEME
+          : LIGHT_THEME;
+
+        try {
+          return localStorage.getItem(THEME_STORAGE_KEY) || systemTheme;
+        } catch {
+          return systemTheme;
+        }
+      }
+
+      function initializeThemeToggle(signal: AbortSignal) {
+        const root = document.documentElement;
         const themeToggles = Array.from(document.querySelectorAll("[data-theme-toggle]"));
         const themeLabels = Array.from(document.querySelectorAll("[data-theme-label]"));
 
@@ -86,7 +99,7 @@ const { title, jsonLd, ...seo } = Astro.props;
           setThemeToggleState(theme);
         };
 
-        applyTheme(root.dataset.theme || LIGHT_THEME);
+        applyTheme(getPreferredTheme());
 
         themeToggles.forEach((toggle) => {
           toggle.addEventListener("click", () => {
@@ -97,17 +110,21 @@ const { title, jsonLd, ...seo } = Astro.props;
               // Keep the current page interactive even when storage is unavailable.
             }
             applyTheme(nextTheme);
-          });
+          }, { signal });
         });
       }
 
-      function initializeMobileMenu() {
+      function initializeMobileMenu(signal: AbortSignal) {
+        const menuTrigger = document.querySelector("[data-menu-trigger]");
+        const menuPanel = document.querySelector("[data-menu-panel]");
+
         if (!menuTrigger || !menuPanel) {
           return;
         }
 
         document.body.append(menuPanel);
         const menuClose = menuPanel.querySelector("[data-menu-close]");
+        let closeTimer = 0;
 
         const openMenu = () => {
           menuPanel.hidden = false;
@@ -126,7 +143,8 @@ const { title, jsonLd, ...seo } = Astro.props;
           menuPanel.removeAttribute("data-open");
           menuTrigger.setAttribute("aria-expanded", "false");
           delete document.body.dataset.menuOpen;
-          window.setTimeout(() => {
+          window.clearTimeout(closeTimer);
+          closeTimer = window.setTimeout(() => {
             if (!menuPanel.hasAttribute("data-open")) {
               menuPanel.hidden = true;
             }
@@ -140,25 +158,27 @@ const { title, jsonLd, ...seo } = Astro.props;
           }
 
           closeMenu();
-        });
+        }, { signal });
 
-        menuClose?.addEventListener("click", closeMenu);
+        menuClose?.addEventListener("click", closeMenu, { signal });
 
         menuPanel.addEventListener("click", (event) => {
           if (event.target === menuPanel) {
             closeMenu();
           }
-        });
+        }, { signal });
 
         window.addEventListener("keydown", (event) => {
           if (event.key === "Escape" && !menuPanel.hidden) {
             closeMenu();
             (menuTrigger as HTMLElement).focus({ preventScroll: true });
           }
-        });
+        }, { signal });
+
+        signal.addEventListener("abort", () => window.clearTimeout(closeTimer), { once: true });
       }
 
-      function initializeReadingProgress() {
+      function initializeReadingProgress(signal: AbortSignal) {
         const progress = document.querySelector<HTMLElement>("[data-reading-progress]");
         const progressBar = document.querySelector<HTMLElement>("[data-reading-progress-bar]");
         const postBody = document.querySelector<HTMLElement>("[data-post-body]");
@@ -191,13 +211,21 @@ const { title, jsonLd, ...seo } = Astro.props;
         };
 
         updateProgress();
-        window.addEventListener("scroll", requestProgressUpdate, { passive: true });
-        window.addEventListener("resize", requestProgressUpdate);
+        window.addEventListener("scroll", requestProgressUpdate, { passive: true, signal });
+        window.addEventListener("resize", requestProgressUpdate, { signal });
+        signal.addEventListener("abort", () => window.cancelAnimationFrame(frameId), { once: true });
       }
 
-      initializeThemeToggle();
-      initializeMobileMenu();
-      initializeReadingProgress();
+      function initializePage() {
+        pageController?.abort();
+        pageController = new AbortController();
+
+        initializeThemeToggle(pageController.signal);
+        initializeMobileMenu(pageController.signal);
+        initializeReadingProgress(pageController.signal);
+      }
+
+      document.addEventListener("astro:page-load", initializePage);
     </script>
   </body>
 </html>

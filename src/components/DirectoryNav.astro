@@ -29,6 +29,7 @@ const items: NavItem[] = [
         <a
           class:list={["sidebar-link", { "is-active": item.key === active }]}
           href={item.href}
+          data-astro-prefetch="load"
           aria-current={item.key === active ? "page" : undefined}
         >
           {item.label}
