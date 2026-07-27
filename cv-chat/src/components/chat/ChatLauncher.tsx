@@ -24,8 +24,9 @@ export default function ChatLauncher({
   const panelRef = useRef<HTMLDivElement | null>(null);
   const closeTimeoutRef = useRef<number | null>(null);
 
-  // The panel stays mounted for open/close animations; we only hide it once the close animation ends.
-  // These class groups keep timing, easing, and transforms consistent across both states.
+  // Once opened, the panel stays mounted for the lifetime of the page. Hiding the
+  // shell instead of unmounting Chat preserves its in-memory conversation state.
+  // These class groups keep timing, easing, and transforms consistent across states.
   const panelBaseClass =
     "relative flex w-full max-w-full flex-col bg-card motion-reduce:transition-none lg:p-3";
   const panelSizeClass =
@@ -47,7 +48,7 @@ export default function ChatLauncher({
   const panelHiddenClass = isCompact
     ? "opacity-0"
     : "opacity-0 scale-95 translate-y-2";
-  const shouldRenderPanel = hasOpened && !isHidden;
+  const shouldRenderPanel = hasOpened;
 
   const clearCloseTimeout = () => {
     if (closeTimeoutRef.current !== null) {
