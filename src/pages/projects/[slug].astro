@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import DirectoryNav from "../../components/DirectoryNav.astro";
 import MobileDirectoryMenu from "../../components/MobileDirectoryMenu.astro";
 import ThemeToggle from "../../components/ThemeToggle.astro";
+import ProjectImageGallery from "../../components/ProjectImageGallery.astro";
 import { projects } from "../../data/projects";
 import type { Project } from "../../data/projects";
 import { pageTitle } from "../../../shared/seo/config";
@@ -20,10 +21,22 @@ type Props = {
 };
 
 const { project } = Astro.props;
+const sectionId = (title: string) =>
+  `project-${title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")}-title`;
+const seenHrefs = new Set<string>();
 const detailLinks = [
-  project.liveUrl && { label: "Live URL", href: project.liveUrl },
+  project.showcaseUrl && { label: "Product showcase", href: project.showcaseUrl },
+  project.liveUrl && { label: "Live preview", href: project.liveUrl },
   project.repositoryUrl && { label: "Repository", href: project.repositoryUrl },
-].filter(Boolean) as Array<{ label: string; href: string }>;
+].filter((link): link is { label: string; href: string } => {
+  if (!link) return false;
+  if (seenHrefs.has(link.href)) return false;
+  seenHrefs.add(link.href);
+  return true;
+});
 const ogImage = `/og/projects/${project.slug}.png`;
 ---
 
@@ -66,23 +79,28 @@ const ogImage = `/og/projects/${project.slug}.png`;
           <p class="lead">{project.summary}</p>
         </section>
 
-        <section class="detail-section" aria-labelledby="project-context-title">
-          <p class="section-label" id="project-context-title">Context</p>
-          <dl class="detail-meta">
-            <div>
-              <dt>Role</dt>
-              <dd>{project.role}</dd>
-            </div>
-            <div>
-              <dt>Year</dt>
-              <dd>{project.year}</dd>
-            </div>
-            <div>
-              <dt>Stage</dt>
-              <dd>{project.stage}</dd>
-            </div>
-          </dl>
-        </section>
+        {project.images && project.images.length > 0 && (
+          <ProjectImageGallery images={project.images} label="Product" />
+        )}
+
+        {
+          project.sections?.map((section) => {
+            const headingId = sectionId(section.title);
+            return (
+              <section class="detail-section" aria-labelledby={headingId}>
+                <p class="section-label" id={headingId}>
+                  {section.title}
+                </p>
+                {section.body && <p class="detail-copy">{section.body}</p>}
+                {section.items && (
+                  <ul class="detail-list">
+                    {section.items.map((item) => <li>{item}</li>)}
+                  </ul>
+                )}
+              </section>
+            );
+          })
+        }
 
         <section class="detail-section" aria-labelledby="project-capabilities-title">
           <p class="section-label" id="project-capabilities-title">Capabilities</p>

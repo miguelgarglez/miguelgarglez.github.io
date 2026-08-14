@@ -20,6 +20,19 @@ export type ProjectCategory =
 
 export type ProjectStage = "active" | "maintained" | "archived";
 
+export type ProjectSection = {
+  title: string;
+  body?: string;
+  items?: string[];
+};
+
+export type ProjectImage = {
+  src: string;
+  alt: string;
+  /** Optional higher-res source for the lightbox. Falls back to `src`. */
+  fullSrc?: string;
+};
+
 export type Project = {
   slug: string;
   title: string;
@@ -38,6 +51,9 @@ export type Project = {
   role: string;
   summary: string;
   capabilities: string[];
+  sections?: ProjectSection[];
+  images?: ProjectImage[];
+  showcaseUrl?: string;
   repositoryUrl?: string;
   liveUrl?: string;
   caseStudyUrl?: string;
@@ -132,8 +148,8 @@ export const projects: Project[] = [
     href: "https://github.com/miguelgarglez/wellstudio-platform",
     external: true,
     description:
-      "Modular Next.js platform for a boutique wellness studio, covering members, bookings, plans, payments, and studio operations.",
-    sub: "Built as a Vercel-first modular monolith with Supabase Auth, Supabase Postgres, Prisma, and focused testing gates.",
+      "One product for a boutique studio: public schedule, member bookings, staff desk, and online packs — without stitching widgets.",
+    sub: "Modular Next.js monolith with Supabase Auth, Prisma, and Stripe Checkout.",
     links: [
       {
         label: "GitHub repository",
@@ -141,7 +157,7 @@ export const projects: Project[] = [
         external: true,
       },
     ],
-    stack: ["Next.js", "TypeScript", "Prisma", "Supabase"],
+    stack: ["Next.js", "TypeScript", "Prisma", "Supabase", "Stripe"],
     status: "Active",
     year: 2026,
     category: "product-platform",
@@ -149,14 +165,44 @@ export const projects: Project[] = [
     featured: true,
     role: "Full-stack engineer",
     summary:
-      "A modular product platform for a boutique wellness studio, designed around reservations, memberships, payments, and operational workflows.",
+      "One product for a boutique gym: public schedule, member bookings, staff desk, and online packs — same domain, same capacity rules.",
     capabilities: [
-      "Member identity and account domain",
-      "Class schedules and reservation flows",
-      "Plans, credits, eligibility, and cancellation rules",
-      "Preview and production delivery workflow",
+      "Public schedule, plans, and lead capture",
+      "Member portal for bookings, cancellations, and credits",
+      "Staff desk for the day, sessions, and assisted booking",
+      "Stripe Checkout for packs with credits after payment",
+    ],
+    sections: [
+      {
+        title: "Three journeys",
+        items: [
+          "Public: live timetable, plans, and lead capture.",
+          "Member: book and cancel with clear rules; see coverage and credits.",
+          "Staff: run today, open sessions, and book for a member without bypassing capacity.",
+        ],
+      },
+      {
+        title: "How it's built",
+        body: "Modular Next.js monolith: routes in app/, domain in modules/*. Supabase Auth, Prisma, Postgres, Stripe. Sales decks live on Preview only so a real gym's production site stays clean.",
+      },
     ],
     repositoryUrl: "https://github.com/miguelgarglez/wellstudio-platform",
+    liveUrl: "https://preview-wellstudio.miguelgarglez.com",
+    showcaseUrl: "https://preview-wellstudio.miguelgarglez.com/showcase",
+    images: [
+      {
+        src: "/projects/wellstudio-platform/public-classes.webp",
+        alt: "Public class schedule on WellStudio",
+      },
+      {
+        src: "/projects/wellstudio-platform/member-home.webp",
+        alt: "Member home with upcoming bookings",
+      },
+      {
+        src: "/projects/wellstudio-platform/staff-overview.webp",
+        alt: "Staff desk overview for the day",
+      },
+    ],
     caseStudyUrl: projectDetailPath("wellstudio-platform"),
   },
   {

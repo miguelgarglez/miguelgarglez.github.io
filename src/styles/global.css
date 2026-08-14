@@ -1015,6 +1015,18 @@ h1 {
   margin-top: 0.28rem;
 }
 
+.detail-copy {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--ink);
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
+.detail-copy + .detail-list {
+  margin-top: 0.85rem;
+}
+
 /* Inspiring people */
 .reference-list {
   list-style: none;

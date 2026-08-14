@@ -53,12 +53,18 @@ export const projects: ProjectBlock[] = [
     id: 'wellstudio-platform',
     title: 'wellstudio_platform',
     shortSummary:
-      'Modular Next.js platform for a boutique wellness studio, covering members, bookings, plans, payments, and studio operations.',
+      'One product for a boutique gym: public schedule, member bookings, staff desk, and online packs on the same rules.',
+    problem:
+      'Studios often run a marketing site, a booking tool, and payments as separate pieces, so staff patch gaps instead of coaching.',
     solution:
-      'Built as a Vercel-first modular monolith with Supabase Auth, Supabase Postgres, Prisma, and focused testing gates.',
-    technologies: ['Next.js', 'TypeScript', 'Prisma', 'Supabase'],
+      'Modular Next.js monolith with Supabase Auth, Prisma, Postgres, and Stripe Checkout. Public, member, and staff journeys share eligibility and capacity. Sales decks live on Preview only.',
+    impact:
+      'A working Preview demo plus a commercial showcase and a plain-language hybrid operating model for gym owners.',
+    technologies: ['Next.js', 'TypeScript', 'Prisma', 'Supabase', 'Stripe'],
     links: {
+      demo: 'https://preview-wellstudio.miguelgarglez.com',
       repo: 'https://github.com/miguelgarglez/wellstudio-platform',
+      article: 'https://miguelgarglez.com/projects/wellstudio-platform/',
     },
     tags: ['frontend', 'full-stack', 'nextjs', 'product', 'saas', 'professional'],
     visibility: 'public',
