@@ -1,4 +1,5 @@
 ---
+import { getCollection, type CollectionEntry } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import DirectoryNav from "../../components/DirectoryNav.astro";
 import MobileDirectoryMenu from "../../components/MobileDirectoryMenu.astro";
@@ -6,21 +7,26 @@ import ThemeToggle from "../../components/ThemeToggle.astro";
 import ProjectImageGallery from "../../components/ProjectImageGallery.astro";
 import { projects } from "../../data/projects";
 import type { Project } from "../../data/projects";
+import { getPostsForProject } from "../../lib/post-relations";
 import { pageTitle } from "../../../shared/seo/config";
 import { breadcrumbSchema, creativeWorkSchema } from "../../lib/seo-schemas";
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
+
   return projects.map((project) => ({
     params: { slug: project.slug },
-    props: { project },
+    props: { project, allPosts: posts },
   }));
 }
 
 type Props = {
   project: Project;
+  allPosts: CollectionEntry<"posts">[];
 };
 
-const { project } = Astro.props;
+const { project, allPosts } = Astro.props;
+const buildNotes = getPostsForProject(project.slug, allPosts);
 const sectionId = (title: string) =>
   `project-${title
     .toLowerCase()
@@ -127,6 +133,31 @@ const ogImage = `/og/projects/${project.slug}.png`;
                   </a>
                 ))}
               </div>
+            </section>
+          )
+        }
+
+        {
+          buildNotes.length > 0 && (
+            <section class="detail-section" aria-labelledby="project-build-notes-title">
+              <p class="section-label" id="project-build-notes-title">Build notes</p>
+              <ul class="post-end-links project-build-notes">
+                {
+                  buildNotes.map((note) => (
+                    <li>
+                      {
+                        note.data.seriesOrder !== undefined && (
+                          <span class="post-end-link-label">
+                            Part {note.data.seriesOrder}
+                          </span>
+                        )
+                      }
+                      <a href={`/posts/${note.id}`}>{note.data.title}</a>
+                      <span class="post-end-link-meta">{note.data.description}</span>
+                    </li>
+                  ))
+                }
+              </ul>
             </section>
           )
         }

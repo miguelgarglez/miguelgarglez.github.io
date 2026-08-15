@@ -7,6 +7,10 @@ lang: "en"
 tags: ["ai", "automation", "knowledge-base", "youtube", "process"]
 featured: false
 draft: false
+series: "video-digest"
+seriesOrder: 1
+project: "video-digest"
+related: []
 ---
 
 I save a lot of YouTube videos.

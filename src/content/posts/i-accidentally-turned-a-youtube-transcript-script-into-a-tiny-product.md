@@ -7,6 +7,10 @@ lang: "en"
 tags: ["ai", "cli", "product", "youtube", "agents", "automation"]
 featured: false
 draft: false
+series: "video-digest"
+seriesOrder: 2
+project: "video-digest"
+related: ["why-this-site-is-a-directory"]
 ---
 
 I only wanted fewer unwatched YouTube videos.

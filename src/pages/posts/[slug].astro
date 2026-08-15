@@ -2,6 +2,7 @@
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import DirectoryNav from "../../components/DirectoryNav.astro";
 import MobileDirectoryMenu from "../../components/MobileDirectoryMenu.astro";
+import PostEndMatter from "../../components/PostEndMatter.astro";
 import ThemeToggle from "../../components/ThemeToggle.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { formatReadingTime } from "../../lib/reading-time.js";
@@ -13,15 +14,16 @@ export async function getStaticPaths() {
 
   return posts.map((post) => ({
     params: { slug: post.id },
-    props: { post },
+    props: { post, allPosts: posts },
   }));
 }
 
 type Props = {
   post: CollectionEntry<"posts">;
+  allPosts: CollectionEntry<"posts">[];
 };
 
-const { post } = Astro.props;
+const { post, allPosts } = Astro.props;
 const { Content } = await render(post);
 const formattedDate = post.data.date.toLocaleDateString("en", {
   month: "long",
@@ -93,6 +95,8 @@ const ogImage = `/og/posts/${post.id}.png`;
             <Content />
           </div>
         </section>
+
+        <PostEndMatter post={post} allPosts={allPosts} />
       </article>
     </div>
   </main>

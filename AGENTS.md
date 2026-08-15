@@ -36,6 +36,59 @@ Contexto del repo: sitio personal publicado en GitHub Pages. La home vive en Ast
 - Mantener el estilo visual actual salvo que se pida explícitamente rediseño.
 - Revisar que los links apunten a rutas reales dentro del repo o a URLs validas.
 
+### Escribir o actualizar posts
+
+Los posts viven en `src/content/posts/*.md`. El detalle renderiza el Markdown y, si hay metadatos de directorio, un cierre quieto (`PostEndMatter`) que conecta serie, proyecto y posts relacionados. La pagina de un proyecto lista automaticamente los posts con `project: <slug>` bajo **Build notes**.
+
+Checklist al añadir un post:
+
+1. Crear `src/content/posts/<slug>.md` con frontmatter valido (schema en `src/content.config.ts`).
+2. Contenido en ingles, tono editorial del sitio. Preferir `h2`/`h3` en piezas largas para escaneo.
+3. Rellenar conexiones de directorio cuando apliquen (ver abajo). No inventar series/proyectos: reutilizar ids existentes o registrarlos primero.
+4. Si el post pertenece a una serie nueva, añadirla en `src/data/post-series.ts` antes de usarla.
+5. Si enlaza un proyecto, el `project` debe coincidir con un `slug` de `src/data/projects.ts`.
+6. `related` usa ids de post (nombre del archivo sin `.md`), no URLs.
+7. Verificar en navegador el detalle del post y, si hay `project`, la seccion Build notes en `/projects/<slug>/`.
+
+Frontmatter de directorio:
+
+| Campo | Uso |
+| --- | --- |
+| `series` | Id de serie en `src/data/post-series.ts` (ej. `video-digest`). |
+| `seriesOrder` | Orden 1-based dentro de la serie. Obligatorio si hay `series`. |
+| `project` | Slug del proyecto relacionado. Activa el bloque Project al final del post y Build notes en la ficha del proyecto. |
+| `related` | Lista de otros post ids para el bloque "Also in the directory". No hace falta listar aqui los hermanos de serie: eso lo resuelve `series`/`seriesOrder`. |
+| `featured` | Marca editorial; hoy no cambia el layout por si sola. |
+| `kind` | `article` o `note`. |
+| `draft: true` | Excluye el post de build/listados. |
+
+Ejemplo minimo con conexiones:
+
+```yaml
+---
+title: "Example build note"
+description: "Short description for listings and SEO."
+date: 2026-08-15
+kind: "article"
+lang: "en"
+tags: ["process"]
+featured: false
+draft: false
+series: "video-digest"
+seriesOrder: 3
+project: "video-digest"
+related: ["why-this-site-is-a-directory"]
+---
+```
+
+Archivos clave:
+
+- `src/content.config.ts` — schema Zod.
+- `src/data/post-series.ts` — catalogo de series.
+- `src/lib/post-relations.ts` — resolucion de serie/proyecto/related.
+- `src/components/PostEndMatter.astro` — UI del cierre.
+- `src/pages/posts/[slug].astro` y `src/pages/projects/[slug].astro` — wiring.
+
 ### Trabajar en `cv-chat/`
 
 - Seguir el stack actual (Astro + GSAP).

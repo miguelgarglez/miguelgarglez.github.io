@@ -7,6 +7,7 @@ lang: "en"
 tags: ["personal-site", "writing", "process"]
 featured: true
 draft: false
+related: []
 ---
 
 A portfolio often tries to make a person look finished.

@@ -1,0 +1,103 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { Project } from "../data/projects";
+import {
+  getLinkedProject,
+  getRelatedPosts,
+  getSeriesContext,
+  hasPostEndMatter,
+} from "../lib/post-relations";
+
+type Props = {
+  post: CollectionEntry<"posts">;
+  allPosts: CollectionEntry<"posts">[];
+};
+
+const { post, allPosts } = Astro.props;
+const series = getSeriesContext(post, allPosts);
+const project = getLinkedProject(post);
+const related = getRelatedPosts(post, allPosts);
+const show = hasPostEndMatter(series, project, related);
+
+function projectHref(entry: Project) {
+  return entry.caseStudyUrl ?? `/projects/${entry.slug}`;
+}
+---
+
+{
+  show && (
+    <section class="detail-section post-end-matter" aria-labelledby="post-directory-title">
+      <p class="section-label" id="post-directory-title">
+        In this directory
+      </p>
+
+      <div class="post-end-blocks">
+        {
+          series && (
+            <div class="post-end-block">
+              <p class="post-end-kicker">Series</p>
+              <p class="post-end-title">
+                Part {series.order} of {series.total}
+                <span class="post-end-divider" aria-hidden="true">
+                  ·
+                </span>
+                {series.series.title}
+              </p>
+              <p class="post-end-note">{series.series.description}</p>
+              <ul class="post-end-links" aria-label="Series navigation">
+                {
+                  series.previous && (
+                    <li>
+                      <span class="post-end-link-label">Previously</span>
+                      <a href={`/posts/${series.previous.id}`}>
+                        {series.previous.data.title}
+                      </a>
+                    </li>
+                  )
+                }
+                {
+                  series.next && (
+                    <li>
+                      <span class="post-end-link-label">Continues</span>
+                      <a href={`/posts/${series.next.id}`}>{series.next.data.title}</a>
+                    </li>
+                  )
+                }
+              </ul>
+            </div>
+          )
+        }
+
+        {
+          project && (
+            <div class="post-end-block">
+              <p class="post-end-kicker">Project</p>
+              <p class="post-end-title">
+                <a href={projectHref(project)}>{project.displayName}</a>
+              </p>
+              <p class="post-end-note">{project.summary ?? project.description}</p>
+            </div>
+          )
+        }
+
+        {
+          related.length > 0 && (
+            <div class="post-end-block">
+              <p class="post-end-kicker">Also in the directory</p>
+              <ul class="post-end-links" aria-label="Related posts">
+                {
+                  related.map((entry) => (
+                    <li>
+                      <a href={`/posts/${entry.id}`}>{entry.data.title}</a>
+                      <span class="post-end-link-meta">{entry.data.description}</span>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+          )
+        }
+      </div>
+    </section>
+  )
+}
