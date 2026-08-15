@@ -219,6 +219,10 @@ const dialogLabelId = `${galleryId}-dialog-label`;
     transform: translateY(0);
   }
 
+  .project-gallery-thumb.is-morphing {
+    visibility: hidden;
+  }
+
   @media (max-width: 720px) {
     .project-gallery-grid {
       grid-template-columns: 1fr;
@@ -388,6 +392,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
     max-height: 72vh;
     transform-origin: center center;
     will-change: transform, opacity;
+    opacity: 0;
   }
 
   .project-lightbox-stage img {
@@ -674,36 +679,44 @@ const dialogLabelId = `${galleryId}-dialog-label`;
         height: rect.height,
       };
 
+      // Load image while still hidden so the first paint already has dimensions.
       syncSlide();
+      await waitForImage(imageEl);
+
+      // Paint setup frame invisible: no full-size flash before FLIP.
+      stage.style.transition = "none";
+      stage.style.opacity = "0";
+      stage.style.transform = "none";
+      backdrop.style.transition = "none";
+      backdrop.style.opacity = "0";
+
       lightbox.hidden = false;
       setState(prefersReducedMotion() ? "open" : "opening");
       lockScroll();
       setPageInert(true);
+      originEl.classList.add("is-morphing");
 
-      await waitForImage(imageEl);
+      // Measure destination with opacity 0 (layout still valid), then place at thumb.
       await nextFrame();
 
       if (prefersReducedMotion() || !openOrigin) {
         backdrop.style.opacity = "1";
+        stage.style.opacity = "1";
         stage.style.removeProperty("transform");
-        stage.style.removeProperty("opacity");
         setState("open");
         closeBtn.focus();
         return;
       }
 
       const targetRect = stage.getBoundingClientRect();
-      stage.style.transition = "none";
       stage.style.transform = buildFlipTransform(openOrigin, targetRect);
-      stage.style.opacity = "0.4";
-      backdrop.style.transition = "none";
-      backdrop.style.opacity = "0";
+      // Already sitting on the thumb: reveal without opacity pop.
+      stage.style.opacity = "1";
       void stage.offsetWidth;
 
       requestAnimationFrame(() => {
-        stage.style.transition = `transform ${OPEN_MS}ms ${OPEN_EASE}, opacity ${OPEN_MS - 120}ms ease-out`;
+        stage.style.transition = `transform ${OPEN_MS}ms ${OPEN_EASE}`;
         stage.style.transform = "none";
-        stage.style.opacity = "1";
         backdrop.style.transition = `opacity ${BACKDROP_MS}ms ease-out`;
         backdrop.style.opacity = "1";
       });
@@ -720,15 +733,23 @@ const dialogLabelId = `${galleryId}-dialog-label`;
       }, OPEN_MS + 30);
     }
 
+    function clearMorphingThumb() {
+      slides.forEach((slide) => slide.thumb.classList.remove("is-morphing"));
+    }
+
     function close() {
       if (state !== "open" && state !== "opening") return;
       clearTimers();
+
+      // Show the thumb again immediately so the slot never looks empty while
+      // the stage morphs down onto it.
+      clearMorphingThumb();
 
       if (prefersReducedMotion()) {
         setState("closed");
         lightbox.hidden = true;
         stage.style.removeProperty("transform");
-        stage.style.removeProperty("opacity");
+        stage.style.opacity = "0";
         backdrop.style.removeProperty("opacity");
         unlockScroll();
         setPageInert(false);
@@ -745,9 +766,9 @@ const dialogLabelId = `${galleryId}-dialog-label`;
         ? buildFlipTransform(origin, targetRect)
         : "scale(0.96)";
 
-      stage.style.transition = `transform ${OPEN_MS}ms ${OPEN_EASE}, opacity ${OPEN_MS - 140}ms ease-in`;
+      stage.style.transition = `transform ${OPEN_MS}ms ${OPEN_EASE}, opacity ${OPEN_MS - 160}ms ease-in`;
       stage.style.transform = exitTransform;
-      stage.style.opacity = "0.15";
+      stage.style.opacity = "0";
       backdrop.style.transition = `opacity ${BACKDROP_MS}ms ease-in`;
       backdrop.style.opacity = "0";
 
@@ -756,7 +777,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
         setState("closed");
         stage.style.removeProperty("transition");
         stage.style.removeProperty("transform");
-        stage.style.removeProperty("opacity");
+        stage.style.opacity = "0";
         backdrop.style.removeProperty("transition");
         backdrop.style.removeProperty("opacity");
         unlockScroll();

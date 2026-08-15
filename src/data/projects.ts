@@ -145,7 +145,7 @@ export const projects: Project[] = [
     slug: "wellstudio-platform",
     title: "wellstudio_platform",
     displayName: "WellStudio Platform",
-    href: "https://github.com/miguelgarglez/wellstudio-platform",
+    href: "https://preview-wellstudio.miguelgarglez.com",
     external: true,
     description:
       "One product for a boutique studio: public schedule, member bookings, staff desk, and online packs — without stitching widgets.",
