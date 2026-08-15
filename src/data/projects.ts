@@ -98,6 +98,20 @@ export const projects: Project[] = [
       "Animated content-focused CV",
       "Cloudflare Worker chat endpoint",
     ],
+    images: [
+      {
+        src: "/projects/cv-chat/hero.webp",
+        alt: "cv-chat hero with ASCII portrait and profile intro",
+      },
+      {
+        src: "/projects/cv-chat/chat-drawer.webp",
+        alt: "Chat drawer freshly opened with suggested CV questions",
+      },
+      {
+        src: "/projects/cv-chat/chat-reply.webp",
+        alt: "Chat reply answering what kind of engineer Miguel is",
+      },
+    ],
     liveUrl: "https://miguelgarglez.com/cv-chat",
     caseStudyUrl: projectDetailPath("cv-chat"),
   },
@@ -136,6 +150,20 @@ export const projects: Project[] = [
       "Structured digest generation via OpenCode",
       "Terminal UI and scriptable commands",
       "Local Artifact Library with Markdown and JSON outputs",
+    ],
+    images: [
+      {
+        src: "/projects/video-digest/help.webp",
+        alt: "Installing video-digest and viewing CLI help",
+      },
+      {
+        src: "/projects/video-digest/transcript.webp",
+        alt: "Transcript command writing Artifact Library files, then listing entries",
+      },
+      {
+        src: "/projects/video-digest/digest.webp",
+        alt: "Opening a structured Markdown digest from the Artifact Library",
+      },
     ],
     repositoryUrl: "https://github.com/miguelgarglez/video-digest",
     liveUrl: "https://www.npmjs.com/package/video-digest",

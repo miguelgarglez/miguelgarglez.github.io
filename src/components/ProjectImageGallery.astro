@@ -256,12 +256,16 @@ const dialogLabelId = `${galleryId}-dialog-label`;
   }
 
   .project-lightbox {
+    /* Side gutters reserve space for nav arrows so the stage stays between them. */
+    --lightbox-nav-size: 2.5rem;
+    --lightbox-nav-inset: clamp(0.6rem, 2vw, 1.2rem);
+    --lightbox-side-gutter: calc(var(--lightbox-nav-inset) + var(--lightbox-nav-size) + 0.75rem);
     position: fixed;
     inset: 0;
     z-index: 200;
     display: grid;
     place-items: center;
-    padding: clamp(4.5rem, 10vh, 6rem) clamp(3.5rem, 8vw, 5rem) clamp(5.5rem, 12vh, 7rem);
+    padding: clamp(4.5rem, 10vh, 6rem) var(--lightbox-side-gutter) clamp(5.5rem, 12vh, 7rem);
     box-sizing: border-box;
   }
 
@@ -370,15 +374,17 @@ const dialogLabelId = `${galleryId}-dialog-label`;
   .project-lightbox-nav {
     position: absolute;
     top: 50%;
+    width: var(--lightbox-nav-size);
+    height: var(--lightbox-nav-size);
     transform: translateY(-50%);
   }
 
   .project-lightbox-nav--prev {
-    left: clamp(0.6rem, 2vw, 1.2rem);
+    left: var(--lightbox-nav-inset);
   }
 
   .project-lightbox-nav--next {
-    right: clamp(0.6rem, 2vw, 1.2rem);
+    right: var(--lightbox-nav-inset);
   }
 
   .project-lightbox-nav:active {
@@ -388,7 +394,15 @@ const dialogLabelId = `${galleryId}-dialog-label`;
   .project-lightbox-stage {
     position: relative;
     z-index: 1;
-    width: min(92vw, calc(72vh * 1.6), 1080px);
+    /* Explicit vw calc keeps the stage between nav gutters (avoids %/grid circular sizing). */
+    width: min(
+      calc(100vw - 2 * var(--lightbox-side-gutter)),
+      calc(72vh * 1.6),
+      1080px
+    );
+    max-width: 100%;
+    min-width: 0;
+    justify-self: center;
     max-height: 72vh;
     transform-origin: center center;
     will-change: transform, opacity;
@@ -462,6 +476,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
 
   @media (max-width: 720px) {
     .project-lightbox {
+      /* Nav arrows hide below this breakpoint; reclaim the side gutters. */
       padding: 4.5rem 1rem 5.5rem;
     }
 
