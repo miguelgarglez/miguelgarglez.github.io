@@ -546,17 +546,37 @@ const dialogLabelId = `${galleryId}-dialog-label`;
     );
   }
 
-  function initGallery(root: HTMLElement) {
+  type GalleryCleanup = () => void;
+
+  let galleryCleanups: GalleryCleanup[] = [];
+
+  function resetBodyScrollLock() {
+    document.body.style.removeProperty("overflow");
+    document.body.style.removeProperty("padding-right");
+  }
+
+  function destroyGalleries() {
+    for (const cleanup of galleryCleanups) cleanup();
+    galleryCleanups = [];
+    // Orphaned lightboxes survive View Transitions because they live on body.
+    document
+      .querySelectorAll<HTMLElement>("[data-gallery-lightbox]")
+      .forEach((node) => node.remove());
+    resetBodyScrollLock();
+  }
+
+  function initGallery(root: HTMLElement): GalleryCleanup | null {
+    if (root.dataset.galleryReady === "true") return null;
+
     const template = root.querySelector<HTMLTemplateElement>(
       "[data-gallery-lightbox-template]",
     );
     const openButtons = [...root.querySelectorAll<HTMLButtonElement>("[data-gallery-open]")];
-    if (!template || openButtons.length === 0) return;
+    if (!template || openButtons.length === 0) return null;
 
     const fragment = template.content.cloneNode(true) as DocumentFragment;
     const lightbox = fragment.querySelector<HTMLElement>("[data-gallery-lightbox]");
-    if (!lightbox) return;
-    document.body.appendChild(lightbox);
+    if (!lightbox) return null;
 
     const backdrop = lightbox.querySelector<HTMLElement>("[data-gallery-backdrop]");
     const stage = lightbox.querySelector<HTMLElement>("[data-gallery-stage]");
@@ -572,7 +592,10 @@ const dialogLabelId = `${galleryId}-dialog-label`;
     ];
     const showCaptions = root.dataset.showCaptions === "true";
 
-    if (!backdrop || !stage || !imageEl || !closeBtn) return;
+    if (!backdrop || !stage || !imageEl || !closeBtn) return null;
+
+    root.dataset.galleryReady = "true";
+    document.body.appendChild(lightbox);
 
     const slides = openButtons.map((button) => ({
       src: button.dataset.src ?? "",
@@ -589,6 +612,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
     let uiRevealTimer = 0;
     let animationTimer = 0;
     let returnFocusEl: HTMLElement | null = null;
+    let destroyed = false;
 
     const pageRoot =
       document.querySelector<HTMLElement>("main") ??
@@ -665,7 +689,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
 
     function currentThumbRect(): OriginRect | null {
       const thumb = slides[index]?.thumb;
-      if (!thumb) return null;
+      if (!thumb?.isConnected) return null;
       const rect = thumb.getBoundingClientRect();
       return {
         left: rect.left,
@@ -681,7 +705,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
     }
 
     async function openAt(nextIndex: number, originButton?: HTMLElement) {
-      if (state !== "closed") return;
+      if (destroyed || state !== "closed") return;
 
       index = Math.max(0, Math.min(slides.length - 1, nextIndex));
       const originEl = originButton ?? slides[index].thumb;
@@ -697,6 +721,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
       // Load image while still hidden so the first paint already has dimensions.
       syncSlide();
       await waitForImage(imageEl);
+      if (destroyed) return;
 
       // Paint setup frame invisible: no full-size flash before FLIP.
       stage.style.transition = "none";
@@ -713,6 +738,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
 
       // Measure destination with opacity 0 (layout still valid), then place at thumb.
       await nextFrame();
+      if (destroyed) return;
 
       if (prefersReducedMotion() || !openOrigin) {
         backdrop.style.opacity = "1";
@@ -730,6 +756,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
       void stage.offsetWidth;
 
       requestAnimationFrame(() => {
+        if (destroyed) return;
         stage.style.transition = `transform ${OPEN_MS}ms ${OPEN_EASE}`;
         stage.style.transform = "none";
         backdrop.style.transition = `opacity ${BACKDROP_MS}ms ease-out`;
@@ -737,10 +764,12 @@ const dialogLabelId = `${galleryId}-dialog-label`;
       });
 
       uiRevealTimer = window.setTimeout(() => {
+        if (destroyed) return;
         if (state === "opening") setState("open");
       }, UI_REVEAL_DELAY);
 
       animationTimer = window.setTimeout(() => {
+        if (destroyed) return;
         stage.style.removeProperty("transition");
         backdrop.style.removeProperty("transition");
         if (state === "opening") setState("open");
@@ -753,7 +782,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
     }
 
     function close() {
-      if (state !== "open" && state !== "opening") return;
+      if (destroyed || (state !== "open" && state !== "opening")) return;
       clearTimers();
 
       // Show the thumb again immediately so the slot never looks empty while
@@ -788,6 +817,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
       backdrop.style.opacity = "0";
 
       animationTimer = window.setTimeout(() => {
+        if (destroyed) return;
         lightbox.hidden = true;
         setState("closed");
         stage.style.removeProperty("transition");
@@ -802,7 +832,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
     }
 
     function goTo(nextIndex: number) {
-      if (state !== "open") return;
+      if (destroyed || state !== "open") return;
       const total = slides.length;
       index = ((nextIndex % total) + total) % total;
       syncSlide();
@@ -810,7 +840,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
     }
 
     function onKeyDown(event: KeyboardEvent) {
-      if (state === "closed" || state === "closing") return;
+      if (destroyed || state === "closed" || state === "closing") return;
 
       if (event.key === "Escape") {
         event.preventDefault();
@@ -864,10 +894,13 @@ const dialogLabelId = `${galleryId}-dialog-label`;
       }
     }
 
+    const onOpenClick = (event: Event) => {
+      const button = event.currentTarget as HTMLButtonElement;
+      void openAt(Number(button.dataset.index ?? "0"), button);
+    };
+
     openButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        void openAt(Number(button.dataset.index ?? "0"), button);
-      });
+      button.addEventListener("click", onOpenClick);
     });
 
     gotoButtons.forEach((button) => {
@@ -916,7 +949,35 @@ const dialogLabelId = `${galleryId}-dialog-label`;
       },
       { passive: true },
     );
+
+    return () => {
+      if (destroyed) return;
+      destroyed = true;
+      clearTimers();
+      window.removeEventListener("keydown", onKeyDown);
+      openButtons.forEach((button) => {
+        button.removeEventListener("click", onOpenClick);
+        button.classList.remove("is-morphing");
+      });
+      if (state !== "closed") {
+        unlockScroll();
+        setPageInert(false);
+      }
+      lightbox.remove();
+      delete root.dataset.galleryReady;
+      state = "closed";
+    };
   }
 
-  document.querySelectorAll<HTMLElement>("[data-project-gallery]").forEach(initGallery);
+  function initAllGalleries() {
+    destroyGalleries();
+    document.querySelectorAll<HTMLElement>("[data-project-gallery]").forEach((root) => {
+      const cleanup = initGallery(root);
+      if (cleanup) galleryCleanups.push(cleanup);
+    });
+  }
+
+  // ClientRouter keeps module scripts alive across swaps; re-bind on each page load.
+  document.addEventListener("astro:page-load", initAllGalleries);
+  document.addEventListener("astro:before-swap", destroyGalleries);
 </script>
