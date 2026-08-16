@@ -111,7 +111,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'leadership-and-ownership',
     title: 'Leadership and ownership examples',
     content:
-      'At Open Digital Services, he now works closer to final product delivery on business-account onboarding flows for Santander Spain, Mexico, and the UK. Previously, he led implementation, maintenance, and refactoring of shared UI components used by web developers across Grupo Santander banks. At Jember, he co-led the recovery of a stalled test automation initiative and helped turn it into a practical regression asset with around 50% reduction in person-day cost. These examples reflect the type of ownership he wants to expand: technical direction that improves product delivery and raises the level of the team around him.',
+      'At Open Digital Services, he now works closer to final product delivery on business-account onboarding flows for Santander Mexico and the UK. Previously, he led implementation, maintenance, and refactoring of shared UI components used by web developers across Grupo Santander banks. At Jember, he co-led the recovery of a stalled test automation initiative and helped turn it into a practical regression asset with around 50% reduction in person-day cost. These examples reflect the type of ownership he wants to expand: technical direction that improves product delivery and raises the level of the team around him.',
     tags: ['liderazgo', 'impacto', 'proyectos', 'ownership', 'recruiting'],
     type: 'example',
     lang: 'en',
@@ -138,7 +138,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'experience-ods',
     title: 'Experience - Open Digital Services (Santander Group)',
     content:
-      "Frontend Engineer (Sep 2024 - Current). Currently works in a final product team for Santander's business-account onboarding flow, serving Spain, Mexico, and the UK. This role brings him closer to product delivery, financial onboarding complexity, regional requirements, and cross-functional execution. Previously worked in the Kubit Web UI components platform team, building and maintaining the component library used by web developers across Grupo Santander banks. Led implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem. Contributed to the open-source charting library with new features and continuous improvements. Managed releases with semantic versioning, branch strategy, and Storybook documentation; supported Kubit public presence through product landing pages. Built an MCP server to support consumers of the component library with contextual guidance, integration patterns, troubleshooting, and migration help. Drives AI-enabled workflows with tools such as Windsurf and Devin at work, and Codex and GitHub Copilot personally. He uses MCP servers, context engineering, structured prompts, and reusable skills to accelerate recurring development tasks, standardize team workflows, improve code quality, and make AI-assisted development easier to adopt without losing code ownership.",
+      "Frontend Engineer (Sep 2024 - Current). Currently works in a final product team for Santander's business-account onboarding flow, serving Mexico and the UK. This role brings him closer to product delivery, financial onboarding complexity, regional requirements, and cross-functional execution. Previously worked in the Kubit Web UI components platform team, building and maintaining the component library used by web developers across Grupo Santander banks. Led implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem. Contributed to the open-source charting library with new features and continuous improvements. Managed releases with semantic versioning, branch strategy, and Storybook documentation; supported Kubit public presence through product landing pages. Built an MCP server to support consumers of the component library with contextual guidance, integration patterns, troubleshooting, and migration help. Drives AI-enabled workflows with tools such as Windsurf and Devin at work, and Codex and GitHub Copilot personally. He uses MCP servers, context engineering, structured prompts, and reusable skills to accelerate recurring development tasks, standardize team workflows, improve code quality, and make AI-assisted development easier to adopt without losing code ownership.",
     tags: ['experiencia', 'impacto', 'proyectos', 'frontend', 'product', 'onboarding', 'ai', 'skills'],
     type: 'example',
     lang: 'en',
@@ -192,8 +192,8 @@ export const profileSections: ProfileBlock[] = [
     id: 'skills-backend',
     title: 'Skills - Backend and Data Foundations',
     content:
-      'Backend and data are solid foundations from his Computer Science background and project work: Python with Flask, Django, Pandas, NumPy, and Matplotlib; SQL foundations with PostgreSQL and SQLite; MongoDB; Node.js; REST/GraphQL exposure; and distributed-system basics.',
-    tags: ['skills', 'backend', 'datos'],
+      'Backend and data are academic and project foundations, not a professional backend specialty. From Computer Science coursework and personal projects he has used Python with Flask, Django, Pandas, NumPy, and Matplotlib; SQL with PostgreSQL and SQLite; MongoDB; Node.js through projects such as wellstudio_platform; REST/GraphQL exposure; and distributed-system basics. He does not present professional day-to-day Python/backend experience.',
+    tags: ['skills', 'backend', 'datos', 'python'],
     type: 'answer',
     lang: 'en',
   },
@@ -228,7 +228,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'role-fit',
     title: 'Best fit roles and environments',
     content:
-      'Best fit roles include frontend platform engineering, design systems, and product-facing frontend positions where accessibility, performance, and maintainability matter. He is particularly aligned with roles that combine technical depth, cross-functional influence, and visible product or business impact.',
+      'Best fit roles are product-minded frontend and product-engineer positions with strong React/TypeScript delivery, plus frontend platform or design-systems work where accessibility, performance, and maintainability matter. He is also a credible stretch for T-shaped frontend roles that touch light fullstack or practical AI-assisted product work when the core need is product UI, ownership, and cross-functional execution. He is particularly aligned with environments that combine technical depth, cross-functional influence, and visible product or business impact—especially fintech, onboarding, or product teams that care about quality and user outcomes.',
     tags: ['recruiting', 'futuro', 'impacto', 'forma-de-trabajar', 'ownership'],
     type: 'answer',
     lang: 'en',
@@ -246,8 +246,8 @@ export const profileSections: ProfileBlock[] = [
     id: 'availability',
     title: 'Availability and work setup',
     content:
-      'Based in Madrid (CET/CEST) and open to discussing new opportunities, impactful projects, and collaborative engineering roles. The profile context does not define a strict preference across remote, hybrid, or onsite setups; for role details, interview process, and availability timing, reach out via LinkedIn or X.',
-    tags: ['contact', 'disponibilidad', 'recruiting'],
+      'Based in Madrid, Spain (CET/CEST). Authorized to work in Spain without visa sponsorship. Open to remote, hybrid, or onsite setups depending on the role, and open to relocation in principle when the opportunity fits; preferred base remains Spain unless a specific move is agreed. Open to discussing new opportunities and impactful collaborative engineering roles. Exact start timing and logistics should be confirmed with Miguel directly via email, LinkedIn, or X.',
+    tags: ['contact', 'disponibilidad', 'recruiting', 'location'],
     type: 'fact',
     lang: 'en',
   },
@@ -264,7 +264,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'contact',
     title: 'Contact and interests',
     content:
-      'Open to discussing new opportunities, exciting projects, or conversations about technology and software engineering. Outside of coding, he is a sports enthusiast who has played football since age seven, enjoys staying physically active, reads software engineering blogs, explores new technologies, and seeks activities that foster personal growth.',
+      'Open to discussing new opportunities, exciting projects, or conversations about technology and software engineering. Best public contacts: email miguel.garglez@gmail.com, LinkedIn https://www.linkedin.com/in/miguel-garciag, and X https://x.com/miguel_garglez. Outside of coding, he is a sports enthusiast who has played football since age seven, enjoys staying physically active, reads software engineering blogs, explores new technologies, and seeks activities that foster personal growth.',
     tags: ['contact', 'intereses', 'cultura'],
     type: 'answer',
     lang: 'en',

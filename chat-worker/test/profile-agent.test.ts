@@ -33,7 +33,7 @@ describe('profile agent context retrieval', () => {
 
     assert.ok(currentRole);
     assert.match(currentRole.value, /business-account onboarding/i);
-    assert.match(currentRole.value, /Spain, Mexico, and the UK/i);
+    assert.match(currentRole.value, /Mexico and the UK/i);
     assert.ok(experience);
     assert.match(experience.content, /final product team/i);
   });
@@ -43,8 +43,59 @@ describe('profile agent context retrieval', () => {
     const factIds = ids(context.selectedFacts);
 
     assert.equal(context.intent, 'contact');
+    assert.ok(factIds.includes('email'));
     assert.ok(factIds.includes('linkedin'));
     assert.ok(factIds.includes('x'));
+  });
+
+  it('answers availability and work-authorization questions from curated facts', () => {
+    const context = run('Is Miguel authorized to work in Spain and is he available remotely?');
+    const factIds = ids(context.selectedFacts);
+    const availability = context.selectedProfileBlocks.find(
+      (block) => block.id === 'availability'
+    );
+
+    assert.equal(context.intent, 'availability');
+    assert.ok(factIds.includes('work-authorization'));
+    assert.ok(factIds.includes('location'));
+    assert.ok(availability);
+    assert.match(availability.content, /without visa sponsorship/i);
+    assert.match(availability.content, /remote, hybrid, or onsite/i);
+  });
+
+  it('keeps backend skills framed as academic and project foundations', () => {
+    const context = run('Does Miguel have Python or backend experience?');
+    const backend = context.selectedProfileBlocks.find(
+      (block) => block.id === 'skills-backend'
+    );
+
+    assert.ok(backend);
+    assert.match(backend.content, /academic and project foundations/i);
+    assert.match(backend.content, /does not present professional day-to-day Python/i);
+  });
+
+  it('describes role fit as product frontend with credible T-shaped stretch', () => {
+    const context = run('What roles is Miguel a good fit for?');
+    const roleFit = context.selectedProfileBlocks.find(
+      (block) => block.id === 'role-fit'
+    );
+
+    assert.ok(roleFit);
+    assert.match(roleFit.content, /product-minded frontend/i);
+    assert.match(roleFit.content, /T-shaped frontend/i);
+  });
+
+  it('surfaces the directory and wellstudio portfolio memory for recent project updates', () => {
+    const context = run(
+      'What has Miguel been building on his personal site directory and wellstudio recently?'
+    );
+    const memory = context.selectedMemories.find(
+      (item) => item.id === 'directory-and-wellstudio-maturity'
+    );
+
+    assert.ok(memory);
+    assert.match(memory.content, /wellstudio_platform/i);
+    assert.match(memory.content, /public directory/i);
   });
 
   it('selects cv-chat and recent AI memories for AI project questions', () => {

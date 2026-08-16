@@ -75,6 +75,26 @@ export function classifyIntent(question: string): Intent {
       'pruebas',
     ])
   ) return 'experience';
+  if (matchesAny(question, ['work style', 'collaboration', 'forma de trabajar', 'metodo', 'método'])) return 'work_style';
+  if (matchesAny(question, ['contact', 'linkedin', 'email', 'reach', 'contacto'])) return 'contact';
+  if (
+    matchesAny(question, [
+      'available',
+      'availability',
+      'remote',
+      'hybrid',
+      'onsite',
+      'relocation',
+      'visa',
+      'sponsorship',
+      'work authorization',
+      'authorized to work',
+      'disponibilidad',
+      'reubicacion',
+      'reubicación',
+    ])
+  )
+    return 'availability';
   if (
     matchesAny(question, [
       'skills',
@@ -105,9 +125,6 @@ export function classifyIntent(question: string): Intent {
       'tecnologías',
     ])
   ) return 'skills';
-  if (matchesAny(question, ['work style', 'collaboration', 'forma de trabajar', 'metodo', 'método'])) return 'work_style';
-  if (matchesAny(question, ['contact', 'linkedin', 'email', 'reach', 'contacto'])) return 'contact';
-  if (matchesAny(question, ['available', 'availability', 'remote', 'hybrid', 'disponibilidad'])) return 'availability';
   if (
     matchesAny(question, [
       'education',

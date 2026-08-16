@@ -6,7 +6,7 @@ const INTENT_FACT_TAGS: Record<Intent, string[]> = {
   summary: ['identity', 'summary', 'recruiting'],
   experience: ['experience', 'current-role'],
   projects: ['portfolio', 'projects'],
-  skills: ['skills', 'frontend', 'ai'],
+  skills: ['skills', 'frontend', 'ai', 'backend'],
   work_style: [],
   contact: ['contact'],
   availability: ['location', 'availability', 'contact'],

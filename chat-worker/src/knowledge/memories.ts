@@ -17,7 +17,7 @@ export const memories: MemoryBlock[] = [
     id: 'santander-product-onboarding-team',
     title: 'Moved to Santander business onboarding product team',
     content:
-      "Miguel moved from frontend UI platform work into a final product team focused on Santander's business-account onboarding flows for Spain, Mexico, and the UK. This gives him closer exposure to product delivery, financial onboarding complexity, regional requirements, and cross-functional execution.",
+      "Miguel moved from frontend UI platform work into a final product team focused on Santander's business-account onboarding flows for Mexico and the UK. This gives him closer exposure to product delivery, financial onboarding complexity, regional requirements, and cross-functional execution.",
     source: 'manual',
     tags: ['frontend', 'product', 'santander', 'onboarding', 'business-accounts'],
     createdAt: '2026-06-11',
@@ -25,6 +25,27 @@ export const memories: MemoryBlock[] = [
     visibility: 'public',
     confidence: 'verified',
     priority: 98,
+  },
+  {
+    id: 'directory-and-wellstudio-maturity',
+    title: 'Personal directory and wellstudio_platform matured publicly',
+    content:
+      "Miguel's personal site at https://miguelgarglez.com acts as a public directory of people, ideas, and builds, with cv-chat as the main professional profile. wellstudio_platform is also a matured public fullstack product demo: Next.js, TypeScript, Supabase, Prisma, Stripe, modular domain logic, and documented operating decisions, with a Preview demo and case-study write-up. Together they show ongoing product engineering outside day-to-day bank frontend work.",
+    source: 'manual',
+    tags: [
+      'portfolio',
+      'directory',
+      'wellstudio',
+      'personal-site',
+      'full-stack',
+      'product',
+      'nextjs',
+    ],
+    createdAt: '2026-08-16',
+    status: 'completed',
+    visibility: 'public',
+    confidence: 'verified',
+    priority: 76,
   },
   {
     id: 'exponential-community-joined',

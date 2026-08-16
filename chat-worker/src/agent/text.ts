@@ -17,5 +17,15 @@ export function tokenize(value: string) {
 
 export function matchesAny(value: string, keywords: string[]) {
   const normalized = normalizeText(value);
-  return keywords.some((keyword) => normalized.includes(normalizeText(keyword)));
+  return keywords.some((keyword) => {
+    const normalizedKeyword = normalizeText(keyword);
+    if (!normalizedKeyword) return false;
+    // Avoid false positives like "ai" matching inside "Spain".
+    if (normalizedKeyword.length <= 2) {
+      return new RegExp(`(?:^|\\s)${normalizedKeyword}(?:\\s|$)`).test(
+        normalized
+      );
+    }
+    return normalized.includes(normalizedKeyword);
+  });
 }

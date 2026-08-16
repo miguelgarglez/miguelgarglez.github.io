@@ -25,7 +25,7 @@ export const profileFacts: ProfileFact[] = [
     id: 'current-role',
     label: 'Current role',
     value:
-      'Frontend Engineer at Open Digital Services, Santander Group, working on business-account onboarding flows for Santander Spain, Mexico, and the UK',
+      'Frontend Engineer at Open Digital Services, Santander Group, working on business-account onboarding flows for Santander Mexico and the UK',
     tags: ['experience', 'current-role', 'recruiting', 'frontend', 'product', 'onboarding'],
     priority: 100,
   },
@@ -35,6 +35,21 @@ export const profileFacts: ProfileFact[] = [
     value: 'Sep 2024 - Current',
     tags: ['experience', 'current-role'],
     priority: 90,
+  },
+  {
+    id: 'work-authorization',
+    label: 'Work authorization',
+    value:
+      'Miguel is authorized to work in Spain and does not require visa sponsorship now or in the future.',
+    tags: ['availability', 'location', 'recruiting', 'contact'],
+    priority: 94,
+  },
+  {
+    id: 'email',
+    label: 'Email',
+    value: 'miguel.garglez@gmail.com',
+    tags: ['contact', 'identity', 'recruiting'],
+    priority: 96,
   },
   {
     id: 'linkedin',
