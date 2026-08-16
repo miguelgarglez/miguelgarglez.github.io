@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.7.0](https://github.com/miguelgarglez/miguelgarglez.github.io/compare/v0.6.0...v0.7.0) (2026-08-16)
+
+
+### Features
+
+* **posts:** connect writing back into the directory ([1e34020](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/1e340205d990748af06c8a90472ff258caf4ece9))
+* **posts:** publish knowledge base essay ([e0eb611](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/e0eb611943f8c8f405a0447b8062174fe36daae4))
+* **projects:** add cv-chat and video-digest galleries ([b9b2172](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/b9b2172d3e112637cf311ecd50d1be1f40773342))
+* **projects:** enrich WellStudio detail with morph gallery ([9c4b217](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/9c4b2177f3cb4a2c4612ef55e3327130dfd031b8))
+
+
+### Bug Fixes
+
+* **cv-chat:** align profile knowledge with career evidence ([bbd3cac](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/bbd3cac35c4f5979377b67af8788f716c5c39e54))
+* **cv-chat:** preserve chat messages ([589d3c9](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/589d3c97b64955760702e534b37c3bc404840bb4))
+* **projects:** polish gallery morph and point WellStudio to Preview ([497d49e](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/497d49e6cd788119a4579fb14b73e4114ef55f2e))
+* **projects:** re-init gallery after View Transitions ([3315c14](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/3315c142f0fc8379021c9ea6f9920358ede8d839))
+* **theme:** prevent dark mode flash ([436bc29](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/436bc292e6daaf72a214e534ccdaa31a20555817))
+
+
+### Performance Improvements
+
+* **nav:** speed up page transitions ([c78c0e9](https://github.com/miguelgarglez/miguelgarglez.github.io/commit/c78c0e98dbaf2650011f627c95ef1f6bca33231b))
+
 ## [0.6.0](https://github.com/miguelgarglez/miguelgarglez.github.io/compare/v0.5.0...v0.6.0) (2026-06-29)
 
 
