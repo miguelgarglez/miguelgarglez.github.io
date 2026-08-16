@@ -309,40 +309,57 @@ export const projects: Project[] = [
     slug: "momentum",
     title: "momentum",
     displayName: "Momentum",
-    href: "https://momentum-macos.vercel.app",
-    external: true,
+    href: "/projects/momentum/",
     description:
-      "Native macOS productivity app focused on building and keeping momentum in daily work.",
-    sub: "Landing is published separately and the full app source is available in its public repository.",
+      "Native macOS menu-bar app for tracking time on personal projects. Archived after personal use didn't stick.",
+    sub: "Source remains public as a case study. The product landing is down.",
     links: [
-      {
-        label: "Live landing",
-        href: "https://momentum-macos.vercel.app",
-        external: true,
-      },
       {
         label: "GitHub",
         href: "https://github.com/miguelgarglez/momentum",
         external: true,
       },
     ],
-    stack: ["Swift", "SwiftUI", "macOS", "Astro Landing"],
-    status: "Active",
+    stack: ["Swift", "SwiftUI", "macOS"],
+    status: "Archived",
     year: 2026,
     category: "native-app",
-    stage: "active",
-    featured: true,
+    stage: "archived",
+    featured: false,
     role: "Native app engineer",
     summary:
-      "A native macOS productivity app for structuring work around projects, progress, and execution rhythm.",
+      "A local-first macOS app that turned project time into visible progress. Archived after dogfooding: the daily loop did not earn a place in my week.",
     capabilities: [
-      "Project-oriented work tracking",
-      "Native macOS interaction model",
-      "Low-friction daily capture",
-      "Dedicated product landing page",
+      "Menu-bar first native macOS UI",
+      "Local-first project time tracking",
+      "SwiftUI and SwiftData",
+      "macOS release packaging",
+    ],
+    sections: [
+      {
+        title: "Status",
+        body: "Paused. I built this to use it, then stopped. The screenshots below are from the last product landing. The repository stays public as a reference, not as something I am shipping.",
+      },
+    ],
+    images: [
+      {
+        src: "/projects/momentum/dashboard.webp",
+        alt: "Momentum dashboard with project sidebar, summary cards, and monthly chart",
+      },
+      {
+        src: "/projects/momentum/project-detail.webp",
+        alt: "Project detail with cumulative stats, streak, and monthly bar chart",
+      },
+      {
+        src: "/projects/momentum/project-editor.webp",
+        alt: "Project editor modal for identity, apps, and domains",
+      },
+      {
+        src: "/projects/momentum/status-menu.webp",
+        alt: "macOS menu bar status menu for Momentum",
+      },
     ],
     repositoryUrl: "https://github.com/miguelgarglez/momentum",
-    liveUrl: "https://momentum-macos.vercel.app",
     caseStudyUrl: projectDetailPath("momentum"),
   },
 ];

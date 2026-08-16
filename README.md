@@ -61,11 +61,11 @@ My digital CV with chat.
 <div style="border: 1px solid #d0d7de; border-radius: 6px; padding: 16px; margin: 16px 0;">
 
 ### **momentum**
-Native macOS productivity app to help sustain execution rhythm and focus.
+Native macOS menu-bar app for project time tracking. Archived after personal use didn't stick.
 
-**Links:** [Live landing](https://momentum-macos.vercel.app) · [GitHub repository](https://github.com/miguelgarglez/momentum)  
-**Status:** ✅ Active  
-**Technologies:** ![Swift](https://img.shields.io/badge/-Swift-FA7343?style=flat-square&logo=swift&logoColor=white) ![SwiftUI](https://img.shields.io/badge/-SwiftUI-0A84FF?style=flat-square&logo=swift&logoColor=white) ![macOS](https://img.shields.io/badge/-macOS-000000?style=flat-square&logo=apple&logoColor=white) ![Astro](https://img.shields.io/badge/-Astro-FF5D01?style=flat-square&logo=astro&logoColor=white)
+**Links:** [Project details](https://miguelgarglez.com/projects/momentum/) · [GitHub repository](https://github.com/miguelgarglez/momentum)  
+**Status:** 📦 Archived  
+**Technologies:** ![Swift](https://img.shields.io/badge/-Swift-FA7343?style=flat-square&logo=swift&logoColor=white) ![SwiftUI](https://img.shields.io/badge/-SwiftUI-0A84FF?style=flat-square&logo=swift&logoColor=white) ![macOS](https://img.shields.io/badge/-macOS-000000?style=flat-square&logo=apple&logoColor=white)
 
 </div>
 

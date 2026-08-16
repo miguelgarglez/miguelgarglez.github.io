@@ -88,17 +88,19 @@ export const projects: ProjectBlock[] = [
     id: 'momentum',
     title: 'momentum',
     shortSummary:
-      'Native macOS productivity app focused on building and keeping momentum in daily work.',
+      'Archived native macOS menu-bar app for project time tracking. Miguel stopped using it; the source stays public as a case study.',
+    problem:
+      'Side projects needed visible progress, but automatic app/domain tracking was fragile and the daily loop did not stick.',
     solution:
-      'Published with a separate landing page and a public app repository.',
-    technologies: ['Swift', 'SwiftUI', 'macOS', 'Astro Landing'],
+      'Swift/SwiftUI, local-first, menu-bar first. The product landing was taken down; the repository remains as reference.',
+    technologies: ['Swift', 'SwiftUI', 'macOS'],
     links: {
-      demo: 'https://momentum-macos.vercel.app',
+      article: 'https://miguelgarglez.com/projects/momentum/',
       repo: 'https://github.com/miguelgarglez/momentum',
     },
-    tags: ['macos', 'swiftui', 'productivity', 'product', 'frontend'],
+    tags: ['macos', 'swiftui', 'archived', 'native-app'],
     visibility: 'public',
-    priority: 72,
+    priority: 28,
   },
   {
     id: 'genai-intensive-capstone',
