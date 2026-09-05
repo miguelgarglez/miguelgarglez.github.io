@@ -5,6 +5,7 @@ import DirectoryNav from "../../components/DirectoryNav.astro";
 import MobileDirectoryMenu from "../../components/MobileDirectoryMenu.astro";
 import ThemeToggle from "../../components/ThemeToggle.astro";
 import ProjectImageGallery from "../../components/ProjectImageGallery.astro";
+import ExternalArrow from "../../components/ExternalArrow.astro";
 import { projects } from "../../data/projects";
 import type { Project } from "../../data/projects";
 import { getProjectActionLinks } from "../../lib/project-links";
@@ -131,7 +132,7 @@ const ogImage = `/og/projects/${project.slug}.png`;
                     target={link.external ? "_blank" : undefined}
                     rel={link.external ? "noopener noreferrer" : undefined}
                   >
-                    {link.label}
+                    {link.label}<ExternalArrow />
                   </a>
                 ))}
               </div>
