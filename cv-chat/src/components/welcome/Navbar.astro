@@ -1,5 +1,13 @@
 ---
 import ThemeToggle from "../ThemeToggle.astro";
+
+const navLinks = [
+    { href: "/", label: "Directory" },
+    { href: "#about", label: "About" },
+    { href: "#experience", label: "Experience" },
+    { href: "#skills", label: "Skills" },
+    { href: "#contact", label: "Contact" },
+];
 ---
 
 <header class="site-nav" aria-label="Primary navigation">
@@ -7,16 +15,34 @@ import ThemeToggle from "../ThemeToggle.astro";
         <div class="site-nav-inner">
             <a class="site-brand" href="#main-content">/miguelgarglez</a>
 
-            <nav class="site-links" aria-label="Section navigation">
-                <a href="/">Directory</a>
-                <a href="#about">About</a>
-                <a href="#experience">Experience</a>
-                <a href="#skills">Skills</a>
-                <a href="#contact">Contact</a>
+            <nav class="site-links site-links--desktop" aria-label="Section navigation">
+                {navLinks.map((link) => <a href={link.href}>{link.label}</a>)}
             </nav>
 
-            <ThemeToggle />
+            <div class="site-nav-actions">
+                <button
+                    type="button"
+                    class="site-menu-toggle"
+                    data-nav-menu-toggle
+                    aria-expanded="false"
+                    aria-controls="site-nav-menu"
+                    hidden
+                >
+                    <span data-nav-menu-label>Menu</span>
+                </button>
+                <ThemeToggle />
+            </div>
         </div>
+
+        <nav
+            id="site-nav-menu"
+            class="site-links site-links--mobile"
+            data-nav-menu
+            aria-label="Section navigation"
+            hidden
+        >
+            {navLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+        </nav>
     </div>
 </header>
 
@@ -24,6 +50,55 @@ import ThemeToggle from "../ThemeToggle.astro";
     import { getMotionTools, prefersReducedMotion } from "../../lib/motion";
 
     document.addEventListener("DOMContentLoaded", async () => {
+        const toggle = document.querySelector("[data-nav-menu-toggle]");
+        const menu = document.querySelector("[data-nav-menu]");
+        const label = document.querySelector("[data-nav-menu-label]");
+
+        const setMenuOpen = (open) => {
+            if (
+                !(toggle instanceof HTMLButtonElement) ||
+                !(menu instanceof HTMLElement) ||
+                !(label instanceof HTMLElement)
+            ) {
+                return;
+            }
+
+            toggle.setAttribute("aria-expanded", String(open));
+            label.textContent = open ? "Close" : "Menu";
+            menu.toggleAttribute("data-open", open);
+            menu.hidden = !open;
+        };
+
+        if (
+            toggle instanceof HTMLButtonElement &&
+            menu instanceof HTMLElement &&
+            label instanceof HTMLElement
+        ) {
+            toggle.hidden = false;
+            setMenuOpen(false);
+
+            toggle.addEventListener("click", () => {
+                const isOpen = toggle.getAttribute("aria-expanded") === "true";
+                setMenuOpen(!isOpen);
+            });
+
+            menu.querySelectorAll("a").forEach((link) => {
+                link.addEventListener("click", () => setMenuOpen(false));
+            });
+
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape") setMenuOpen(false);
+            });
+
+            document.addEventListener("click", (event) => {
+                const target = event.target;
+                if (!(target instanceof Node)) return;
+                if (toggle.contains(target) || menu.contains(target)) return;
+                if (toggle.getAttribute("aria-expanded") !== "true") return;
+                setMenuOpen(false);
+            });
+        }
+
         if (prefersReducedMotion()) {
             return;
         }
@@ -62,8 +137,16 @@ import ThemeToggle from "../ThemeToggle.astro";
         gap: 1rem;
     }
 
+    .site-nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        flex-shrink: 0;
+    }
+
     .site-brand,
-    .site-links a {
+    .site-links a,
+    .site-menu-toggle {
         font-family: var(--font-mono);
         letter-spacing: 0.02em;
     }
@@ -77,12 +160,16 @@ import ThemeToggle from "../ThemeToggle.astro";
         flex-shrink: 0;
     }
 
-    .site-links {
+    .site-links--desktop {
         display: flex;
         align-items: center;
         gap: 1.2rem;
         flex-wrap: wrap;
         justify-content: center;
+    }
+
+    .site-links--mobile {
+        display: none;
     }
 
     .site-links a {
@@ -97,64 +184,109 @@ import ThemeToggle from "../ThemeToggle.astro";
     }
 
     .site-links a:hover,
-    .site-brand:hover {
+    .site-brand:hover,
+    .site-menu-toggle:hover {
         color: var(--text);
     }
 
+    .site-menu-toggle {
+        --focus-radius: 6px;
+        display: none;
+        appearance: none;
+        border: 0;
+        background: transparent;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        text-transform: lowercase;
+        padding: 0.35rem 0.2rem;
+        cursor: pointer;
+        transition: color 180ms var(--ease-out-quart);
+    }
+
+    .site-menu-toggle:focus-visible,
+    .site-brand:focus-visible,
+    .site-links a:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px var(--focus-ring-soft);
+        border-radius: var(--focus-radius);
+    }
+
     @media (max-width: 900px) {
-        .site-nav-inner {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            grid-template-areas:
-                "brand theme"
-                "links links";
-            gap: 0.55rem 0.75rem;
-            align-items: center;
-        }
-
-        .site-brand {
-            grid-area: brand;
-        }
-
-        .site-nav-inner :global(#theme-toggle) {
-            grid-area: theme;
-            justify-self: end;
-        }
-
-        .site-links {
-            grid-area: links;
-            display: flex;
-            flex-wrap: nowrap;
-            justify-content: flex-start;
-            gap: 0.85rem;
-            max-width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-            padding-bottom: 0.1rem;
-        }
-
-        .site-links::-webkit-scrollbar {
+        .site-links--desktop {
             display: none;
         }
 
-        .site-links a {
-            font-size: 0.8rem;
-            padding: 0.2rem 0;
+        .site-menu-toggle {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .site-links--mobile {
+            display: grid;
+            gap: 0.15rem;
+            margin-top: 0.7rem;
+            padding: 0.35rem 0 0.15rem;
+            border-top: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+        }
+
+        .site-links--mobile[hidden] {
+            display: none;
+        }
+
+        .site-links--mobile a {
+            display: block;
+            padding: 0.55rem 0.1rem;
+            font-size: 0.84rem;
+            opacity: 0;
+            transform: translateY(-4px);
+            transition:
+                color 180ms var(--ease-out-quart),
+                opacity 220ms var(--ease-out-quart),
+                transform 220ms var(--ease-out-quart);
+        }
+
+        .site-links--mobile[data-open] a {
+            opacity: 1;
+            transform: none;
+        }
+
+        .site-links--mobile[data-open] a:nth-child(1) {
+            transition-delay: 20ms;
+        }
+        .site-links--mobile[data-open] a:nth-child(2) {
+            transition-delay: 45ms;
+        }
+        .site-links--mobile[data-open] a:nth-child(3) {
+            transition-delay: 70ms;
+        }
+        .site-links--mobile[data-open] a:nth-child(4) {
+            transition-delay: 95ms;
+        }
+        .site-links--mobile[data-open] a:nth-child(5) {
+            transition-delay: 120ms;
         }
     }
 
     @media (max-width: 640px) {
         .site-nav {
-            padding: 0.5rem 0 0.65rem;
-        }
-
-        .site-nav-inner {
-            gap: 0.45rem 0.75rem;
+            padding: 0.5rem 0 0.55rem;
         }
 
         .site-brand {
             font-size: 0.9rem;
+        }
+
+        .site-menu-toggle {
+            font-size: 0.78rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .site-links--mobile a {
+            opacity: 1;
+            transform: none;
+            transition: color 180ms var(--ease-out-quart);
         }
     }
 </style>
