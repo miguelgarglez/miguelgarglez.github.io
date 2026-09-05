@@ -98,14 +98,8 @@ import AsciiField from "./AsciiField.astro";
             });
         }
 
-        if (prefersReducedMotion()) {
-            document
-                .querySelectorAll("[data-hero-entrance]")
-                .forEach((element) => element.removeAttribute("style"));
-            return;
-        }
-
         const revealHeroEntrance = () => {
+            document.documentElement.classList.add("hero-entrance-ready");
             document
                 .querySelectorAll(".hero [data-hero-entrance], .hero-scroll svg")
                 .forEach((element) => {
@@ -115,11 +109,26 @@ import AsciiField from "./AsciiField.astro";
                 });
         };
 
+        if (prefersReducedMotion()) {
+            revealHeroEntrance();
+            return;
+        }
+
+        // If GSAP never resolves (blocked/hung chunk), still show the copy.
+        const safetyId = window.setTimeout(revealHeroEntrance, 2000);
+
         let gsap;
         try {
             ({ gsap } = await getMotionTools());
         } catch {
+            window.clearTimeout(safetyId);
             revealHeroEntrance();
+            return;
+        }
+
+        window.clearTimeout(safetyId);
+        // Safety already revealed the copy while GSAP was slow/hung — skip entrance.
+        if (document.documentElement.classList.contains("hero-entrance-ready")) {
             return;
         }
 
@@ -192,7 +201,12 @@ import AsciiField from "./AsciiField.astro";
                 opacity: 0,
             });
 
-            const tl = gsap.timeline({ defaults: { ease: MOTION.enterEase } });
+            const tl = gsap.timeline({
+                defaults: { ease: MOTION.enterEase },
+                onComplete: () => {
+                    document.documentElement.classList.add("hero-entrance-ready");
+                },
+            });
 
             tl.to(
                 "[data-hero-entrance='name']",
@@ -242,6 +256,7 @@ import AsciiField from "./AsciiField.astro";
                     TIMING.scrollArrow,
                 );
         } catch {
+            window.clearTimeout(safetyId);
             revealHeroEntrance();
         }
     });
@@ -254,7 +269,7 @@ import AsciiField from "./AsciiField.astro";
         overflow: clip;
     }
 
-    :global(.js) .hero [data-hero-entrance] {
+    :global(.js):not(.hero-entrance-ready) .hero [data-hero-entrance] {
         opacity: 0;
     }
 
