@@ -8,7 +8,7 @@ export const DEFAULT_DESCRIPTION =
   "Software engineer in Madrid. Projects, notes, and references on technical quality, product clarity, and the craft of building software.";
 
 export const CV_CHAT_DESCRIPTION =
-  "Miguel García's digital CV. Frontend platform engineer focused on accessible interfaces, scalable design systems, and practical AI workflows.";
+  "Miguel García's digital CV. Software engineer with a strong frontend foundation, currently shipping business onboarding and growing toward fuller-stack ownership.";
 
 export const AUTHOR = {
   name: SITE_NAME,

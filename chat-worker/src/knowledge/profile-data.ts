@@ -66,7 +66,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'recruiter-value-proposition',
     title: 'Recruiter snapshot - Why Miguel',
     content:
-      'Miguel combines product mindset, frontend platform execution, product-facing delivery, and strong collaboration habits. He brings a generalist mentality: he is motivated by solving real problems, does not back away from unfamiliar challenges, and is comfortable moving across product, quality, delivery, and technical depth as needed. He is especially valuable in environments that need consistent, accessible, high-performance interfaces without losing sight of adoption, delivery, and business value.',
+      'Miguel combines a product mindset, frontend delivery across onboarding and design-systems work, and strong collaboration habits. He brings a generalist mentality: he is motivated by solving real problems, does not back away from unfamiliar challenges, and is comfortable moving across product, quality, delivery, and technical depth as needed. He is especially valuable in environments that need reliable product interfaces and maintainable systems without losing sight of adoption, delivery, and business value.',
     tags: ['recruiting', 'impacto', 'fortalezas', 'forma-de-trabajar'],
     type: 'answer',
     lang: 'en',
@@ -219,7 +219,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'growth-areas',
     title: 'Growth areas and continuous improvement',
     content:
-      'He is actively growing in three directions: deeper backend and system design breadth, better leverage of AI workflows in day-to-day engineering, and a sharper understanding of technology/startup thinking through Exponential Community. His approach is iterative: test ideas in real tasks, document what works, share practices, and standardize successful patterns with the team.',
+      'He is actively growing toward a more complete software-engineer profile: deeper backend and system design breadth, better leverage of AI workflows in day-to-day engineering, and a sharper understanding of technology/startup thinking through Exponential Community. His approach is iterative: test ideas in real tasks, document what works, share practices, and standardize successful patterns with the team.',
     tags: ['debilidades', 'aprendizaje', 'futuro', 'forma-de-trabajar', 'startup', 'recruiting'],
     type: 'answer',
     lang: 'en',
@@ -228,7 +228,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'role-fit',
     title: 'Best fit roles and environments',
     content:
-      'Best fit roles are product-minded frontend and product-engineer positions with strong React/TypeScript delivery, plus frontend platform or design-systems work where accessibility, performance, and maintainability matter. He is also a credible stretch for T-shaped frontend roles that touch light fullstack or practical AI-assisted product work when the core need is product UI, ownership, and cross-functional execution. He is particularly aligned with environments that combine technical depth, cross-functional influence, and visible product or business impact—especially fintech, onboarding, or product teams that care about quality and user outcomes.',
+      'Best fit roles are product-minded frontend and product-engineer positions with strong React/TypeScript delivery, including onboarding/product UI and frontend platform or design-systems work where accessibility, performance, and maintainability matter. He is intentionally expanding toward fuller-stack ownership, so T-shaped frontend roles that touch light fullstack or practical AI-assisted product work are a credible stretch when the core need is product delivery, ownership, and cross-functional execution. He is particularly aligned with environments that combine technical depth, cross-functional influence, and visible product or business impact—especially fintech, onboarding, or product teams that care about quality and user outcomes.',
     tags: ['recruiting', 'futuro', 'impacto', 'forma-de-trabajar', 'ownership'],
     type: 'answer',
     lang: 'en',

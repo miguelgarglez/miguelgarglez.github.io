@@ -196,8 +196,8 @@ describe('profile agent context retrieval', () => {
     assert.ok(memory);
   });
 
-  it('grounds the visible frontend-platform prompt in frontend and current work', () => {
-    const context = run('What makes Miguel a strong frontend platform engineer?');
+  it('grounds the visible product-frontend prompt in frontend and current work', () => {
+    const context = run('What makes Miguel a strong product-minded frontend engineer?');
     const blockIds = ids(context.selectedProfileBlocks);
 
     assert.equal(context.intent, 'skills');
