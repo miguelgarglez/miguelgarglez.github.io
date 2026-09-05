@@ -49,6 +49,7 @@ Create one full-access remote Codex environment for this repository:
 - Runtime: Node.js 22 and npm 10+.
 - Access model: one broad environment for the personal site, with GitHub, browser tooling, issue-tracking context, and relevant project configuration available.
 - Safety model: full operational access, with destructive actions protected by explicit user confirmation.
+- Cursor Cloud Agents: commit `.cursor/environment.json` so cloud runs use the repo-managed install/terminals/ports config. `ports` must be objects (`{ "name", "port" }`), not bare numbers. `start: "true"` is required so Cursor actually launches the configured terminals.
 - Setup command:
 
 ```bash

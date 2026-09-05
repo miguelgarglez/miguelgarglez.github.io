@@ -10,6 +10,7 @@ Contexto del repo: sitio personal publicado en GitHub Pages. La home vive en Ast
 - `src/styles/global.css`: estilos globales de la home.
 - `cv-chat/`: sitio Astro.
 - `dist/`: salida generada de la home Astro, ignorada por git.
+- `.cursor/environment.json`: entorno de Cursor Cloud Agents (install, terminals, ports).
 - `.github/workflows/deploy.yml`: workflow de deploy (si aplica).
 - `.github/workflows/release-please.yml`: workflow de versionado semver y releases con PR.
 
