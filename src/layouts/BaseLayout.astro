@@ -41,10 +41,19 @@ const { title, jsonLd, ...seo } = Astro.props;
         const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
           ? "dark"
           : "light";
+        const THEME_KEY = "theme";
+        const LEGACY_THEME_KEY = "miguel-theme";
 
         try {
-          document.documentElement.dataset.theme =
-            localStorage.getItem("theme") || preferredTheme;
+          let stored = localStorage.getItem(THEME_KEY);
+          if (stored !== "light" && stored !== "dark") {
+            const legacy = localStorage.getItem(LEGACY_THEME_KEY);
+            if (legacy === "light" || legacy === "dark") {
+              localStorage.setItem(THEME_KEY, legacy);
+              stored = legacy;
+            }
+          }
+          document.documentElement.dataset.theme = stored || preferredTheme;
         } catch {
           document.documentElement.dataset.theme = preferredTheme;
         }
@@ -54,7 +63,12 @@ const { title, jsonLd, ...seo } = Astro.props;
   <body>
     <slot />
     <script>
-      const THEME_STORAGE_KEY = "theme";
+      import {
+        THEME_STORAGE_KEY,
+        THEME_STORAGE_KEY_LEGACY,
+        isStoredTheme,
+      } from "../../shared/theme";
+
       const DARK_THEME = "dark";
       const LIGHT_THEME = "light";
 
@@ -66,10 +80,21 @@ const { title, jsonLd, ...seo } = Astro.props;
           : LIGHT_THEME;
 
         try {
-          return localStorage.getItem(THEME_STORAGE_KEY) || systemTheme;
+          const stored = localStorage.getItem(THEME_STORAGE_KEY);
+          if (isStoredTheme(stored)) {
+            return stored;
+          }
+
+          const legacy = localStorage.getItem(THEME_STORAGE_KEY_LEGACY);
+          if (isStoredTheme(legacy)) {
+            localStorage.setItem(THEME_STORAGE_KEY, legacy);
+            return legacy;
+          }
         } catch {
-          return systemTheme;
+          // Fall through to system preference.
         }
+
+        return systemTheme;
       }
 
       function initializeThemeToggle(signal: AbortSignal) {
