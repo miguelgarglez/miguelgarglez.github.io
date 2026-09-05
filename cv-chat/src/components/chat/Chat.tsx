@@ -347,7 +347,7 @@ export default function Chat({
         <ConversationContent className="pb-6">
           {messages.length === 0 ? (
             <ConversationEmptyState
-              className="justify-start gap-5 pt-18 sm:justify-center sm:pt-8"
+              className="justify-start gap-5 pt-8 sm:justify-center sm:pt-8"
             >
               <div className="grid size-12 place-items-center rounded-full border border-border bg-background text-primary">
                 <MessageSquareIcon className="size-5" />
@@ -365,7 +365,7 @@ export default function Chat({
                   <button
                     type="button"
                     key={question}
-                    className="rounded-full border border-border bg-background/60 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-[color:var(--primary)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)]"
+                    className="min-h-10 rounded-full border border-border bg-background/60 px-3.5 py-2 text-sm text-muted-foreground transition-colors hover:border-[color:var(--primary)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)]"
                     onClick={() => setInput(question)}
                   >
                     <span>{question}</span>

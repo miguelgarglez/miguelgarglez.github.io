@@ -669,7 +669,8 @@ const roles = [
 
     .achievements.expanded {
         margin-top: 1.35rem;
-        max-height: 34rem;
+        /* Generous ceiling so long roles never clip; still animatable via max-height. */
+        max-height: 120rem;
         opacity: 1;
     }
 
