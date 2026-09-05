@@ -41,7 +41,7 @@ export type Project = {
   external?: boolean;
   description: string;
   sub?: string | ProjectSubLink;
-  links: ProjectLink[];
+  links?: ProjectLink[];
   stack: string[];
   status: string;
   year: number;
@@ -75,14 +75,6 @@ export const projects: Project[] = [
       href: "/cv-chat/#chat",
       after: ", a grounded LLM Q&A on top of my profile data.",
     },
-    links: [
-      { label: "Open project", href: "/cv-chat" },
-      {
-        label: "Public URL",
-        href: "https://miguelgarglez.com/cv-chat",
-        external: true,
-      },
-    ],
     stack: ["Astro", "TypeScript", "GSAP", "Cloudflare Worker"],
     status: "Active",
     year: 2026,
@@ -112,7 +104,7 @@ export const projects: Project[] = [
         alt: "Chat reply answering what kind of engineer Miguel is",
       },
     ],
-    liveUrl: "https://miguelgarglez.com/cv-chat",
+    liveUrl: "/cv-chat",
     caseStudyUrl: projectDetailPath("cv-chat"),
   },
   {
@@ -124,18 +116,6 @@ export const projects: Project[] = [
     description:
       "Local macOS CLI and TUI for turning YouTube videos into transcripts and structured digests.",
     sub: "Published on npm as a small local-first tool with agent-friendly JSON contracts and an Artifact Library on disk.",
-    links: [
-      {
-        label: "GitHub repository",
-        href: "https://github.com/miguelgarglez/video-digest",
-        external: true,
-      },
-      {
-        label: "npm package",
-        href: "https://www.npmjs.com/package/video-digest",
-        external: true,
-      },
-    ],
     stack: ["Bun", "TypeScript", "Python", "TUI"],
     status: "Active",
     year: 2026,
@@ -178,13 +158,6 @@ export const projects: Project[] = [
     description:
       "One product for a boutique studio: public schedule, member bookings, staff desk, and online packs — without stitching widgets.",
     sub: "Modular Next.js monolith with Supabase Auth, Prisma, and Stripe Checkout.",
-    links: [
-      {
-        label: "GitHub repository",
-        href: "https://github.com/miguelgarglez/wellstudio-platform",
-        external: true,
-      },
-    ],
     stack: ["Next.js", "TypeScript", "Prisma", "Supabase", "Stripe"],
     status: "Active",
     year: 2026,
@@ -241,18 +214,6 @@ export const projects: Project[] = [
     external: true,
     description:
       "Frontend case study with two UI flows: desktop dashboard and mobile-first request form.",
-    links: [
-      {
-        label: "Live demo",
-        href: "https://miguelgarglez.com/frontend-dual-layout-showcase",
-        external: true,
-      },
-      {
-        label: "GitHub",
-        href: "https://github.com/miguelgarglez/frontend-dual-layout-showcase",
-        external: true,
-      },
-    ],
     stack: ["React", "TypeScript", "Tailwind CSS", "Vitest"],
     status: "Active",
     year: 2025,
@@ -280,13 +241,6 @@ export const projects: Project[] = [
     external: true,
     description:
       "Open-source chart components library where I actively contribute as part of my day-to-day work.",
-    links: [
-      {
-        label: "GitHub repository",
-        href: "https://github.com/kubit-ui/kubit-react-charts",
-        external: true,
-      },
-    ],
     stack: ["React", "TypeScript", "Charts", "Open Source"],
     status: "Active",
     year: 2025,
@@ -313,13 +267,6 @@ export const projects: Project[] = [
     description:
       "Native macOS menu-bar app for tracking time on personal projects. Archived after personal use didn't stick.",
     sub: "Source remains public as a case study. The product landing is down.",
-    links: [
-      {
-        label: "GitHub",
-        href: "https://github.com/miguelgarglez/momentum",
-        external: true,
-      },
-    ],
     stack: ["Swift", "SwiftUI", "macOS"],
     status: "Archived",
     year: 2026,

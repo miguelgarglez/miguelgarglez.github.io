@@ -98,14 +98,39 @@ import AsciiField from "./AsciiField.astro";
             });
         }
 
-        if (prefersReducedMotion()) {
+        const revealHeroEntrance = () => {
+            document.documentElement.classList.add("hero-entrance-ready");
             document
-                .querySelectorAll("[data-hero-entrance]")
-                .forEach((element) => element.removeAttribute("style"));
+                .querySelectorAll(".hero [data-hero-entrance], .hero-scroll svg")
+                .forEach((element) => {
+                    if (!(element instanceof HTMLElement)) return;
+                    element.style.opacity = "1";
+                    element.style.transform = "none";
+                });
+        };
+
+        if (prefersReducedMotion()) {
+            revealHeroEntrance();
             return;
         }
 
-        const { gsap } = await getMotionTools();
+        // If GSAP never resolves (blocked/hung chunk), still show the copy.
+        const safetyId = window.setTimeout(revealHeroEntrance, 2000);
+
+        let gsap;
+        try {
+            ({ gsap } = await getMotionTools());
+        } catch {
+            window.clearTimeout(safetyId);
+            revealHeroEntrance();
+            return;
+        }
+
+        window.clearTimeout(safetyId);
+        // Safety already revealed the copy while GSAP was slow/hung — skip entrance.
+        if (document.documentElement.classList.contains("hero-entrance-ready")) {
+            return;
+        }
 
         /*
          * HERO ENTRANCE STORYBOARD
@@ -154,76 +179,86 @@ import AsciiField from "./AsciiField.astro";
             },
         };
 
-        gsap.set("[data-hero-entrance='name']", {
-            y: MOTION.name.y,
-            opacity: 0,
-        });
-        gsap.set("[data-hero-entrance='summary']", {
-            y: MOTION.summary.y,
-            opacity: 0,
-        });
-        gsap.set("[data-hero-entrance='meta']", {
-            y: MOTION.meta.y,
-            opacity: 0,
-        });
-        gsap.set("[data-hero-entrance='scroll-label']", {
-            y: MOTION.scrollLabel.y,
-            opacity: 0,
-        });
-        gsap.set(".hero-scroll svg", {
-            y: MOTION.scrollArrow.y,
-            opacity: 0,
-        });
+        try {
+            gsap.set("[data-hero-entrance='name']", {
+                y: MOTION.name.y,
+                opacity: 0,
+            });
+            gsap.set("[data-hero-entrance='summary']", {
+                y: MOTION.summary.y,
+                opacity: 0,
+            });
+            gsap.set("[data-hero-entrance='meta']", {
+                y: MOTION.meta.y,
+                opacity: 0,
+            });
+            gsap.set("[data-hero-entrance='scroll-label']", {
+                y: MOTION.scrollLabel.y,
+                opacity: 0,
+            });
+            gsap.set(".hero-scroll svg", {
+                y: MOTION.scrollArrow.y,
+                opacity: 0,
+            });
 
-        const tl = gsap.timeline({ defaults: { ease: MOTION.enterEase } });
+            const tl = gsap.timeline({
+                defaults: { ease: MOTION.enterEase },
+                onComplete: () => {
+                    document.documentElement.classList.add("hero-entrance-ready");
+                },
+            });
 
-        tl.to(
-            "[data-hero-entrance='name']",
-            {
-                y: 0,
-                opacity: 1,
-                duration: MOTION.name.duration,
-            },
-            TIMING.name,
-        )
-            .to(
-                "[data-hero-entrance='summary']",
+            tl.to(
+                "[data-hero-entrance='name']",
                 {
                     y: 0,
                     opacity: 1,
-                    duration: MOTION.summary.duration,
+                    duration: MOTION.name.duration,
                 },
-                TIMING.summary,
+                TIMING.name,
             )
-            .to(
-                "[data-hero-entrance='meta']",
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: MOTION.meta.duration,
-                    stagger: MOTION.meta.stagger,
-                },
-                TIMING.meta,
-            )
-            .to(
-                "[data-hero-entrance='scroll-label']",
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: MOTION.scrollLabel.duration,
-                },
-                TIMING.scrollLabel,
-            )
-            .to(
-                ".hero-scroll svg",
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: MOTION.scrollArrow.duration,
-                    ease: MOTION.settleEase,
-                },
-                TIMING.scrollArrow,
-            );
+                .to(
+                    "[data-hero-entrance='summary']",
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: MOTION.summary.duration,
+                    },
+                    TIMING.summary,
+                )
+                .to(
+                    "[data-hero-entrance='meta']",
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: MOTION.meta.duration,
+                        stagger: MOTION.meta.stagger,
+                    },
+                    TIMING.meta,
+                )
+                .to(
+                    "[data-hero-entrance='scroll-label']",
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: MOTION.scrollLabel.duration,
+                    },
+                    TIMING.scrollLabel,
+                )
+                .to(
+                    ".hero-scroll svg",
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: MOTION.scrollArrow.duration,
+                        ease: MOTION.settleEase,
+                    },
+                    TIMING.scrollArrow,
+                );
+        } catch {
+            window.clearTimeout(safetyId);
+            revealHeroEntrance();
+        }
     });
 </script>
 
@@ -234,7 +269,7 @@ import AsciiField from "./AsciiField.astro";
         overflow: clip;
     }
 
-    :global(.js) .hero [data-hero-entrance] {
+    :global(.js):not(.hero-entrance-ready) .hero [data-hero-entrance] {
         opacity: 0;
     }
 

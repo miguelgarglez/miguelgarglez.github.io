@@ -867,7 +867,8 @@ h1 {
   stroke-linejoin: round;
 }
 
-.project-title a:hover .project-arrow {
+.project-title a:hover .project-arrow,
+.project-links a:hover .project-arrow {
   opacity: 1;
   transform: translate(1px, -1px);
 }
