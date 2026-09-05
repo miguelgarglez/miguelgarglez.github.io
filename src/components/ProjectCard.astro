@@ -48,7 +48,7 @@ const actionLinks = getProjectActionLinks(project);
               target={link.external ? "_blank" : undefined}
               rel={link.external ? "noopener noreferrer" : undefined}
             >
-              {link.label}{link.external ? <ExternalArrow /> : null}
+              {link.label}<ExternalArrow />
             </a>
           ))}
         </div>
