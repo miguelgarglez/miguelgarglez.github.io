@@ -41,7 +41,9 @@ const navLinks = [
             aria-label="Section navigation"
             hidden
         >
-            {navLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+            <div class="site-links-mobile-panel">
+                {navLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+            </div>
         </nav>
     </div>
 </header>
@@ -53,6 +55,26 @@ const navLinks = [
         const toggle = document.querySelector("[data-nav-menu-toggle]");
         const menu = document.querySelector("[data-nav-menu]");
         const label = document.querySelector("[data-nav-menu-label]");
+        const reduceMotion = prefersReducedMotion();
+        const closeMs = reduceMotion ? 0 : 180;
+        let closeTimer = 0;
+
+        const setLabel = (open) => {
+            if (!(label instanceof HTMLElement)) return;
+            const next = open ? "Close" : "Menu";
+            if (label.textContent === next) return;
+
+            if (reduceMotion) {
+                label.textContent = next;
+                return;
+            }
+
+            label.dataset.swapping = "true";
+            window.setTimeout(() => {
+                label.textContent = next;
+                label.dataset.swapping = "false";
+            }, 70);
+        };
 
         const setMenuOpen = (open) => {
             if (
@@ -63,10 +85,30 @@ const navLinks = [
                 return;
             }
 
+            const isOpen = toggle.getAttribute("aria-expanded") === "true";
+            if (open === isOpen && !(open && menu.hidden)) return;
+
+            window.clearTimeout(closeTimer);
             toggle.setAttribute("aria-expanded", String(open));
-            label.textContent = open ? "Close" : "Menu";
-            menu.toggleAttribute("data-open", open);
-            menu.hidden = !open;
+            setLabel(open);
+
+            if (open) {
+                menu.hidden = false;
+                menu.setAttribute("aria-hidden", "false");
+                // Two frames so the closed styles paint before opening.
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        menu.toggleAttribute("data-open", true);
+                    });
+                });
+                return;
+            }
+
+            menu.toggleAttribute("data-open", false);
+            menu.setAttribute("aria-hidden", "true");
+            closeTimer = window.setTimeout(() => {
+                menu.hidden = true;
+            }, closeMs);
         };
 
         if (
@@ -75,6 +117,7 @@ const navLinks = [
             label instanceof HTMLElement
         ) {
             toggle.hidden = false;
+            menu.setAttribute("aria-hidden", "true");
             setMenuOpen(false);
 
             toggle.addEventListener("click", () => {
@@ -99,7 +142,7 @@ const navLinks = [
             });
         }
 
-        if (prefersReducedMotion()) {
+        if (reduceMotion) {
             return;
         }
 
@@ -204,6 +247,15 @@ const navLinks = [
         transition: color 180ms var(--ease-out-quart);
     }
 
+    .site-menu-toggle [data-nav-menu-label] {
+        display: inline-block;
+        transition: opacity 70ms var(--ease-out-quart);
+    }
+
+    .site-menu-toggle [data-nav-menu-label][data-swapping="true"] {
+        opacity: 0;
+    }
+
     .site-menu-toggle:focus-visible,
     .site-brand:focus-visible,
     .site-links a:focus-visible {
@@ -224,26 +276,56 @@ const navLinks = [
 
         .site-links--mobile {
             display: grid;
-            gap: 0.15rem;
-            margin-top: 0.7rem;
-            padding: 0.35rem 0 0.15rem;
-            border-top: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+            grid-template-rows: 0fr;
+            margin-top: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition:
+                grid-template-rows 200ms var(--ease-out-quart),
+                margin-top 200ms var(--ease-out-quart),
+                opacity 140ms var(--ease-out-quart);
+        }
+
+        .site-links--mobile[data-open] {
+            grid-template-rows: 1fr;
+            margin-top: 0.65rem;
+            opacity: 1;
+            pointer-events: auto;
+            transition:
+                grid-template-rows 220ms var(--ease-out-quart),
+                margin-top 220ms var(--ease-out-quart),
+                opacity 160ms var(--ease-out-quart);
         }
 
         .site-links--mobile[hidden] {
             display: none;
         }
 
+        .site-links-mobile-panel {
+            overflow: hidden;
+            min-height: 0;
+            display: grid;
+            gap: 0.1rem;
+            padding: 0.3rem 0 0.1rem;
+            border-top: 1px solid transparent;
+            transition: border-color 180ms var(--ease-out-quart);
+        }
+
+        .site-links--mobile[data-open] .site-links-mobile-panel {
+            border-top-color: color-mix(in srgb, var(--border) 80%, transparent);
+        }
+
         .site-links--mobile a {
             display: block;
-            padding: 0.55rem 0.1rem;
+            padding: 0.52rem 0.1rem;
             font-size: 0.84rem;
             opacity: 0;
-            transform: translateY(-4px);
+            transform: translateY(-6px);
             transition:
-                color 180ms var(--ease-out-quart),
-                opacity 220ms var(--ease-out-quart),
-                transform 220ms var(--ease-out-quart);
+                color 160ms var(--ease-out-quart),
+                opacity 140ms var(--ease-out-quart),
+                transform 160ms var(--ease-out-quart);
+            transition-delay: 0ms;
         }
 
         .site-links--mobile[data-open] a {
@@ -252,19 +334,19 @@ const navLinks = [
         }
 
         .site-links--mobile[data-open] a:nth-child(1) {
-            transition-delay: 20ms;
+            transition-delay: 30ms;
         }
         .site-links--mobile[data-open] a:nth-child(2) {
-            transition-delay: 45ms;
+            transition-delay: 48ms;
         }
         .site-links--mobile[data-open] a:nth-child(3) {
-            transition-delay: 70ms;
+            transition-delay: 66ms;
         }
         .site-links--mobile[data-open] a:nth-child(4) {
-            transition-delay: 95ms;
+            transition-delay: 84ms;
         }
         .site-links--mobile[data-open] a:nth-child(5) {
-            transition-delay: 120ms;
+            transition-delay: 102ms;
         }
     }
 
@@ -283,10 +365,17 @@ const navLinks = [
     }
 
     @media (prefers-reduced-motion: reduce) {
+        .site-links--mobile,
+        .site-links--mobile[data-open],
+        .site-links-mobile-panel,
+        .site-links--mobile a,
+        .site-menu-toggle [data-nav-menu-label] {
+            transition: none;
+        }
+
         .site-links--mobile a {
             opacity: 1;
             transform: none;
-            transition: color 180ms var(--ease-out-quart);
         }
     }
 </style>
