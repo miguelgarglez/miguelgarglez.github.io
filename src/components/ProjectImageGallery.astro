@@ -31,31 +31,32 @@ const dialogLabelId = `${galleryId}-dialog-label`;
         {label}
       </p>
 
-      <div class="project-gallery-grid" role="list">
+      <ul class="project-gallery-grid">
         {images.map((image, index) => (
-          <button
-            type="button"
-            class="project-gallery-thumb"
-            role="listitem"
-            data-gallery-open
-            data-index={String(index)}
-            data-src={image.fullSrc ?? image.src}
-            data-alt={image.alt}
-            aria-haspopup="dialog"
-            aria-label={`View larger: ${image.alt}`}
-          >
-            <img src={image.src} alt="" loading="lazy" decoding="async" draggable="false" />
-            <span class="project-gallery-expand" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="15 3 21 3 21 9"></polyline>
-                <polyline points="9 21 3 21 3 15"></polyline>
-                <line x1="21" y1="3" x2="14" y2="10"></line>
-                <line x1="3" y1="21" x2="10" y2="14"></line>
-              </svg>
-            </span>
-          </button>
+          <li>
+            <button
+              type="button"
+              class="project-gallery-thumb"
+              data-gallery-open
+              data-index={String(index)}
+              data-src={image.fullSrc ?? image.src}
+              data-alt={image.alt}
+              aria-haspopup="dialog"
+              aria-label={`View larger: ${image.alt}`}
+            >
+              <img src={image.src} alt="" loading="lazy" decoding="async" draggable="false" />
+              <span class="project-gallery-expand" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <polyline points="9 21 3 21 3 15"></polyline>
+                  <line x1="21" y1="3" x2="14" y2="10"></line>
+                  <line x1="3" y1="21" x2="10" y2="14"></line>
+                </svg>
+              </span>
+            </button>
+          </li>
         ))}
-      </div>
+      </ul>
 
       <template data-gallery-lightbox-template>
         <div
@@ -150,6 +151,9 @@ const dialogLabelId = `${galleryId}-dialog-label`;
   }
 
   .project-gallery-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.55rem;
@@ -158,6 +162,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
   .project-gallery-thumb {
     position: relative;
     display: block;
+    width: 100%;
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -260,9 +265,10 @@ const dialogLabelId = `${galleryId}-dialog-label`;
     --lightbox-nav-size: 2.5rem;
     --lightbox-nav-inset: clamp(0.6rem, 2vw, 1.2rem);
     --lightbox-side-gutter: calc(var(--lightbox-nav-inset) + var(--lightbox-nav-size) + 0.75rem);
+    --lightbox-stage-max-height: min(72vh, calc(100dvh - 10.5rem));
     position: fixed;
     inset: 0;
-    z-index: 200;
+    z-index: 300;
     display: grid;
     place-items: center;
     padding: clamp(4.5rem, 10vh, 6rem) var(--lightbox-side-gutter) clamp(5.5rem, 12vh, 7rem);
@@ -317,7 +323,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
     font-size: 0.72rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--selection-ink) 72%, transparent);
+    color: color-mix(in srgb, var(--selection-ink) 88%, transparent);
   }
 
   .project-lightbox-close,
@@ -397,13 +403,13 @@ const dialogLabelId = `${galleryId}-dialog-label`;
     /* Explicit vw calc keeps the stage between nav gutters (avoids %/grid circular sizing). */
     width: min(
       calc(100vw - 2 * var(--lightbox-side-gutter)),
-      calc(72vh * 1.6),
+      calc(var(--lightbox-stage-max-height) * 1.6),
       1080px
     );
     max-width: 100%;
     min-width: 0;
     justify-self: center;
-    max-height: 72vh;
+    max-height: var(--lightbox-stage-max-height);
     transform-origin: center center;
     will-change: transform, opacity;
     opacity: 0;
@@ -412,7 +418,7 @@ const dialogLabelId = `${galleryId}-dialog-label`;
   .project-lightbox-stage img {
     display: block;
     width: 100%;
-    max-height: 72vh;
+    max-height: var(--lightbox-stage-max-height);
     height: auto;
     aspect-ratio: 16 / 10;
     object-fit: contain;
@@ -433,26 +439,27 @@ const dialogLabelId = `${galleryId}-dialog-label`;
 
   .project-lightbox-thumbs {
     position: absolute;
-    bottom: clamp(0.85rem, 2.4vw, 1.4rem);
+    bottom: max(0.85rem, env(safe-area-inset-bottom, 0px));
     left: 50%;
     display: flex;
     gap: 0.4rem;
     max-width: min(92vw, 420px);
-    padding: 0.35rem;
+    padding: 0.4rem;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     transform: translateX(-50%);
     border: 1px solid color-mix(in srgb, var(--selection-ink) 14%, transparent);
-    background: color-mix(in srgb, var(--selection-bg) 70%, transparent);
+    background: color-mix(in srgb, var(--selection-bg) 78%, transparent);
     pointer-events: auto;
   }
 
   .project-lightbox-thumb {
     flex: 0 0 auto;
-    width: 3.4rem;
+    width: 3.75rem;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    border: 1px solid transparent;
+    border: 2px solid transparent;
     background: transparent;
     cursor: pointer;
     opacity: 0.55;
@@ -476,12 +483,38 @@ const dialogLabelId = `${galleryId}-dialog-label`;
 
   @media (max-width: 720px) {
     .project-lightbox {
-      /* Nav arrows hide below this breakpoint; reclaim the side gutters. */
-      padding: 4.5rem 1rem 5.5rem;
+      /*
+        Nav arrows hide below this breakpoint — also reset the gutter variable
+        used by stage width, otherwise the image opens smaller than the thumb.
+      */
+      --lightbox-side-gutter: max(0.5rem, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+      --lightbox-stage-max-height: min(82dvh, calc(100dvh - 8.5rem));
+      padding:
+        max(3.25rem, calc(env(safe-area-inset-top, 0px) + 2.6rem))
+        var(--lightbox-side-gutter)
+        max(4.75rem, calc(env(safe-area-inset-bottom, 0px) + 3.75rem));
+    }
+
+    .project-lightbox-backdrop {
+      background: color-mix(in srgb, var(--selection-bg) 94%, transparent);
+    }
+
+    .project-lightbox-chrome {
+      top: max(0.65rem, calc(env(safe-area-inset-top, 0px) + 0.4rem));
+      left: max(0.65rem, env(safe-area-inset-left, 0px));
+      right: max(0.65rem, env(safe-area-inset-right, 0px));
     }
 
     .project-lightbox-nav {
       display: none;
+    }
+
+    .project-lightbox-thumb {
+      width: 4.25rem;
+    }
+
+    .project-lightbox-stage img {
+      box-shadow: 0 18px 48px -24px rgba(0, 0, 0, 0.65);
     }
   }
 

@@ -81,7 +81,7 @@ body {
 }
 
 .sidebar.is-scrolled {
-  opacity: 0.45;
+  opacity: 0.62;
 }
 
 .sidebar:hover,
@@ -637,6 +637,12 @@ body[data-menu-open="true"] {
   color: var(--accent);
 }
 
+.home-copy a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
 .home-link-grid {
   margin-top: clamp(1.6rem, 3vw, 2.4rem);
   display: grid;
@@ -719,6 +725,12 @@ body[data-menu-open="true"] {
 .home-socials a:hover {
   color: var(--ink);
   border-color: currentColor;
+}
+
+.home-socials a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
 }
 
 h1 {
@@ -825,7 +837,8 @@ h1 {
   color: var(--accent);
 }
 
-.project-title a:focus-visible {
+.project-title a:focus-visible,
+.reference-title a:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 4px;
@@ -882,6 +895,12 @@ h1 {
   text-underline-offset: 2px;
 }
 
+.project-sub a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
 .project-links {
   margin: 0.9rem 0 0;
   display: flex;
@@ -929,6 +948,12 @@ h1 {
   border-color: currentColor;
 }
 
+.text-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
 .stack {
   list-style: none;
   margin: 0.9rem 0 0;
@@ -961,6 +986,23 @@ h1 {
 .detail-hero {
   padding: clamp(2rem, 6vw, 5.2rem) 0 clamp(1.5rem, 3vw, 2.4rem);
   max-width: 760px;
+}
+
+.detail-back {
+  margin: 0 0 1.1rem;
+}
+
+.detail-back .text-link {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.detail-back .text-link:hover,
+.detail-back .text-link:focus-visible {
+  color: var(--accent);
 }
 
 .project-detail .detail-hero h1 {
@@ -1339,6 +1381,12 @@ h1 {
   color: var(--accent);
 }
 
+.post-body a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
 .post-end-matter {
   max-width: 720px;
 }
@@ -1371,6 +1419,13 @@ h1 {
 
 .post-end-title a:hover {
   color: var(--accent);
+}
+
+.post-end-title a:focus-visible,
+.post-end-links a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
 }
 
 .post-end-divider {

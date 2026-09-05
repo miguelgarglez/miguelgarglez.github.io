@@ -124,12 +124,38 @@ const { title, jsonLd, ...seo } = Astro.props;
 
         document.body.append(menuPanel);
         const menuClose = menuPanel.querySelector("[data-menu-close]");
+        const pageRoot =
+          document.querySelector<HTMLElement>("main") ??
+          document.querySelector<HTMLElement>(".layout") ??
+          null;
         let closeTimer = 0;
+        let returnFocusEl: HTMLElement | null = null;
+
+        const focusableSelector =
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+        const getFocusable = () =>
+          [...menuPanel.querySelectorAll<HTMLElement>(focusableSelector)].filter(
+            (el) => !el.hasAttribute("disabled") && el.getAttribute("aria-hidden") !== "true",
+          );
+
+        const setPageInert = (inert: boolean) => {
+          if (!pageRoot) return;
+          if (inert) {
+            pageRoot.setAttribute("inert", "");
+            pageRoot.setAttribute("aria-hidden", "true");
+          } else {
+            pageRoot.removeAttribute("inert");
+            pageRoot.removeAttribute("aria-hidden");
+          }
+        };
 
         const openMenu = () => {
+          returnFocusEl = document.activeElement as HTMLElement | null;
           menuPanel.hidden = false;
           menuTrigger.setAttribute("aria-expanded", "true");
           document.body.dataset.menuOpen = "true";
+          setPageInert(true);
           requestAnimationFrame(() => {
             menuPanel.setAttribute("data-open", "true");
             const firstTarget =
@@ -143,12 +169,14 @@ const { title, jsonLd, ...seo } = Astro.props;
           menuPanel.removeAttribute("data-open");
           menuTrigger.setAttribute("aria-expanded", "false");
           delete document.body.dataset.menuOpen;
+          setPageInert(false);
           window.clearTimeout(closeTimer);
           closeTimer = window.setTimeout(() => {
             if (!menuPanel.hasAttribute("data-open")) {
               menuPanel.hidden = true;
             }
           }, 180);
+          (returnFocusEl ?? (menuTrigger as HTMLElement)).focus({ preventScroll: true });
         };
 
         menuTrigger.addEventListener("click", () => {
@@ -169,13 +197,39 @@ const { title, jsonLd, ...seo } = Astro.props;
         }, { signal });
 
         window.addEventListener("keydown", (event) => {
-          if (event.key === "Escape" && !menuPanel.hidden) {
+          if (menuPanel.hidden) return;
+
+          if (event.key === "Escape") {
+            event.preventDefault();
             closeMenu();
-            (menuTrigger as HTMLElement).focus({ preventScroll: true });
+            return;
+          }
+
+          if (event.key !== "Tab") return;
+
+          const focusable = getFocusable();
+          if (focusable.length === 0) {
+            event.preventDefault();
+            return;
+          }
+
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          const active = document.activeElement as HTMLElement | null;
+
+          if (event.shiftKey && active === first) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && active === last) {
+            event.preventDefault();
+            first.focus();
           }
         }, { signal });
 
-        signal.addEventListener("abort", () => window.clearTimeout(closeTimer), { once: true });
+        signal.addEventListener("abort", () => {
+          window.clearTimeout(closeTimer);
+          setPageInert(false);
+        }, { once: true });
       }
 
       function initializeReadingProgress(signal: AbortSignal) {
