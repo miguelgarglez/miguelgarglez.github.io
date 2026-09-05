@@ -7,8 +7,9 @@ import ThemeToggle from "../../components/ThemeToggle.astro";
 import ProjectImageGallery from "../../components/ProjectImageGallery.astro";
 import { projects } from "../../data/projects";
 import type { Project } from "../../data/projects";
+import { getProjectActionLinks } from "../../lib/project-links";
 import { getPostsForProject } from "../../lib/post-relations";
-import { pageTitle } from "../../../shared/seo/config";
+import { absoluteUrl, pageTitle } from "../../../shared/seo/config";
 import { breadcrumbSchema, creativeWorkSchema } from "../../lib/seo-schemas";
 
 export async function getStaticPaths() {
@@ -32,17 +33,7 @@ const sectionId = (title: string) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "")}-title`;
-const seenHrefs = new Set<string>();
-const detailLinks = [
-  project.showcaseUrl && { label: "Product showcase", href: project.showcaseUrl },
-  project.liveUrl && { label: "Live preview", href: project.liveUrl },
-  project.repositoryUrl && { label: "Repository", href: project.repositoryUrl },
-].filter((link): link is { label: string; href: string } => {
-  if (!link) return false;
-  if (seenHrefs.has(link.href)) return false;
-  seenHrefs.add(link.href);
-  return true;
-});
+const detailLinks = getProjectActionLinks(project);
 const ogImage = `/og/projects/${project.slug}.png`;
 ---
 
@@ -58,7 +49,11 @@ const ogImage = `/og/projects/${project.slug}.png`;
       description: project.summary,
       slug: project.slug,
       year: String(project.year),
-      url: project.liveUrl,
+      url: project.liveUrl
+        ? project.liveUrl.startsWith("http")
+          ? project.liveUrl
+          : absoluteUrl(project.liveUrl)
+        : undefined,
     }),
     breadcrumbSchema([
       { name: "Home", path: "/" },
@@ -131,7 +126,11 @@ const ogImage = `/og/projects/${project.slug}.png`;
               <p class="section-label" id="project-links-title">Links</p>
               <div class="project-links">
                 {detailLinks.map((link) => (
-                  <a href={link.href} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={link.href}
+                    target={link.external ? "_blank" : undefined}
+                    rel={link.external ? "noopener noreferrer" : undefined}
+                  >
                     {link.label}
                   </a>
                 ))}

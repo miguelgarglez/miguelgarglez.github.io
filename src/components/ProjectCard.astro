@@ -1,6 +1,10 @@
 ---
 import ExternalArrow from "./ExternalArrow.astro";
 import type { Project } from "../data/projects";
+import {
+  getProjectActionLinks,
+  getProjectDetailHref,
+} from "../lib/project-links";
 
 type Props = {
   project: Project;
@@ -9,17 +13,16 @@ type Props = {
 
 const { project, index } = Astro.props;
 const projectIndex = String(index + 1).padStart(2, "0");
-const titleTarget = project.external
-  ? { target: "_blank", rel: "noopener noreferrer" }
-  : {};
+const detailHref = getProjectDetailHref(project);
+const actionLinks = getProjectActionLinks(project);
 ---
 
 <li class="project">
   <p class="project-index">{projectIndex}</p>
   <div>
     <h2 class="project-title">
-      <a href={project.href} {...titleTarget}>
-        {project.title}<ExternalArrow />
+      <a href={detailHref}>
+        {project.title}
       </a>
     </h2>
     <p class="project-description">{project.description}</p>
@@ -36,24 +39,21 @@ const titleTarget = project.external
         </p>
       )
     }
-    <div class="project-links">
-      {
-        project.caseStudyUrl && (
-          <a href={project.caseStudyUrl}>View details</a>
-        )
-      }
-      {
-        project.links.map((link) => (
-          <a
-            href={link.href}
-            target={link.external ? "_blank" : undefined}
-            rel={link.external ? "noopener noreferrer" : undefined}
-          >
-            {link.label}
-          </a>
-        ))
-      }
-    </div>
+    {
+      actionLinks.length > 0 && (
+        <div class="project-links">
+          {actionLinks.map((link) => (
+            <a
+              href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noopener noreferrer" : undefined}
+            >
+              {link.label}{link.external ? <ExternalArrow /> : null}
+            </a>
+          ))}
+        </div>
+      )
+    }
     <ul class="stack" aria-label="Tech stack">
       {project.stack.map((item) => <li>{item}</li>)}
     </ul>
