@@ -133,8 +133,8 @@ export default function Chat({
         className="font-medium underline underline-offset-2 hover:no-underline"
       >
         X
-      </a>{' '}
-      or{' '}
+      </a>
+      ,{' '}
       <a
         href="https://www.linkedin.com/in/miguel-garciag"
         target="_blank"
@@ -142,6 +142,13 @@ export default function Chat({
         className="font-medium underline underline-offset-2 hover:no-underline"
       >
         LinkedIn
+      </a>
+      , or open{' '}
+      <a
+        href="#contact"
+        className="font-medium underline underline-offset-2 hover:no-underline"
+      >
+        Contact
       </a>
       .
     </span>
@@ -307,7 +314,7 @@ export default function Chat({
     [primaryApiUrl, secondaryApiUrl]
   );
 
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, regenerate, clearError } = useChat({
     transport,
     onError: () => {
       setChatError((previous) => previous ?? 'retryable');
@@ -315,6 +322,9 @@ export default function Chat({
   });
   const isBusy = status === 'submitted' || status === 'streaming';
   const submitStatus = isBusy ? status : 'ready';
+  const canRetry =
+    Boolean(chatError) &&
+    (messages.length > 0 || lastSubmittedText.trim().length > 0);
   const suggestedQuestions = [
     'What kind of engineer is Miguel?',
     'How does Miguel use AI in engineering?',
@@ -331,10 +341,52 @@ export default function Chat({
     const trimmed = message.text?.trim();
     if (!trimmed || isBusy) return;
     setChatError(null);
+    setRetryAfterSeconds(null);
     setLastSubmittedText(trimmed);
     sendMessage({ text: trimmed });
     setInput('');
   };
+
+  const handleRetry = () => {
+    if (isBusy || !canRetry) return;
+
+    const prompt = lastSubmittedText.trim();
+    setChatError(null);
+    setRetryAfterSeconds(null);
+    clearError();
+
+    if (messages.length > 0) {
+      void regenerate();
+      return;
+    }
+
+    if (!prompt) return;
+    setInput('');
+    void sendMessage({ text: prompt });
+  };
+
+  const renderErrorActions = () => (
+    <div className="mt-3 flex flex-wrap items-center gap-2">
+      {canRetry ? (
+        <button
+          type="button"
+          onClick={handleRetry}
+          disabled={isBusy}
+          className="inline-flex min-h-9 items-center justify-center rounded-[var(--radius-md)] border border-destructive/50 bg-background px-3 py-1.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)] disabled:pointer-events-none disabled:opacity-50"
+        >
+          Retry
+        </button>
+      ) : null}
+      {chatError === 'unavailable' || chatError === 'providerQuotaExceeded' ? (
+        <a
+          href="#contact"
+          className="inline-flex min-h-9 items-center justify-center rounded-[var(--radius-md)] border border-destructive/30 px-3 py-1.5 text-sm font-medium text-destructive underline-offset-2 transition-colors hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)]"
+        >
+          Contact
+        </a>
+      ) : null}
+    </div>
+  );
 
   return (
     <div
@@ -389,44 +441,60 @@ export default function Chat({
             ))
           )}
           {chatError === 'retryable' && (
-            <div className="mt-2 w-fit rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              Something went wrong while contacting the chat provider. Please
-              try again. {contactHint}
+            <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              <p>
+                Something went wrong while contacting the chat provider. Please
+                try again. {contactHint}
+              </p>
+              {renderErrorActions()}
             </div>
           )}
           {chatError === 'providerRateLimited' && (
-            <div className="mt-2 w-fit rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              The chat provider is rate-limited right now.
-              {retryAfterSeconds !== null
-                ? ` Please retry in about ${Math.max(1, Math.ceil(retryAfterSeconds))} seconds.`
-                : ' Please retry in a moment.'}{' '}
-              {contactHint}
+            <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              <p>
+                The chat provider is rate-limited right now.
+                {retryAfterSeconds !== null
+                  ? ` Please retry in about ${Math.max(1, Math.ceil(retryAfterSeconds))} seconds.`
+                  : ' Please retry in a moment.'}{' '}
+                {contactHint}
+              </p>
+              {renderErrorActions()}
             </div>
           )}
           {chatError === 'workerRateLimited' && (
-            <div className="mt-2 w-fit rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              Too many messages in a short time.
-              {retryAfterSeconds !== null
-                ? ` Please retry in about ${Math.max(1, Math.ceil(retryAfterSeconds))} seconds.`
-                : ' Please wait a moment and try again.'}{' '}
-              {contactHint}
+            <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              <p>
+                Too many messages in a short time.
+                {retryAfterSeconds !== null
+                  ? ` Please retry in about ${Math.max(1, Math.ceil(retryAfterSeconds))} seconds.`
+                  : ' Please wait a moment and try again.'}{' '}
+                {contactHint}
+              </p>
+              {renderErrorActions()}
             </div>
           )}
           {chatError === 'providerQuotaExceeded' && (
-            <div className="mt-2 w-fit rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              The chat provider quota is currently exhausted. Please try again
-              later. {contactHint}
+            <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              <p>
+                The chat provider quota is currently exhausted. Please try again
+                later. {contactHint}
+              </p>
+              {renderErrorActions()}
             </div>
           )}
           {chatError === 'timeout' && (
-            <div className="mt-2 w-fit rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              The chat provider is taking too long to respond. Please try
-              again. {contactHint}
+            <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              <p>
+                The chat provider is taking too long to respond. Please try
+                again. {contactHint}
+              </p>
+              {renderErrorActions()}
             </div>
           )}
           {chatError === 'unavailable' && (
-            <div className="mt-2 w-fit rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              The chat is currently unavailable. {contactHint}
+            <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              <p>The chat is currently unavailable. {contactHint}</p>
+              {renderErrorActions()}
             </div>
           )}
           {status === 'submitted' && (
