@@ -643,6 +643,10 @@ body[data-menu-open="true"] {
   border-radius: 3px;
 }
 
+.home-copy-aside {
+  color: var(--ink-faint, var(--ink-muted));
+}
+
 .home-link-grid {
   margin-top: clamp(1.6rem, 3vw, 2.4rem);
   display: grid;
