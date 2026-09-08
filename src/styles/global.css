@@ -1669,7 +1669,8 @@ h1 {
     transform 280ms var(--ease-out);
 }
 
-.person-portrait--mark {
+.person-portrait--mark,
+.person-portrait--graphic {
   filter: none;
   transform: none;
 }
@@ -1701,9 +1702,11 @@ h1 {
 }
 
 .person-card:hover .person-portrait--mark,
-.person-card:focus-within .person-portrait--mark {
+.person-card:focus-within .person-portrait--mark,
+.person-card:hover .person-portrait--graphic,
+.person-card:focus-within .person-portrait--graphic {
   filter: none;
-  transform: none;
+  transform: scale(1.04);
 }
 
 .person-card-body {
