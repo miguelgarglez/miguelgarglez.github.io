@@ -127,7 +127,7 @@ export const people: PersonReference[] = [
       "High-craft frontend execution",
     ],
     featured: true,
-    image: "/people/emil-kowalski.jpg",
+    // Prefer monogram: his public avatars are abstract gradients, not portraits.
     monogram: "EK",
   },
   {
