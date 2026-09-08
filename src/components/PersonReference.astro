@@ -20,6 +20,8 @@ const monogram =
 
 const mark = getPersonMark(person.slug);
 const portrait = mark ? undefined : getPersonPortrait(person.slug);
+const graphicPortrait =
+  !mark && portrait && person.portraitTreatment === "graphic";
 const detail = variant === "detail";
 ---
 
@@ -44,7 +46,10 @@ const detail = variant === "detail";
         />
       ) : portrait ? (
         <Picture
-          class="person-portrait"
+          class:list={[
+            "person-portrait",
+            graphicPortrait && "person-portrait--graphic",
+          ]}
           src={portrait}
           formats={["avif", "webp"]}
           fallbackFormat="webp"

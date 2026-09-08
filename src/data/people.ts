@@ -17,6 +17,11 @@ export type PersonReference = {
   featured: boolean;
   /** Short mark used when no raster/SVG asset exists under src/assets/people. */
   monogram?: string;
+  /**
+   * How to render a local portrait under `src/assets/people`.
+   * `graphic` skips the editorial grayscale so abstract X avatars (gradients, marks) stay readable.
+   */
+  portraitTreatment?: "photo" | "graphic";
 };
 
 export const people: PersonReference[] = [
@@ -36,6 +41,7 @@ export const people: PersonReference[] = [
     ],
     featured: true,
     monogram: "BT",
+    portraitTreatment: "photo",
   },
   {
     slug: "gergely-orosz",
@@ -121,6 +127,7 @@ export const people: PersonReference[] = [
     ],
     featured: true,
     monogram: "EK",
+    portraitTreatment: "graphic",
   },
   {
     slug: "shadcn",
