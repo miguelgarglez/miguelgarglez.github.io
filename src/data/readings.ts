@@ -60,8 +60,8 @@ export const readings: Reading[] = [
   },
   {
     slug: "same-as-ever",
-    title: "Lo que nunca cambia",
-    subtitle: "Same as Ever — A Guide to What Never Changes",
+    title: "Same as Ever",
+    subtitle: "A Guide to What Never Changes",
     author: "Morgan Housel",
     href: "https://www.penguinrandomhouse.com/books/672339/same-as-ever-by-morgan-housel/",
     type: "book",
