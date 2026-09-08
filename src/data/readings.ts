@@ -13,7 +13,7 @@ export type Reading = {
   note: string;
   tags: string[];
   featured: boolean;
-  /** ISBN used when curating a cover into src/assets/readings/<slug>. */
+  /** ISBN used when curating a cover into src/assets/readings/<slug>.webp. */
   isbn?: string;
 };
 

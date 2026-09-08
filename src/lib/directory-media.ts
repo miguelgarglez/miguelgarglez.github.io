@@ -3,7 +3,7 @@ import type { ImageMetadata } from "astro";
 type EagerImageModule = { default: ImageMetadata };
 
 const personPortraits = import.meta.glob<EagerImageModule>(
-  "../assets/people/*.{jpg,jpeg,png,webp,avif}",
+  "../assets/people/*.{webp,avif,png}",
   { eager: true },
 );
 
@@ -13,7 +13,7 @@ const personMarks = import.meta.glob<EagerImageModule>(
 );
 
 const readingCovers = import.meta.glob<EagerImageModule>(
-  "../assets/readings/*.{jpg,jpeg,png,webp,avif}",
+  "../assets/readings/*.{webp,avif,png}",
   { eager: true },
 );
 
