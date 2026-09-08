@@ -1,22 +1,60 @@
 ---
+import { Picture } from "astro:assets";
 import type { Reading } from "../data/readings";
+import { getReadingCover } from "../lib/directory-media";
 
 type Props = {
   reading: Reading;
 };
 
 const { reading } = Astro.props;
+const isBook = reading.type === "book";
+const cover = getReadingCover(reading.slug);
 ---
 
-<li class="reading">
-  <p class="reference-type">{reading.type} / {reading.area}</p>
-  <h2 class="reference-title">
-    <a href={reading.href} target="_blank" rel="noopener noreferrer">{reading.title}</a>
-  </h2>
-  {reading.subtitle && <p class="reading-subtitle">{reading.subtitle}</p>}
-  <p class="reading-author">By {reading.author}</p>
-  <p class="reference-note">{reading.note}</p>
-  <ul class="stack" aria-label="Reading tags">
-    {reading.tags.map((tag) => <li>{tag}</li>)}
-  </ul>
+<li class:list={["reading", "reading-card", isBook && "reading-card--book"]}>
+  {
+    cover ? (
+      <a
+        class="reading-cover-link"
+        href={reading.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`${reading.title} cover (opens in a new tab)`}
+      >
+        <span class="reading-cover-shell">
+          <Picture
+            class="reading-cover"
+            src={cover}
+            formats={["avif", "webp"]}
+            fallbackFormat="webp"
+            widths={[120, 240]}
+            sizes="6.1rem"
+            width={120}
+            height={180}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+        </span>
+      </a>
+    ) : (
+      <div class="reading-cover-shell reading-cover-shell--empty" aria-hidden="true">
+        <span class="reading-cover-fallback">{reading.type}</span>
+      </div>
+    )
+  }
+
+  <div class="reading-card-body">
+    <p class="reference-type">{reading.type} / {reading.area}</p>
+    <h2 class="reference-title">
+      <a href={reading.href} target="_blank" rel="noopener noreferrer">{reading.title}</a>
+    </h2>
+    {reading.subtitle && <p class="reading-subtitle">{reading.subtitle}</p>}
+    <p class="reading-author">By {reading.author}</p>
+    <p class="reference-note">{reading.note}</p>
+    <ul class="stack" aria-label="Reading tags">
+      {reading.tags.map((tag) => <li>{tag}</li>)}
+    </ul>
+  </div>
 </li>

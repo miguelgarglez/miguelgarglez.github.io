@@ -13,6 +13,8 @@ export type Reading = {
   note: string;
   tags: string[];
   featured: boolean;
+  /** ISBN used when curating a cover into src/assets/readings/<slug>.webp. */
+  isbn?: string;
 };
 
 export const readings: Reading[] = [
@@ -28,6 +30,7 @@ export const readings: Reading[] = [
     note: "A pragmatic career reference for understanding engineering growth, senior expectations, and the path toward broader technical leadership.",
     tags: ["career", "engineering-leadership", "staff-engineer"],
     featured: true,
+    isbn: "9789083381824",
   },
   {
     slug: "insanely-great",
@@ -40,6 +43,7 @@ export const readings: Reading[] = [
     note: "A technology history reference about the Macintosh, useful for thinking about taste, product conviction, and how strong interface ideas become cultural objects.",
     tags: ["apple", "macintosh", "technology-history"],
     featured: true,
+    isbn: "9780140291773",
   },
   {
     slug: "creative-selection",
@@ -52,5 +56,6 @@ export const readings: Reading[] = [
     note: "An inside look at Apple's demo-driven product craft, connecting engineering, taste, iteration, collaboration, and empathy.",
     tags: ["apple", "product-craft", "software-design"],
     featured: true,
+    isbn: "9781529004731",
   },
 ];

@@ -15,6 +15,8 @@ export type PersonReference = {
   summary: string;
   learns: string[];
   featured: boolean;
+  /** Short mark used when no raster/SVG asset exists under src/assets/people. */
+  monogram?: string;
 };
 
 export const people: PersonReference[] = [
@@ -33,6 +35,7 @@ export const people: PersonReference[] = [
       "Design decisions with restraint",
     ],
     featured: true,
+    monogram: "BT",
   },
   {
     slug: "gergely-orosz",
@@ -49,6 +52,7 @@ export const people: PersonReference[] = [
       "Clear writing about industry patterns",
     ],
     featured: true,
+    monogram: "GO",
   },
   {
     slug: "mitchell-hashimoto",
@@ -65,6 +69,7 @@ export const people: PersonReference[] = [
       "Technical writing grounded in shipped work",
     ],
     featured: true,
+    monogram: "MH",
   },
   {
     slug: "midudev",
@@ -81,6 +86,7 @@ export const people: PersonReference[] = [
       "Practical frontend craft",
     ],
     featured: false,
+    monogram: "MD",
   },
   {
     slug: "guillermo-rauch",
@@ -97,6 +103,7 @@ export const people: PersonReference[] = [
       "Shipping speed with craft",
     ],
     featured: false,
+    monogram: "GR",
   },
   {
     slug: "emil-kowalski",
@@ -113,6 +120,7 @@ export const people: PersonReference[] = [
       "High-craft frontend execution",
     ],
     featured: true,
+    monogram: "EK",
   },
   {
     slug: "shadcn",
@@ -129,5 +137,6 @@ export const people: PersonReference[] = [
       "Practical component APIs",
     ],
     featured: false,
+    monogram: "SH",
   },
 ];

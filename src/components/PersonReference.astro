@@ -1,17 +1,81 @@
 ---
+import { Picture } from "astro:assets";
 import type { PersonReference } from "../data/people";
+import { getPersonMark, getPersonPortrait } from "../lib/directory-media";
 
 type Props = {
   person: PersonReference;
+  variant?: "compact" | "detail";
 };
 
-const { person } = Astro.props;
+const { person, variant = "compact" } = Astro.props;
+const monogram =
+  person.monogram ??
+  person.name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
+
+const mark = getPersonMark(person.slug);
+const portrait = mark ? undefined : getPersonPortrait(person.slug);
+const detail = variant === "detail";
 ---
 
-<li class="reference">
-  <p class="reference-type">{person.type}</p>
-  <h2 class="reference-title">
-    <a href={person.href} target="_blank" rel="noopener noreferrer">{person.name}</a>
-  </h2>
-  <p class="reference-note">{person.note}</p>
+<li class:list={["person-card", detail && "person-card--detail"]}>
+  <a
+    class="person-card-media"
+    href={person.href}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label={`${person.name} (opens in a new tab)`}
+  >
+    {
+      mark ? (
+        <img
+          class="person-portrait person-portrait--mark"
+          src={mark.src}
+          alt=""
+          width="160"
+          height="160"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : portrait ? (
+        <Picture
+          class="person-portrait"
+          src={portrait}
+          formats={["avif", "webp"]}
+          fallbackFormat="webp"
+          widths={[128, 256]}
+          sizes={detail ? "6.4rem" : "5.6rem"}
+          width={160}
+          height={160}
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <span class="person-monogram" aria-hidden="true">
+          {monogram}
+        </span>
+      )
+    }
+  </a>
+
+  <div class="person-card-body">
+    <p class="reference-type">{person.type}</p>
+    <h2 class="reference-title">
+      <a href={person.href} target="_blank" rel="noopener noreferrer">{person.name}</a>
+    </h2>
+    <p class="reference-note">{detail ? person.summary : person.note}</p>
+    {
+      detail && (
+        <ul class="detail-list person-learns">
+          {person.learns.map((lesson) => <li>{lesson}</li>)}
+        </ul>
+      )
+    }
+  </div>
 </li>
