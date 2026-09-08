@@ -58,4 +58,17 @@ export const readings: Reading[] = [
     featured: true,
     isbn: "9781529004731",
   },
+  {
+    slug: "same-as-ever",
+    title: "Lo que nunca cambia",
+    subtitle: "Same as Ever — A Guide to What Never Changes",
+    author: "Morgan Housel",
+    href: "https://www.penguinrandomhouse.com/books/672339/same-as-ever-by-morgan-housel/",
+    type: "book",
+    area: "product",
+    note: "Timeless lessons on risk, opportunity, and human behavior—useful for judging what stays constant when products, markets, and careers keep shifting.",
+    tags: ["judgment", "human-nature", "risk"],
+    featured: true,
+    isbn: "9780593332702",
+  },
 ];
