@@ -15,9 +15,7 @@ export type PersonReference = {
   summary: string;
   learns: string[];
   featured: boolean;
-  /** Local portrait under /public, preferred over hotlinked CDNs. */
-  image?: string;
-  /** Short mark used when no portrait is available. */
+  /** Short mark used when no raster/SVG asset exists under src/assets/people. */
   monogram?: string;
 };
 
@@ -37,7 +35,6 @@ export const people: PersonReference[] = [
       "Design decisions with restraint",
     ],
     featured: true,
-    image: "/people/benji-taylor.jpg",
     monogram: "BT",
   },
   {
@@ -55,7 +52,6 @@ export const people: PersonReference[] = [
       "Clear writing about industry patterns",
     ],
     featured: true,
-    image: "/people/gergely-orosz.jpg",
     monogram: "GO",
   },
   {
@@ -73,7 +69,6 @@ export const people: PersonReference[] = [
       "Technical writing grounded in shipped work",
     ],
     featured: true,
-    image: "/people/mitchell-hashimoto.jpg",
     monogram: "MH",
   },
   {
@@ -91,7 +86,6 @@ export const people: PersonReference[] = [
       "Practical frontend craft",
     ],
     featured: false,
-    image: "/people/midudev.jpg",
     monogram: "MD",
   },
   {
@@ -109,7 +103,6 @@ export const people: PersonReference[] = [
       "Shipping speed with craft",
     ],
     featured: false,
-    image: "/people/guillermo-rauch.jpg",
     monogram: "GR",
   },
   {
@@ -127,7 +120,6 @@ export const people: PersonReference[] = [
       "High-craft frontend execution",
     ],
     featured: true,
-    // Prefer monogram: his public avatars are abstract gradients, not portraits.
     monogram: "EK",
   },
   {
@@ -145,7 +137,6 @@ export const people: PersonReference[] = [
       "Practical component APIs",
     ],
     featured: false,
-    image: "/people/shadcn.jpg",
     monogram: "SH",
   },
 ];

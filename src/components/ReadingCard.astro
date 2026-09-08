@@ -1,5 +1,7 @@
 ---
+import { Picture } from "astro:assets";
 import type { Reading } from "../data/readings";
+import { getReadingCover } from "../lib/directory-media";
 
 type Props = {
   reading: Reading;
@@ -7,11 +9,12 @@ type Props = {
 
 const { reading } = Astro.props;
 const isBook = reading.type === "book";
+const cover = getReadingCover(reading.slug);
 ---
 
 <li class:list={["reading", "reading-card", isBook && "reading-card--book"]}>
   {
-    reading.cover ? (
+    cover ? (
       <a
         class="reading-cover-link"
         href={reading.href}
@@ -20,12 +23,16 @@ const isBook = reading.type === "book";
         aria-label={`${reading.title} cover (opens in a new tab)`}
       >
         <span class="reading-cover-shell">
-          <img
+          <Picture
             class="reading-cover"
-            src={reading.cover}
+            src={cover}
+            formats={["avif", "webp"]}
+            fallbackFormat="webp"
+            widths={[120, 240]}
+            sizes="6.1rem"
+            width={120}
+            height={180}
             alt=""
-            width="120"
-            height="180"
             loading="lazy"
             decoding="async"
           />

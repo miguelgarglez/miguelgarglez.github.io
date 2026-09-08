@@ -1169,6 +1169,13 @@ h1 {
   background: var(--line);
 }
 
+.reading-cover-shell picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
 .reading-cover-shell--empty {
   display: grid;
   place-items: center;
@@ -1639,6 +1646,12 @@ h1 {
     box-shadow 240ms var(--ease-out);
 }
 
+.person-card-media picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .person-card-media:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
@@ -1654,6 +1667,11 @@ h1 {
   transition:
     filter 280ms var(--ease-out),
     transform 280ms var(--ease-out);
+}
+
+.person-portrait--mark {
+  filter: none;
+  transform: none;
 }
 
 .person-monogram {
@@ -1680,6 +1698,12 @@ h1 {
 .person-card:focus-within .person-portrait {
   filter: grayscale(0.35) contrast(1.04);
   transform: scale(1.04);
+}
+
+.person-card:hover .person-portrait--mark,
+.person-card:focus-within .person-portrait--mark {
+  filter: none;
+  transform: none;
 }
 
 .person-card-body {
