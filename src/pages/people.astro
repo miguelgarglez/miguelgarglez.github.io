@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import DirectoryNav from "../components/DirectoryNav.astro";
 import MobileDirectoryMenu from "../components/MobileDirectoryMenu.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
+import PersonReference from "../components/PersonReference.astro";
 import { people } from "../data/people";
 import type { PersonArea } from "../data/people";
 import { pageTitle } from "../../shared/seo/config";
@@ -67,19 +68,7 @@ const description =
               </p>
               <ol class="people-detail-list">
                 {areaPeople.map((person) => (
-                  <li class="people-detail-item">
-                    <div>
-                      <h2 class="reference-title">
-                        <a href={person.href} target="_blank" rel="noopener noreferrer">
-                          {person.name}
-                        </a>
-                      </h2>
-                      <p class="reference-note">{person.summary}</p>
-                    </div>
-                    <ul class="detail-list">
-                      {person.learns.map((lesson) => <li>{lesson}</li>)}
-                    </ul>
-                  </li>
+                  <PersonReference person={person} variant="detail" />
                 ))}
               </ol>
             </section>

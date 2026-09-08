@@ -15,6 +15,10 @@ export type PersonReference = {
   summary: string;
   learns: string[];
   featured: boolean;
+  /** Local portrait under /public, preferred over hotlinked CDNs. */
+  image?: string;
+  /** Short mark used when no portrait is available. */
+  monogram?: string;
 };
 
 export const people: PersonReference[] = [
@@ -33,6 +37,8 @@ export const people: PersonReference[] = [
       "Design decisions with restraint",
     ],
     featured: true,
+    image: "/people/benji-taylor.jpg",
+    monogram: "BT",
   },
   {
     slug: "gergely-orosz",
@@ -49,6 +55,8 @@ export const people: PersonReference[] = [
       "Clear writing about industry patterns",
     ],
     featured: true,
+    image: "/people/gergely-orosz.jpg",
+    monogram: "GO",
   },
   {
     slug: "mitchell-hashimoto",
@@ -65,6 +73,8 @@ export const people: PersonReference[] = [
       "Technical writing grounded in shipped work",
     ],
     featured: true,
+    image: "/people/mitchell-hashimoto.jpg",
+    monogram: "MH",
   },
   {
     slug: "midudev",
@@ -81,6 +91,8 @@ export const people: PersonReference[] = [
       "Practical frontend craft",
     ],
     featured: false,
+    image: "/people/midudev.jpg",
+    monogram: "MD",
   },
   {
     slug: "guillermo-rauch",
@@ -97,6 +109,8 @@ export const people: PersonReference[] = [
       "Shipping speed with craft",
     ],
     featured: false,
+    image: "/people/guillermo-rauch.jpg",
+    monogram: "GR",
   },
   {
     slug: "emil-kowalski",
@@ -113,6 +127,8 @@ export const people: PersonReference[] = [
       "High-craft frontend execution",
     ],
     featured: true,
+    image: "/people/emil-kowalski.jpg",
+    monogram: "EK",
   },
   {
     slug: "shadcn",
@@ -129,5 +145,7 @@ export const people: PersonReference[] = [
       "Practical component APIs",
     ],
     featured: false,
+    image: "/people/shadcn.jpg",
+    monogram: "SH",
   },
 ];

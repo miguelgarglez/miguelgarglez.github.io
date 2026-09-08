@@ -6,17 +6,48 @@ type Props = {
 };
 
 const { reading } = Astro.props;
+const isBook = reading.type === "book";
 ---
 
-<li class="reading">
-  <p class="reference-type">{reading.type} / {reading.area}</p>
-  <h2 class="reference-title">
-    <a href={reading.href} target="_blank" rel="noopener noreferrer">{reading.title}</a>
-  </h2>
-  {reading.subtitle && <p class="reading-subtitle">{reading.subtitle}</p>}
-  <p class="reading-author">By {reading.author}</p>
-  <p class="reference-note">{reading.note}</p>
-  <ul class="stack" aria-label="Reading tags">
-    {reading.tags.map((tag) => <li>{tag}</li>)}
-  </ul>
+<li class:list={["reading", "reading-card", isBook && "reading-card--book"]}>
+  {
+    reading.cover ? (
+      <a
+        class="reading-cover-link"
+        href={reading.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`${reading.title} cover (opens in a new tab)`}
+      >
+        <span class="reading-cover-shell">
+          <img
+            class="reading-cover"
+            src={reading.cover}
+            alt=""
+            width="120"
+            height="180"
+            loading="lazy"
+            decoding="async"
+          />
+        </span>
+      </a>
+    ) : (
+      <div class="reading-cover-shell reading-cover-shell--empty" aria-hidden="true">
+        <span class="reading-cover-fallback">{reading.type}</span>
+      </div>
+    )
+  }
+
+  <div class="reading-card-body">
+    <p class="reference-type">{reading.type} / {reading.area}</p>
+    <h2 class="reference-title">
+      <a href={reading.href} target="_blank" rel="noopener noreferrer">{reading.title}</a>
+    </h2>
+    {reading.subtitle && <p class="reading-subtitle">{reading.subtitle}</p>}
+    <p class="reading-author">By {reading.author}</p>
+    <p class="reference-note">{reading.note}</p>
+    <ul class="stack" aria-label="Reading tags">
+      {reading.tags.map((tag) => <li>{tag}</li>)}
+    </ul>
+  </div>
 </li>
