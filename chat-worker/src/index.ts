@@ -1,4 +1,12 @@
 import { runProfileAgent } from './agent/run-profile-agent';
+import {
+  buildUpstreamPayload,
+  buildUpstreamUrl,
+  extractStreamError,
+  extractStreamTextDelta,
+  isStreamFinished,
+  resolveUpstreamApi,
+} from './agent/upstream';
 
 type ChatMessage = {
   role: 'system' | 'user' | 'assistant';
@@ -301,12 +309,18 @@ function createUiMessageStream(upstream: ReadableStream<Uint8Array>) {
       return;
     }
 
-    const choice = Array.isArray(parsed.choices)
-      ? (parsed.choices[0] as Record<string, unknown> | undefined)
-      : undefined;
-    const delta = choice?.delta as Record<string, unknown> | undefined;
-    const content = delta?.content;
-    if (typeof content === 'string' && content.length > 0) {
+    const streamError = extractStreamError(parsed);
+    if (streamError) {
+      sendError(streamError);
+      endMessage();
+      sendDone();
+      stopReading = true;
+      reader?.cancel().catch(() => undefined);
+      return;
+    }
+
+    const content = extractStreamTextDelta(parsed);
+    if (content) {
       ensureStarted();
       if (controller) {
         controller.enqueue(
@@ -315,8 +329,7 @@ function createUiMessageStream(upstream: ReadableStream<Uint8Array>) {
       }
     }
 
-    const finishReason = choice?.finish_reason;
-    if (typeof finishReason === 'string' && finishReason.length > 0) {
+    if (isStreamFinished(parsed)) {
       endMessage();
     }
   };
@@ -506,11 +519,9 @@ export default {
       })
     );
 
-    const payload: Record<string, unknown> = {
-      model: llm.model,
-      stream: true,
-      messages: agentResult.messages,
-    };
+    const upstreamApi = resolveUpstreamApi(llm.model);
+    const payload = buildUpstreamPayload(llm.model, agentResult.messages, true);
+    const upstreamUrl = buildUpstreamUrl(llm.baseUrl, llm.model);
 
     const headers: Record<string, string> = {
       Authorization: `Bearer ${llm.apiKey}`,
@@ -531,7 +542,7 @@ export default {
       const timeoutId = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
 
       try {
-        upstream = await fetch(`${llm.baseUrl}/chat/completions`, {
+        upstream = await fetch(upstreamUrl, {
           method: 'POST',
           headers,
           body: JSON.stringify(payload),
@@ -615,7 +626,24 @@ export default {
         status = 503;
         error = 'Upstream quota exceeded.';
         errorCode = 'UPSTREAM_QUOTA_EXCEEDED';
+      } else if (upstreamStatus === 401 || upstreamStatus === 403) {
+        error = 'Upstream authentication failed.';
+        errorCode = 'UPSTREAM_AUTH';
+      } else if (upstreamStatus === 400) {
+        error = 'Upstream rejected the request.';
+        errorCode = 'UPSTREAM_BAD_REQUEST';
       }
+
+      console.log(
+        JSON.stringify({
+          event: 'upstream_error',
+          provider: llm.provider,
+          api: upstreamApi,
+          upstreamStatus,
+          errorCode,
+          attempts,
+        })
+      );
 
       const responseHeaders = getJsonHeaders(origin, allowedOrigins, isDev);
       if (status === 429 && upstreamRetryAfterMs !== null) {
@@ -644,6 +672,7 @@ export default {
               error,
               errorCode,
               source: llm.provider,
+              upstreamStatus,
               retryAfterSeconds:
                 upstreamRetryAfterMs !== null
                   ? Math.max(1, Math.ceil(upstreamRetryAfterMs / 1000))

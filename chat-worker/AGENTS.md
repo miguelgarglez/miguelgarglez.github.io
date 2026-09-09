@@ -36,6 +36,7 @@ Contexto: Worker de Cloudflare que hace streaming SSE hacia un proveedor LLM Ope
 - Proveedor actual: opencode Zen.
 - Base URL actual: `https://opencode.ai/zen/v1`.
 - Modelo actual: configurado por `LLM_MODEL` (mantener gpt-5.4-nano/opencode Zen si sigue siendo el modelo productivo elegido).
+- GPT 5.4 nano y el resto de modelos GPT/Grok/Muse Spark de Zen usan `/responses`, no `/chat/completions`.
 - Mantener `stream: true` para UX de chat.
 - `DEV=true` permite CORS local y respuestas con detalle de errores upstream.
 - No usar variables `OPENROUTER_*` en este Worker.

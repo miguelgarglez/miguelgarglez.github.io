@@ -17,7 +17,7 @@ The Worker intentionally keeps the runtime simple:
 - `GET /healthz` health endpoint.
 - CORS allowlist for production origins, with localhost enabled by `DEV=true`.
 - In-memory rate limiting.
-- OpenAI-compatible upstream `/chat/completions` call.
+- OpenAI-compatible upstream `/chat/completions` call, or `/responses` for GPT-family Zen models.
 - Retry and timeout handling for transient upstream failures.
 - Conversion from OpenAI-style SSE to AI SDK UI message stream events.
 - Lightweight profile agent runtime via `runProfileAgent()`.

@@ -78,7 +78,7 @@ curl -N \
 - Health endpoint: `GET /healthz`
 - Body: `{ "question": "..." }` or AI SDK `messages`
 - Streaming response: `text/event-stream`
-- Upstream: OpenAI-compatible `/chat/completions`
+- Upstream: OpenAI-compatible `/chat/completions` for GLM/Kimi/DeepSeek/MiniMax-style models, and OpenAI `/responses` for GPT/Grok/Muse Spark (including production `gpt-5.4-nano`)
 - Runtime: `runProfileAgent()` selects profile facts, profile blocks, projects,
   and memories before the LLM call.
 - Knowledge files live under `src/knowledge/`.

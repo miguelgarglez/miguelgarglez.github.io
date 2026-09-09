@@ -14,24 +14,31 @@ async function main() {
   }
 
   const tempDir = await mkdtemp(join(tmpdir(), 'profile-agent-test-'));
-  const outfile = join(tempDir, 'profile-agent.test.mjs');
 
   try {
     await esbuild.build({
-      entryPoints: ['chat-worker/test/profile-agent.test.ts'],
+      entryPoints: [
+        'chat-worker/test/profile-agent.test.ts',
+        'chat-worker/test/upstream.test.ts',
+      ],
       bundle: true,
       platform: 'node',
       format: 'esm',
       target: 'node22',
-      outfile,
+      outdir: tempDir,
+      outbase: 'chat-worker/test',
       external: ['node:assert/strict', 'node:test'],
       logLevel: 'silent',
     });
 
     await new Promise((resolve, reject) => {
-      const child = spawn(process.execPath, ['--test', outfile], {
-        stdio: 'inherit',
-      });
+      const child = spawn(
+        process.execPath,
+        ['--test', join(tempDir, 'profile-agent.test.js'), join(tempDir, 'upstream.test.js')],
+        {
+          stdio: 'inherit',
+        }
+      );
       child.on('error', reject);
       child.on('exit', (code) => {
         if (code === 0) resolve(undefined);
