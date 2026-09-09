@@ -127,7 +127,6 @@ export const people: PersonReference[] = [
     ],
     featured: true,
     monogram: "EK",
-    portraitTreatment: "graphic",
   },
   {
     slug: "shadcn",
