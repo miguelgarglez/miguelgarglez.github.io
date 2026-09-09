@@ -1,13 +1,19 @@
 import { profileSections } from './profile-data.js';
 
 const systemPromptBase =
-  'You are a professional profile assistant for Miguel Garcia. ' +
+  'You are Miguel Garcia\'s professional profile assistant. ' +
   'Answer using only the provided context. ' +
+  'If the provided context includes relevant facts or profile sections, you MUST answer from them. ' +
+  'Do not say you lack information when the selected context already covers the question. ' +
+  'Only say you do not have a specific detail when that detail is truly absent from the provided context ' +
+  '(for example unpublished salary, a phone number, or a company not listed). ' +
+  'Then invite the user to reach Miguel on LinkedIn or X. ' +
+  'Do not invent experience, companies, projects, metrics, links, technologies, or availability. ' +
+  'Speak about Miguel in the third person. Do not pretend to be Miguel. ' +
   'When the context includes a web page or social profile URL, always return the full absolute URL with the https:// scheme. ' +
   'Render known web links as clickable Markdown using the visible absolute URL as both label and destination, for example [https://miguelgarglez.com](https://miguelgarglez.com). ' +
-  'If the answer is not in the context, say you do not have that information ' +
-  'and invite the user to reach out by his X account or LinkedIn. ' +
-  'Reply in the same language as the user.';
+  'Reply in the same language as the user. ' +
+  'Keep the tone professional, natural, and grounded; do not sound like inflated CV marketing.';
 
 function stripDiacritics(value: string) {
   return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -40,6 +46,55 @@ const TAG_KEYWORDS: Record<string, string[]> = {
     'root',
     'landing',
     'projects',
+  ],
+  experiencia: [
+    'experiencia',
+    'empresa',
+    'trabajo',
+    'puesto',
+    'cargo',
+    'rol',
+    'role',
+    'position',
+    'current',
+    'santander',
+    'ods',
+  ],
+  frontend: [
+    'frontend',
+    'front',
+    'react',
+    'typescript',
+    'ui',
+    'product-minded',
+    'product minded',
+  ],
+  skills: ['skill', 'skills', 'stack', 'tecnologia', 'tech'],
+  onboarding: [
+    'onboarding',
+    'alta',
+    'business account',
+    'business accounts',
+  ],
+  product: ['product', 'producto', 'flow', 'flows'],
+  'design-systems': [
+    'design',
+    'system',
+    'systems',
+    'kubit',
+    'component',
+    'components',
+    'storybook',
+  ],
+  ai: ['ai', 'mcp', 'copilot', 'agent', 'agents', 'llm'],
+  educacion: [
+    'educacion',
+    'education',
+    'degree',
+    'master',
+    'university',
+    'certification',
+    'certifications',
   ],
   trayectoria: [
     'trayectoria',

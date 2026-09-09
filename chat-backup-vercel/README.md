@@ -2,6 +2,15 @@
 
 Secondary chat API for `cv-chat`, deployed on Vercel.
 
+This is the **failover** backend. The live site calls the Cloudflare Worker
+first (opencode Zen). On 502/timeout/etc. it retries this Vercel app, which
+uses **OpenRouter**, not opencode. That split is intentional: if Zen is the
+thing failing, the backup should not depend on the same provider.
+
+Profile blocks in `shared/chat-context/profile-data.ts` must stay identical to
+`chat-worker/src/knowledge/profile-data.ts`. The fallback cannot import the
+Worker package because Vercel deploys from this directory.
+
 ## Endpoints
 
 - `GET /` -> service metadata JSON
