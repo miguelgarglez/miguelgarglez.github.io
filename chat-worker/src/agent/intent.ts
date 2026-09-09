@@ -49,7 +49,32 @@ export function classifyAudience(question: string): Audience {
 }
 
 export function classifyIntent(question: string): Intent {
-  if (matchesAny(question, ['project', 'projects', 'proyecto', 'proyectos', 'portfolio'])) return 'projects';
+  if (
+    matchesAny(question, [
+      'cv chat',
+      'profile chat',
+      'how does this cv',
+      'how does this chat',
+    ])
+  ) {
+    return 'summary';
+  }
+  if (
+    matchesAny(question, [
+      'project',
+      'projects',
+      'proyecto',
+      'proyectos',
+      'portfolio',
+      'video-digest',
+      'personal cli',
+      'cli tooling',
+      'tui',
+      'youtube transcript',
+      'youtube digest',
+    ])
+  )
+    return 'projects';
   if (
     matchesAny(question, [
       'experience',
@@ -73,9 +98,25 @@ export function classifyIntent(question: string): Intent {
       'jember',
       'calidad',
       'pruebas',
+      'santander',
+      'onboarding',
+      'business-account',
+      'business account',
+      'early role',
+      'electric-save',
     ])
   ) return 'experience';
-  if (matchesAny(question, ['work style', 'collaboration', 'forma de trabajar', 'metodo', 'método'])) return 'work_style';
+  if (
+    matchesAny(question, [
+      'work style',
+      'working style',
+      'collaboration',
+      'forma de trabajar',
+      'metodo',
+      'método',
+    ])
+  )
+    return 'work_style';
   if (matchesAny(question, ['contact', 'linkedin', 'email', 'reach', 'contacto'])) return 'contact';
   if (
     matchesAny(question, [
@@ -120,6 +161,7 @@ export function classifyIntent(question: string): Intent {
       'codex',
       'copilot',
       'mcp',
+      'kind of engineer',
       'habilidades',
       'tecnologias',
       'tecnologías',

@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { runProfileAgent } from '../src/agent/run-profile-agent';
+import { profileAssistantPolicy } from '../src/agent/prompts';
+import { suggestedPromptContracts } from '../src/agent/suggested-prompts';
 
 function run(question: string) {
   return runProfileAgent({
@@ -36,6 +38,36 @@ describe('profile agent context retrieval', () => {
     assert.match(currentRole.value, /Mexico and the UK/i);
     assert.ok(experience);
     assert.match(experience.content, /final product team/i);
+    assert.match(experience.content, /Mexico and the UK/i);
+    assert.doesNotMatch(currentRole.value, /Spain, Mexico/i);
+    assert.doesNotMatch(experience.content, /3 markets/i);
+  });
+
+  it('grounds Santander onboarding questions in Mexico and the UK only', () => {
+    const context = run(
+      'Does Miguel work on business-account onboarding for Mexico and the UK?'
+    );
+    const currentRole = context.selectedFacts.find(
+      (fact) => fact.id === 'current-role'
+    );
+    const experience = context.selectedProfileBlocks.find(
+      (block) => block.id === 'experience-ods'
+    );
+    const memory = context.selectedMemories.find(
+      (item) => item.id === 'santander-product-onboarding-team'
+    );
+
+    assert.equal(context.intent, 'experience');
+    assert.ok(currentRole);
+    assert.match(currentRole.value, /Mexico and the UK/i);
+    assert.doesNotMatch(currentRole.value, /Spain, Mexico/i);
+    assert.doesNotMatch(currentRole.value, /3 Santander markets/i);
+    assert.ok(experience);
+    assert.match(experience.content, /Mexico and the UK/i);
+    assert.doesNotMatch(experience.content, /3 markets/i);
+    assert.ok(memory);
+    assert.match(memory.content, /Mexico and the UK/i);
+    assert.doesNotMatch(memory.content, /3 markets/i);
   });
 
   it('grounds contact questions in contact facts', () => {
@@ -83,6 +115,19 @@ describe('profile agent context retrieval', () => {
     assert.ok(roleFit);
     assert.match(roleFit.content, /product-minded frontend/i);
     assert.match(roleFit.content, /T-shaped frontend/i);
+    assert.doesNotMatch(roleFit.content, /frontend platform remains/i);
+    assert.doesNotMatch(roleFit.content, /frontend platform engineer/i);
+  });
+
+  it('sells frontend skills as product-minded, not a platform-engineer identity', () => {
+    const context = run('What makes Miguel a strong product-minded frontend engineer?');
+    const skills = context.selectedProfileBlocks.find(
+      (block) => block.id === 'skills-frontend'
+    );
+
+    assert.ok(skills);
+    assert.match(skills.content, /product-minded frontend engineering/i);
+    assert.doesNotMatch(skills.content, /strongest professional skill area is frontend platform/i);
   });
 
   it('surfaces the directory and wellstudio portfolio memory for recent project updates', () => {
@@ -196,7 +241,7 @@ describe('profile agent context retrieval', () => {
     assert.ok(memory);
   });
 
-  it('grounds the visible product-frontend prompt in frontend and current work', () => {
+  it('grounds the visible product-minded frontend prompt in frontend and current work', () => {
     const context = run('What makes Miguel a strong product-minded frontend engineer?');
     const blockIds = ids(context.selectedProfileBlocks);
 
@@ -221,9 +266,55 @@ describe('profile agent context retrieval', () => {
     const factIds = ids(context.selectedFacts);
     const blockIds = ids(context.selectedProfileBlocks);
 
-    assert.ok(['projects', 'summary'].includes(context.intent));
+    assert.equal(context.intent, 'summary');
     assert.ok(factIds.includes('agent-context'));
     assert.ok(blockIds.includes('cv-chat-agent'));
+  });
+
+  it('retrieves video-digest for personal CLI tooling questions', () => {
+    const context = run(
+      'What personal CLI tooling has Miguel built for YouTube transcripts?'
+    );
+    const project = context.selectedProjects.find(
+      (item) => item.id === 'video-digest'
+    );
+    const memory = context.selectedMemories.find(
+      (item) => item.id === 'video-digest-personal-cli'
+    );
+
+    assert.equal(context.intent, 'projects');
+    assert.ok(project);
+    assert.match(project.shortSummary, /Linux x64/i);
+    assert.match(project.shortSummary, /macOS/i);
+    assert.match(project.shortSummary, /personal tooling/i);
+    assert.doesNotMatch(project.shortSummary, /macOS-only/i);
+    assert.ok(memory);
+    assert.match(memory.content, /video-digest/i);
+    assert.match(memory.content, /Linux x64/i);
+  });
+
+  it('retrieves video-digest when asked about the project by name', () => {
+    const context = run('What is video-digest?');
+    const projectIds = ids(context.selectedProjects);
+
+    assert.equal(context.intent, 'projects');
+    assert.ok(projectIds.includes('video-digest'));
+  });
+
+  it('keeps MCP enablement framed as unofficial limited adoption', () => {
+    const context = run('How does Miguel use MCP with the component library?');
+    const aiTools = context.selectedFacts.find(
+      (fact) => fact.id === 'ai-tools-workflow'
+    );
+    const devops = context.selectedProfileBlocks.find(
+      (block) => block.id === 'skills-devops'
+    );
+
+    assert.ok(aiTools);
+    assert.match(aiTools.value, /unofficial MCP server/i);
+    assert.match(aiTools.value, /limited\/unofficial adoption/i);
+    assert.ok(devops);
+    assert.match(devops.content, /limited\/unofficial adoption/i);
   });
 
   it('does not frame mobile work as a primary specialty', () => {
@@ -236,4 +327,60 @@ describe('profile agent context retrieval', () => {
     assert.ok(block);
     assert.match(block.content, /exploratory tinkering/i);
   });
+});
+
+describe('visible suggested-prompt retrieval', () => {
+  it('covers every unique visible suggested prompt with pinned context', () => {
+    const uniquePrompts = [
+      "Explain Miguel's design system experience",
+      'How does Miguel use AI in engineering?',
+      "Summarize Miguel's work style",
+      'What makes Miguel a strong product-minded frontend engineer?',
+      'What has Miguel built at Santander?',
+      "Summarize Miguel's QA background",
+      "How did Miguel's early role shape his product mindset?",
+      "What is Miguel's academic background?",
+      'What has Miguel been learning recently?',
+      'How does this CV chat work?',
+      'What kind of engineer is Miguel?',
+    ];
+
+    const contractPrompts = suggestedPromptContracts.map((entry) => entry.prompt);
+    assert.deepEqual(new Set(contractPrompts), new Set(uniquePrompts));
+    assert.ok(
+      !contractPrompts.includes(
+        'What makes Miguel a strong frontend platform engineer?'
+      )
+    );
+  });
+
+  it('refuses to claim missing information when selected context is present', () => {
+    assert.match(profileAssistantPolicy, /MUST answer from them/i);
+    assert.match(profileAssistantPolicy, /Do not say you lack information/i);
+  });
+
+  for (const contract of suggestedPromptContracts) {
+    it(`grounds "${contract.prompt}"`, () => {
+      const context = run(contract.prompt);
+      const factIds = ids(context.selectedFacts);
+      const blockIds = ids(context.selectedProfileBlocks);
+      const projectIds = ids(context.selectedProjects);
+      const memoryIds = ids(context.selectedMemories);
+
+      assert.equal(context.intent, contract.intent);
+      assert.ok(context.selectedProfileBlocks.length > 0);
+      for (const blockId of contract.blockIds) {
+        assert.ok(blockIds.includes(blockId), `missing block ${blockId}`);
+      }
+      for (const factId of contract.factIds ?? []) {
+        assert.ok(factIds.includes(factId), `missing fact ${factId}`);
+      }
+      for (const projectId of contract.projectIds ?? []) {
+        assert.ok(projectIds.includes(projectId), `missing project ${projectId}`);
+      }
+      for (const memoryId of contract.memoryIds ?? []) {
+        assert.ok(memoryIds.includes(memoryId), `missing memory ${memoryId}`);
+      }
+    });
+  }
 });

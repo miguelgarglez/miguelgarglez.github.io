@@ -77,14 +77,14 @@ export const profileFacts: ProfileFact[] = [
     label: 'Primary stack',
     value:
       'React, TypeScript, product frontend, financial onboarding flows, Astro, design systems, accessibility, Cloudflare Workers, AI-assisted engineering workflows with Windsurf, Devin, Codex, GitHub Copilot, MCP servers, context engineering, reusable skills, and an MCP server built to support component-library consumers',
-    tags: ['skills', 'frontend', 'product', 'onboarding', 'ai', 'summary'],
+    tags: ['skills', 'frontend', 'product', 'onboarding', 'ai', 'summary', 'design-systems'],
     priority: 85,
   },
   {
     id: 'ai-tools-workflow',
     label: 'AI tools and workflow',
     value:
-      'Miguel has used Windsurf and Devin in professional work, and Codex and GitHub Copilot personally. He applies MCP/context workflows, structured prompts, and reusable skills to accelerate and standardize recurring development tasks while keeping human review and code ownership. In his current role, he built an MCP server to support consumers of the component library with contextual guidance, integration patterns, troubleshooting, and migration help.',
+      'Miguel has used Windsurf and Devin in professional work, and Codex and GitHub Copilot personally. He applies MCP/context workflows, structured prompts, and reusable skills to accelerate and standardize recurring development tasks while keeping human review and code ownership. In his current role, he built an unofficial MCP server to support consumers of the component library with contextual guidance, integration patterns, troubleshooting, and migration help. MCP enablement is limited/unofficial adoption, not a mandated production platform.',
     tags: ['skills', 'ai', 'experience', 'work_style', 'current-role'],
     priority: 88,
   },

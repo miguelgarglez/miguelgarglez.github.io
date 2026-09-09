@@ -41,7 +41,22 @@ function scoreProject(project: ProjectBlock, questionTokens: string[], audience:
 function shouldIncludeProjects(question: string, intent: Intent) {
   return (
     ['projects', 'skills', 'experience', 'recent_updates'].includes(intent) ||
-    matchesAny(question, ['ai', 'agent', 'agents', 'rag', 'chatbot', 'frontend', 'portfolio'])
+    matchesAny(question, [
+      'ai',
+      'agent',
+      'agents',
+      'rag',
+      'chatbot',
+      'frontend',
+      'portfolio',
+      'video-digest',
+      'personal cli',
+      'cli tooling',
+      'tui',
+      'youtube',
+      'transcript',
+      'digest',
+    ])
   );
 }
 

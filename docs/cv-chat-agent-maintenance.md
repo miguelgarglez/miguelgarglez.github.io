@@ -46,9 +46,11 @@ site:
 - claims about AI, MCP, RAG, or production experience.
 
 Keep claims conservative. Do not turn exploratory work into professional
-specialization. For this profile, mobile/native work is exploratory tinkering,
-frontend platform work is the strongest professional area, and backend/data is a
-solid academic and project foundation.
+specialization. For this profile, the public positioning is product-minded
+frontend engineering. Design-system and component-library work is part of that
+experience, not a separate “frontend platform engineer” identity to sell.
+Mobile/native work is exploratory tinkering, and backend/data is a solid
+academic and project foundation.
 
 ## Prompt Alignment Checklist
 
@@ -65,7 +67,7 @@ For every `data-chat-prompt` in `cv-chat`, check:
 Current high-value prompt families:
 
 - trajectory and current role;
-- frontend platform and design systems;
+- product-minded frontend and design systems;
 - AI-assisted engineering and MCP support tooling;
 - education and recent learning;
 - QA background and early product/customer exposure;

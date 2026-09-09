@@ -37,6 +37,40 @@ export const projects: ProjectBlock[] = [
     priority: 100,
   },
   {
+    id: 'video-digest',
+    title: 'video-digest',
+    shortSummary:
+      'Local-first CLI and TUI that turns a YouTube URL into reviewable transcripts and Markdown digests. Published on npm as 1.2.0 for macOS Apple Silicon and Linux x64, with an Artifact Library on disk and agent-friendly JSON contracts. Personal tooling for AI-assisted learning workflows, not a company production system.',
+    problem:
+      'Saved YouTube videos pile up unused; browser-based transcript automation is fragile, and raw model summaries are hard to inspect or reuse.',
+    solution:
+      'A Bun/TypeScript CLI with a Python transcript sidecar and a TUI. Writes a local Artifact Library of Markdown and JSON. Supports humans in the terminal and agents via stable JSON. Package 1.2.0 supports macOS on Apple Silicon and Linux x64; macOS Intel and Windows are not supported.',
+    impact:
+      'A public npm package and GitHub repo Miguel uses as personal CLI tooling in AI workflows. Do not overstate production or company-wide use.',
+    technologies: ['Bun', 'TypeScript', 'Python', 'TUI'],
+    links: {
+      demo: 'https://www.npmjs.com/package/video-digest',
+      repo: 'https://github.com/miguelgarglez/video-digest',
+      article: 'https://miguelgarglez.com/projects/video-digest/',
+    },
+    tags: [
+      'cli',
+      'tui',
+      'youtube',
+      'transcript',
+      'digest',
+      'ai',
+      'agents',
+      'personal-tooling',
+      'open-source',
+      'bun',
+      'linux',
+      'macos',
+    ],
+    visibility: 'public',
+    priority: 88,
+  },
+  {
     id: 'kubit-react-charts',
     title: 'Kubit React Charts',
     shortSummary:

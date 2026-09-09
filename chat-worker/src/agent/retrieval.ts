@@ -17,11 +17,49 @@ const TAG_KEYWORDS: Record<string, string[]> = {
   calidad: ['qa', 'quality assurance', 'quality', 'testing', 'tester', 'tests', 'regression', 'automation', 'calidad', 'pruebas', 'automatizacion', 'automatización', 'jember'],
   aprendizaje: ['aprendizaje', 'aprender', 'curiosidad', 'generalista', 'generalist', 'learning', 'learn'],
   cultura: ['cultura', 'ambiente', 'entorno', 'community', 'communities', 'culture', 'environment', 'healthy', 'standards'],
-  experiencia: ['experiencia', 'empresa', 'trabajo', 'puesto', 'cargo', 'rol', 'role', 'position', 'current', 'now', 'actual', 'actualmente', 'santander'],
+  experiencia: [
+    'experiencia',
+    'empresa',
+    'trabajo',
+    'puesto',
+    'cargo',
+    'rol',
+    'role',
+    'position',
+    'current',
+    'now',
+    'actual',
+    'actualmente',
+    'santander',
+    'early',
+  ],
   product: ['product', 'producto', 'flow', 'flows', 'journey', 'journeys'],
-  onboarding: ['onboarding', 'alta', 'registro', 'business account', 'business accounts', 'cuentas', 'empresas'],
+  onboarding: [
+    'onboarding',
+    'alta',
+    'registro',
+    'business account',
+    'business accounts',
+    'cuentas',
+    'empresas',
+  ],
   startup: ['startup', 'startups', 'founder', 'founders', 'entrepreneurship', 'emprendimiento', 'exponential'],
-  proyectos: ['proyecto', 'proyectos', 'caso', 'ejemplo', 'reto', 'project', 'projects', 'example', 'challenge'],
+  proyectos: [
+    'proyecto',
+    'proyectos',
+    'caso',
+    'ejemplo',
+    'reto',
+    'project',
+    'projects',
+    'example',
+    'challenge',
+    'video-digest',
+    'youtube',
+    'transcript',
+    'digest',
+    'tui',
+  ],
   futuro: ['futuro', 'objetivo', 'crecer', 'carrera', 'future', 'goal', 'next', 'career'],
   recruiting: ['recruiter', 'recruiting', 'hire', 'hiring', 'candidate', 'profile', 'talent', 'seleccion'],
   comunicacion: ['comunicacion', 'communication', 'present', 'presentation', 'demo'],
@@ -47,11 +85,12 @@ const TAG_KEYWORDS: Record<string, string[]> = {
   certificaciones: ['certification', 'certifications', 'course', 'courses', 'learning', 'learned', 'recent learning', 'certificacion', 'certificación', 'certificaciones', 'curso', 'cursos', 'aprendizaje', 'formacion', 'formación'],
   skills: ['skills', 'stack', 'technologies', 'habilidades', 'tecnologias', 'tecnologías'],
   ai: ['ai', 'ia', 'artificial intelligence', 'herramientas', 'tools', 'windsurf', 'devin', 'codex', 'copilot', 'mcp', 'skills'],
-  frontend: ['frontend', 'react', 'typescript', 'ui', 'components', 'design system'],
+  frontend: ['frontend', 'react', 'typescript', 'ui', 'components', 'design system', 'design systems', 'platform', 'kubit'],
   backend: ['backend', 'python', 'flask', 'django', 'node', 'sql', 'database', 'databases', 'api', 'apis'],
   mobile: ['mobile', 'native', 'ios', 'macos', 'swift', 'swiftui', 'flutter', 'react native', 'app'],
   devops: ['devops', 'cloud', 'ci', 'cd', 'cloudflare', 'vercel', 'github actions'],
   agent: ['agent', 'chat', 'drawer', 'dossier', 'profile chat', 'cv chat', 'assistant', 'how does this work'],
+  'design-systems': ['design system', 'design systems', 'storybook', 'kubit', 'component library'],
 };
 
 const TYPE_KEYWORDS: Record<ProfileBlock['type'], string[]> = {
@@ -96,10 +135,16 @@ const CURRENT_ROLE_KEYWORDS = [
   'actualmente',
 ];
 
-function extractIntentTags(tokens: string[]) {
+function extractIntentTags(question: string, tokens: string[]) {
   const intentTags = new Set<string>();
   Object.entries(TAG_KEYWORDS).forEach(([tag, keywords]) => {
-    if (keywords.some((keyword) => tokens.includes(keyword))) {
+    if (
+      keywords.some((keyword) =>
+        keyword.includes(' ')
+          ? matchesAny(question, [keyword])
+          : tokens.includes(keyword)
+      )
+    ) {
       intentTags.add(tag);
     }
   });
@@ -130,7 +175,7 @@ export function retrieveProfileBlocks(params: {
 }) {
   const maxBlocks = params.maxBlocks ?? MAX_CONTEXT_BLOCKS;
   const tokens = tokenize(params.question);
-  const intentTags = extractIntentTags(tokens);
+  const intentTags = extractIntentTags(params.question, tokens);
   const intentTypes = extractIntentTypes(tokens);
   const boostedTags = new Set([
     ...AUDIENCE_TAG_BOOSTS[params.audience],

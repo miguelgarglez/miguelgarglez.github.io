@@ -27,6 +27,30 @@ export const memories: MemoryBlock[] = [
     priority: 98,
   },
   {
+    id: 'video-digest-personal-cli',
+    title: 'Published video-digest as personal CLI tooling',
+    content:
+      'Miguel published video-digest, a local-first CLI and TUI that turns YouTube videos into transcripts and structured Markdown digests. The npm package 1.2.0 supports macOS Apple Silicon and Linux x64, with a local Artifact Library and agent-friendly JSON. He uses it as personal tooling in AI-assisted learning workflows; it is not a company production system.',
+    source: 'manual',
+    tags: [
+      'video-digest',
+      'cli',
+      'tui',
+      'youtube',
+      'transcript',
+      'digest',
+      'personal-tooling',
+      'ai',
+      'agents',
+      'open-source',
+    ],
+    createdAt: '2026-08-29',
+    status: 'completed',
+    visibility: 'public',
+    confidence: 'verified',
+    priority: 82,
+  },
+  {
     id: 'directory-and-wellstudio-maturity',
     title: 'Personal directory and wellstudio_platform matured publicly',
     content:
