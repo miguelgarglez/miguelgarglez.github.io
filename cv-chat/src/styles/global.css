@@ -192,9 +192,19 @@
 }
 
 @media (max-width: 1023px) {
+  html:has(body.chat-page-open) {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
   body.chat-page-open {
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100%;
     overflow: hidden;
     touch-action: none;
+    overscroll-behavior: none;
   }
 
   /* Safari note: if the compact breakpoint re-triggers here, consider locking the page width

@@ -1,5 +1,10 @@
 import { MessageSquareIcon, XIcon } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
+import {
+  applyVisualViewportFrame,
+  clearVisualViewportFrame,
+  getVisualViewportFrame,
+} from "@/lib/visual-viewport-frame";
 import { cn } from "@/lib/utils";
 import Chat from "./Chat";
 
@@ -22,7 +27,9 @@ export default function ChatLauncher({
   const [forceLauncherFocus, setForceLauncherFocus] = useState(false);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
   const closeTimeoutRef = useRef<number | null>(null);
+  const lockedScrollYRef = useRef(0);
 
   // Once opened, the panel stays mounted for the lifetime of the page. Hiding the
   // shell instead of unmounting Chat preserves its in-memory conversation state.
@@ -125,9 +132,64 @@ export default function ChatLauncher({
 
   useEffect(() => {
     const shouldLock = isOpen && isCompact;
-    document.body.classList.toggle("chat-page-open", shouldLock);
-    return () => document.body.classList.remove("chat-page-open");
+    if (!shouldLock) {
+      document.body.classList.remove("chat-page-open");
+      document.body.style.top = "";
+      return;
+    }
+
+    lockedScrollYRef.current = window.scrollY;
+    document.body.classList.add("chat-page-open");
+    document.body.style.top = `-${lockedScrollYRef.current}px`;
+
+    return () => {
+      document.body.classList.remove("chat-page-open");
+      document.body.style.top = "";
+      window.scrollTo(0, lockedScrollYRef.current);
+    };
   }, [isCompact, isOpen]);
+
+  // Keep the compact chat shell pinned to the visual viewport so the OS keyboard
+  // only shrinks the chat column (header stays put, composer rises) instead of
+  // panning the whole fixed page the way Safari does by default.
+  useEffect(() => {
+    if (!hasOpened || !isCompact) return;
+
+    const overlay = overlayRef.current;
+    if (!overlay) return;
+
+    // While fully hidden, drop inline geometry so desktop/layout CSS can take over
+    // cleanly on the next open. Keep syncing during the close fade so keyboard
+    // dismiss does not jump the shell back to a stale full-height frame.
+    if (!isOpen && isHidden) {
+      clearVisualViewportFrame(overlay);
+      return;
+    }
+
+    const syncFrame = () => {
+      const frame = getVisualViewportFrame(window.visualViewport, {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+      applyVisualViewportFrame(overlay, frame);
+    };
+
+    syncFrame();
+
+    const visualViewport = window.visualViewport;
+    visualViewport?.addEventListener("resize", syncFrame);
+    visualViewport?.addEventListener("scroll", syncFrame);
+    window.addEventListener("resize", syncFrame);
+    window.addEventListener("orientationchange", syncFrame);
+
+    return () => {
+      visualViewport?.removeEventListener("resize", syncFrame);
+      visualViewport?.removeEventListener("scroll", syncFrame);
+      window.removeEventListener("resize", syncFrame);
+      window.removeEventListener("orientationchange", syncFrame);
+      clearVisualViewportFrame(overlay);
+    };
+  }, [hasOpened, isCompact, isHidden, isOpen]);
 
   useEffect(() => {
     const panel = panelRef.current;
@@ -156,7 +218,9 @@ export default function ChatLauncher({
       const focusChat = () => {
         const textarea = panelRef.current?.querySelector("textarea");
         if (textarea instanceof HTMLTextAreaElement) {
-          textarea.focus();
+          // preventScroll avoids the browser's default "scroll focused input into
+          // view" pan, which is what makes the whole chat page jump on mobile.
+          textarea.focus({ preventScroll: true });
         }
       };
       requestAnimationFrame(focusChat);
@@ -164,7 +228,7 @@ export default function ChatLauncher({
     }
 
     if (hasOpened) {
-      buttonRef.current?.focus();
+      buttonRef.current?.focus({ preventScroll: true });
     }
   }, [hasOpened, isOpen]);
 
@@ -261,9 +325,12 @@ export default function ChatLauncher({
 
       {shouldRenderPanel && (
         <div
+          ref={overlayRef}
           className={cn(
-            "fixed left-0 right-0 top-0 z-[9997] flex items-stretch justify-stretch p-0",
-            "h-[100dvh] min-h-[100svh]",
+            "fixed left-0 right-0 top-0 z-[9997] flex items-stretch justify-stretch overscroll-none p-0",
+            // Avoid min-h-[100svh]: on iOS it can keep the shell taller than the
+            // keyboard-visible visual viewport and force a whole-page pan.
+            "h-[100dvh]",
             "lg:inset-auto lg:h-auto lg:min-h-0 lg:bottom-24 lg:right-6 lg:max-w-[calc(100vw-3rem)] lg:items-end lg:justify-end lg:p-0",
             !isOpen && "pointer-events-none",
           )}
