@@ -21,7 +21,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'directory-page',
     title: 'Directory page overview',
     content:
-      "Miguel's root page is the lightweight directory at https://miguelgarglez.com, titled 'An index of projects, people, and ideas.' It works as an entry point to the things he builds and currently points visitors to cv-chat as the main featured project.",
+      "Miguel's root page is the lightweight directory at https://miguelgarglez.com, titled 'An index of projects, people, and ideas.' It works as an entry point to the things he builds. Featured public projects include cv-chat (professional profile and grounded chat), video-digest (local-first CLI/TUI for YouTube transcripts and digests on macOS Apple Silicon and Linux x64), and wellstudio_platform (boutique-studio product demo).",
     tags: ['directorio', 'proyectos', 'cultura'],
     type: 'fact',
     lang: 'en',
@@ -111,8 +111,8 @@ export const profileSections: ProfileBlock[] = [
     id: 'leadership-and-ownership',
     title: 'Leadership and ownership examples',
     content:
-      'At Open Digital Services, he now works closer to final product delivery on business-account onboarding flows for Santander Mexico and the UK. Previously, he led implementation, maintenance, and refactoring of shared UI components used by web developers across Grupo Santander banks. At Jember, he co-led the recovery of a stalled test automation initiative and helped turn it into a practical regression asset with around 50% reduction in person-day cost. These examples reflect the type of ownership he wants to expand: technical direction that improves product delivery and raises the level of the team around him.',
-    tags: ['liderazgo', 'impacto', 'proyectos', 'ownership', 'recruiting'],
+      'At Open Digital Services, he now works closer to final product delivery on business-account onboarding flows for 3 Santander markets: Spain, Mexico and the UK. Previously, he led implementation, maintenance, and refactoring of shared UI components used by web developers across Grupo Santander banks. At Jember, he co-led the recovery of a stalled test automation initiative and helped turn it into a practical regression asset with around 50% reduction in person-day cost. These examples reflect the type of ownership he wants to expand: technical direction that improves product delivery and raises the level of the team around him.',
+    tags: ['liderazgo', 'impacto', 'proyectos', 'ownership', 'recruiting', 'onboarding', 'product'],
     type: 'example',
     lang: 'en',
   },
@@ -138,7 +138,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'experience-ods',
     title: 'Experience - Open Digital Services (Santander Group)',
     content:
-      "Frontend Engineer (Sep 2024 - Current). Currently works in a final product team for Santander's business-account onboarding flow, serving Mexico and the UK. This role brings him closer to product delivery, financial onboarding complexity, regional requirements, and cross-functional execution. Previously worked in the Kubit Web UI components platform team, building and maintaining the component library used by web developers across Grupo Santander banks. Led implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem. Contributed to the open-source charting library with new features and continuous improvements. Managed releases with semantic versioning, branch strategy, and Storybook documentation; supported Kubit public presence through product landing pages. Built an MCP server to support consumers of the component library with contextual guidance, integration patterns, troubleshooting, and migration help. Drives AI-enabled workflows with tools such as Windsurf and Devin at work, and Codex and GitHub Copilot personally. He uses MCP servers, context engineering, structured prompts, and reusable skills to accelerate recurring development tasks, standardize team workflows, improve code quality, and make AI-assisted development easier to adopt without losing code ownership.",
+      "Frontend Engineer (Sep 2024 - Current). Currently works in a final product team for Santander's business-account onboarding flow, serving 3 markets: Spain, Mexico and the UK. This role brings him closer to product delivery, financial onboarding complexity, regional requirements, and cross-functional execution. Previously worked in the Kubit Web UI components platform team, building and maintaining the component library used by web developers across Grupo Santander banks. Led implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem. Contributed to the open-source charting library with new features and continuous improvements. Managed releases with semantic versioning, branch strategy, and Storybook documentation; supported Kubit public presence through product landing pages. Built an unofficial MCP server to support consumers of the component library with contextual guidance, integration patterns, troubleshooting, and migration help; adoption is limited rather than a mandated production platform. Drives AI-enabled workflows with tools such as Windsurf and Devin at work, and Codex and GitHub Copilot personally. He uses MCP servers, context engineering, structured prompts, and reusable skills to accelerate recurring development tasks, standardize team workflows, improve code quality, and make AI-assisted development easier to adopt without losing human review and code ownership.",
     tags: ['experiencia', 'impacto', 'proyectos', 'frontend', 'product', 'onboarding', 'ai', 'skills'],
     type: 'example',
     lang: 'en',
@@ -210,7 +210,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'skills-devops',
     title: 'Skills - AI and Developer Tooling',
     content:
-      'AI and developer tooling are a practical work area, not just a tool list. Miguel uses Windsurf, Devin, Codex, GitHub Copilot, MCP servers, context engineering, structured prompts, and reusable skills to accelerate implementation, refactoring, debugging, documentation, and recurring team workflows while keeping human review and code ownership. In his current role, he built an MCP server to support component-library consumers with contextual guidance, integration patterns, troubleshooting, and migration help. He also has CI/CD and delivery exposure with GitHub Actions, Microsoft Azure pipelines, Vercel, Cloudflare Workers, Docker, and GraphQL.',
+      'AI and developer tooling are a practical work area, not just a tool list. Miguel uses Windsurf, Devin, Codex, GitHub Copilot, MCP servers, context engineering, structured prompts, and reusable skills to accelerate implementation, refactoring, debugging, documentation, and recurring team workflows while keeping human review and code ownership. In his current role, he built an unofficial MCP server to support component-library consumers with contextual guidance, integration patterns, troubleshooting, and migration help. Treat MCP enablement as limited/unofficial adoption, not a production platform specialty. He also has CI/CD and delivery exposure with GitHub Actions, Microsoft Azure pipelines, Vercel, Cloudflare Workers, Docker, and GraphQL.',
     tags: ['skills', 'devops', 'infra', 'ai', 'forma-de-trabajar'],
     type: 'answer',
     lang: 'en',
@@ -228,7 +228,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'role-fit',
     title: 'Best fit roles and environments',
     content:
-      'Best fit roles are product-minded frontend and product-engineer positions with strong React/TypeScript delivery, including onboarding/product UI and frontend platform or design-systems work where accessibility, performance, and maintainability matter. He is intentionally expanding toward fuller-stack ownership, so T-shaped frontend roles that touch light fullstack or practical AI-assisted product work are a credible stretch when the core need is product delivery, ownership, and cross-functional execution. He is particularly aligned with environments that combine technical depth, cross-functional influence, and visible product or business impact—especially fintech, onboarding, or product teams that care about quality and user outcomes.',
+      'Best fit roles are product-minded frontend and product-engineer positions with strong React/TypeScript delivery, including onboarding/product UI and frontend platform or design-systems work where accessibility, performance, and maintainability matter. Frontend platform remains his strongest professional area. He is intentionally expanding toward fuller-stack ownership and technical leadership close to product and business, so T-shaped frontend roles that touch light fullstack or practical AI-assisted product work are a credible stretch when the core need is product delivery, ownership, and cross-functional execution. He is particularly aligned with environments that combine technical depth, cross-functional influence, and visible product or business impact—especially fintech, onboarding, or product teams that care about quality and user outcomes.',
     tags: ['recruiting', 'futuro', 'impacto', 'forma-de-trabajar', 'ownership'],
     type: 'answer',
     lang: 'en',
@@ -237,7 +237,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'career-direction',
     title: 'Career direction and leadership ambition',
     content:
-      'Miguel wants to grow into a technical leadership role with clear business influence. The direction he is aiming for is to help shape technical decisions, improve how teams deliver, contribute to product outcomes, and actively support other engineers as they grow. His interest in startup communities is not primarily about presenting himself as a founder, but about understanding how ambitious builders think, how technology opportunities emerge, and how that perspective can sharpen his engineering judgement.',
+      'Miguel wants to grow into a technical leadership role close to product and business. The direction he is aiming for is to help shape technical decisions, improve how teams deliver, contribute to product outcomes, and actively support other engineers as they grow. His interest in startup communities is not primarily about presenting himself as a founder, but about understanding how ambitious builders think, how technology opportunities emerge, and how that perspective can sharpen his engineering judgement.',
     tags: ['futuro', 'liderazgo', 'impacto', 'recruiting', 'ownership'],
     type: 'answer',
     lang: 'en',

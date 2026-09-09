@@ -25,7 +25,7 @@ export const profileFacts: ProfileFact[] = [
     id: 'current-role',
     label: 'Current role',
     value:
-      'Frontend Engineer at Open Digital Services, Santander Group, working on business-account onboarding flows for Santander Mexico and the UK',
+      'Frontend Engineer at Open Digital Services, Santander Group, working on business-account onboarding flows for 3 Santander markets: Spain, Mexico and the UK',
     tags: ['experience', 'current-role', 'recruiting', 'frontend', 'product', 'onboarding'],
     priority: 100,
   },
@@ -84,7 +84,7 @@ export const profileFacts: ProfileFact[] = [
     id: 'ai-tools-workflow',
     label: 'AI tools and workflow',
     value:
-      'Miguel has used Windsurf and Devin in professional work, and Codex and GitHub Copilot personally. He applies MCP/context workflows, structured prompts, and reusable skills to accelerate and standardize recurring development tasks while keeping human review and code ownership. In his current role, he built an MCP server to support consumers of the component library with contextual guidance, integration patterns, troubleshooting, and migration help.',
+      'Miguel has used Windsurf and Devin in professional work, and Codex and GitHub Copilot personally. He applies MCP/context workflows, structured prompts, and reusable skills to accelerate and standardize recurring development tasks while keeping human review and code ownership. In his current role, he built an unofficial MCP server to support consumers of the component library with contextual guidance, integration patterns, troubleshooting, and migration help. MCP enablement is limited/unofficial adoption, not a mandated production platform.',
     tags: ['skills', 'ai', 'experience', 'work_style', 'current-role'],
     priority: 88,
   },

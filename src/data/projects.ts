@@ -114,7 +114,7 @@ export const projects: Project[] = [
     href: "https://github.com/miguelgarglez/video-digest",
     external: true,
     description:
-      "Local macOS CLI and TUI for turning YouTube videos into transcripts and structured digests.",
+      "Local-first CLI and TUI for turning YouTube videos into transcripts and structured digests. npm 1.2.0 supports macOS Apple Silicon and Linux x64.",
     sub: "Published on npm as a small local-first tool with agent-friendly JSON contracts and an Artifact Library on disk.",
     stack: ["Bun", "TypeScript", "Python", "TUI"],
     status: "Active",
