@@ -77,7 +77,7 @@ export const profileFacts: ProfileFact[] = [
     label: 'Primary stack',
     value:
       'React, TypeScript, product frontend, financial onboarding flows, Astro, design systems, accessibility, Cloudflare Workers, AI-assisted engineering workflows with Windsurf, Devin, Codex, GitHub Copilot, MCP servers, context engineering, reusable skills, and an MCP server built to support component-library consumers',
-    tags: ['skills', 'frontend', 'product', 'onboarding', 'ai', 'summary'],
+    tags: ['skills', 'frontend', 'product', 'onboarding', 'ai', 'summary', 'design-systems'],
     priority: 85,
   },
   {

@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { runProfileAgent } from '../src/agent/run-profile-agent';
+import { profileAssistantPolicy } from '../src/agent/prompts';
+import { suggestedPromptContracts } from '../src/agent/suggested-prompts';
 
 function run(question: string) {
   return runProfileAgent({
@@ -226,8 +228,8 @@ describe('profile agent context retrieval', () => {
     assert.ok(memory);
   });
 
-  it('grounds the visible product-frontend prompt in frontend and current work', () => {
-    const context = run('What makes Miguel a strong product-minded frontend engineer?');
+  it('grounds the visible frontend-platform prompt in frontend and current work', () => {
+    const context = run('What makes Miguel a strong frontend platform engineer?');
     const blockIds = ids(context.selectedProfileBlocks);
 
     assert.equal(context.intent, 'skills');
@@ -251,7 +253,7 @@ describe('profile agent context retrieval', () => {
     const factIds = ids(context.selectedFacts);
     const blockIds = ids(context.selectedProfileBlocks);
 
-    assert.ok(['projects', 'summary'].includes(context.intent));
+    assert.equal(context.intent, 'summary');
     assert.ok(factIds.includes('agent-context'));
     assert.ok(blockIds.includes('cv-chat-agent'));
   });
@@ -315,60 +317,56 @@ describe('profile agent context retrieval', () => {
 });
 
 describe('visible suggested-prompt retrieval', () => {
-  it('grounds "Explain Miguel\'s design system experience"', () => {
-    const context = run("Explain Miguel's design system experience");
-    const blockIds = ids(context.selectedProfileBlocks);
+  it('covers every unique visible suggested prompt with pinned context', () => {
+    const uniquePrompts = [
+      "Explain Miguel's design system experience",
+      'How does Miguel use AI in engineering?',
+      "Summarize Miguel's work style",
+      'What makes Miguel a strong frontend platform engineer?',
+      'What has Miguel built at Santander?',
+      "Summarize Miguel's QA background",
+      "How did Miguel's early role shape his product mindset?",
+      "What is Miguel's academic background?",
+      'What has Miguel been learning recently?',
+      'How does this CV chat work?',
+      'What kind of engineer is Miguel?',
+    ];
 
-    assert.ok(['skills', 'experience'].includes(context.intent));
-    assert.ok(blockIds.includes('skills-frontend'));
-    assert.ok(blockIds.includes('experience-ods'));
-  });
-
-  it('grounds "Summarize Miguel\'s work style"', () => {
-    const context = run("Summarize Miguel's work style");
-    const blockIds = ids(context.selectedProfileBlocks);
-
-    assert.equal(context.intent, 'work_style');
-    assert.ok(blockIds.includes('work-style'));
-  });
-
-  it('grounds "What has Miguel built at Santander?"', () => {
-    const context = run('What has Miguel built at Santander?');
-    const factIds = ids(context.selectedFacts);
-    const blockIds = ids(context.selectedProfileBlocks);
-
-    assert.equal(context.intent, 'experience');
-    assert.ok(factIds.includes('current-role'));
-    assert.ok(blockIds.includes('experience-ods'));
-  });
-
-  it('grounds "Summarize Miguel\'s QA background"', () => {
-    const context = run("Summarize Miguel's QA background");
-    const factIds = ids(context.selectedFacts);
-    const blockIds = ids(context.selectedProfileBlocks);
-
-    assert.equal(context.intent, 'experience');
-    assert.ok(factIds.includes('qa-experience'));
-    assert.ok(blockIds.includes('experience-jember'));
-  });
-
-  it('grounds "How did Miguel\'s early role shape his product mindset?"', () => {
-    const context = run("How did Miguel's early role shape his product mindset?");
-    const blockIds = ids(context.selectedProfileBlocks);
-
-    assert.equal(context.intent, 'experience');
-    assert.ok(blockIds.includes('experience-electric-save'));
-  });
-
-  it('grounds the drawer prompt "What kind of engineer is Miguel?"', () => {
-    const context = run('What kind of engineer is Miguel?');
-    const blockIds = ids(context.selectedProfileBlocks);
-
-    assert.ok(['skills', 'summary'].includes(context.intent));
-    assert.ok(
-      blockIds.includes('skills-frontend') ||
-        blockIds.includes('recruiter-value-proposition') ||
-        blockIds.includes('role-fit')
+    const contractPrompts = new Set(
+      suggestedPromptContracts.map((entry) => entry.prompt)
     );
+    for (const prompt of uniquePrompts) {
+      assert.ok(contractPrompts.has(prompt), `missing contract for: ${prompt}`);
+    }
   });
+
+  it('refuses to claim missing information when selected context is present', () => {
+    assert.match(profileAssistantPolicy, /MUST answer from them/i);
+    assert.match(profileAssistantPolicy, /Do not say you lack information/i);
+  });
+
+  for (const contract of suggestedPromptContracts) {
+    it(`grounds "${contract.prompt}"`, () => {
+      const context = run(contract.prompt);
+      const factIds = ids(context.selectedFacts);
+      const blockIds = ids(context.selectedProfileBlocks);
+      const projectIds = ids(context.selectedProjects);
+      const memoryIds = ids(context.selectedMemories);
+
+      assert.equal(context.intent, contract.intent);
+      assert.ok(context.selectedProfileBlocks.length > 0);
+      for (const blockId of contract.blockIds) {
+        assert.ok(blockIds.includes(blockId), `missing block ${blockId}`);
+      }
+      for (const factId of contract.factIds ?? []) {
+        assert.ok(factIds.includes(factId), `missing fact ${factId}`);
+      }
+      for (const projectId of contract.projectIds ?? []) {
+        assert.ok(projectIds.includes(projectId), `missing project ${projectId}`);
+      }
+      for (const memoryId of contract.memoryIds ?? []) {
+        assert.ok(memoryIds.includes(memoryId), `missing memory ${memoryId}`);
+      }
+    });
+  }
 });

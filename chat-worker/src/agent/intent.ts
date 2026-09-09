@@ -51,6 +51,16 @@ export function classifyAudience(question: string): Audience {
 export function classifyIntent(question: string): Intent {
   if (
     matchesAny(question, [
+      'cv chat',
+      'profile chat',
+      'how does this cv',
+      'how does this chat',
+    ])
+  ) {
+    return 'summary';
+  }
+  if (
+    matchesAny(question, [
       'project',
       'projects',
       'proyecto',

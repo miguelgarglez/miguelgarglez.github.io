@@ -49,7 +49,7 @@ export const profileSections: ProfileBlock[] = [
     title: 'About Miguel',
     content:
       "I'm a product-minded software developer focused on delivering real business value through scalable, user-centered digital products. I use AI tools in practical ways to improve workflows, software quality, and team productivity, and I actively help others adopt what works. I try to keep a global view of the product, balancing engineering quality, maintainability, and cross-team collaboration. I'm also getting closer to Spain's technology and startup ecosystem through Exponential Community, using it as a way to learn how current builders think and meet people with similar curiosity.",
-    tags: ['trayectoria', 'motivacion', 'valores', 'startup', 'aprendizaje'],
+    tags: ['trayectoria', 'motivacion', 'valores', 'startup', 'aprendizaje', 'frontend', 'skills', 'recruiting'],
     type: 'story',
     lang: 'en',
   },
@@ -67,7 +67,7 @@ export const profileSections: ProfileBlock[] = [
     title: 'Recruiter snapshot - Why Miguel',
     content:
       'Miguel combines a product mindset, frontend delivery across onboarding and design-systems work, and strong collaboration habits. He brings a generalist mentality: he is motivated by solving real problems, does not back away from unfamiliar challenges, and is comfortable moving across product, quality, delivery, and technical depth as needed. He is especially valuable in environments that need reliable product interfaces and maintainable systems without losing sight of adoption, delivery, and business value.',
-    tags: ['recruiting', 'impacto', 'fortalezas', 'forma-de-trabajar'],
+    tags: ['recruiting', 'impacto', 'fortalezas', 'forma-de-trabajar', 'frontend', 'skills'],
     type: 'answer',
     lang: 'en',
   },
@@ -138,8 +138,8 @@ export const profileSections: ProfileBlock[] = [
     id: 'experience-ods',
     title: 'Experience - Open Digital Services (Santander Group)',
     content:
-      "Frontend Engineer (Sep 2024 - Current). Currently works in a final product team for Santander's business-account onboarding flow, serving Mexico and the UK. This role brings him closer to product delivery, financial onboarding complexity, regional requirements, and cross-functional execution. Previously worked in the Kubit Web UI components platform team, building and maintaining the component library used by web developers across Grupo Santander banks. Led implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem. Contributed to the open-source charting library with new features and continuous improvements. Managed releases with semantic versioning, branch strategy, and Storybook documentation; supported Kubit public presence through product landing pages. Built an unofficial MCP server to support consumers of the component library with contextual guidance, integration patterns, troubleshooting, and migration help; adoption is limited rather than a mandated production platform. Drives AI-enabled workflows with tools such as Windsurf and Devin at work, and Codex and GitHub Copilot personally. He uses MCP servers, context engineering, structured prompts, and reusable skills to accelerate recurring development tasks, standardize team workflows, improve code quality, and make AI-assisted development easier to adopt without losing human review and code ownership.",
-    tags: ['experiencia', 'impacto', 'proyectos', 'frontend', 'product', 'onboarding', 'ai', 'skills'],
+      "Frontend Engineer (Sep 2024 - Current). Currently works in a final product team for Santander's business-account onboarding flow, serving Mexico and the UK. This role brings him closer to product delivery, financial onboarding complexity, regional requirements, and cross-functional execution. Previously worked in the Kubit Web UI components platform team, building and maintaining the design system and component library used by web developers across Grupo Santander banks. Led implementation, maintenance, and refactoring of UI components, ensuring consistency, performance, and accessibility across the product ecosystem. Contributed to the open-source charting library with new features and continuous improvements. Managed releases with semantic versioning, branch strategy, and Storybook documentation; supported Kubit public presence through product landing pages. Built an unofficial MCP server to support consumers of the component library with contextual guidance, integration patterns, troubleshooting, and migration help; adoption is limited rather than a mandated production platform. Drives AI-enabled workflows with tools such as Windsurf and Devin at work, and Codex and GitHub Copilot personally. He uses MCP servers, context engineering, structured prompts, and reusable skills to accelerate recurring development tasks, standardize team workflows, improve code quality, and make AI-assisted development easier to adopt without losing human review and code ownership.",
+    tags: ['experiencia', 'impacto', 'proyectos', 'frontend', 'product', 'onboarding', 'ai', 'skills', 'design-systems'],
     type: 'example',
     lang: 'en',
   },
@@ -183,8 +183,8 @@ export const profileSections: ProfileBlock[] = [
     id: 'skills-frontend',
     title: 'Skills - Frontend Product and Platform',
     content:
-      "Miguel's strongest professional skill area is frontend engineering across product and platform contexts: React and TypeScript product UI, financial onboarding flows, component-library work for frontend teams, design systems with tokens and component APIs, Storybook documentation, accessibility-minded implementation, refactoring, semantic versioning, and adoption support.",
-    tags: ['skills', 'frontend', 'product', 'onboarding', 'impacto'],
+      "Miguel's strongest professional skill area is frontend platform and product engineering: React and TypeScript product UI, financial onboarding flows, Kubit design-system and component-library work for frontend teams, tokens and component APIs, Storybook documentation, accessibility-minded implementation, refactoring, semantic versioning, and adoption support.",
+    tags: ['skills', 'frontend', 'product', 'onboarding', 'impacto', 'design-systems'],
     type: 'answer',
     lang: 'en',
   },
@@ -229,7 +229,7 @@ export const profileSections: ProfileBlock[] = [
     title: 'Best fit roles and environments',
     content:
       'Best fit roles are product-minded frontend and product-engineer positions with strong React/TypeScript delivery, including onboarding/product UI and frontend platform or design-systems work where accessibility, performance, and maintainability matter. Frontend platform remains his strongest professional area. He is intentionally expanding toward fuller-stack ownership and technical leadership close to product and business, so T-shaped frontend roles that touch light fullstack or practical AI-assisted product work are a credible stretch when the core need is product delivery, ownership, and cross-functional execution. He is particularly aligned with environments that combine technical depth, cross-functional influence, and visible product or business impact—especially fintech, onboarding, or product teams that care about quality and user outcomes.',
-    tags: ['recruiting', 'futuro', 'impacto', 'forma-de-trabajar', 'ownership'],
+    tags: ['recruiting', 'futuro', 'impacto', 'forma-de-trabajar', 'ownership', 'frontend', 'skills'],
     type: 'answer',
     lang: 'en',
   },
