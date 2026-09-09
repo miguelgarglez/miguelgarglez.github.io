@@ -3,6 +3,9 @@ import { describe, it } from 'node:test';
 import { runProfileAgent } from '../src/agent/run-profile-agent';
 import { profileAssistantPolicy } from '../src/agent/prompts';
 import { suggestedPromptContracts } from '../src/agent/suggested-prompts';
+import { profileSections as workerSections } from '../src/knowledge/profile-data';
+import { buildSystemPrompt as buildBackupPrompt } from '../../chat-backup-vercel/shared/chat-context/context';
+import { profileSections as backupSections } from '../../chat-backup-vercel/shared/chat-context/profile-data';
 
 function run(question: string) {
   return runProfileAgent({
@@ -383,4 +386,23 @@ describe('visible suggested-prompt retrieval', () => {
       }
     });
   }
+});
+
+describe('Vercel backup knowledge alignment', () => {
+  it('keeps backup profile sections identical to Worker profile sections', () => {
+    assert.deepEqual(backupSections, workerSections);
+  });
+
+  it('answers product-minded frontend from backup context without Spain as a market', () => {
+    const prompt = buildBackupPrompt(
+      'What makes Miguel a strong product-minded frontend engineer?'
+    );
+
+    assert.match(prompt, /MUST answer from them/i);
+    assert.match(prompt, /product-minded frontend/i);
+    assert.match(prompt, /Mexico and the UK/i);
+    assert.doesNotMatch(prompt, /Spain, Mexico, and the UK/i);
+    assert.doesNotMatch(prompt, /frontend platform engineer/i);
+    assert.doesNotMatch(prompt, /frontend platform remains/i);
+  });
 });

@@ -27,6 +27,8 @@ knowledge first, then rely on the LLM second.
 - Visible profile content: `cv-chat/src/components/welcome/*`
 - Critical facts: `chat-worker/src/knowledge/profile-facts.ts`
 - Longer profile blocks: `chat-worker/src/knowledge/profile-data.ts`
+- Fallback profile blocks: `chat-backup-vercel/shared/chat-context/profile-data.ts`
+  (must stay identical to the Worker profile blocks)
 - Projects: `chat-worker/src/knowledge/projects.ts`
 - Curated updates and learning notes: `chat-worker/src/knowledge/memories.ts`
 - Retrieval tests: `chat-worker/test/profile-agent.test.ts`
@@ -108,17 +110,21 @@ assert.ok(blockIds.includes('experience-ods'));
 
 1. Inventory changed visible content and prompts.
 2. Update the relevant `chat-worker/src/knowledge/*` files.
-3. Add or update retrieval tests for changed prompts and claims.
-4. If tests fail, prefer improving classifier keywords, tags, or knowledge ids
+3. Copy updated `profile-data.ts` blocks into
+   `chat-backup-vercel/shared/chat-context/profile-data.ts`. The Vercel fallback
+   is a separate deploy root and cannot import the Worker package. It also uses
+   OpenRouter, not opencode Zen, so failover still works when Zen is down.
+4. Add or update retrieval tests for changed prompts and claims.
+5. If tests fail, prefer improving classifier keywords, tags, or knowledge ids
    over weakening the test.
-5. Run:
+6. Run:
 
 ```bash
 npm run test:profile-agent
 npm run build --prefix cv-chat
 ```
 
-6. If the drawer UI changed, manually check prompt opening, prefill behavior,
+7. If the drawer UI changed, manually check prompt opening, prefill behavior,
    focus, mobile layout, loading, and error states.
 
 ## Future Robustness Ideas
