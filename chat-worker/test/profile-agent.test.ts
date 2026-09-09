@@ -33,9 +33,36 @@ describe('profile agent context retrieval', () => {
 
     assert.ok(currentRole);
     assert.match(currentRole.value, /business-account onboarding/i);
-    assert.match(currentRole.value, /Mexico and the UK/i);
+    assert.match(currentRole.value, /Spain, Mexico and the UK/i);
     assert.ok(experience);
     assert.match(experience.content, /final product team/i);
+    assert.match(experience.content, /3 markets/i);
+    assert.match(experience.content, /Spain, Mexico and the UK/i);
+  });
+
+  it('grounds Santander onboarding questions in Spain, Mexico and the UK', () => {
+    const context = run(
+      'Does Miguel work on business-account onboarding for Spain, Mexico and the UK?'
+    );
+    const currentRole = context.selectedFacts.find(
+      (fact) => fact.id === 'current-role'
+    );
+    const experience = context.selectedProfileBlocks.find(
+      (block) => block.id === 'experience-ods'
+    );
+    const memory = context.selectedMemories.find(
+      (item) => item.id === 'santander-product-onboarding-team'
+    );
+
+    assert.equal(context.intent, 'experience');
+    assert.ok(currentRole);
+    assert.match(currentRole.value, /3 Santander markets/i);
+    assert.match(currentRole.value, /Spain, Mexico and the UK/i);
+    assert.ok(experience);
+    assert.match(experience.content, /Spain, Mexico and the UK/i);
+    assert.ok(memory);
+    assert.match(memory.content, /3 markets/i);
+    assert.match(memory.content, /Spain, Mexico and the UK/i);
   });
 
   it('grounds contact questions in contact facts', () => {
@@ -224,6 +251,52 @@ describe('profile agent context retrieval', () => {
     assert.ok(['projects', 'summary'].includes(context.intent));
     assert.ok(factIds.includes('agent-context'));
     assert.ok(blockIds.includes('cv-chat-agent'));
+  });
+
+  it('retrieves video-digest for personal CLI tooling questions', () => {
+    const context = run(
+      'What personal CLI tooling has Miguel built for YouTube transcripts?'
+    );
+    const project = context.selectedProjects.find(
+      (item) => item.id === 'video-digest'
+    );
+    const memory = context.selectedMemories.find(
+      (item) => item.id === 'video-digest-personal-cli'
+    );
+
+    assert.equal(context.intent, 'projects');
+    assert.ok(project);
+    assert.match(project.shortSummary, /Linux x64/i);
+    assert.match(project.shortSummary, /macOS/i);
+    assert.match(project.shortSummary, /personal tooling/i);
+    assert.doesNotMatch(project.shortSummary, /macOS-only/i);
+    assert.ok(memory);
+    assert.match(memory.content, /video-digest/i);
+    assert.match(memory.content, /Linux x64/i);
+  });
+
+  it('retrieves video-digest when asked about the project by name', () => {
+    const context = run('What is video-digest?');
+    const projectIds = ids(context.selectedProjects);
+
+    assert.equal(context.intent, 'projects');
+    assert.ok(projectIds.includes('video-digest'));
+  });
+
+  it('keeps MCP enablement framed as unofficial limited adoption', () => {
+    const context = run('How does Miguel use MCP with the component library?');
+    const aiTools = context.selectedFacts.find(
+      (fact) => fact.id === 'ai-tools-workflow'
+    );
+    const devops = context.selectedProfileBlocks.find(
+      (block) => block.id === 'skills-devops'
+    );
+
+    assert.ok(aiTools);
+    assert.match(aiTools.value, /unofficial MCP server/i);
+    assert.match(aiTools.value, /limited\/unofficial adoption/i);
+    assert.ok(devops);
+    assert.match(devops.content, /limited\/unofficial adoption/i);
   });
 
   it('does not frame mobile work as a primary specialty', () => {

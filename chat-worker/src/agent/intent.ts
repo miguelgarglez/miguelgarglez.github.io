@@ -49,7 +49,22 @@ export function classifyAudience(question: string): Audience {
 }
 
 export function classifyIntent(question: string): Intent {
-  if (matchesAny(question, ['project', 'projects', 'proyecto', 'proyectos', 'portfolio'])) return 'projects';
+  if (
+    matchesAny(question, [
+      'project',
+      'projects',
+      'proyecto',
+      'proyectos',
+      'portfolio',
+      'video-digest',
+      'personal cli',
+      'cli tooling',
+      'tui',
+      'youtube transcript',
+      'youtube digest',
+    ])
+  )
+    return 'projects';
   if (
     matchesAny(question, [
       'experience',
@@ -73,6 +88,10 @@ export function classifyIntent(question: string): Intent {
       'jember',
       'calidad',
       'pruebas',
+      'santander',
+      'onboarding',
+      'business-account',
+      'business account',
     ])
   ) return 'experience';
   if (matchesAny(question, ['work style', 'collaboration', 'forma de trabajar', 'metodo', 'método'])) return 'work_style';

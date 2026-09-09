@@ -23,6 +23,11 @@ function shouldIncludeMemories(question: string, intent: Intent) {
       'exponential',
       'onboarding',
       'santander',
+      'video-digest',
+      'youtube',
+      'transcript',
+      'personal cli',
+      'cli tooling',
     ])
   );
 }
