@@ -25,7 +25,7 @@ export const profileFacts: ProfileFact[] = [
     id: 'current-role',
     label: 'Current role',
     value:
-      'Frontend Engineer at Open Digital Services, Santander Group, working on business-account onboarding flows for 3 Santander markets: Spain, Mexico and the UK',
+      'Frontend Engineer at Open Digital Services, Santander Group, working on business-account onboarding flows for Santander Mexico and the UK',
     tags: ['experience', 'current-role', 'recruiting', 'frontend', 'product', 'onboarding'],
     priority: 100,
   },

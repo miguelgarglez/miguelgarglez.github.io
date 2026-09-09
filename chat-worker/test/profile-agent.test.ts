@@ -33,16 +33,17 @@ describe('profile agent context retrieval', () => {
 
     assert.ok(currentRole);
     assert.match(currentRole.value, /business-account onboarding/i);
-    assert.match(currentRole.value, /Spain, Mexico and the UK/i);
+    assert.match(currentRole.value, /Mexico and the UK/i);
     assert.ok(experience);
     assert.match(experience.content, /final product team/i);
-    assert.match(experience.content, /3 markets/i);
-    assert.match(experience.content, /Spain, Mexico and the UK/i);
+    assert.match(experience.content, /Mexico and the UK/i);
+    assert.doesNotMatch(currentRole.value, /Spain, Mexico/i);
+    assert.doesNotMatch(experience.content, /3 markets/i);
   });
 
-  it('grounds Santander onboarding questions in Spain, Mexico and the UK', () => {
+  it('grounds Santander onboarding questions in Mexico and the UK only', () => {
     const context = run(
-      'Does Miguel work on business-account onboarding for Spain, Mexico and the UK?'
+      'Does Miguel work on business-account onboarding for Mexico and the UK?'
     );
     const currentRole = context.selectedFacts.find(
       (fact) => fact.id === 'current-role'
@@ -56,13 +57,15 @@ describe('profile agent context retrieval', () => {
 
     assert.equal(context.intent, 'experience');
     assert.ok(currentRole);
-    assert.match(currentRole.value, /3 Santander markets/i);
-    assert.match(currentRole.value, /Spain, Mexico and the UK/i);
+    assert.match(currentRole.value, /Mexico and the UK/i);
+    assert.doesNotMatch(currentRole.value, /Spain, Mexico/i);
+    assert.doesNotMatch(currentRole.value, /3 Santander markets/i);
     assert.ok(experience);
-    assert.match(experience.content, /Spain, Mexico and the UK/i);
+    assert.match(experience.content, /Mexico and the UK/i);
+    assert.doesNotMatch(experience.content, /3 markets/i);
     assert.ok(memory);
-    assert.match(memory.content, /3 markets/i);
-    assert.match(memory.content, /Spain, Mexico and the UK/i);
+    assert.match(memory.content, /Mexico and the UK/i);
+    assert.doesNotMatch(memory.content, /3 markets/i);
   });
 
   it('grounds contact questions in contact facts', () => {
@@ -308,5 +311,64 @@ describe('profile agent context retrieval', () => {
     assert.equal(context.intent, 'experience');
     assert.ok(block);
     assert.match(block.content, /exploratory tinkering/i);
+  });
+});
+
+describe('visible suggested-prompt retrieval', () => {
+  it('grounds "Explain Miguel\'s design system experience"', () => {
+    const context = run("Explain Miguel's design system experience");
+    const blockIds = ids(context.selectedProfileBlocks);
+
+    assert.ok(['skills', 'experience'].includes(context.intent));
+    assert.ok(blockIds.includes('skills-frontend'));
+    assert.ok(blockIds.includes('experience-ods'));
+  });
+
+  it('grounds "Summarize Miguel\'s work style"', () => {
+    const context = run("Summarize Miguel's work style");
+    const blockIds = ids(context.selectedProfileBlocks);
+
+    assert.equal(context.intent, 'work_style');
+    assert.ok(blockIds.includes('work-style'));
+  });
+
+  it('grounds "What has Miguel built at Santander?"', () => {
+    const context = run('What has Miguel built at Santander?');
+    const factIds = ids(context.selectedFacts);
+    const blockIds = ids(context.selectedProfileBlocks);
+
+    assert.equal(context.intent, 'experience');
+    assert.ok(factIds.includes('current-role'));
+    assert.ok(blockIds.includes('experience-ods'));
+  });
+
+  it('grounds "Summarize Miguel\'s QA background"', () => {
+    const context = run("Summarize Miguel's QA background");
+    const factIds = ids(context.selectedFacts);
+    const blockIds = ids(context.selectedProfileBlocks);
+
+    assert.equal(context.intent, 'experience');
+    assert.ok(factIds.includes('qa-experience'));
+    assert.ok(blockIds.includes('experience-jember'));
+  });
+
+  it('grounds "How did Miguel\'s early role shape his product mindset?"', () => {
+    const context = run("How did Miguel's early role shape his product mindset?");
+    const blockIds = ids(context.selectedProfileBlocks);
+
+    assert.equal(context.intent, 'experience');
+    assert.ok(blockIds.includes('experience-electric-save'));
+  });
+
+  it('grounds the drawer prompt "What kind of engineer is Miguel?"', () => {
+    const context = run('What kind of engineer is Miguel?');
+    const blockIds = ids(context.selectedProfileBlocks);
+
+    assert.ok(['skills', 'summary'].includes(context.intent));
+    assert.ok(
+      blockIds.includes('skills-frontend') ||
+        blockIds.includes('recruiter-value-proposition') ||
+        blockIds.includes('role-fit')
+    );
   });
 });

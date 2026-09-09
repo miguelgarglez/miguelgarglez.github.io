@@ -17,7 +17,7 @@ export const memories: MemoryBlock[] = [
     id: 'santander-product-onboarding-team',
     title: 'Moved to Santander business onboarding product team',
     content:
-      "Miguel moved from frontend UI platform work into a final product team focused on Santander's business-account onboarding flows for 3 markets: Spain, Mexico and the UK. This gives him closer exposure to product delivery, financial onboarding complexity, regional requirements, and cross-functional execution.",
+      "Miguel moved from frontend UI platform work into a final product team focused on Santander's business-account onboarding flows for Mexico and the UK. This gives him closer exposure to product delivery, financial onboarding complexity, regional requirements, and cross-functional execution.",
     source: 'manual',
     tags: ['frontend', 'product', 'santander', 'onboarding', 'business-accounts'],
     createdAt: '2026-06-11',

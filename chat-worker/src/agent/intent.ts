@@ -92,9 +92,21 @@ export function classifyIntent(question: string): Intent {
       'onboarding',
       'business-account',
       'business account',
+      'early role',
+      'electric-save',
     ])
   ) return 'experience';
-  if (matchesAny(question, ['work style', 'collaboration', 'forma de trabajar', 'metodo', 'método'])) return 'work_style';
+  if (
+    matchesAny(question, [
+      'work style',
+      'working style',
+      'collaboration',
+      'forma de trabajar',
+      'metodo',
+      'método',
+    ])
+  )
+    return 'work_style';
   if (matchesAny(question, ['contact', 'linkedin', 'email', 'reach', 'contacto'])) return 'contact';
   if (
     matchesAny(question, [
@@ -139,6 +151,7 @@ export function classifyIntent(question: string): Intent {
       'codex',
       'copilot',
       'mcp',
+      'kind of engineer',
       'habilidades',
       'tecnologias',
       'tecnologías',
