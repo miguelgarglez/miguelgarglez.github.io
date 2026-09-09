@@ -10,6 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "test:profile-agent": "node scripts/test-profile-agent.mjs",
+    "test:visual-viewport-frame": "tsx scripts/test-visual-viewport-frame.ts",
     "codex:setup": "bash scripts/codex-cloud-setup.sh",
     "codex:verify": "bash scripts/codex-cloud-verify.sh",
     "dev:cv-chat": "bash scripts/dev-cv-chat-local.sh"
