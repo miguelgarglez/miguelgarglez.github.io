@@ -40,12 +40,6 @@ export const suggestedPromptContracts: SuggestedPromptContract[] = [
     blockIds: ['skills-frontend', 'experience-ods', 'recruiter-value-proposition'],
   },
   {
-    prompt: 'What makes Miguel a strong frontend platform engineer?',
-    intent: 'skills',
-    factIds: ['primary-stack'],
-    blockIds: ['skills-frontend', 'experience-ods'],
-  },
-  {
     prompt: 'What has Miguel built at Santander?',
     intent: 'experience',
     factIds: ['current-role'],

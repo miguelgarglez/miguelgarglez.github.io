@@ -115,6 +115,19 @@ describe('profile agent context retrieval', () => {
     assert.ok(roleFit);
     assert.match(roleFit.content, /product-minded frontend/i);
     assert.match(roleFit.content, /T-shaped frontend/i);
+    assert.doesNotMatch(roleFit.content, /frontend platform remains/i);
+    assert.doesNotMatch(roleFit.content, /frontend platform engineer/i);
+  });
+
+  it('sells frontend skills as product-minded, not a platform-engineer identity', () => {
+    const context = run('What makes Miguel a strong product-minded frontend engineer?');
+    const skills = context.selectedProfileBlocks.find(
+      (block) => block.id === 'skills-frontend'
+    );
+
+    assert.ok(skills);
+    assert.match(skills.content, /product-minded frontend engineering/i);
+    assert.doesNotMatch(skills.content, /strongest professional skill area is frontend platform/i);
   });
 
   it('surfaces the directory and wellstudio portfolio memory for recent project updates', () => {
@@ -332,12 +345,13 @@ describe('visible suggested-prompt retrieval', () => {
       'What kind of engineer is Miguel?',
     ];
 
-    const contractPrompts = new Set(
-      suggestedPromptContracts.map((entry) => entry.prompt)
+    const contractPrompts = suggestedPromptContracts.map((entry) => entry.prompt);
+    assert.deepEqual(new Set(contractPrompts), new Set(uniquePrompts));
+    assert.ok(
+      !contractPrompts.includes(
+        'What makes Miguel a strong frontend platform engineer?'
+      )
     );
-    for (const prompt of uniquePrompts) {
-      assert.ok(contractPrompts.has(prompt), `missing contract for: ${prompt}`);
-    }
   });
 
   it('refuses to claim missing information when selected context is present', () => {

@@ -181,9 +181,9 @@ export const profileSections: ProfileBlock[] = [
   },
   {
     id: 'skills-frontend',
-    title: 'Skills - Frontend Product and Platform',
+    title: 'Skills - Product-minded Frontend',
     content:
-      "Miguel's strongest professional skill area is frontend platform and product engineering: React and TypeScript product UI, financial onboarding flows, Kubit design-system and component-library work for frontend teams, tokens and component APIs, Storybook documentation, accessibility-minded implementation, refactoring, semantic versioning, and adoption support.",
+      "Miguel's strongest professional skill area is product-minded frontend engineering: React and TypeScript product UI, financial onboarding flows, and related design-system / component-library work for frontend teams (Kubit), including tokens and component APIs, Storybook documentation, accessibility-minded implementation, refactoring, semantic versioning, and adoption support.",
     tags: ['skills', 'frontend', 'product', 'onboarding', 'impacto', 'design-systems'],
     type: 'answer',
     lang: 'en',
@@ -228,7 +228,7 @@ export const profileSections: ProfileBlock[] = [
     id: 'role-fit',
     title: 'Best fit roles and environments',
     content:
-      'Best fit roles are product-minded frontend and product-engineer positions with strong React/TypeScript delivery, including onboarding/product UI and frontend platform or design-systems work where accessibility, performance, and maintainability matter. Frontend platform remains his strongest professional area. He is intentionally expanding toward fuller-stack ownership and technical leadership close to product and business, so T-shaped frontend roles that touch light fullstack or practical AI-assisted product work are a credible stretch when the core need is product delivery, ownership, and cross-functional execution. He is particularly aligned with environments that combine technical depth, cross-functional influence, and visible product or business impact—especially fintech, onboarding, or product teams that care about quality and user outcomes.',
+      'Best fit roles are product-minded frontend and product-engineer positions with strong React/TypeScript delivery, including onboarding/product UI and design-systems work where accessibility, performance, and maintainability matter. He is intentionally expanding toward fuller-stack ownership and technical leadership close to product and business, so T-shaped frontend roles that touch light fullstack or practical AI-assisted product work are a credible stretch when the core need is product delivery, ownership, and cross-functional execution. He is particularly aligned with environments that combine technical depth, cross-functional influence, and visible product or business impact—especially fintech, onboarding, or product teams that care about quality and user outcomes.',
     tags: ['recruiting', 'futuro', 'impacto', 'forma-de-trabajar', 'ownership', 'frontend', 'skills'],
     type: 'answer',
     lang: 'en',
