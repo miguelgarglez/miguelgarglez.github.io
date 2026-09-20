@@ -149,7 +149,6 @@ export const projects: ProjectBlock[] = [
       'Reached a working demo during the hackathon. High-level collaboration in industrial robotics and AI; not a production deployment.',
     technologies: ['industrial robotics', 'AI', 'dashboard'],
     links: {
-      demo: 'https://hackspain-2026-xfold-dashboard.vercel.app',
       repo: 'https://github.com/rogarmu8/hackspain_2026_xfold',
     },
     tags: [

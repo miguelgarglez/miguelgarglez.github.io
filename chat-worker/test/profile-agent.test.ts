@@ -326,8 +326,15 @@ describe('profile agent context retrieval', () => {
     assert.match(block.content, /core contributor/i);
     assert.ok(project);
     assert.match(project.shortSummary, /press/i);
-    assert.ok(project.links.demo);
-    assert.ok(project.links.repo);
+    assert.equal(project.links.demo, undefined);
+    assert.doesNotMatch(
+      `${project.links.demo ?? ''} ${project.links.repo ?? ''}`,
+      /hackspain-2026-xfold-dashboard|vercel\.app/i
+    );
+    assert.equal(
+      project.links.repo,
+      'https://github.com/rogarmu8/hackspain_2026_xfold'
+    );
     assert.ok(memory);
     assert.match(memory.content, /UPM/i);
   });
