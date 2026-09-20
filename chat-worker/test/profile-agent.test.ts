@@ -304,6 +304,60 @@ describe('profile agent context retrieval', () => {
     assert.ok(projectIds.includes('video-digest'));
   });
 
+  it('retrieves HackSpain / XFOLD for Spanish hackathon questions', () => {
+    const context = run('¿has hecho hackathons?');
+    const fact = context.selectedFacts.find((item) => item.id === 'hackspain-xfold');
+    const block = context.selectedProfileBlocks.find(
+      (item) => item.id === 'hackspain-xfold'
+    );
+    const project = context.selectedProjects.find((item) => item.id === 'xfold');
+    const memory = context.selectedMemories.find(
+      (item) => item.id === 'hackspain-2026-xfold'
+    );
+
+    assert.equal(context.intent, 'projects');
+    assert.ok(fact);
+    assert.match(fact.value, /HackSpain 2026/i);
+    assert.match(fact.value, /XFOLD/i);
+    assert.match(fact.value, /THEKER/i);
+    assert.doesNotMatch(fact.value, /mujoco|isaac|pixi|moon/i);
+    assert.ok(block);
+    assert.match(block.content, /control-room dashboard/i);
+    assert.match(block.content, /core contributor/i);
+    assert.ok(project);
+    assert.match(project.shortSummary, /press/i);
+    assert.ok(project.links.demo);
+    assert.ok(project.links.repo);
+    assert.ok(memory);
+    assert.match(memory.content, /UPM/i);
+  });
+
+  it('retrieves XFOLD when asked about HackSpain', () => {
+    const context = run('HackSpain');
+    const projectIds = ids(context.selectedProjects);
+    const memoryIds = ids(context.selectedMemories);
+    const factIds = ids(context.selectedFacts);
+
+    assert.equal(context.intent, 'projects');
+    assert.ok(projectIds.includes('xfold'));
+    assert.ok(memoryIds.includes('hackspain-2026-xfold'));
+    assert.ok(factIds.includes('hackspain-xfold'));
+  });
+
+  it('retrieves XFOLD when asked about the project by name', () => {
+    const context = run('What is XFOLD?');
+    const project = context.selectedProjects.find((item) => item.id === 'xfold');
+
+    assert.equal(context.intent, 'projects');
+    assert.ok(project);
+    assert.match(project.shortSummary, /HackSpain 2026/i);
+    assert.match(project.shortSummary, /THEKER/i);
+    assert.doesNotMatch(
+      `${project.shortSummary} ${project.solution ?? ''} ${project.technologies.join(' ')}`,
+      /mujoco|isaac|pixi|moon/i
+    );
+  });
+
   it('keeps MCP enablement framed as unofficial limited adoption', () => {
     const context = run('How does Miguel use MCP with the component library?');
     const aiTools = context.selectedFacts.find(

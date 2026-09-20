@@ -56,6 +56,13 @@ function shouldIncludeProjects(question: string, intent: Intent) {
       'youtube',
       'transcript',
       'digest',
+      'hackathon',
+      'hackathons',
+      'hackaton',
+      'hackatones',
+      'hackspain',
+      'xfold',
+      'theker',
     ])
   );
 }

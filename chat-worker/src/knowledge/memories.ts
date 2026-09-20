@@ -124,6 +124,30 @@ export const memories: MemoryBlock[] = [
     priority: 90,
   },
   {
+    id: 'hackspain-2026-xfold',
+    title: 'Participated in HackSpain 2026 with XFOLD',
+    content:
+      'In September 2026 Miguel took part in HackSpain, an in-person hackathon (hackatón / hackathons) at UPM–ETSIT in Madrid around 18–20 Sep. On the THEKER track (industrial robotics and AI), his team built XFOLD: a platform to examine simulations of an industrial shirt process (press → fold → pack) with a control-room dashboard. They reached a demo. Miguel was a core contributor on the team.',
+    source: 'manual',
+    tags: [
+      'hackathon',
+      'hackathons',
+      'hackaton',
+      'hackatones',
+      'hackspain',
+      'xfold',
+      'theker',
+      'industrial-robotics',
+      'ai',
+      'team-project',
+    ],
+    createdAt: '2026-09-20',
+    status: 'completed',
+    visibility: 'public',
+    confidence: 'verified',
+    priority: 88,
+  },
+  {
     id: 'google-genai-intensive-capstone',
     title: 'Google GenAI Intensive capstone',
     content:

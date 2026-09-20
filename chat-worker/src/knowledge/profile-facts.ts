@@ -112,4 +112,12 @@ export const profileFacts: ProfileFact[] = [
     tags: ['learning', 'startup', 'community', 'technology', 'summary'],
     priority: 72,
   },
+  {
+    id: 'hackspain-xfold',
+    label: 'HackSpain 2026 / XFOLD',
+    value:
+      'Miguel has participated in hackathons. Most recently he joined HackSpain 2026, an in-person hackathon (hackatón) at UPM–ETSIT in Madrid around 18–20 September 2026. On the THEKER track (industrial robotics and AI), he was a core contributor on XFOLD: a team platform to examine simulations of an industrial shirt process (press, fold, pack) with a control-room dashboard. The team reached a demo.',
+    tags: ['projects', 'portfolio', 'hackathon', 'hackathons', 'hackspain', 'xfold'],
+    priority: 84,
+  },
 ];

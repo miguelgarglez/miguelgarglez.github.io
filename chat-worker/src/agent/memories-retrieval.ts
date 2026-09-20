@@ -28,6 +28,13 @@ function shouldIncludeMemories(question: string, intent: Intent) {
       'transcript',
       'personal cli',
       'cli tooling',
+      'hackathon',
+      'hackathons',
+      'hackaton',
+      'hackatones',
+      'hackspain',
+      'xfold',
+      'theker',
     ])
   );
 }
