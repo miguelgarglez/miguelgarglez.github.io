@@ -72,6 +72,13 @@ export function classifyIntent(question: string): Intent {
       'tui',
       'youtube transcript',
       'youtube digest',
+      'hackathon',
+      'hackathons',
+      'hackaton',
+      'hackatones',
+      'hackspain',
+      'xfold',
+      'theker',
     ])
   )
     return 'projects';

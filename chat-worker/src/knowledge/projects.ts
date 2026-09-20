@@ -137,6 +137,37 @@ export const projects: ProjectBlock[] = [
     priority: 28,
   },
   {
+    id: 'xfold',
+    title: 'XFOLD (HackSpain 2026)',
+    shortSummary:
+      'HackSpain 2026 THEKER-track hackathon project: the team built XFOLD, a platform to examine simulations of an industrial shirt process (press → fold → pack) with a control-room dashboard. Reached a demo. Miguel was a core contributor. In-person hackathon at UPM–ETSIT, Madrid, around 18–20 Sep 2026. Not a company production system.',
+    problem:
+      'An industrial shirt line (press, fold, pack) is hard to examine as a whole without a shared view of the simulated process.',
+    solution:
+      'The team built XFOLD, a platform to examine those simulations from a control-room dashboard.',
+    impact:
+      'Reached a working demo during the hackathon. High-level collaboration in industrial robotics and AI; not a production deployment.',
+    technologies: ['industrial robotics', 'AI', 'dashboard'],
+    links: {
+      repo: 'https://github.com/rogarmu8/hackspain_2026_xfold',
+    },
+    tags: [
+      'hackathon',
+      'hackathons',
+      'hackaton',
+      'hackatones',
+      'hackspain',
+      'xfold',
+      'theker',
+      'industrial-robotics',
+      'ai',
+      'dashboard',
+      'team-project',
+    ],
+    visibility: 'public',
+    priority: 86,
+  },
+  {
     id: 'genai-intensive-capstone',
     title: 'Google GenAI Intensive capstone',
     shortSummary:
