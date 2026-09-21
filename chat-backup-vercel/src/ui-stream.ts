@@ -10,7 +10,8 @@ function writeSseJson(res: VercelResponse, payload: Record<string, unknown>) {
 
 export async function pipeOpenAiSseToUiMessageStream(
   upstream: ReadableStream<Uint8Array>,
-  res: VercelResponse
+  res: VercelResponse,
+  onEnd?: (info: { receivedBytes: number; errorSent: boolean }) => void
 ) {
   const decoder = new TextDecoder();
   const messageId = `msg_${crypto.randomUUID()}`;
@@ -132,5 +133,6 @@ export async function pipeOpenAiSseToUiMessageStream(
     endMessage();
     sendDone();
     res.end();
+    onEnd?.({ receivedBytes, errorSent });
   }
 }

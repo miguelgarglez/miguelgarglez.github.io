@@ -1,6 +1,7 @@
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { MessageSquareIcon } from 'lucide-react';
+import { nanoid } from 'nanoid';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Conversation,
@@ -162,6 +163,8 @@ export default function Chat({
           'x-vercel-ai-ui-message-stream': 'v1',
         },
         fetch: async (_input, init) => {
+          const chatRequestId = nanoid();
+          let failoverReason: string | null = null;
           const applyErrorFromResponse = async (response: Response) => {
             let errorPayload: ChatApiErrorPayload | null = null;
             const contentType = response.headers.get('Content-Type');
@@ -216,6 +219,9 @@ export default function Chat({
             const useSecondaryFirst =
               Boolean(secondaryApiUrl) &&
               now < primaryDegradedUntilRef.current;
+            if (useSecondaryFirst) {
+              failoverReason = 'primary-degraded';
+            }
             const endpoints: Array<{
               url: string;
               kind: 'primary' | 'secondary';
@@ -251,10 +257,18 @@ export default function Chat({
 
             for (let index = 0; index < endpoints.length; index += 1) {
               const endpoint = endpoints[index];
+              const attemptInit = cloneRequestInit(init) ?? {};
+              const attemptHeaders = new Headers(attemptInit.headers);
+              attemptHeaders.set('x-chat-request-id', chatRequestId);
+              attemptHeaders.set('x-chat-attempt', endpoint.kind);
+              if (endpoint.kind === 'secondary' && failoverReason) {
+                attemptHeaders.set('x-chat-failover-reason', failoverReason);
+              }
+              attemptInit.headers = attemptHeaders;
               try {
                 response = await fetchWithTimeout(
                   endpoint.url,
-                  init,
+                  attemptInit,
                   endpoint.kind === 'primary'
                     ? PRIMARY_REQUEST_TIMEOUT_MS
                     : SECONDARY_REQUEST_TIMEOUT_MS
@@ -266,6 +280,10 @@ export default function Chat({
                   secondaryApiUrl &&
                   index < endpoints.length - 1
                 ) {
+                  failoverReason =
+                    error instanceof Error && error.name === 'AbortError'
+                      ? 'timeout'
+                      : 'network';
                   primaryDegradedUntilRef.current = Date.now() + PRIMARY_DEGRADED_MS;
                   continue;
                 }
@@ -282,6 +300,7 @@ export default function Chat({
                 index < endpoints.length - 1;
 
               if (canFailover && FAILOVER_STATUSES.has(response.status)) {
+                failoverReason = `status:${response.status}`;
                 primaryDegradedUntilRef.current = Date.now() + PRIMARY_DEGRADED_MS;
                 continue;
               }

@@ -31,7 +31,8 @@ export function buildCorsHeaders(
     'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
     'Access-Control-Allow-Headers':
       requestedHeaders?.trim() ||
-      'Content-Type, Authorization, x-vercel-ai-ui-message-stream, User-Agent',
+      'Content-Type, Authorization, x-vercel-ai-ui-message-stream, User-Agent, x-chat-request-id, x-chat-attempt, x-chat-failover-reason',
+    'Access-Control-Expose-Headers': 'X-Chat-Backend, X-Chat-Request-Id, Retry-After',
   };
 
   if (origin && allowedOrigins.has(origin)) {
