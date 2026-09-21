@@ -157,8 +157,8 @@ export const projects: Project[] = [
     href: "https://preview-wellstudio.miguelgarglez.com",
     external: true,
     description:
-      "A full-stack portfolio demo for a boutique studio: public scheduling, member bookings, and staff operations with synthetic data.",
-    sub: "Modular Next.js, PostgreSQL, Supabase Auth, and a Stripe test-mode integration.",
+      "A full-stack demo for a boutique fitness studio, with a public schedule, member bookings, and tools for staff. All data is synthetic.",
+    sub: "Next.js and PostgreSQL, with Supabase Auth and Stripe test payments.",
     stack: ["Next.js", "TypeScript", "Prisma", "Supabase", "Stripe"],
     status: "Portfolio demo",
     year: 2026,
@@ -167,37 +167,37 @@ export const projects: Project[] = [
     featured: true,
     role: "Full-stack engineer",
     summary:
-      "A modular portfolio project exploring booking capacity, credit accounting, and payment retries across public, member, and staff journeys. The demo uses synthetic data and has not been adopted by a live studio.",
+      "I built WellStudio to work through booking capacity, credit accounting, and payment retries in one application. It covers the public site, member accounts, and staff tools. The demo uses synthetic data and has no live studio users.",
     capabilities: [
       "Public schedule, plans, and demo lead capture",
-      "Member portal for bookings, cancellations, and credits",
-      "Staff desk and assisted booking with shared capacity rules",
-      "Credit-pack checkout with an application simulator and Stripe test mode",
+      "Member portal with bookings, cancellations, and credit balances",
+      "Staff tools for assisted bookings under the same capacity rules",
+      "Credit-pack checkout using either the application simulator or Stripe test mode",
     ],
     sections: [
       {
-        title: "Three journeys",
+        title: "Using the demo",
         items: [
-          "Public: synthetic class schedule, plans, and lead capture.",
-          "Member: book and cancel with clear rules; see coverage and credits.",
-          "Staff: run today, open sessions, and book for a member without bypassing capacity.",
+          "Visitors can browse sample classes and plans, or leave an enquiry.",
+          "Members can book or cancel a class and check their entitlements and credit balance.",
+          "Staff can manage the day's classes, open sessions, and book for members within the same capacity limits.",
         ],
       },
       {
         title: "How it's built",
-        body: "A modular Next.js monolith with domain services behind the routes. PostgreSQL and Prisma hold bookings, entitlements, and the credit ledger; Supabase Auth handles identity. Payment events are checked against local purchase snapshots before credits are granted.",
+        body: "WellStudio is a modular Next.js monolith. Routes call domain services; PostgreSQL and Prisma store bookings, entitlements, and the credit ledger. Supabase Auth handles identity. Before granting credits, the payment service checks provider events against the purchase recorded locally.",
       },
       {
         title: "Engineering decisions",
         items: [
-          "Serializable booking transactions coordinate capacity and credit use when members compete for the last place.",
-          "Database migrations preserve repeated cancellation and waitlist history while keeping active bookings unique.",
-          "Stable payment, provider-event, and notification keys make repeated payment confirmations safe to replay.",
+          "Bookings check capacity and spend credits in a serializable transaction, including when members compete for the last place.",
+          "Database migrations keep active bookings unique while preserving repeated cancellations and waitlist history.",
+          "Payment, provider-event, and notification keys identify work already processed, so a repeated confirmation does not grant credits again.",
         ],
       },
       {
         title: "Validation status",
-        body: "The September 2026 changes are integrated in Preview. Auth, reservation, and simulated-payment suites pass against Supabase sandbox; PostgreSQL regressions cover concurrency and repeatable history. The public agenda and showcase passed desktop/mobile Chromium and keyboard checks. A manual schedule refresh preserved existing activity and created no duplicates on replay. A local checkout completed through real Stripe test mode and the Preview webhook, granting six credits once; two controlled signed replays preserved all compared records. Provider-originated retries, inbox receipt, scheduled execution, and migration-history reconciliation remain unverified. Existing screenshots illustrate the interface.",
+        body: "The September 2026 work is integrated in Preview. Auth, reservation, and simulated-payment tests pass against Supabase sandbox. PostgreSQL regressions check concurrent bookings and repeated booking history. The public agenda and showcase passed desktop and mobile Chromium checks, including keyboard navigation. Refreshing the schedule manually preserved existing activity; repeating it created no duplicates. A local checkout through Stripe test mode and the Preview webhook granted six credits once. Two signed replays left every compared record unchanged. Provider-originated retries, inbox receipt, automatic scheduled runs, and migration-history reconciliation still need verification. The screenshots show the interface.",
       },
     ],
     repositoryUrl: "https://github.com/miguelgarglez/wellstudio-platform/tree/preview",
