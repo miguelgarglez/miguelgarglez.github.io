@@ -191,13 +191,13 @@ export const projects: Project[] = [
         title: "Engineering decisions",
         items: [
           "Serializable booking transactions coordinate capacity and credit use when members compete for the last place.",
-          "A proposed database correction preserves repeated cancellation and waitlist history while keeping active bookings unique.",
+          "Database migrations preserve repeated cancellation and waitlist history while keeping active bookings unique.",
           "Stable payment, provider-event, and notification keys make repeated payment confirmations safe to replay.",
         ],
       },
       {
         title: "Validation status",
-        body: "The September 2026 closure work is under review in separate PRs. Local regression evidence covers booking concurrency, historical states, and payment fulfillment. Those results do not establish what is deployed on Preview. Integrated private journeys, auth latency, real Stripe test-mode Checkout/webhook delivery, email receipt, and scheduled demo refresh still need verification. The application payment simulator is distinct from Stripe test mode. Existing screenshots illustrate the interface.",
+        body: "The September 2026 changes are integrated in Preview. Auth, reservation, and simulated-payment suites pass against Supabase sandbox; PostgreSQL regressions cover concurrency and repeatable history. The public agenda and showcase passed desktop/mobile Chromium and keyboard checks. A manual schedule refresh preserved existing activity and created no duplicates on replay. A local checkout completed through real Stripe test mode and the Preview webhook, granting six credits once; two controlled signed replays preserved all compared records. Provider-originated retries, inbox receipt, scheduled execution, and migration-history reconciliation remain unverified. Existing screenshots illustrate the interface.",
       },
     ],
     repositoryUrl: "https://github.com/miguelgarglez/wellstudio-platform/tree/preview",
