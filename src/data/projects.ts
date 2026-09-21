@@ -195,10 +195,6 @@ export const projects: Project[] = [
           "Stable payment, provider-event, and notification keys make repeated payment confirmations safe to replay.",
         ],
       },
-      {
-        title: "Validation status",
-        body: "The September 2026 changes are integrated in Preview. Auth, reservation, and simulated-payment suites pass against Supabase sandbox; PostgreSQL regressions cover concurrency and repeatable history. The public agenda and showcase passed desktop/mobile Chromium and keyboard checks. A manual schedule refresh preserved existing activity and created no duplicates on replay. A local checkout completed through real Stripe test mode and the Preview webhook, granting six credits once; two controlled signed replays preserved all compared records. Provider-originated retries, inbox receipt, scheduled execution, and migration-history reconciliation remain unverified. Existing screenshots illustrate the interface.",
-      },
     ],
     repositoryUrl: "https://github.com/miguelgarglez/wellstudio-platform/tree/preview",
     liveUrl: "https://preview-wellstudio.miguelgarglez.com",
