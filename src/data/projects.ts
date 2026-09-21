@@ -157,38 +157,50 @@ export const projects: Project[] = [
     href: "https://preview-wellstudio.miguelgarglez.com",
     external: true,
     description:
-      "One product for a boutique studio: public schedule, member bookings, staff desk, and online packs — without stitching widgets.",
-    sub: "Modular Next.js monolith with Supabase Auth, Prisma, and Stripe Checkout.",
+      "A full-stack portfolio demo for a boutique studio: public scheduling, member bookings, and staff operations with synthetic data.",
+    sub: "Modular Next.js, PostgreSQL, Supabase Auth, and a Stripe test-mode integration.",
     stack: ["Next.js", "TypeScript", "Prisma", "Supabase", "Stripe"],
-    status: "Active",
+    status: "Portfolio demo",
     year: 2026,
     category: "product-platform",
     stage: "active",
     featured: true,
     role: "Full-stack engineer",
     summary:
-      "One product for a boutique gym: public schedule, member bookings, staff desk, and online packs — same domain, same capacity rules.",
+      "A modular portfolio project exploring booking capacity, credit accounting, and payment retries across public, member, and staff journeys. The demo uses synthetic data and has not been adopted by a live studio.",
     capabilities: [
-      "Public schedule, plans, and lead capture",
+      "Public schedule, plans, and demo lead capture",
       "Member portal for bookings, cancellations, and credits",
-      "Staff desk for the day, sessions, and assisted booking",
-      "Stripe Checkout for packs with credits after payment",
+      "Staff desk and assisted booking with shared capacity rules",
+      "Credit-pack checkout with an application simulator and Stripe test mode",
     ],
     sections: [
       {
         title: "Three journeys",
         items: [
-          "Public: live timetable, plans, and lead capture.",
+          "Public: synthetic class schedule, plans, and lead capture.",
           "Member: book and cancel with clear rules; see coverage and credits.",
           "Staff: run today, open sessions, and book for a member without bypassing capacity.",
         ],
       },
       {
         title: "How it's built",
-        body: "Modular Next.js monolith: routes in app/, domain in modules/*. Supabase Auth, Prisma, Postgres, Stripe. Sales decks live on Preview only so a real gym's production site stays clean.",
+        body: "A modular Next.js monolith with domain services behind the routes. PostgreSQL and Prisma hold bookings, entitlements, and the credit ledger; Supabase Auth handles identity. Payment events are checked against local purchase snapshots before credits are granted.",
+      },
+      {
+        title: "Engineering decisions",
+        items: [
+          "Serializable booking transactions coordinate capacity and credit use when members compete for the last place.",
+          "A proposed database correction preserves repeated cancellation and waitlist history while keeping active bookings unique.",
+          "Stable payment, provider-event, and notification keys make repeated payment confirmations safe to replay.",
+        ],
+      },
+      {
+        title: "Validation status",
+        body: "The September 2026 closure work is under review in separate PRs. Local regression evidence covers booking concurrency, historical states, and payment fulfillment. Those results do not establish what is deployed on Preview. Integrated private journeys, auth latency, real Stripe test-mode Checkout/webhook delivery, email receipt, and scheduled demo refresh still need verification. The application payment simulator is distinct from Stripe test mode. Existing screenshots illustrate the interface.",
       },
     ],
-    repositoryUrl: "https://github.com/miguelgarglez/wellstudio-platform",
+    repositoryUrl: "https://github.com/miguelgarglez/wellstudio-platform/tree/preview",
     liveUrl: "https://preview-wellstudio.miguelgarglez.com",
     showcaseUrl: "https://preview-wellstudio.miguelgarglez.com/showcase",
     images: [
