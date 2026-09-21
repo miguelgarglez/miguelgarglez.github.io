@@ -195,10 +195,6 @@ export const projects: Project[] = [
           "Payment, provider-event, and notification keys identify work already processed, so a repeated confirmation does not grant credits again.",
         ],
       },
-      {
-        title: "Validation status",
-        body: "The September 2026 work is integrated in Preview. Auth, reservation, and simulated-payment tests pass against Supabase sandbox. PostgreSQL regressions check concurrent bookings and repeated booking history. The public agenda and showcase passed desktop and mobile Chromium checks, including keyboard navigation. Refreshing the schedule manually preserved existing activity; repeating it created no duplicates. A local checkout through Stripe test mode and the Preview webhook granted six credits once. Two signed replays left every compared record unchanged. Provider-originated retries, inbox receipt, automatic scheduled runs, and migration-history reconciliation still need verification. The screenshots show the interface.",
-      },
     ],
     repositoryUrl: "https://github.com/miguelgarglez/wellstudio-platform/tree/preview",
     liveUrl: "https://preview-wellstudio.miguelgarglez.com",
