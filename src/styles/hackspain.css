@@ -1,0 +1,349 @@
+/* HackSpain theme for post detail pages (https://hackspain.com/design.md). */
+[data-post-theme="hackspain"] {
+  --color-hs-paper: #f4ecd8;
+  --color-hs-ink: #2a170f;
+  --color-hs-gold: #eab619;
+  --color-hs-sand: #e8dcc4;
+  --color-hs-orange: #d96b2a;
+  --color-hs-red: #cc291f;
+  --color-hs-teal: #35858a;
+  --color-hs-navy: #1e3958;
+  --color-hs-brown: #4a2c1f;
+  --hs-ink-65: color-mix(in srgb, var(--color-hs-ink) 65%, transparent);
+  --hs-ink-55: color-mix(in srgb, var(--color-hs-ink) 55%, transparent);
+  --hs-ink-30: color-mix(in srgb, var(--color-hs-ink) 30%, transparent);
+  --hs-font-display: "Bungee", "Impact", sans-serif;
+  --hs-font-sans: "DM Sans", "Segoe UI", sans-serif;
+  --hs-border: 3px solid var(--color-hs-ink);
+  --hs-pad: 24px;
+
+  color-scheme: light;
+  counter-reset: hs-section;
+  margin: clamp(1rem, 3vw, 1.6rem) 6px 0 0;
+  border: var(--hs-border);
+  box-shadow: 6px 6px 0 0 var(--color-hs-ink);
+  color: var(--color-hs-ink);
+  background-color: var(--color-hs-paper);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-hs-ink) 2.5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-hs-ink) 2.5%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+  font-family: var(--hs-font-sans);
+  font-weight: 700;
+}
+
+[data-post-theme="hackspain"] ::selection {
+  color: var(--color-hs-ink);
+  background: color-mix(in srgb, var(--color-hs-gold) 50%, transparent);
+}
+
+@media (min-width: 640px) {
+  [data-post-theme="hackspain"] {
+    --hs-pad: 32px;
+    margin-right: 8px;
+    box-shadow: 8px 8px 0 0 var(--color-hs-ink);
+  }
+}
+
+/* Hero */
+[data-post-theme="hackspain"] .detail-hero {
+  max-width: none;
+  padding: var(--hs-pad);
+}
+
+[data-post-theme="hackspain"] .detail-back {
+  margin: 0 0 20px;
+}
+
+[data-post-theme="hackspain"] .detail-back .text-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-left: -8px;
+  padding: 0 8px;
+  color: var(--color-hs-ink);
+  font-family: var(--hs-font-sans);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+  text-decoration: none;
+  transition: background-color 150ms ease-out;
+}
+
+[data-post-theme="hackspain"] .detail-back .text-link:hover {
+  color: var(--color-hs-ink);
+  background: color-mix(in srgb, var(--color-hs-sand) 60%, transparent);
+}
+
+[data-post-theme="hackspain"] .hs-brand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  margin: 0 0 24px;
+}
+
+[data-post-theme="hackspain"] .hs-brand img {
+  display: block;
+  width: 180px;
+  height: auto;
+}
+
+[data-post-theme="hackspain"] :is(.hs-brand-meta, .post-meta, .stack, .section-label, .post-end-kicker, .post-end-link-label, figcaption) {
+  font-family: var(--hs-font-sans);
+  font-size: 0.65rem;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--hs-ink-55);
+}
+
+[data-post-theme="hackspain"] h1 {
+  max-width: 16ch;
+  font-family: var(--hs-font-display);
+  font-size: clamp(2rem, 9vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+[data-post-theme="hackspain"] .lead {
+  max-width: 58ch;
+  margin-top: 20px;
+  color: var(--hs-ink-65);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.625;
+  text-wrap: pretty;
+}
+
+[data-post-theme="hackspain"] .post-meta {
+  margin-top: 20px;
+}
+
+[data-post-theme="hackspain"] .stack {
+  margin-top: 8px;
+}
+
+[data-post-theme="hackspain"] :is(.post-meta li, .stack li)::after {
+  color: var(--hs-ink-30);
+}
+
+/* Sections */
+[data-post-theme="hackspain"] .detail-section {
+  padding: var(--hs-pad);
+  border-top: var(--hs-border);
+}
+
+[data-post-theme="hackspain"] .post-body {
+  max-width: 768px;
+  color: var(--color-hs-ink);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.625;
+}
+
+[data-post-theme="hackspain"] .post-body p {
+  text-wrap: pretty;
+}
+
+[data-post-theme="hackspain"] .post-body > * + * {
+  margin-top: 16px;
+}
+
+[data-post-theme="hackspain"] .post-body :is(h2, h3) {
+  max-width: none;
+  font-family: var(--hs-font-display);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+[data-post-theme="hackspain"] .post-body h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 40px;
+  font-size: 20px;
+  line-height: 1.25;
+  counter-increment: hs-section;
+}
+
+[data-post-theme="hackspain"] .post-body h2::before {
+  content: counter(hs-section, decimal-leading-zero);
+  color: var(--color-hs-red);
+}
+
+[data-post-theme="hackspain"] .post-body h3 {
+  margin-top: 32px;
+  font-size: 16px;
+  line-height: 1.3;
+}
+
+[data-post-theme="hackspain"] .post-body :is(h2, h3) + * {
+  margin-top: 12px;
+}
+
+[data-post-theme="hackspain"] .post-body strong {
+  font-weight: 900;
+}
+
+[data-post-theme="hackspain"] :is(.post-body, .post-end-matter) a {
+  color: var(--color-hs-ink);
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+  transition: color 150ms ease-out;
+}
+
+[data-post-theme="hackspain"] :is(.post-body, .post-end-matter) a:hover {
+  color: var(--color-hs-orange);
+}
+
+[data-post-theme="hackspain"] a:focus-visible {
+  outline: 2px solid var(--color-hs-navy);
+  outline-offset: 2px;
+  border-radius: 0;
+}
+
+[data-post-theme="hackspain"] .post-body blockquote {
+  margin: 32px 0;
+  padding: 20px 24px;
+  border: var(--hs-border);
+  background: var(--color-hs-gold);
+  font-family: var(--hs-font-sans);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+[data-post-theme="hackspain"] .post-body :not(pre) > code {
+  padding: 0.1em 0.35em;
+  border: 0;
+  background: var(--color-hs-sand);
+  color: var(--color-hs-ink);
+  font-size: 0.9em;
+}
+
+[data-post-theme="hackspain"] .post-body ul {
+  padding-left: 1.2rem;
+}
+
+[data-post-theme="hackspain"] .post-body li::marker {
+  color: var(--color-hs-orange);
+}
+
+/* Fact mosaic: panels share 3px ink gutters. */
+[data-post-theme="hackspain"] .hs-mosaic {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px;
+  margin: 32px 0;
+  padding: 0;
+  border: var(--hs-border);
+  background: var(--color-hs-ink);
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  [data-post-theme="hackspain"] .hs-mosaic {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+[data-post-theme="hackspain"] .hs-mosaic li {
+  display: grid;
+  align-content: end;
+  gap: 6px;
+  min-height: 112px;
+  margin: 0;
+  padding: 16px;
+  color: #fff;
+}
+
+[data-post-theme="hackspain"] .hs-mosaic li:nth-child(1) {
+  background: var(--color-hs-gold);
+  color: var(--color-hs-ink);
+}
+
+[data-post-theme="hackspain"] .hs-mosaic li:nth-child(2) {
+  background: var(--color-hs-teal);
+}
+
+[data-post-theme="hackspain"] .hs-mosaic li:nth-child(3) {
+  background: var(--color-hs-red);
+}
+
+[data-post-theme="hackspain"] .hs-mosaic li:nth-child(4) {
+  background: var(--color-hs-navy);
+}
+
+[data-post-theme="hackspain"] .hs-mosaic strong {
+  font-family: var(--hs-font-display);
+  font-size: clamp(1.6rem, 6vw, 2.1rem);
+  font-weight: 400;
+  line-height: 1;
+}
+
+[data-post-theme="hackspain"] .hs-mosaic span {
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+/* Video */
+[data-post-theme="hackspain"] .post-body .hs-video {
+  margin: 32px 0 40px;
+}
+
+[data-post-theme="hackspain"] .post-body .hs-video iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border: var(--hs-border);
+  box-shadow: 6px 6px 0 0 var(--color-hs-ink);
+  background: var(--color-hs-ink);
+}
+
+[data-post-theme="hackspain"] .post-body .hs-video figcaption {
+  margin-top: 16px;
+}
+
+/* End matter */
+[data-post-theme="hackspain"] .post-end-matter {
+  max-width: none;
+  background: var(--color-hs-sand);
+}
+
+[data-post-theme="hackspain"] .post-end-title {
+  font-family: var(--hs-font-sans);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+[data-post-theme="hackspain"] .post-end-note,
+[data-post-theme="hackspain"] .post-end-link-meta {
+  color: var(--hs-ink-65);
+  font-weight: 600;
+}
+
+[data-post-theme="hackspain"] .post-end-links a {
+  font-family: var(--hs-font-sans);
+  font-size: 16px;
+}
+
+body:has([data-post-theme="hackspain"]) .reading-progress-bar {
+  background: #eab619;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-post-theme="hackspain"] * {
+    transition: none;
+  }
+}
