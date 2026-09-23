@@ -44,9 +44,9 @@ It's three pieces talking to each other:
 - **Bridge:** a small Python API that keeps a journal of every run and streams it.
 - **Dashboard:** a Next.js control room to launch runs, watch them live and replay them.
 
-## My part
+## What I focused on
 
-I mostly lived between the simulation and the screen. I built the dashboard and the bridge: the run journal, REST for commands, server-sent events for the live feed, and the contract that let the physics side and the UI move in parallel. Later came saving experiments in SQLite, a live console and the XFOLD branding.
+We split the work early and kept checking in with each other all weekend, which is a big part of why it came together. I mostly lived between the simulation and the screen. I built the dashboard and the bridge: the run journal, REST for commands, server-sent events for the live feed, and the contract that let the physics side and the UI move in parallel. Later came saving experiments in SQLite, a live console and the XFOLD branding.
 
 The contract is the thing I'd do again. With four people changing things at 3 a.m., having one page that said what an event looks like saved us more than once.
 

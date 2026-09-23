@@ -183,8 +183,8 @@ export const projects: Project[] = [
     ],
     sections: [
       {
-        title: "My part",
-        body: "I built the Next.js control room and the Python bridge between it and the simulation: an append-only run journal, REST for commands, SSE for live events, and the integration contract that let the physics and UI sides work in parallel. Also experiment persistence in SQLite, the live console and the XFOLD branding.",
+        title: "What I focused on",
+        body: "Within a team that worked closely all weekend, I built the Next.js control room and the Python bridge between it and the simulation: an append-only run journal, REST for commands, SSE for live events, and the integration contract that let the physics and UI sides work in parallel. Also experiment persistence in SQLite, the live console and the XFOLD branding.",
       },
     ],
     images: [
