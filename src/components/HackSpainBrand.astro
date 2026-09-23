@@ -1,0 +1,17 @@
+---
+type Props = {
+  meta: string;
+};
+
+const { meta } = Astro.props;
+---
+
+<p class="hs-brand">
+  <img
+    src="/brand/hackspain/hackspain-wordmark-color.svg"
+    alt="HackSpain"
+    width="180"
+    height="59"
+  />
+  <span class="hs-brand-meta">{meta}</span>
+</p>

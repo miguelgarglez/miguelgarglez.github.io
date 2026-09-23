@@ -58,6 +58,8 @@ export type Project = {
   repositoryUrl?: string;
   liveUrl?: string;
   caseStudyUrl?: string;
+  /** Optional visual theme for the project detail page. */
+  theme?: "hackspain";
 };
 
 const projectDetailPath = (slug: string) => `/projects/${slug}`;
@@ -198,6 +200,7 @@ export const projects: Project[] = [
     repositoryUrl: "https://github.com/rogarmu8/hackspain_2026_xfold",
     liveUrl: "https://www.youtube.com/watch?v=arIuPMPokuY",
     caseStudyUrl: projectDetailPath("xfold"),
+    theme: "hackspain",
   },
   {
     slug: "wellstudio-platform",

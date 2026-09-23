@@ -62,7 +62,7 @@ Frontmatter de directorio:
 | `featured` | Marca editorial; hoy no cambia el layout por si sola. |
 | `kind` | `article` o `note`. |
 | `draft: true` | Excluye el post de build/listados. |
-| `theme` | Tema visual opcional del detalle. `hackspain` aplica el sistema de diseño de HackSpain (`src/styles/hackspain.css`) al artículo. |
+| `theme` | Tema visual opcional del detalle. `hackspain` aplica el sistema de diseño de HackSpain (`src/styles/hackspain.css`) al artículo. Los proyectos aceptan el mismo campo `theme` en `src/data/projects.ts`. |
 
 Ejemplo minimo con conexiones:
 

@@ -6,12 +6,15 @@ import MobileDirectoryMenu from "../../components/MobileDirectoryMenu.astro";
 import ThemeToggle from "../../components/ThemeToggle.astro";
 import ProjectImageGallery from "../../components/ProjectImageGallery.astro";
 import ExternalArrow from "../../components/ExternalArrow.astro";
+import HackSpainBrand from "../../components/HackSpainBrand.astro";
+import HackSpainFonts from "../../components/HackSpainFonts.astro";
 import { projects } from "../../data/projects";
 import type { Project } from "../../data/projects";
 import { getProjectActionLinks } from "../../lib/project-links";
 import { getPostsForProject } from "../../lib/post-relations";
 import { absoluteUrl, pageTitle } from "../../../shared/seo/config";
 import { breadcrumbSchema, creativeWorkSchema } from "../../lib/seo-schemas";
+import "../../styles/hackspain.css";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts", ({ data }) => !data.draft);
@@ -36,6 +39,7 @@ const sectionId = (title: string) =>
     .replace(/^-|-$/g, "")}-title`;
 const detailLinks = getProjectActionLinks(project);
 const ogImage = `/og/projects/${project.slug}.png`;
+const isHackSpain = project.theme === "hackspain";
 ---
 
 <BaseLayout
@@ -63,6 +67,7 @@ const ogImage = `/og/projects/${project.slug}.png`;
     ]),
   ]}
 >
+  {isHackSpain && <HackSpainFonts slot="head" />}
   <main class="layout">
     <div class="page-shell">
       <DirectoryNav active="projects" />
@@ -76,94 +81,97 @@ const ogImage = `/og/projects/${project.slug}.png`;
           </div>
         </header>
 
-        <section class="detail-hero">
-          <p class="detail-back">
-            <a class="text-link" href="/projects/">← All projects</a>
-          </p>
-          <h1>{project.displayName}</h1>
-          <p class="lead">{project.summary}</p>
-        </section>
+        <div class="page-theme" data-page-theme={project.theme}>
+          <section class="detail-hero">
+            <p class="detail-back">
+              <a class="text-link" href="/projects/">← All projects</a>
+            </p>
+            {isHackSpain && <HackSpainBrand meta="Madrid '26 · THEKER track" />}
+            <h1>{project.displayName}</h1>
+            <p class="lead">{project.summary}</p>
+          </section>
 
-        {project.images && project.images.length > 0 && (
-          <ProjectImageGallery images={project.images} label="Product" />
-        )}
+          {project.images && project.images.length > 0 && (
+            <ProjectImageGallery images={project.images} label="Product" />
+          )}
 
-        {
-          project.sections?.map((section) => {
-            const headingId = sectionId(section.title);
-            return (
-              <section class="detail-section" aria-labelledby={headingId}>
-                <p class="section-label" id={headingId}>
-                  {section.title}
-                </p>
-                {section.body && <p class="detail-copy">{section.body}</p>}
-                {section.items && (
-                  <ul class="detail-list">
-                    {section.items.map((item) => <li>{item}</li>)}
-                  </ul>
-                )}
+          {
+            project.sections?.map((section) => {
+              const headingId = sectionId(section.title);
+              return (
+                <section class="detail-section" aria-labelledby={headingId}>
+                  <p class="section-label" id={headingId}>
+                    {section.title}
+                  </p>
+                  {section.body && <p class="detail-copy">{section.body}</p>}
+                  {section.items && (
+                    <ul class="detail-list">
+                      {section.items.map((item) => <li>{item}</li>)}
+                    </ul>
+                  )}
+                </section>
+              );
+            })
+          }
+
+          <section class="detail-section" aria-labelledby="project-capabilities-title">
+            <p class="section-label" id="project-capabilities-title">Capabilities</p>
+            <ul class="detail-list">
+              {project.capabilities.map((capability) => <li>{capability}</li>)}
+            </ul>
+          </section>
+
+          <section class="detail-section" aria-labelledby="project-stack-title">
+            <p class="section-label" id="project-stack-title">Stack</p>
+            <ul class="stack" aria-label="Tech stack">
+              {project.stack.map((item) => <li>{item}</li>)}
+            </ul>
+          </section>
+
+          {
+            detailLinks.length > 0 && (
+              <section class="detail-section" aria-labelledby="project-links-title">
+                <p class="section-label" id="project-links-title">Links</p>
+                <div class="project-links">
+                  {detailLinks.map((link) => (
+                    <a
+                      href={link.href}
+                      target={link.external ? "_blank" : undefined}
+                      rel={link.external ? "noopener noreferrer" : undefined}
+                    >
+                      {link.label}<ExternalArrow />
+                    </a>
+                  ))}
+                </div>
               </section>
-            );
-          })
-        }
+            )
+          }
 
-        <section class="detail-section" aria-labelledby="project-capabilities-title">
-          <p class="section-label" id="project-capabilities-title">Capabilities</p>
-          <ul class="detail-list">
-            {project.capabilities.map((capability) => <li>{capability}</li>)}
-          </ul>
-        </section>
-
-        <section class="detail-section" aria-labelledby="project-stack-title">
-          <p class="section-label" id="project-stack-title">Stack</p>
-          <ul class="stack" aria-label="Tech stack">
-            {project.stack.map((item) => <li>{item}</li>)}
-          </ul>
-        </section>
-
-        {
-          detailLinks.length > 0 && (
-            <section class="detail-section" aria-labelledby="project-links-title">
-              <p class="section-label" id="project-links-title">Links</p>
-              <div class="project-links">
-                {detailLinks.map((link) => (
-                  <a
-                    href={link.href}
-                    target={link.external ? "_blank" : undefined}
-                    rel={link.external ? "noopener noreferrer" : undefined}
-                  >
-                    {link.label}<ExternalArrow />
-                  </a>
-                ))}
-              </div>
-            </section>
-          )
-        }
-
-        {
-          buildNotes.length > 0 && (
-            <section class="detail-section" aria-labelledby="project-build-notes-title">
-              <p class="section-label" id="project-build-notes-title">Build notes</p>
-              <ul class="post-end-links project-build-notes">
-                {
-                  buildNotes.map((note) => (
-                    <li>
-                      {
-                        note.data.seriesOrder !== undefined && (
-                          <span class="post-end-link-label">
-                            Part {note.data.seriesOrder}
-                          </span>
-                        )
-                      }
-                      <a href={`/posts/${note.id}`}>{note.data.title}</a>
-                      <span class="post-end-link-meta">{note.data.description}</span>
-                    </li>
-                  ))
-                }
-              </ul>
-            </section>
-          )
-        }
+          {
+            buildNotes.length > 0 && (
+              <section class="detail-section" aria-labelledby="project-build-notes-title">
+                <p class="section-label" id="project-build-notes-title">Build notes</p>
+                <ul class="post-end-links project-build-notes">
+                  {
+                    buildNotes.map((note) => (
+                      <li>
+                        {
+                          note.data.seriesOrder !== undefined && (
+                            <span class="post-end-link-label">
+                              Part {note.data.seriesOrder}
+                            </span>
+                          )
+                        }
+                        <a href={`/posts/${note.id}`}>{note.data.title}</a>
+                        <span class="post-end-link-meta">{note.data.description}</span>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </section>
+            )
+          }
+        </div>
       </article>
     </div>
   </main>

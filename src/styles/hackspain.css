@@ -1,5 +1,5 @@
-/* HackSpain theme for post detail pages (https://hackspain.com/design.md). */
-[data-post-theme="hackspain"] {
+/* HackSpain theme for post and project detail pages (https://hackspain.com/design.md). */
+[data-page-theme="hackspain"] {
   --color-hs-paper: #f4ecd8;
   --color-hs-ink: #2a170f;
   --color-hs-gold: #eab619;
@@ -32,13 +32,13 @@
   font-weight: 700;
 }
 
-[data-post-theme="hackspain"] ::selection {
+[data-page-theme="hackspain"] ::selection {
   color: var(--color-hs-ink);
   background: color-mix(in srgb, var(--color-hs-gold) 50%, transparent);
 }
 
 @media (min-width: 640px) {
-  [data-post-theme="hackspain"] {
+  [data-page-theme="hackspain"] {
     --hs-pad: 32px;
     margin-right: 8px;
     box-shadow: 8px 8px 0 0 var(--color-hs-ink);
@@ -46,16 +46,16 @@
 }
 
 /* Hero */
-[data-post-theme="hackspain"] .detail-hero {
+[data-page-theme="hackspain"] .detail-hero {
   max-width: none;
   padding: var(--hs-pad);
 }
 
-[data-post-theme="hackspain"] .detail-back {
+[data-page-theme="hackspain"] .detail-back {
   margin: 0 0 20px;
 }
 
-[data-post-theme="hackspain"] .detail-back .text-link {
+[data-page-theme="hackspain"] .detail-back .text-link {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
@@ -71,12 +71,12 @@
   transition: background-color 150ms ease-out;
 }
 
-[data-post-theme="hackspain"] .detail-back .text-link:hover {
+[data-page-theme="hackspain"] .detail-back .text-link:hover {
   color: var(--color-hs-ink);
   background: color-mix(in srgb, var(--color-hs-sand) 60%, transparent);
 }
 
-[data-post-theme="hackspain"] .hs-brand {
+[data-page-theme="hackspain"] .hs-brand {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -84,13 +84,13 @@
   margin: 0 0 24px;
 }
 
-[data-post-theme="hackspain"] .hs-brand img {
+[data-page-theme="hackspain"] .hs-brand img {
   display: block;
   width: 180px;
   height: auto;
 }
 
-[data-post-theme="hackspain"] :is(.hs-brand-meta, .post-meta, .stack, .section-label, .post-end-kicker, .post-end-link-label, figcaption) {
+[data-page-theme="hackspain"] :is(.hs-brand-meta, .post-meta, .stack, .section-label, .post-end-kicker, .post-end-link-label, figcaption) {
   font-family: var(--hs-font-sans);
   font-size: 0.65rem;
   font-weight: 900;
@@ -100,7 +100,7 @@
   color: var(--hs-ink-55);
 }
 
-[data-post-theme="hackspain"] h1 {
+.project-detail [data-page-theme="hackspain"] .detail-hero h1 {
   max-width: 16ch;
   font-family: var(--hs-font-display);
   font-size: clamp(2rem, 9vw, 3.4rem);
@@ -110,7 +110,7 @@
   text-wrap: balance;
 }
 
-[data-post-theme="hackspain"] .lead {
+[data-page-theme="hackspain"] .lead {
   max-width: 58ch;
   margin-top: 20px;
   color: var(--hs-ink-65);
@@ -120,25 +120,25 @@
   text-wrap: pretty;
 }
 
-[data-post-theme="hackspain"] .post-meta {
+[data-page-theme="hackspain"] .post-meta {
   margin-top: 20px;
 }
 
-[data-post-theme="hackspain"] .stack {
+[data-page-theme="hackspain"] .stack {
   margin-top: 8px;
 }
 
-[data-post-theme="hackspain"] :is(.post-meta li, .stack li)::after {
+[data-page-theme="hackspain"] :is(.post-meta li, .stack li)::after {
   color: var(--hs-ink-30);
 }
 
 /* Sections */
-[data-post-theme="hackspain"] .detail-section {
+[data-page-theme="hackspain"] .detail-section {
   padding: var(--hs-pad);
   border-top: var(--hs-border);
 }
 
-[data-post-theme="hackspain"] .post-body {
+[data-page-theme="hackspain"] .post-body {
   max-width: 768px;
   color: var(--color-hs-ink);
   font-size: 16px;
@@ -146,15 +146,15 @@
   line-height: 1.625;
 }
 
-[data-post-theme="hackspain"] .post-body p {
+[data-page-theme="hackspain"] .post-body p {
   text-wrap: pretty;
 }
 
-[data-post-theme="hackspain"] .post-body > * + * {
+[data-page-theme="hackspain"] .post-body > * + * {
   margin-top: 16px;
 }
 
-[data-post-theme="hackspain"] .post-body :is(h2, h3) {
+[data-page-theme="hackspain"] .post-body :is(h2, h3) {
   max-width: none;
   font-family: var(--hs-font-display);
   font-weight: 400;
@@ -162,7 +162,7 @@
   text-wrap: balance;
 }
 
-[data-post-theme="hackspain"] .post-body h2 {
+[data-page-theme="hackspain"] .post-body h2 {
   display: flex;
   align-items: baseline;
   gap: 12px;
@@ -172,26 +172,26 @@
   counter-increment: hs-section;
 }
 
-[data-post-theme="hackspain"] .post-body h2::before {
+[data-page-theme="hackspain"] .post-body h2::before {
   content: counter(hs-section, decimal-leading-zero);
   color: var(--color-hs-red);
 }
 
-[data-post-theme="hackspain"] .post-body h3 {
+[data-page-theme="hackspain"] .post-body h3 {
   margin-top: 32px;
   font-size: 16px;
   line-height: 1.3;
 }
 
-[data-post-theme="hackspain"] .post-body :is(h2, h3) + * {
+[data-page-theme="hackspain"] .post-body :is(h2, h3) + * {
   margin-top: 12px;
 }
 
-[data-post-theme="hackspain"] .post-body strong {
+[data-page-theme="hackspain"] .post-body strong {
   font-weight: 900;
 }
 
-[data-post-theme="hackspain"] :is(.post-body, .post-end-matter) a {
+[data-page-theme="hackspain"] :is(.post-body, .post-end-matter, .project-build-notes) a {
   color: var(--color-hs-ink);
   font-weight: 800;
   text-decoration: underline;
@@ -201,17 +201,17 @@
   transition: color 150ms ease-out;
 }
 
-[data-post-theme="hackspain"] :is(.post-body, .post-end-matter) a:hover {
+[data-page-theme="hackspain"] :is(.post-body, .post-end-matter, .project-build-notes) a:hover {
   color: var(--color-hs-orange);
 }
 
-[data-post-theme="hackspain"] a:focus-visible {
+[data-page-theme="hackspain"] a:focus-visible {
   outline: 2px solid var(--color-hs-navy);
   outline-offset: 2px;
   border-radius: 0;
 }
 
-[data-post-theme="hackspain"] .post-body blockquote {
+[data-page-theme="hackspain"] .post-body blockquote {
   margin: 32px 0;
   padding: 20px 24px;
   border: var(--hs-border);
@@ -222,7 +222,7 @@
   line-height: 1.5;
 }
 
-[data-post-theme="hackspain"] .post-body :not(pre) > code {
+[data-page-theme="hackspain"] .post-body :not(pre) > code {
   padding: 0.1em 0.35em;
   border: 0;
   background: var(--color-hs-sand);
@@ -230,16 +230,16 @@
   font-size: 0.9em;
 }
 
-[data-post-theme="hackspain"] .post-body ul {
+[data-page-theme="hackspain"] .post-body ul {
   padding-left: 1.2rem;
 }
 
-[data-post-theme="hackspain"] .post-body li::marker {
+[data-page-theme="hackspain"] .post-body li::marker {
   color: var(--color-hs-orange);
 }
 
 /* Fact mosaic: panels share 3px ink gutters. */
-[data-post-theme="hackspain"] .post-body .hs-mosaic {
+[data-page-theme="hackspain"] .post-body .hs-mosaic {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 3px;
@@ -251,12 +251,12 @@
 }
 
 @media (min-width: 640px) {
-  [data-post-theme="hackspain"] .post-body .hs-mosaic {
+  [data-page-theme="hackspain"] .post-body .hs-mosaic {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
-[data-post-theme="hackspain"] .hs-mosaic li {
+[data-page-theme="hackspain"] .hs-mosaic li {
   display: grid;
   align-content: end;
   gap: 6px;
@@ -266,42 +266,42 @@
   color: #fff;
 }
 
-[data-post-theme="hackspain"] .hs-mosaic li:nth-child(1) {
+[data-page-theme="hackspain"] .hs-mosaic li:nth-child(1) {
   background: var(--color-hs-gold);
   color: var(--color-hs-ink);
 }
 
-[data-post-theme="hackspain"] .hs-mosaic li:nth-child(2) {
+[data-page-theme="hackspain"] .hs-mosaic li:nth-child(2) {
   background: var(--color-hs-teal);
 }
 
-[data-post-theme="hackspain"] .hs-mosaic li:nth-child(3) {
+[data-page-theme="hackspain"] .hs-mosaic li:nth-child(3) {
   background: var(--color-hs-red);
 }
 
-[data-post-theme="hackspain"] .hs-mosaic li:nth-child(4) {
+[data-page-theme="hackspain"] .hs-mosaic li:nth-child(4) {
   background: var(--color-hs-navy);
 }
 
-[data-post-theme="hackspain"] .hs-mosaic strong {
+[data-page-theme="hackspain"] .hs-mosaic strong {
   font-family: var(--hs-font-display);
   font-size: clamp(1.6rem, 6vw, 2.1rem);
   font-weight: 400;
   line-height: 1;
 }
 
-[data-post-theme="hackspain"] .hs-mosaic span {
+[data-page-theme="hackspain"] .hs-mosaic span {
   font-size: 14px;
   font-weight: 800;
   line-height: 1.3;
 }
 
 /* Video */
-[data-post-theme="hackspain"] .post-body .hs-video {
+[data-page-theme="hackspain"] .post-body .hs-video {
   margin: 32px 0 40px;
 }
 
-[data-post-theme="hackspain"] .post-body .hs-video iframe {
+[data-page-theme="hackspain"] .post-body .hs-video iframe {
   display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -311,39 +311,148 @@
   background: var(--color-hs-ink);
 }
 
-[data-post-theme="hackspain"] .post-body .hs-video figcaption {
+[data-page-theme="hackspain"] .post-body .hs-video figcaption {
   margin-top: 16px;
 }
 
 /* End matter */
-[data-post-theme="hackspain"] .post-end-matter {
+[data-page-theme="hackspain"] .post-end-matter {
   max-width: none;
   background: var(--color-hs-sand);
 }
 
-[data-post-theme="hackspain"] .post-end-title {
+[data-page-theme="hackspain"] .post-end-title {
   font-family: var(--hs-font-sans);
   font-size: 18px;
   font-weight: 800;
 }
 
-[data-post-theme="hackspain"] .post-end-note,
-[data-post-theme="hackspain"] .post-end-link-meta {
+[data-page-theme="hackspain"] .post-end-note,
+[data-page-theme="hackspain"] .post-end-link-meta {
   color: var(--hs-ink-65);
   font-weight: 600;
 }
 
-[data-post-theme="hackspain"] .post-end-links a {
+[data-page-theme="hackspain"] .post-end-links a {
   font-family: var(--hs-font-sans);
   font-size: 16px;
 }
 
-body:has([data-post-theme="hackspain"]) .reading-progress-bar {
+/* Project detail */
+[data-page-theme="hackspain"] .project-gallery {
+  padding: var(--hs-pad);
+  border-top: var(--hs-border);
+}
+
+[data-page-theme="hackspain"] .project-gallery .project-gallery-grid {
+  gap: 16px;
+}
+
+[data-page-theme="hackspain"] .project-gallery .project-gallery-thumb {
+  border: var(--hs-border);
+  box-shadow: 6px 6px 0 0 var(--color-hs-ink);
+  background: var(--color-hs-ink);
+  transition: filter 150ms ease-out;
+}
+
+[data-page-theme="hackspain"] .project-gallery .project-gallery-thumb:hover {
+  border-color: var(--color-hs-ink);
+  filter: brightness(0.95);
+}
+
+[data-page-theme="hackspain"] .project-gallery .project-gallery-thumb:focus-visible {
+  border-color: var(--color-hs-navy);
+  outline: none;
+}
+
+[data-page-theme="hackspain"] .project-gallery .project-gallery-thumb:active {
+  transform: scale(0.96);
+}
+
+[data-page-theme="hackspain"] .project-gallery .project-gallery-expand {
+  border: 2px solid var(--color-hs-ink);
+  border-radius: 0;
+  color: var(--color-hs-ink);
+  background: var(--color-hs-paper);
+  backdrop-filter: none;
+}
+
+@media (min-width: 721px) {
+  [data-page-theme="hackspain"] .project-gallery .project-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+[data-page-theme="hackspain"] :is(.detail-copy, .detail-list) {
+  max-width: 68ch;
+  color: var(--color-hs-ink);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.625;
+  text-wrap: pretty;
+}
+
+[data-page-theme="hackspain"] .detail-list {
+  padding-left: 1.2rem;
+}
+
+[data-page-theme="hackspain"] .detail-list li::marker {
+  color: var(--color-hs-orange);
+}
+
+[data-page-theme="hackspain"] .project-links {
+  gap: 12px;
+  margin-top: 0;
+}
+
+[data-page-theme="hackspain"] .project-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 10px 24px;
+  border: var(--hs-border);
+  background: var(--color-hs-paper);
+  color: var(--color-hs-ink);
+  font-family: var(--hs-font-display);
+  font-size: 14px;
+  letter-spacing: 0.025em;
+  line-height: 1;
+  transition:
+    filter 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+[data-page-theme="hackspain"] .project-links a:first-child {
+  background: var(--color-hs-gold);
+}
+
+[data-page-theme="hackspain"] .project-links a:hover {
+  color: var(--color-hs-ink);
+  border-color: var(--color-hs-ink);
+  filter: brightness(0.95);
+}
+
+[data-page-theme="hackspain"] .project-links a:active {
+  transform: scale(0.96);
+}
+
+[data-page-theme="hackspain"] .project-links a:focus-visible {
+  outline: none;
+  border-color: var(--color-hs-navy);
+  border-radius: 0;
+}
+
+[data-page-theme="hackspain"] .project-build-notes {
+  margin-top: 0;
+}
+
+body:has([data-page-theme="hackspain"]) .reading-progress-bar {
   background: #eab619;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-post-theme="hackspain"] * {
+  [data-page-theme="hackspain"] * {
     transition: none;
   }
 }
