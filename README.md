@@ -71,6 +71,17 @@ Native macOS menu-bar app for project time tracking. Archived after personal use
 
 <div style="border: 1px solid #d0d7de; border-radius: 6px; padding: 16px; margin: 16px 0;">
 
+### **xfold**
+HackSpain '26 team project for the THEKER Robotics track: a simulated line that presses, folds and bags shirts, with a live control-room dashboard.
+
+**Links:** [Project details](https://miguelgarglez.com/projects/xfold/) · [Writeup](https://miguelgarglez.com/posts/folding-shirts-at-hackspain-2026/) · [GitHub repository](https://github.com/rogarmu8/hackspain_2026_xfold)<br>
+**Status:** 🏁 Hackathon<br>
+**Technologies:** ![Python](https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white) ![MuJoCo](https://img.shields.io/badge/-MuJoCo-1E3958?style=flat-square) ![Isaac Sim](https://img.shields.io/badge/-Isaac%20Sim-76B900?style=flat-square&logo=nvidia&logoColor=white) ![Next.js](https://img.shields.io/badge/-Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white) ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+
+</div>
+
+<div style="border: 1px solid #d0d7de; border-radius: 6px; padding: 16px; margin: 16px 0;">
+
 ### **wellstudio-platform**
 One product for a boutique studio: public schedule, member bookings, staff desk, and online packs.
 

@@ -16,7 +16,8 @@ export type ProjectCategory =
   | "product-platform"
   | "frontend-case-study"
   | "open-source"
-  | "native-app";
+  | "native-app"
+  | "hackathon";
 
 export type ProjectStage = "active" | "maintained" | "archived";
 
@@ -57,6 +58,8 @@ export type Project = {
   repositoryUrl?: string;
   liveUrl?: string;
   caseStudyUrl?: string;
+  /** Optional visual theme for the project detail page. */
+  theme?: "hackspain";
 };
 
 const projectDetailPath = (slug: string) => `/projects/${slug}`;
@@ -149,6 +152,55 @@ export const projects: Project[] = [
     repositoryUrl: "https://github.com/miguelgarglez/video-digest",
     liveUrl: "https://www.npmjs.com/package/video-digest",
     caseStudyUrl: projectDetailPath("video-digest"),
+  },
+  {
+    slug: "xfold",
+    title: "xfold",
+    displayName: "XFOLD",
+    href: "/projects/xfold/",
+    description:
+      "HackSpain '26 project for the THEKER Robotics track: a simulated industrial line that presses, folds and bags shirts, with a live control-room dashboard.",
+    sub: {
+      before: "Built in 36 hours with three teammates. ",
+      label: "Read the writeup",
+      href: "/posts/folding-shirts-at-hackspain-2026/",
+      after: ", with the demo video.",
+    },
+    stack: ["Python", "MuJoCo", "Isaac Sim", "Next.js", "TypeScript"],
+    status: "Hackathon",
+    year: 2026,
+    category: "hackathon",
+    stage: "archived",
+    featured: true,
+    role: "Dashboard and sim-to-UI bridge",
+    summary:
+      "A team project from HackSpain 2026 in Madrid. A shirt rides a belt through a press, a flap folder, a bagger and a seal station, all in simulated physics, and every run streams to a control room you can watch live or replay.",
+    capabilities: [
+      "Deformable cloth simulation on MuJoCo and Isaac Sim / PhysX",
+      "Control-room dashboard with live view, replay and measurements",
+      "Run journal over REST and SSE, with per-run video",
+      "Camera-based fold-quality score for every cycle",
+    ],
+    sections: [
+      {
+        title: "My part",
+        body: "I built the Next.js control room and the Python bridge between it and the simulation: an append-only run journal, REST for commands, SSE for live events, and the integration contract that let the physics and UI sides work in parallel. Also experiment persistence in SQLite, the live console and the XFOLD branding.",
+      },
+    ],
+    images: [
+      {
+        src: "/projects/xfold/team.webp",
+        alt: "The XFOLD team at HackSpain '26, in front of the event's mosaic wall",
+      },
+      {
+        src: "/projects/xfold/brand.webp",
+        alt: "XFOLD brand sheet with the folded-sleeve shirt mark and wordmark",
+      },
+    ],
+    repositoryUrl: "https://github.com/rogarmu8/hackspain_2026_xfold",
+    liveUrl: "https://www.youtube.com/watch?v=arIuPMPokuY",
+    caseStudyUrl: projectDetailPath("xfold"),
+    theme: "hackspain",
   },
   {
     slug: "wellstudio-platform",

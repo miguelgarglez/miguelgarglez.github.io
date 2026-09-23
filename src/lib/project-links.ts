@@ -13,6 +13,10 @@ function liveLinkLabel(href: string): string {
     return "npm package";
   }
 
+  if (/youtube\.com|youtu\.be/.test(href)) {
+    return "Demo video";
+  }
+
   return "Live demo";
 }
 
