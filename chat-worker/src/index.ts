@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/cloudflare';
 import { runProfileAgent } from './agent/run-profile-agent';
 import {
   buildUpstreamPayload,
@@ -7,6 +8,12 @@ import {
   isStreamFinished,
   resolveUpstreamApi,
 } from './agent/upstream';
+import {
+  logEvent,
+  parseChatAttempt,
+  parseFailoverReason,
+  resolveRequestId,
+} from './telemetry';
 
 type ChatMessage = {
   role: 'system' | 'user' | 'assistant';
@@ -21,6 +28,9 @@ type Env = {
   LLM_SITE_URL?: string;
   LLM_APP_TITLE?: string;
   DEV?: string;
+  SENTRY_DSN?: string;
+  SENTRY_RELEASE?: string;
+  CF_VERSION_METADATA?: { id: string };
 };
 
 const UPSTREAM_TIMEOUT_MS = 25_000;
@@ -77,7 +87,8 @@ function getCorsHeaders(
   origin: string | null,
   allowedOrigins: Set<string>,
   isDev: boolean,
-  requestHeaders?: Headers
+  requestHeaders?: Headers,
+  requestId?: string
 ) {
   const headers = new Headers();
   if (origin && (isDev || allowedOrigins.has(origin))) {
@@ -89,9 +100,16 @@ function getCorsHeaders(
   headers.set(
     'Access-Control-Allow-Headers',
     requestedHeaders?.trim() ||
-      'Content-Type, Authorization, x-vercel-ai-ui-message-stream, User-Agent'
+      'Content-Type, Authorization, x-vercel-ai-ui-message-stream, User-Agent, x-chat-request-id, x-chat-attempt, x-chat-failover-reason'
+  );
+  headers.set(
+    'Access-Control-Expose-Headers',
+    'X-Chat-Backend, X-Chat-Request-Id, Retry-After'
   );
   headers.set('X-Chat-Backend', 'cloudflare');
+  if (requestId) {
+    headers.set('X-Chat-Request-Id', requestId);
+  }
   return headers;
 }
 
@@ -99,9 +117,16 @@ function getJsonHeaders(
   origin: string | null,
   allowedOrigins: Set<string>,
   isDev: boolean,
-  requestHeaders?: Headers
+  requestHeaders?: Headers,
+  requestId?: string
 ) {
-  const headers = getCorsHeaders(origin, allowedOrigins, isDev, requestHeaders);
+  const headers = getCorsHeaders(
+    origin,
+    allowedOrigins,
+    isDev,
+    requestHeaders,
+    requestId
+  );
   headers.set('Content-Type', 'application/json; charset=utf-8');
   return headers;
 }
@@ -236,7 +261,10 @@ function extractUpstreamError(detail: string) {
   return null;
 }
 
-function createUiMessageStream(upstream: ReadableStream<Uint8Array>) {
+function createUiMessageStream(
+  upstream: ReadableStream<Uint8Array>,
+  onEnd?: (info: { receivedBytes: number; errorSent: boolean }) => void
+) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
   const messageId = `msg_${crypto.randomUUID()}`;
@@ -379,6 +407,7 @@ function createUiMessageStream(upstream: ReadableStream<Uint8Array>) {
         endMessage();
         sendDone();
         controller.close();
+        onEnd?.({ receivedBytes, errorSent });
       }
     },
     cancel() {
@@ -389,13 +418,64 @@ function createUiMessageStream(upstream: ReadableStream<Uint8Array>) {
   });
 }
 
-export default {
+const handler = {
   async fetch(request: Request, env: Env) {
+    const startedAt = Date.now();
+    const requestId = resolveRequestId(
+      request.headers.get('x-chat-request-id')
+    );
+    const attempt = parseChatAttempt(request.headers.get('x-chat-attempt'));
+    const failoverReason = parseFailoverReason(
+      request.headers.get('x-chat-failover-reason')
+    );
+    Sentry.setTag('chat.request_id', requestId);
+    Sentry.setTag('chat.attempt', attempt);
+
     const { pathname } = new URL(request.url);
     const origin = request.headers.get('Origin');
     const allowedOrigins = getAllowedOrigins(env);
     const isDev = env.DEV === 'true';
-    const corsHeaders = getCorsHeaders(origin, allowedOrigins, isDev, request.headers);
+    const corsHeaders = getCorsHeaders(
+      origin,
+      allowedOrigins,
+      isDev,
+      request.headers,
+      requestId
+    );
+
+    const logChatRequest = (
+      outcome: string,
+      status: number,
+      extra: Record<string, unknown> = {},
+      timingField: 'durationMs' | 'ttfbMs' = 'durationMs'
+    ) =>
+      logEvent('chat_request', {
+        requestId,
+        attempt,
+        failoverReason,
+        outcome,
+        status,
+        [timingField]: Date.now() - startedAt,
+        ...extra,
+      });
+
+    const captureOperationalIssue = (
+      message: string,
+      extraTags: Record<string, string> = {}
+    ) => {
+      Sentry.captureMessage(message, {
+        level: 'error',
+        tags: {
+          backend: 'cloudflare',
+          attempt,
+          ...extraTags,
+        },
+        extra: {
+          requestId,
+          failoverReason,
+        },
+      });
+    };
 
     const isHealthRequest =
       request.method === 'GET' && (pathname === '/' || pathname === '/healthz');
@@ -405,7 +485,13 @@ export default {
     if (!originAllowed) {
       return new Response(JSON.stringify({ error: 'Origin not allowed.' }), {
         status: 403,
-        headers: getJsonHeaders(origin, allowedOrigins, isDev, request.headers),
+        headers: getJsonHeaders(
+          origin,
+          allowedOrigins,
+          isDev,
+          request.headers,
+          requestId
+        ),
       });
     }
 
@@ -422,7 +508,13 @@ export default {
         JSON.stringify({ ok: true, backend: 'cloudflare' }),
         {
           status: 200,
-          headers: getJsonHeaders(origin, allowedOrigins, isDev, request.headers),
+          headers: getJsonHeaders(
+            origin,
+            allowedOrigins,
+            isDev,
+            request.headers,
+            requestId
+          ),
         }
       );
     }
@@ -437,7 +529,13 @@ export default {
     const ip = getClientIp(request);
     const rate = checkRateLimit(ip, Date.now());
     if (rate.limited) {
-      const headers = getJsonHeaders(origin, allowedOrigins, isDev, request.headers);
+      const headers = getJsonHeaders(
+        origin,
+        allowedOrigins,
+        isDev,
+        request.headers,
+        requestId
+      );
       headers.set(
         'Retry-After',
         String(Math.ceil((rate.reset - Date.now()) / 1000))
@@ -446,6 +544,7 @@ export default {
       headers.set('X-RateLimit-Remaining', String(rate.remaining));
       headers.set('X-RateLimit-Reset', String(rate.reset));
       const retryAfterSeconds = Math.ceil((rate.reset - Date.now()) / 1000);
+      logChatRequest('rate_limited', 429, { retryAfterSeconds });
       return new Response(
         JSON.stringify({
           error: 'Rate limit exceeded.',
@@ -463,6 +562,10 @@ export default {
     const llm = getLlmConfig(env);
 
     if (!llm) {
+      logChatRequest('config_missing', 500, { errorCode: 'LLM_CONFIG_MISSING' });
+      captureOperationalIssue('LLM config missing', {
+        errorCode: 'LLM_CONFIG_MISSING',
+      });
       return new Response(
         JSON.stringify({
           error: 'Missing LLM configuration.',
@@ -471,7 +574,13 @@ export default {
         }),
         {
           status: 500,
-          headers: getJsonHeaders(origin, allowedOrigins, isDev, request.headers),
+          headers: getJsonHeaders(
+            origin,
+            allowedOrigins,
+            isDev,
+            request.headers,
+            requestId
+          ),
         }
       );
     }
@@ -480,9 +589,16 @@ export default {
     try {
       body = (await request.json()) as Record<string, unknown>;
     } catch (error) {
+      logChatRequest('bad_request', 400, { reason: 'invalid_json' });
       return new Response(JSON.stringify({ error: 'Invalid JSON body.' }), {
         status: 400,
-        headers: getJsonHeaders(origin, allowedOrigins, isDev, request.headers),
+        headers: getJsonHeaders(
+          origin,
+          allowedOrigins,
+          isDev,
+          request.headers,
+          requestId
+        ),
       });
     }
 
@@ -490,9 +606,16 @@ export default {
     const question =
       extractQuestion({ messages: inboundMessages }) || extractQuestion(body);
     if (!question) {
+      logChatRequest('bad_request', 400, { reason: 'missing_question' });
       return new Response(JSON.stringify({ error: 'Missing question.' }), {
         status: 400,
-        headers: getJsonHeaders(origin, allowedOrigins, isDev, request.headers),
+        headers: getJsonHeaders(
+          origin,
+          allowedOrigins,
+          isDev,
+          request.headers,
+          requestId
+        ),
       });
     }
 
@@ -501,23 +624,22 @@ export default {
       inboundMessages,
     });
 
-    console.log(
-      JSON.stringify({
-        event: 'profile_agent_context',
-        intent: agentResult.context.intent,
-        audience: agentResult.context.audience,
-        facts: agentResult.context.selectedFacts.map((fact) => fact.id),
-        profileBlocks: agentResult.context.selectedProfileBlocks.map(
-          (block) => block.id
-        ),
-        projects: agentResult.context.selectedProjects.map(
-          (project) => project.id
-        ),
-        memories: agentResult.context.selectedMemories.map(
-          (memory) => memory.id
-        ),
-      })
-    );
+    logEvent('profile_agent_context', {
+      requestId,
+      attempt,
+      intent: agentResult.context.intent,
+      audience: agentResult.context.audience,
+      facts: agentResult.context.selectedFacts.map((fact) => fact.id),
+      profileBlocks: agentResult.context.selectedProfileBlocks.map(
+        (block) => block.id
+      ),
+      projects: agentResult.context.selectedProjects.map(
+        (project) => project.id
+      ),
+      memories: agentResult.context.selectedMemories.map(
+        (memory) => memory.id
+      ),
+    });
 
     const upstreamApi = resolveUpstreamApi(llm.model);
     const payload = buildUpstreamPayload(llm.model, agentResult.messages, true);
@@ -585,6 +707,20 @@ export default {
     }
 
     if (!upstream) {
+      const unreachableErrorCode = requestTimedOut
+        ? 'UPSTREAM_TIMEOUT'
+        : 'UPSTREAM_REQUEST_FAILED';
+      logChatRequest(
+        'upstream_unreachable',
+        requestTimedOut ? 504 : 502,
+        { errorCode: unreachableErrorCode, attempts }
+      );
+      captureOperationalIssue('Upstream unreachable', {
+        provider: llm.provider,
+        api: upstreamApi,
+        errorCode: unreachableErrorCode,
+        upstreamStatus: 'none',
+      });
       const payload =
         env.DEV === 'true'
           ? {
@@ -609,7 +745,13 @@ export default {
             };
       return new Response(JSON.stringify(payload), {
         status: requestTimedOut ? 504 : 502,
-        headers: getJsonHeaders(origin, allowedOrigins, isDev),
+        headers: getJsonHeaders(
+          origin,
+          allowedOrigins,
+          isDev,
+          request.headers,
+          requestId
+        ),
       });
     }
 
@@ -634,18 +776,51 @@ export default {
         errorCode = 'UPSTREAM_BAD_REQUEST';
       }
 
-      console.log(
-        JSON.stringify({
-          event: 'upstream_error',
-          provider: llm.provider,
-          api: upstreamApi,
-          upstreamStatus,
-          errorCode,
-          attempts,
-        })
-      );
+      logEvent('upstream_error', {
+        requestId,
+        attempt,
+        failoverReason,
+        provider: llm.provider,
+        api: upstreamApi,
+        upstreamStatus,
+        errorCode,
+        attempts,
+      });
 
-      const responseHeaders = getJsonHeaders(origin, allowedOrigins, isDev);
+      logChatRequest('upstream_error', status, {
+        upstreamStatus,
+        errorCode,
+        attempts,
+        provider: llm.provider,
+        api: upstreamApi,
+      });
+
+      if (errorCode !== 'UPSTREAM_RATE_LIMIT') {
+        Sentry.captureMessage('Upstream error', {
+          level: 'error',
+          tags: {
+            backend: 'cloudflare',
+            provider: llm.provider,
+            api: upstreamApi,
+            errorCode,
+            upstreamStatus: String(upstreamStatus),
+            attempt,
+          },
+          extra: {
+            requestId,
+            attempts,
+            failoverReason,
+          },
+        });
+      }
+
+      const responseHeaders = getJsonHeaders(
+        origin,
+        allowedOrigins,
+        isDev,
+        request.headers,
+        requestId
+      );
       if (status === 429 && upstreamRetryAfterMs !== null) {
         responseHeaders.set(
           'Retry-After',
@@ -698,7 +873,28 @@ export default {
       streamHeaders.set('x-vercel-ai-ui-message-stream', 'v1');
     }
 
-    const uiStream = createUiMessageStream(upstream.body);
+    logChatRequest(
+      'ok',
+      200,
+      {
+        provider: llm.provider,
+        model: llm.model,
+        api: upstreamApi,
+        attempts,
+        intent: agentResult.context.intent,
+        audience: agentResult.context.audience,
+      },
+      'ttfbMs'
+    );
+
+    const uiStream = createUiMessageStream(upstream.body, (info) => {
+      logEvent('chat_stream_end', {
+        requestId,
+        receivedBytes: info.receivedBytes,
+        errorSent: info.errorSent,
+        durationMs: Date.now() - startedAt,
+      });
+    });
 
     return new Response(uiStream, {
       status: 200,
@@ -706,3 +902,19 @@ export default {
     });
   },
 };
+
+export default Sentry.withSentry(
+  (env: Env) => ({
+    dsn: env.SENTRY_DSN,
+    environment: env.DEV === 'true' ? 'development' : 'production',
+    release: env.SENTRY_RELEASE ?? env.CF_VERSION_METADATA?.id,
+    sendDefaultPii: false,
+    tracesSampleRate: 1.0,
+    dataCollection: {
+      userInfo: false,
+      httpBodies: [],
+      genAI: { inputs: false, outputs: false },
+    },
+  }),
+  handler
+);

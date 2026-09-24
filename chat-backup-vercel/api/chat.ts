@@ -10,6 +10,15 @@ import {
 } from '../src/errors.js';
 import { extractMessages, extractQuestion, parseRequestBody } from '../src/messages.js';
 import { checkRateLimit, getClientIp, getRateLimitMax } from '../src/rate-limit.js';
+import {
+  captureOperationalIssue,
+  flushTelemetry,
+  logEvent,
+  parseChatAttempt,
+  parseFailoverReason,
+  resolveRequestId,
+  setTelemetryTag,
+} from '../src/telemetry.js';
 import { pipeOpenAiSseToUiMessageStream } from '../src/ui-stream.js';
 
 const OPENROUTER_TIMEOUT_MS = 25_000;
@@ -48,6 +57,15 @@ function sendJson(
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  const startedAt = Date.now();
+  const requestId = resolveRequestId(getHeaderValue(req.headers['x-chat-request-id']));
+  const attempt = parseChatAttempt(getHeaderValue(req.headers['x-chat-attempt']));
+  const failoverReason = parseFailoverReason(
+    getHeaderValue(req.headers['x-chat-failover-reason'])
+  );
+  setTelemetryTag('chat.request_id', requestId);
+  setTelemetryTag('chat.attempt', attempt);
+
   const allowedOrigins = getAllowedOrigins();
   const origin = getHeaderValue(req.headers.origin);
   const requestedHeaders = getHeaderValue(req.headers['access-control-request-headers']);
@@ -55,6 +73,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   applyHeaders(res, corsHeaders);
   res.setHeader('X-Chat-Backend', 'vercel-fallback');
+  res.setHeader('X-Chat-Request-Id', requestId);
+
+  const logChatRequest = (
+    outcome: string,
+    status: number,
+    extra: Record<string, unknown> = {},
+    timingField: 'durationMs' | 'ttfbMs' = 'durationMs'
+  ) =>
+    logEvent('chat_request', {
+      requestId,
+      attempt,
+      failoverReason,
+      outcome,
+      status,
+      [timingField]: Date.now() - startedAt,
+      ...extra,
+    });
+
+  if (attempt === 'secondary') {
+    logEvent('failover_received', { requestId, failoverReason });
+  }
 
   if (!isOriginAllowed(origin, allowedOrigins)) {
     return sendJson(res, 403, { error: 'Origin not allowed.' });
@@ -79,6 +118,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       'X-RateLimit-Remaining': String(rate.remaining),
       'X-RateLimit-Reset': String(rate.reset),
     };
+    logChatRequest('rate_limited', 429, { retryAfterSeconds });
+    await flushTelemetry();
     return sendJson(
       res,
       429,
@@ -94,17 +135,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const body = parseRequestBody(req.body);
   if (!body) {
+    logChatRequest('bad_request', 400, { reason: 'invalid_json' });
     return sendJson(res, 400, { error: 'Invalid JSON body.' });
   }
 
   const inboundMessages = extractMessages(body);
   const question = extractQuestion({ messages: inboundMessages }) || extractQuestion(body);
   if (!question) {
+    logChatRequest('bad_request', 400, { reason: 'missing_question' });
     return sendJson(res, 400, { error: 'Missing question.' });
   }
 
   const apiToken = process.env.OPENROUTER_API_KEY?.trim();
   if (!apiToken) {
+    logChatRequest('config_missing', 500, { errorCode: 'OPENROUTER_CONFIG_MISSING' });
+    captureOperationalIssue(
+      'OpenRouter config missing',
+      { attempt, errorCode: 'OPENROUTER_CONFIG_MISSING' },
+      { requestId, failoverReason }
+    );
+    await flushTelemetry();
     return sendJson(res, 500, {
       error: 'Missing OPENROUTER_API_KEY.',
       errorCode: 'OPENROUTER_REQUEST_FAILED',
@@ -202,6 +252,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const includeDebug = process.env.NODE_ENV !== 'production';
 
   if (!upstream) {
+    const unreachableErrorCode = requestTimedOut
+      ? 'OPENROUTER_TIMEOUT'
+      : 'OPENROUTER_REQUEST_FAILED';
+    logChatRequest('upstream_unreachable', requestTimedOut ? 504 : 502, {
+      errorCode: unreachableErrorCode,
+      attempts,
+    });
+    captureOperationalIssue(
+      'Upstream unreachable',
+      { provider: 'openrouter', errorCode: unreachableErrorCode, upstreamStatus: 'none', attempt },
+      { requestId, attempts, failoverReason }
+    );
+    await flushTelemetry();
     const payload = includeDebug
       ? {
           error: requestTimedOut ? 'OpenRouter timeout.' : 'OpenRouter request failed.',
@@ -220,16 +283,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (!upstream.ok || !upstream.body) {
-    console.error(
-      '[chat-backup] Upstream failure',
-      JSON.stringify({
-        upstreamStatus,
-        attempts,
-        retryAfterMs: upstreamRetryAfterMs,
-        detail: upstreamDetail?.slice(0, 500),
-      })
-    );
-
     const normalized = normalizeUpstreamFailure(
       upstreamStatus,
       upstreamDetail,
@@ -237,6 +290,42 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       includeDebug,
       attempts
     );
+
+    const errorCode =
+      typeof normalized.payload.errorCode === 'string'
+        ? normalized.payload.errorCode
+        : 'UPSTREAM_ERROR';
+
+    logEvent('upstream_error', {
+      requestId,
+      attempt,
+      failoverReason,
+      upstreamStatus,
+      attempts,
+      retryAfterMs: upstreamRetryAfterMs,
+      errorCode,
+    });
+
+    logChatRequest('upstream_error', normalized.status, {
+      upstreamStatus,
+      errorCode,
+      attempts,
+      provider: 'openrouter',
+    });
+
+    if (normalized.status !== 429) {
+      captureOperationalIssue(
+        'Upstream error',
+        {
+          provider: 'openrouter',
+          errorCode,
+          upstreamStatus: String(upstreamStatus),
+          attempt,
+        },
+        { requestId, attempts, failoverReason }
+      );
+    }
+    await flushTelemetry();
 
     const headers: Record<string, string> = {};
     if (normalized.status === 429 && upstreamRetryAfterMs !== null) {
@@ -256,5 +345,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.flushHeaders();
   }
 
-  await pipeOpenAiSseToUiMessageStream(upstream.body, res);
+  logChatRequest(
+    'ok',
+    200,
+    {
+      provider: 'openrouter',
+      model: primaryModel,
+      attempts,
+    },
+    'ttfbMs'
+  );
+
+  await pipeOpenAiSseToUiMessageStream(upstream.body, res, (info) => {
+    logEvent('chat_stream_end', {
+      requestId,
+      receivedBytes: info.receivedBytes,
+      errorSent: info.errorSent,
+      durationMs: Date.now() - startedAt,
+    });
+  });
+
+  await flushTelemetry();
 }

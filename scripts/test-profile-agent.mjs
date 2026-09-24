@@ -20,6 +20,7 @@ async function main() {
       entryPoints: [
         'chat-worker/test/profile-agent.test.ts',
         'chat-worker/test/upstream.test.ts',
+        'chat-worker/test/telemetry.test.ts',
       ],
       bundle: true,
       platform: 'node',
@@ -34,7 +35,12 @@ async function main() {
     await new Promise((resolve, reject) => {
       const child = spawn(
         process.execPath,
-        ['--test', join(tempDir, 'profile-agent.test.js'), join(tempDir, 'upstream.test.js')],
+        [
+          '--test',
+          join(tempDir, 'profile-agent.test.js'),
+          join(tempDir, 'upstream.test.js'),
+          join(tempDir, 'telemetry.test.js'),
+        ],
         {
           stdio: 'inherit',
         }

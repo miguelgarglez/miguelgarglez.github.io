@@ -14,6 +14,7 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
 
   applyHeaders(res, corsHeaders);
   res.setHeader('X-Chat-Backend', 'vercel-fallback');
+  res.setHeader('X-Chat-Request-Id', crypto.randomUUID());
 
   if (!isOriginAllowed(origin, allowedOrigins)) {
     return res.status(403).json({ error: 'Origin not allowed.' });
