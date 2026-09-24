@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/cloudflare';
 import { runProfileAgent } from './agent/run-profile-agent';
+import { buildContextTrace, type ContextTrace } from './agent/trace';
 import {
   buildUpstreamPayload,
   buildUpstreamUrl,
@@ -263,6 +264,7 @@ function extractUpstreamError(detail: string) {
 
 function createUiMessageStream(
   upstream: ReadableStream<Uint8Array>,
+  contextTrace: ContextTrace | null,
   onEnd?: (info: { receivedBytes: number; errorSent: boolean }) => void
 ) {
   const encoder = new TextEncoder();
@@ -289,6 +291,11 @@ function createUiMessageStream(
     textStarted = true;
     if (!controller) return;
     controller.enqueue(emitJson({ type: 'start', messageId }));
+    if (contextTrace) {
+      controller.enqueue(
+        emitJson({ type: 'data-context', id: 'context', data: contextTrace })
+      );
+    }
     controller.enqueue(emitJson({ type: 'text-start', id: messageId }));
   };
 
@@ -887,14 +894,18 @@ const handler = {
       'ttfbMs'
     );
 
-    const uiStream = createUiMessageStream(upstream.body, (info) => {
-      logEvent('chat_stream_end', {
-        requestId,
-        receivedBytes: info.receivedBytes,
-        errorSent: info.errorSent,
-        durationMs: Date.now() - startedAt,
-      });
-    });
+    const uiStream = createUiMessageStream(
+      upstream.body,
+      buildContextTrace(agentResult.context),
+      (info) => {
+        logEvent('chat_stream_end', {
+          requestId,
+          receivedBytes: info.receivedBytes,
+          errorSent: info.errorSent,
+          durationMs: Date.now() - startedAt,
+        });
+      }
+    );
 
     return new Response(uiStream, {
       status: 200,

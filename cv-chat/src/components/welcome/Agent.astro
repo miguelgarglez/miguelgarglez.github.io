@@ -1,27 +1,45 @@
 ---
 import { Icon } from 'astro-icon/components';
+import { runProfileAgent } from '../../../../chat-worker/src/agent/run-profile-agent';
+import { buildContextTrace } from '../../../../chat-worker/src/agent/trace';
 
-const engineeringNotes = [
+const sampleQuestions = [
+  'How does this CV chat work?',
+  'How does Miguel use AI in engineering?',
+  'What has Miguel built at Santander?',
+];
+
+const runs = sampleQuestions.map((question) => {
+  const result = runProfileAgent({
+    question,
+    inboundMessages: [{ role: 'user', content: question }],
+  });
+  const systemPrompt = result.messages[0]?.content ?? '';
+  return {
+    question,
+    trace: buildContextTrace(result.context),
+    promptTokens: Math.round(systemPrompt.length / 4 / 100) / 10,
+  };
+});
+
+const [firstRun] = runs;
+
+const summarizeSources = (titles: string[]) => {
+  const shown = titles.slice(0, 3).join(', ');
+  const rest = titles.length - 3;
+  return rest > 0 ? `${shown} +${rest}` : shown;
+};
+
+const steps = [
+  { key: 'classify', label: 'Classify', value: `${firstRun.trace.intent} · ${firstRun.trace.audience}` },
   {
-    title: 'Grounded retrieval',
-    body: 'The worker selects profile facts, CV sections, projects, and recent public updates before calling the model.',
+    key: 'retrieve',
+    label: 'Retrieve',
+    value: `${firstRun.trace.sources.length} sources`,
+    detail: summarizeSources(firstRun.trace.sources.map((source) => source.title)),
   },
-  {
-    title: 'Context engineering',
-    body: 'Questions are classified by likely audience and intent, then assembled into a compact system prompt with explicit answer rules.',
-  },
-  {
-    title: 'Deterministic evals',
-    body: 'Node tests verify that key questions retrieve the expected profile context without depending on a live LLM response.',
-  },
-  {
-    title: 'Streaming UX',
-    body: 'The Cloudflare Worker adapts upstream SSE into the AI SDK UI message stream used by the drawer chat.',
-  },
-  {
-    title: 'Operational guardrails',
-    body: 'CORS, rate limits, upstream retries, timeout handling, and a secondary backend keep failures visible and recoverable.',
-  },
+  { key: 'assemble', label: 'Assemble', value: `~${firstRun.promptTokens}k tokens · one model call` },
+  { key: 'stream', label: 'Stream', value: 'text-delta → finish' },
 ];
 
 const prompts = [
@@ -30,42 +48,96 @@ const prompts = [
 ];
 ---
 
-<section id="agent" class="agent">
+<section id="agent" class="agent" aria-labelledby="agent-title">
   <div class="container">
     <div class="agent-layout">
-      <div class="agent-copy">
+      <div class="agent-copy" data-agent-reveal>
         <p class="section-kicker">/agent</p>
-        <h2 class="section-title editorial-title">Profile Chat</h2>
+        <h2 id="agent-title" class="section-title editorial-title">Profile Chat</h2>
         <p class="agent-description">
-          A small AI interface over Miguel&apos;s curated CV data. It is meant
-          to answer focused questions about experience, projects, working style,
-          education, and AI engineering practice.
+          A small AI interface over Miguel&apos;s curated CV data. Each answer is
+          grounded in a handful of selected sources, and the chat shows you
+          which ones.
         </p>
         <div class="agent-actions">
           <button type="button" class="agent-open" data-agent-open>
-            <Icon name="lucide:message-circle" aria-hidden="true" />
             Try the chat
+            <Icon name="lucide:arrow-up-right" aria-hidden="true" />
           </button>
-          {
-            prompts.map((prompt) => (
-              <button type="button" class="agent-prompt" data-chat-prompt={prompt}>
-                {prompt}
-              </button>
-            ))
-          }
+          <ul class="agent-prompts">
+            {
+              prompts.map((prompt) => (
+                <li>
+                  <button type="button" class="agent-prompt" data-chat-prompt={prompt}>
+                    <span>{prompt}</span>
+                    <Icon name="lucide:arrow-up-right" aria-hidden="true" />
+                  </button>
+                </li>
+              ))
+            }
+          </ul>
         </div>
       </div>
 
-      <div class="agent-notes" aria-label="AI engineering highlights">
-        {
-          engineeringNotes.map((note) => (
-            <article class="agent-note">
-              <h3>{note.title}</h3>
-              <p>{note.body}</p>
-            </article>
-          ))
-        }
-      </div>
+      <figure class="trace" data-agent-reveal data-agent-trace>
+        <script type="application/json" data-agent-runs set:html={JSON.stringify(runs)} />
+        <span class="trace-progress" aria-hidden="true"></span>
+
+        <div class="trace-head">
+          <span class="trace-label">
+            <span class="trace-pulse" aria-hidden="true"></span>
+            live trace
+          </span>
+          <span class="trace-index" data-trace-index>01 / {String(runs.length).padStart(2, '0')}</span>
+        </div>
+
+        <p class="trace-question">
+          <span data-trace-question>{firstRun.question}</span><span class="trace-caret" aria-hidden="true"></span>
+        </p>
+
+        <ol class="trace-steps">
+          {
+            steps.map((step) => (
+              <li class="trace-step is-done" data-trace-step={step.key}>
+                <span class="trace-step-label">
+                  <span class="trace-step-dot" aria-hidden="true"></span>
+                  {step.label}
+                </span>
+                <span class="trace-step-value">
+                  <span data-trace-value={step.key}>{step.value}</span>
+                  {step.detail ? (
+                    <span class="trace-step-detail" data-trace-detail>{step.detail}</span>
+                  ) : null}
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+
+        <figcaption class="trace-foot">
+          <div class="trace-tabs" role="tablist" aria-label="Sample questions">
+            {
+              runs.map((run, index) => (
+                <button
+                  type="button"
+                  role="tab"
+                  class="trace-tab"
+                  aria-selected={index === 0 ? 'true' : 'false'}
+                  aria-label={run.question}
+                  title={run.question}
+                  data-trace-tab={index}
+                >
+                  {String(index + 1).padStart(2, '0')}
+                </button>
+              ))
+            }
+          </div>
+          <button type="button" class="trace-ask" data-trace-ask>
+            Ask this
+            <Icon name="lucide:arrow-up-right" aria-hidden="true" />
+          </button>
+        </figcaption>
+      </figure>
     </div>
   </div>
 </section>
@@ -73,16 +145,203 @@ const prompts = [
 <script>
   import { getScrollMotionTools, prefersReducedMotion } from '../../lib/motion';
 
+  type TraceSource = { kind: string; id: string; title: string };
+  type AgentRun = {
+    question: string;
+    trace: { intent: string; audience: string; sources: TraceSource[] };
+    promptTokens: number;
+  };
+
+  const STEP_MS = 900;
+  const RUN_PAUSE_MS = 3600;
+
   const openAgent = () => {
     window.dispatchEvent(new CustomEvent('cv-chat:open'));
   };
 
-  const openAgentWithPrompt = (prompt) => {
-    window.dispatchEvent(
-      new CustomEvent('cv-chat:prompt', {
-        detail: { prompt },
-      }),
+  const openAgentWithPrompt = (prompt: string) => {
+    window.dispatchEvent(new CustomEvent('cv-chat:prompt', { detail: { prompt } }));
+  };
+
+  const summarizeSources = (titles: string[]) => {
+    const shown = titles.slice(0, 3).join(', ');
+    const rest = titles.length - 3;
+    return rest > 0 ? `${shown} +${rest}` : shown;
+  };
+
+  const setupTrace = (reducedMotion: boolean) => {
+    const root = document.querySelector<HTMLElement>('[data-agent-trace]');
+    const runsNode = root?.querySelector('[data-agent-runs]');
+    if (!root || !runsNode) return;
+
+    const runs = JSON.parse(runsNode.textContent ?? '[]') as AgentRun[];
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-trace-tab]'));
+    const steps = Array.from(root.querySelectorAll<HTMLElement>('[data-trace-step]'));
+    const question = root.querySelector<HTMLElement>('[data-trace-question]');
+    const index = root.querySelector<HTMLElement>('[data-trace-index]');
+    const detail = root.querySelector<HTMLElement>('[data-trace-detail]');
+    const value = (key: string) => root.querySelector<HTMLElement>(`[data-trace-value="${key}"]`);
+    const askButton = root.querySelector<HTMLButtonElement>('[data-trace-ask]');
+    const total = String(runs.length).padStart(2, '0');
+
+    let activeRun = 0;
+    let timers: number[] = [];
+    let isVisible = false;
+    let isPaused = false;
+
+    const clearTimers = () => {
+      timers.forEach((id) => window.clearTimeout(id));
+      timers = [];
+    };
+
+    const later = (fn: () => void, ms: number) => {
+      timers.push(window.setTimeout(fn, ms));
+    };
+
+    const setProgress = (ratio: number) => {
+      root.style.setProperty('--progress', String(ratio));
+    };
+
+    const countUp = (node: HTMLElement | null, target: number, format: (n: number) => string) => {
+      if (!node) return;
+      const start = performance.now();
+      const duration = 520;
+      const frame = (now: number) => {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        node.textContent = format(target * eased);
+        if (t < 1) requestAnimationFrame(frame);
+      };
+      requestAnimationFrame(frame);
+    };
+
+    const renderValues = (run: AgentRun, animate: boolean) => {
+      const classify = value('classify');
+      if (classify) classify.textContent = `${run.trace.intent} · ${run.trace.audience}`;
+      const sourceCount = run.trace.sources.length;
+      const retrieve = value('retrieve');
+      if (detail) detail.textContent = summarizeSources(run.trace.sources.map((s) => s.title));
+      const assemble = value('assemble');
+      const formatSources = (n: number) => `${Math.round(n)} sources`;
+      const formatTokens = (n: number) => `~${n.toFixed(1)}k tokens · one model call`;
+      if (animate) {
+        countUp(retrieve, sourceCount, formatSources);
+        countUp(assemble, run.promptTokens, formatTokens);
+      } else {
+        if (retrieve) retrieve.textContent = formatSources(sourceCount);
+        if (assemble) assemble.textContent = formatTokens(run.promptTokens);
+      }
+    };
+
+    const selectTab = (runIndex: number) => {
+      tabs.forEach((tab, tabIndex) => {
+        tab.setAttribute('aria-selected', tabIndex === runIndex ? 'true' : 'false');
+      });
+      if (index) index.textContent = `${String(runIndex + 1).padStart(2, '0')} / ${total}`;
+    };
+
+    const typeQuestion = (text: string, done: () => void) => {
+      if (!question) return done();
+      let cursor = 0;
+      question.textContent = '';
+      root.classList.add('is-typing');
+      const tick = () => {
+        cursor += 1;
+        question.textContent = text.slice(0, cursor);
+        if (cursor < text.length) {
+          later(tick, 24);
+          return;
+        }
+        root.classList.remove('is-typing');
+        done();
+      };
+      tick();
+    };
+
+    const setStep = (active: number) => {
+      steps.forEach((step, stepIndex) => {
+        step.classList.toggle('is-active', stepIndex === active);
+        step.classList.toggle('is-done', stepIndex < active);
+      });
+    };
+
+    const play = (runIndex: number) => {
+      clearTimers();
+      activeRun = runIndex;
+      const run = runs[runIndex];
+      if (!run) return;
+
+      selectTab(runIndex);
+      setStep(-1);
+      setProgress(0);
+
+      typeQuestion(run.question, () => {
+        steps.forEach((step, stepIndex) => {
+          later(() => {
+            setStep(stepIndex);
+            setProgress((stepIndex + 1) / steps.length);
+            if (stepIndex === 0) renderValues(run, false);
+            if (step.dataset.traceStep === 'retrieve') renderValues(run, true);
+          }, 240 + stepIndex * STEP_MS);
+        });
+
+        later(() => {
+          setStep(steps.length);
+          later(() => {
+            if (isVisible && !isPaused) play((activeRun + 1) % runs.length);
+          }, RUN_PAUSE_MS);
+        }, 240 + steps.length * STEP_MS);
+      });
+    };
+
+    const showStatic = (runIndex: number) => {
+      clearTimers();
+      activeRun = runIndex;
+      const run = runs[runIndex];
+      if (!run) return;
+      selectTab(runIndex);
+      if (question) question.textContent = run.question;
+      root.classList.remove('is-typing');
+      renderValues(run, false);
+      setStep(steps.length);
+      setProgress(1);
+    };
+
+    tabs.forEach((tab, tabIndex) => {
+      tab.addEventListener('click', () => {
+        if (reducedMotion) showStatic(tabIndex);
+        else play(tabIndex);
+      });
+    });
+
+    askButton?.addEventListener('click', () => {
+      const run = runs[activeRun];
+      if (run) openAgentWithPrompt(run.question);
+    });
+
+    if (reducedMotion) {
+      showStatic(0);
+      return;
+    }
+
+    root.addEventListener('pointerenter', () => {
+      isPaused = true;
+    });
+    root.addEventListener('pointerleave', () => {
+      isPaused = false;
+      if (isVisible && timers.length === 0) play((activeRun + 1) % runs.length);
+    });
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const wasVisible = isVisible;
+        isVisible = entry?.isIntersecting ?? false;
+        if (isVisible && !wasVisible) play(activeRun);
+        if (!isVisible) showStatic(activeRun);
+      },
+      { threshold: 0.4 },
     );
+    observer.observe(root);
   };
 
   document.addEventListener('DOMContentLoaded', async () => {
@@ -96,20 +355,20 @@ const prompts = [
       });
     });
 
-    if (prefersReducedMotion()) {
-      return;
-    }
+    const reducedMotion = prefersReducedMotion();
+    setupTrace(reducedMotion);
+
+    if (reducedMotion) return;
 
     const { gsap } = await getScrollMotionTools();
 
-    gsap.set('#agent .agent-copy, #agent .agent-note', { y: 28, opacity: 0 });
-
-    gsap.to('#agent .agent-copy, #agent .agent-note', {
+    gsap.set('#agent [data-agent-reveal]', { y: 24, opacity: 0 });
+    gsap.to('#agent [data-agent-reveal]', {
       y: 0,
       opacity: 1,
-      duration: 0.65,
+      duration: 0.8,
       ease: 'power3.out',
-      stagger: 0.06,
+      stagger: 0.1,
       scrollTrigger: {
         trigger: '#agent',
         start: 'top 75%',
@@ -122,215 +381,445 @@ const prompts = [
 
 <style>
   .agent {
-    padding: clamp(4rem, 8vw, 6rem) 1.25rem;
-    background:
-      linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--bg-light) 42%, transparent),
-        var(--bg) 76%
-      );
-    color: var(--text);
-    overflow: hidden;
     position: relative;
-  }
-
-  .agent::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(
-        90deg,
-        color-mix(in srgb, var(--border) 28%, transparent) 1px,
-        transparent 1px
-      ),
-      linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--border) 18%, transparent) 1px,
-        transparent 1px
-      );
-    background-size: 96px 96px;
-    mask-image: linear-gradient(180deg, transparent, black 20%, black 82%, transparent);
-    opacity: 0.12;
-    pointer-events: none;
+    padding: clamp(4.5rem, 9vw, 8rem) 1.25rem;
+    color: var(--text);
+    overflow: clip;
   }
 
   .container {
-    max-width: 1200px;
+    max-width: 1180px;
     margin: 0 auto;
-    position: relative;
   }
 
   .agent-layout {
     display: grid;
-    grid-template-columns: minmax(18rem, 0.82fr) minmax(0, 1.18fr);
-    gap: clamp(2rem, 5vw, 4.5rem);
-    align-items: start;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2.5rem, 6vw, 5.5rem);
+    align-items: center;
   }
 
   .agent-copy {
-    display: grid;
-    gap: 1.2rem;
+    min-width: 0;
   }
 
-  .section-title {
-    margin: 0;
-    text-align: left;
-    font-size: clamp(2.2rem, 4vw, 3.85rem);
+  .agent-copy h2 {
+    margin-bottom: 1rem;
   }
 
   .agent-description {
-    margin: 0;
-    max-width: 38rem;
+    max-width: 34rem;
+    margin: 0 0 2rem;
     color: var(--text-muted);
-    font-size: clamp(1rem, 1.35vw, 1.12rem);
+    font-size: clamp(1rem, 1.4vw, 1.15rem);
     line-height: 1.7;
   }
 
   .agent-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-    margin-top: 0.4rem;
+    display: grid;
+    justify-items: start;
+    gap: 1.5rem;
   }
 
   .agent-open,
-  .agent-prompt {
-    border: 1px solid color-mix(in srgb, var(--primary) 42%, var(--border));
-    border-radius: 999px;
+  .agent-prompt,
+  .trace-tab,
+  .trace-ask {
+    font: inherit;
     cursor: pointer;
-    transition:
-      background-color 160ms ease,
-      border-color 160ms ease,
-      color 160ms ease,
-      transform 160ms var(--ease-out-quart);
+    -webkit-tap-highlight-color: transparent;
   }
 
   .agent-open {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 0.45rem;
+    gap: 0.55rem;
+    padding: 0.8rem 1.15rem;
+    border: 1px solid var(--primary);
+    border-radius: 999px;
     background: var(--primary);
     color: var(--primary-foreground);
-    padding: 0.68rem 1rem;
-    font-weight: 650;
+    font-weight: 600;
+    transition:
+      box-shadow 240ms ease,
+      transform 240ms var(--ease-out-quart);
   }
 
-  .agent-open svg {
-    width: 1rem;
-    height: 1rem;
+  .agent-open svg,
+  .agent-prompt svg,
+  .trace-ask svg {
+    width: 0.95rem;
+    height: 0.95rem;
+    transition: transform 280ms var(--ease-out-quart);
+  }
+
+  .agent-prompts {
+    display: grid;
+    width: min(100%, 26rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--border-muted);
   }
 
   .agent-prompt {
-    background: color-mix(in srgb, var(--bg-light) 64%, transparent);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    padding: 0.85rem 0;
+    border: 0;
+    border-bottom: 1px solid var(--border-muted);
+    background: transparent;
     color: var(--text-muted);
-    padding: 0.64rem 0.9rem;
-    font-size: 0.82rem;
+    font-size: 0.92rem;
+    text-align: left;
+    transition: color 220ms ease;
+  }
+
+  .agent-prompt::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: var(--primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 420ms var(--ease-out-quart);
+  }
+
+  .agent-prompt svg {
+    flex: none;
+    color: var(--primary);
+    opacity: 0.5;
   }
 
   .agent-open:active,
-  .agent-prompt:active {
-    transform: scale(0.97);
+  .agent-prompt:active,
+  .trace-ask:active {
+    transform: scale(0.98);
   }
 
   .agent-open:focus-visible,
-  .agent-prompt:focus-visible {
+  .agent-prompt:focus-visible,
+  .trace-tab:focus-visible,
+  .trace-ask:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px var(--focus-ring-soft);
   }
 
-  .agent-notes {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    border-top: 1px solid var(--border);
-  }
-
-  .agent-note {
-    min-height: 8.2rem;
-    padding: 1.05rem 1rem 1.2rem 0;
-    border-bottom: 1px solid var(--border-muted);
-  }
-
-  .agent-note:nth-child(odd) {
-    padding-right: 1.25rem;
-    border-right: 1px solid var(--border-muted);
-  }
-
-  .agent-note:nth-child(even) {
-    padding-left: 1.25rem;
-  }
-
-  .agent-note h3 {
+  .trace {
+    position: relative;
+    min-width: 0;
     margin: 0;
-    color: var(--text);
-    font-family: var(--font-mono, monospace);
-    font-size: 0.78rem;
-    letter-spacing: 0.08em;
-    line-height: 1.35;
+    padding: clamp(1.35rem, 2.6vw, 2.1rem);
+    border: 1px solid var(--border);
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--bg-light) 88%, transparent),
+      color-mix(in srgb, var(--bg) 96%, transparent)
+    );
+    --progress: 1;
+  }
+
+  .trace-progress {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    height: 1px;
+    background: var(--primary);
+    transform: scaleX(var(--progress));
+    transform-origin: left;
+    transition: transform 700ms var(--ease-out-quart);
+  }
+
+  .trace-head,
+  .trace-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .trace-label,
+  .trace-index,
+  .trace-step-label,
+  .trace-tab,
+  .trace-ask {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
-  .agent-note p {
-    margin: 0.55rem 0 0;
+  .trace-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
     color: var(--text-muted);
+  }
+
+  .trace-pulse {
+    position: relative;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--secondary);
+  }
+
+  .trace-pulse::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    animation: trace-ping 2.4s var(--ease-out-quart) infinite;
+  }
+
+  .trace-index {
+    color: color-mix(in srgb, var(--primary) 72%, var(--text-muted));
+    font-variant-numeric: tabular-nums;
+  }
+
+  .trace-question {
+    min-height: 2.6em;
+    margin: clamp(1.4rem, 3vw, 2.2rem) 0 clamp(1.2rem, 2.6vw, 1.8rem);
+    font-family: var(--font-display, inherit);
+    font-size: clamp(1.35rem, 2.3vw, 1.9rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .trace-caret {
+    display: inline-block;
+    width: 2px;
+    height: 0.95em;
+    margin-left: 3px;
+    vertical-align: -0.1em;
+    background: var(--primary);
+    opacity: 0;
+  }
+
+  .trace:global(.is-typing) .trace-caret {
+    opacity: 1;
+    animation: trace-blink 900ms steps(1) infinite;
+  }
+
+  .trace-steps {
+    margin: 0 0 1.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .trace-step {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.8rem 0;
+    border-top: 1px solid var(--border-muted);
+    opacity: 0.32;
+    transition: opacity 420ms ease;
+  }
+
+  .trace-step:last-child {
+    border-bottom: 1px solid var(--border-muted);
+  }
+
+  .trace-step.is-active,
+  .trace-step.is-done {
+    opacity: 1;
+  }
+
+  .trace-step-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--text-muted);
+  }
+
+  .trace-step-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    transition:
+      background-color 300ms ease,
+      border-color 300ms ease,
+      transform 300ms var(--ease-out-quart);
+  }
+
+  .trace-step.is-active .trace-step-dot {
+    border-color: var(--primary);
+    background: var(--primary);
+    transform: scale(1.3);
+  }
+
+  .trace-step.is-done .trace-step-dot {
+    border-color: var(--primary);
+    background: var(--primary);
+  }
+
+  .trace-step-value {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 0;
+    color: var(--text);
     font-size: 0.92rem;
-    line-height: 1.58;
+    font-variant-numeric: tabular-nums;
+    transform: translateY(3px);
+    transition: transform 420ms var(--ease-out-quart);
+  }
+
+  .trace-step.is-active .trace-step-value,
+  .trace-step.is-done .trace-step-value {
+    transform: none;
+  }
+
+  .trace-step-detail {
+    overflow: hidden;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .trace-tabs {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .trace-tab {
+    position: relative;
+    padding: 0.45rem 0.4rem;
+    border: 0;
+    background: transparent;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    transition: color 200ms ease;
+  }
+
+  .trace-tab::after {
+    content: '';
+    position: absolute;
+    left: 0.4rem;
+    right: 0.4rem;
+    bottom: 0.2rem;
+    height: 1px;
+    background: var(--primary);
+    transform: scaleX(0);
+    transition: transform 360ms var(--ease-out-quart);
+  }
+
+  .trace-tab[aria-selected='true'] {
+    color: var(--text);
+  }
+
+  .trace-tab[aria-selected='true']::after {
+    transform: scaleX(1);
+  }
+
+  .trace-ask {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2.35rem;
+    padding: 0.1rem 0;
+    border: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--primary) 45%, transparent);
+    background: transparent;
+    color: var(--text);
+    transition:
+      color 180ms ease,
+      border-color 180ms ease;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .agent-open:hover {
-      border-color: var(--primary);
       box-shadow: var(--shadow-glow);
       transform: translateY(-1px);
     }
 
+    .agent-open:hover svg,
+    .agent-prompt:hover svg,
+    .trace-ask:hover svg {
+      transform: translate(2px, -2px);
+    }
+
     .agent-prompt:hover {
-      border-color: color-mix(in srgb, var(--primary) 62%, var(--border));
       color: var(--text);
-      transform: translateY(-1px);
+    }
+
+    .agent-prompt:hover svg {
+      opacity: 1;
+    }
+
+    .agent-prompt:hover::after {
+      transform: scaleX(1);
+    }
+
+    .trace-tab:hover {
+      color: var(--text);
+    }
+
+    .trace-ask:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+  }
+
+  @keyframes trace-ping {
+    0% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    70%,
+    100% {
+      transform: scale(3);
+      opacity: 0;
+    }
+  }
+
+  @keyframes trace-blink {
+    50% {
+      opacity: 0;
     }
   }
 
   @media (max-width: 900px) {
     .agent-layout {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 
-  @media (max-width: 640px) {
-    .agent {
-      padding: 3.5rem 1rem;
+  @media (max-width: 520px) {
+    .trace-step {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.35rem;
     }
 
-    .section-title {
-      font-size: clamp(1.9rem, 10vw, 2.7rem);
+    .trace-foot {
+      flex-wrap: wrap;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .trace-pulse::after,
+    .trace-caret {
+      animation: none;
     }
 
-    .agent-description {
-      font-size: 0.95rem;
-      line-height: 1.58;
-    }
-
-    .agent-actions {
-      display: grid;
-    }
-
-    .agent-open,
-    .agent-prompt {
-      width: 100%;
-    }
-
-    .agent-notes {
-      grid-template-columns: 1fr;
-    }
-
-    .agent-note,
-    .agent-note:nth-child(odd),
-    .agent-note:nth-child(even) {
-      min-height: 0;
-      padding: 1rem 0;
-      border-right: 0;
+    .trace-progress,
+    .trace-step,
+    .trace-step-value,
+    .agent-prompt::after {
+      transition: none;
     }
   }
 </style>

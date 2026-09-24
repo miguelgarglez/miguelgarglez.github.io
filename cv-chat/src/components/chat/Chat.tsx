@@ -1,6 +1,6 @@
 import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
-import { MessageSquareIcon } from 'lucide-react';
+import { DefaultChatTransport, type UIMessage } from 'ai';
+import { ArrowUpRightIcon, CornerDownRightIcon } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -22,6 +22,45 @@ import {
 } from '@/components/ai-elements/prompt-input';
 import { cn } from '@/lib/utils';
 import { AgentActivity, looksSpanish } from './AgentActivity';
+import { ContextTrace, type ContextTraceData } from './ContextTrace';
+
+type ChatMessage = UIMessage<unknown, { context: ContextTraceData }>;
+
+const STARTER_QUESTIONS = [
+  { label: 'Profile', prompt: 'What kind of engineer is Miguel?' },
+  { label: 'Practice', prompt: 'How does Miguel use AI in engineering?' },
+  { label: 'Meta', prompt: 'How does this CV chat work?' },
+];
+
+const FOLLOW_UPS: Record<string, string[]> = {
+  summary: ['What has Miguel built at Santander?', 'How does Miguel use AI in engineering?'],
+  experience: ["Summarize Miguel's QA background", "How did Miguel's early role shape his product mindset?"],
+  projects: ['How does this CV chat work?', 'What has Miguel built at Santander?'],
+  skills: ["Explain Miguel's design system experience", 'What makes Miguel a strong product-minded frontend engineer?'],
+  work_style: ['What kind of engineer is Miguel?', 'What has Miguel built at Santander?'],
+  education: ['What has Miguel been learning recently?', 'What kind of engineer is Miguel?'],
+  recent_updates: ['How does Miguel use AI in engineering?', 'What has Miguel built at Santander?'],
+};
+
+const DEFAULT_FOLLOW_UPS = [
+  'What has Miguel built at Santander?',
+  'How does Miguel use AI in engineering?',
+  "Summarize Miguel's work style",
+];
+
+function getContextTrace(message: ChatMessage) {
+  for (const part of message.parts) {
+    if (part.type === 'data-context') return part.data;
+  }
+  return null;
+}
+
+function getMessageText(message: ChatMessage) {
+  return message.parts
+    .map((part) => (part.type === 'text' ? part.text : ''))
+    .join('')
+    .trim();
+}
 
 type ChatProps = {
   primaryApiUrl: string;
@@ -157,7 +196,7 @@ export default function Chat({
 
   const transport = useMemo(
     () =>
-      new DefaultChatTransport({
+      new DefaultChatTransport<ChatMessage>({
         api: primaryApiUrl || secondaryApiUrl || '',
         headers: {
           'x-vercel-ai-ui-message-stream': 'v1',
@@ -333,7 +372,7 @@ export default function Chat({
     [primaryApiUrl, secondaryApiUrl]
   );
 
-  const { messages, sendMessage, status, regenerate, clearError } = useChat({
+  const { messages, sendMessage, status, regenerate, clearError } = useChat<ChatMessage>({
     transport,
     onError: () => {
       setChatError((previous) => previous ?? 'retryable');
@@ -344,11 +383,19 @@ export default function Chat({
   const canRetry =
     Boolean(chatError) &&
     (messages.length > 0 || lastSubmittedText.trim().length > 0);
-  const suggestedQuestions = [
-    'What kind of engineer is Miguel?',
-    'How does Miguel use AI in engineering?',
-    'How does this CV chat work?',
-  ];
+  const lastMessage = messages.at(-1);
+  const askedQuestions = new Set(
+    messages
+      .filter((message) => message.role === 'user')
+      .map((message) => getMessageText(message).toLowerCase())
+  );
+  const lastTrace = lastMessage?.role === 'assistant' ? getContextTrace(lastMessage) : null;
+  const followUps =
+    status === 'ready' && !chatError && lastMessage?.role === 'assistant'
+      ? (FOLLOW_UPS[lastTrace?.intent ?? ''] ?? DEFAULT_FOLLOW_UPS)
+          .filter((prompt) => !askedQuestions.has(prompt.toLowerCase()))
+          .slice(0, 2)
+      : [];
 
   useEffect(() => {
     const prompt = suggestedPrompt?.trim();
@@ -364,6 +411,10 @@ export default function Chat({
     setLastSubmittedText(trimmed);
     sendMessage({ text: trimmed });
     setInput('');
+  };
+
+  const sendPrompt = (prompt: string) => {
+    handleSubmit({ text: prompt, files: [] });
   };
 
   const handleRetry = () => {
@@ -410,39 +461,46 @@ export default function Chat({
   return (
     <div
       className={cn(
-        'flex min-h-0 flex-1 flex-col overflow-hidden bg-card lg:rounded-[var(--radius-lg)] lg:border lg:border-border lg:shadow-[var(--shadow-card)]',
+        'flex min-h-0 flex-1 flex-col overflow-hidden bg-card lg:bg-transparent',
         className
       )}
     >
       <Conversation className="flex-1">
         <ConversationContent className="pb-6">
           {messages.length === 0 ? (
-            <ConversationEmptyState
-              className="justify-start gap-5 pt-8 sm:justify-center sm:pt-8"
-            >
-              <div className="grid size-12 place-items-center rounded-full border border-border bg-background text-primary">
-                <MessageSquareIcon className="size-5" />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-base font-semibold text-foreground">
-                  Ask Miguel
+            <ConversationEmptyState className="items-stretch justify-end gap-8 px-1 pt-6 text-left">
+              <div className="space-y-3">
+                <h3 className="text-[1.6rem] font-medium leading-[1.08] tracking-[-0.035em] text-foreground">
+                  Ask anything about
+                  <br />
+                  Miguel&apos;s work.
                 </h3>
-                <p className="text-sm text-muted-foreground">
-                  Try a focused question about the CV.
+                <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
+                  Answers come from curated CV data, and each one shows the
+                  sources it used.
                 </p>
               </div>
-              <div className="flex max-w-md flex-wrap justify-center gap-2">
-                {suggestedQuestions.map((question) => (
-                  <button
-                    type="button"
-                    key={question}
-                    className="min-h-10 rounded-full border border-border bg-background/60 px-3.5 py-2 text-sm text-muted-foreground transition-colors hover:border-[color:var(--primary)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)]"
-                    onClick={() => setInput(question)}
-                  >
-                    <span>{question}</span>
-                  </button>
+              <ol className="border-t border-[color:var(--border-muted)]">
+                {STARTER_QUESTIONS.map((question, index) => (
+                  <li key={question.prompt}>
+                    <button
+                      type="button"
+                      className="chat-starter group relative flex min-h-12 w-full items-center gap-4 border-b border-[color:var(--border-muted)] py-3 text-left text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)] disabled:opacity-50"
+                      onClick={() => sendPrompt(question.prompt)}
+                      disabled={isBusy}
+                    >
+                      <span className="chat-mono w-5 text-[0.66rem] text-[color:var(--primary)] opacity-70">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <span className="flex-1">{question.prompt}</span>
+                      <ArrowUpRightIcon
+                        className="size-3.5 text-[color:var(--primary)] opacity-40 transition-[transform,opacity] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100"
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </li>
                 ))}
-              </div>
+              </ol>
             </ConversationEmptyState>
           ) : (
             messages.map((message) => (
@@ -455,10 +513,28 @@ export default function Chat({
                       </MessageResponse>
                     ) : null
                   )}
+                  {message.role === 'assistant' ? (
+                    <MessageTrace message={message} />
+                  ) : null}
                 </MessageContent>
               </Message>
             ))
           )}
+          {followUps.length > 0 ? (
+            <div className="chat-followup -mt-3 grid justify-items-start gap-0.5" aria-label="Suggested follow-up questions">
+              {followUps.map((prompt) => (
+                <button
+                  type="button"
+                  key={prompt}
+                  className="chat-starter group relative inline-flex min-h-8 items-center gap-2 py-1 text-left text-xs text-muted-foreground transition-colors duration-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)]"
+                  onClick={() => sendPrompt(prompt)}
+                >
+                  <CornerDownRightIcon className="size-3 text-[color:var(--primary)] opacity-60 transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" />
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          ) : null}
           {chatError === 'retryable' && (
             <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
               <p>
@@ -525,7 +601,7 @@ export default function Chat({
         <ConversationScrollButton className="border-border bg-card text-foreground hover:bg-[color:var(--primary)] hover:text-[color:var(--primary-foreground)]" />
       </Conversation>
 
-      <div className="border-t border-border bg-background p-4">
+      <div className="border-t border-[color:var(--border-muted)] px-4 pb-4 pt-3 lg:px-5">
         <PromptInput className="w-full" onSubmit={handleSubmit}>
           <PromptInputTextarea
             className="min-h-13 pr-13 pb-2.5 pt-2.5"
@@ -544,4 +620,9 @@ export default function Chat({
       </div>
     </div>
   );
+}
+
+function MessageTrace({ message }: { message: ChatMessage }) {
+  const trace = getContextTrace(message);
+  return trace ? <ContextTrace trace={trace} /> : null;
 }

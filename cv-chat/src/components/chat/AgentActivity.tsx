@@ -1,18 +1,17 @@
 import { useEffect, useState } from 'react';
-import { FileSearch, ListChecks, MessageSquareText, Sparkles } from 'lucide-react';
 
-const EN_MESSAGES = [
-  { icon: FileSearch, text: "Reviewing Miguel's profile..." },
-  { icon: ListChecks, text: 'Selecting relevant context...' },
-  { icon: Sparkles, text: 'Checking projects and recent signals...' },
-  { icon: MessageSquareText, text: 'Preparing a grounded answer...' },
+const EN_STEPS = [
+  { key: 'classify', text: 'Classifying the question' },
+  { key: 'retrieve', text: "Selecting context from Miguel's profile" },
+  { key: 'assemble', text: 'Assembling a grounded prompt' },
+  { key: 'stream', text: 'Waiting for the first tokens' },
 ];
 
-const ES_MESSAGES = [
-  { icon: FileSearch, text: 'Revisando el perfil de Miguel...' },
-  { icon: ListChecks, text: 'Seleccionando contexto relevante...' },
-  { icon: Sparkles, text: 'Consultando proyectos y señales recientes...' },
-  { icon: MessageSquareText, text: 'Preparando una respuesta basada en contexto...' },
+const ES_STEPS = [
+  { key: 'classify', text: 'Clasificando la pregunta' },
+  { key: 'retrieve', text: 'Seleccionando contexto del perfil de Miguel' },
+  { key: 'assemble', text: 'Preparando un prompt con contexto' },
+  { key: 'stream', text: 'Esperando los primeros tokens' },
 ];
 
 type AgentActivityProps = {
@@ -20,35 +19,28 @@ type AgentActivityProps = {
 };
 
 export function AgentActivity({ language }: AgentActivityProps) {
-  const messages = language === 'es' ? ES_MESSAGES : EN_MESSAGES;
+  const steps = language === 'es' ? ES_STEPS : EN_STEPS;
   const [index, setIndex] = useState(0);
-  const ActiveIcon = messages[index].icon;
 
   useEffect(() => {
     setIndex(0);
     const id = window.setInterval(() => {
-      setIndex((current) => (current + 1) % messages.length);
-    }, 900);
+      setIndex((current) => Math.min(current + 1, steps.length - 1));
+    }, 850);
 
     return () => window.clearInterval(id);
-  }, [messages.length, language]);
+  }, [steps.length, language]);
+
+  const step = steps[index];
 
   return (
-    <div
-      className="flex w-fit max-w-full items-center gap-3 rounded-[var(--radius-md)] border border-border bg-background/70 px-3 py-2 text-sm"
-      role="status"
-      aria-live="polite"
-      aria-label={messages[index].text}
-    >
-      <span className="grid size-5 place-items-center text-primary">
-        <ActiveIcon
-          key={index}
-          className="agent-activity-icon size-3.5"
-          aria-hidden="true"
-        />
+    <div className="agent-activity" role="status" aria-live="polite">
+      <span className="agent-activity-dot" aria-hidden="true" />
+      <span key={step.key} className="agent-activity-text">
+        {step.text}
       </span>
-      <span key={index} className="agent-activity-text">
-        {messages[index].text}
+      <span className="agent-activity-count chat-mono" aria-hidden="true">
+        {index + 1}/{steps.length}
       </span>
     </div>
   );
