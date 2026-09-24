@@ -1,28 +1,64 @@
 ---
 import { Icon } from 'astro-icon/components';
+import { runProfileAgent } from '../../../../chat-worker/src/agent/run-profile-agent';
+import { buildContextTrace } from '../../../../chat-worker/src/agent/trace';
 
-const engineeringNotes = [
+const stages = [
   {
-    title: 'Grounded retrieval',
-    body: 'The worker selects profile facts, CV sections, projects, and recent public updates before calling the model.',
+    key: 'classify',
+    title: 'Classify',
+    label: 'Context engineering',
+    body: 'Each question is classified by likely audience and intent before anything else happens.',
   },
   {
-    title: 'Context engineering',
-    body: 'Questions are classified by likely audience and intent, then assembled into a compact system prompt with explicit answer rules.',
+    key: 'retrieve',
+    title: 'Retrieve',
+    label: 'Grounded retrieval',
+    body: 'Profile facts, CV sections, projects, and recent public updates are selected deterministically.',
   },
   {
-    title: 'Deterministic evals',
-    body: 'Node tests verify that key questions retrieve the expected profile context without depending on a live LLM response.',
+    key: 'assemble',
+    title: 'Assemble',
+    label: 'Deterministic evals',
+    body: 'One compact system prompt with explicit answer rules. Node tests pin the expected context per question.',
   },
   {
-    title: 'Streaming UX',
-    body: 'The Cloudflare Worker adapts upstream SSE into the AI SDK UI message stream used by the drawer chat.',
+    key: 'stream',
+    title: 'Stream',
+    label: 'Streaming UX',
+    body: 'The Cloudflare Worker adapts upstream SSE into the AI SDK UI message stream, trace first.',
   },
   {
-    title: 'Operational guardrails',
-    body: 'CORS, rate limits, upstream retries, timeout handling, and a secondary backend keep failures visible and recoverable.',
+    key: 'guard',
+    title: 'Guard',
+    label: 'Operational guardrails',
+    body: 'CORS, rate limits, retries, timeouts, and a secondary backend keep failures visible and recoverable.',
   },
 ];
+
+const sampleQuestions = [
+  'How does this CV chat work?',
+  'How does Miguel use AI in engineering?',
+  'What has Miguel built at Santander?',
+];
+
+const runs = sampleQuestions.map((question) => {
+  const result = runProfileAgent({
+    question,
+    inboundMessages: [{ role: 'user', content: question }],
+  });
+  const systemPrompt = result.messages[0]?.content ?? '';
+  return {
+    question,
+    trace: buildContextTrace(result.context),
+    promptTokens: Math.round(systemPrompt.length / 4 / 100) / 10,
+  };
+});
+
+const [firstRun] = runs;
+
+const countByKind = (kind: string) =>
+  firstRun.trace.sources.filter((source) => source.kind === kind).length;
 
 const prompts = [
   'How does this CV chat work?',
@@ -30,21 +66,30 @@ const prompts = [
 ];
 ---
 
-<section id="agent" class="agent">
+<section id="agent" class="agent" aria-labelledby="agent-title">
+  <div class="agent-backdrop" aria-hidden="true">
+    <span class="agent-backdrop-word">agent</span>
+  </div>
+
   <div class="container">
     <div class="agent-layout">
-      <div class="agent-copy">
+      <div class="agent-copy" data-agent-reveal>
         <p class="section-kicker">/agent</p>
-        <h2 class="section-title editorial-title">Profile Chat</h2>
+        <h2 id="agent-title" class="section-title editorial-title">
+          Profile Chat
+          <span class="agent-title-sub">one question, one grounded answer</span>
+        </h2>
         <p class="agent-description">
-          A small AI interface over Miguel&apos;s curated CV data. It is meant
-          to answer focused questions about experience, projects, working style,
-          education, and AI engineering practice.
+          A small AI interface over Miguel&apos;s curated CV data. It answers
+          focused questions about experience, projects, working style,
+          education, and AI engineering practice, and shows exactly which
+          context it used.
         </p>
         <div class="agent-actions">
           <button type="button" class="agent-open" data-agent-open>
             <Icon name="lucide:message-circle" aria-hidden="true" />
             Try the chat
+            <kbd class="agent-kbd" aria-hidden="true">⌘K</kbd>
           </button>
           {
             prompts.map((prompt) => (
@@ -56,33 +101,361 @@ const prompts = [
         </div>
       </div>
 
-      <div class="agent-notes" aria-label="AI engineering highlights">
-        {
-          engineeringNotes.map((note) => (
-            <article class="agent-note">
-              <h3>{note.title}</h3>
-              <p>{note.body}</p>
-            </article>
-          ))
-        }
-      </div>
+      <figure class="agent-console" data-agent-reveal data-agent-console>
+        <script type="application/json" data-agent-runs set:html={JSON.stringify(runs)} />
+        <div class="console-chrome">
+          <span class="console-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="console-title">profile-agent.trace</span>
+          <span class="console-live" data-console-live>
+            <span class="console-live-dot" aria-hidden="true"></span>
+            replay
+          </span>
+        </div>
+
+        <div class="console-tabs" role="tablist" aria-label="Sample questions">
+          {
+            runs.map((run, index) => (
+              <button
+                type="button"
+                role="tab"
+                class="console-tab"
+                aria-selected={index === 0 ? 'true' : 'false'}
+                data-console-tab={index}
+              >
+                <span class="console-tab-index">{String(index + 1).padStart(2, '0')}</span>
+                <span class="console-tab-text">{run.question}</span>
+              </button>
+            ))
+          }
+        </div>
+
+        <div class="console-body" aria-live="off">
+          <p class="console-line console-ask">
+            <span class="console-prompt" aria-hidden="true">$</span>
+            <span>ask</span>
+            <span class="console-question" data-console-question>&ldquo;{firstRun.question}&rdquo;</span>
+            <span class="console-caret" aria-hidden="true"></span>
+          </p>
+
+          <ol class="console-steps">
+            <li class="console-step is-done" data-console-step="0">
+              <span class="step-index">01</span>
+              <span class="step-name">classify</span>
+              <span class="step-out">
+                <span class="token">audience=<b data-console-audience>{firstRun.trace.audience}</b></span>
+                <span class="token">intent=<b data-console-intent>{firstRun.trace.intent}</b></span>
+              </span>
+            </li>
+            <li class="console-step is-done" data-console-step="1">
+              <span class="step-index">02</span>
+              <span class="step-name">retrieve</span>
+              <span class="step-out">
+                <span class="step-summary" data-console-counts>
+                  {countByKind('fact')} facts · {countByKind('profile')} blocks · {countByKind('project')} projects · {countByKind('memory')} memories
+                </span>
+                <span class="source-list" data-console-sources>
+                  {
+                    firstRun.trace.sources.map((source) => (
+                      <span class={`source source-${source.kind}`}>{source.title}</span>
+                    ))
+                  }
+                </span>
+              </span>
+            </li>
+            <li class="console-step is-done" data-console-step="2">
+              <span class="step-index">03</span>
+              <span class="step-name">assemble</span>
+              <span class="step-out">
+                <span class="token">system prompt ≈ <b data-console-tokens>{firstRun.promptTokens}k</b> tokens</span>
+                <span class="token">1 llm call</span>
+              </span>
+            </li>
+            <li class="console-step is-done" data-console-step="3">
+              <span class="step-index">04</span>
+              <span class="step-name">stream</span>
+              <span class="step-out">
+                <span class="chunk">start</span>
+                <span class="chunk chunk-accent">data-context</span>
+                <span class="chunk">text-delta <b data-console-deltas>×128</b></span>
+                <span class="chunk">finish</span>
+              </span>
+            </li>
+            <li class="console-step is-done" data-console-step="4">
+              <span class="step-index">05</span>
+              <span class="step-name">guard</span>
+              <span class="step-out">
+                <span class="token ok">cors</span>
+                <span class="token ok">rate-limit 20/min</span>
+                <span class="token ok">failover ready</span>
+              </span>
+            </li>
+          </ol>
+        </div>
+
+        <figcaption class="console-foot">
+          <span>Trace computed at build time with the Worker&apos;s own retrieval code.</span>
+          <button type="button" class="console-ask-button" data-console-ask>
+            Ask this
+            <Icon name="lucide:arrow-up-right" aria-hidden="true" />
+          </button>
+        </figcaption>
+      </figure>
     </div>
+
+    <ol class="agent-stages" aria-label="How the profile agent answers">
+      <span class="agent-stages-progress" aria-hidden="true" data-stage-progress></span>
+      {
+        stages.map((stage, index) => (
+          <li class="agent-stage" data-agent-stage={index} data-agent-reveal>
+            <span class="stage-index">{String(index + 1).padStart(2, '0')}</span>
+            <h3>
+              {stage.title}
+              <span class="stage-label">{stage.label}</span>
+            </h3>
+            <p>{stage.body}</p>
+          </li>
+        ))
+      }
+    </ol>
   </div>
 </section>
 
 <script>
   import { getScrollMotionTools, prefersReducedMotion } from '../../lib/motion';
 
+  type TraceSource = { kind: string; id: string; title: string };
+  type AgentRun = {
+    question: string;
+    trace: { intent: string; audience: string; sources: TraceSource[] };
+    promptTokens: number;
+  };
+
+  const STEP_COUNT = 5;
+  const STEP_MS = 1100;
+  const RUN_PAUSE_MS = 3200;
+
   const openAgent = () => {
     window.dispatchEvent(new CustomEvent('cv-chat:open'));
   };
 
-  const openAgentWithPrompt = (prompt) => {
+  const openAgentWithPrompt = (prompt: string) => {
     window.dispatchEvent(
       new CustomEvent('cv-chat:prompt', {
         detail: { prompt },
       }),
     );
+  };
+
+  const setupConsole = (reducedMotion: boolean) => {
+    const root = document.querySelector<HTMLElement>('[data-agent-console]');
+    const runsNode = root?.querySelector('[data-agent-runs]');
+    if (!root || !runsNode) return;
+
+    const runs = JSON.parse(runsNode.textContent ?? '[]') as AgentRun[];
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-console-tab]'));
+    const steps = Array.from(root.querySelectorAll<HTMLElement>('[data-console-step]'));
+    const stageItems = Array.from(document.querySelectorAll<HTMLElement>('#agent [data-agent-stage]'));
+    const progress = document.querySelector<HTMLElement>('#agent [data-stage-progress]');
+    const question = root.querySelector<HTMLElement>('[data-console-question]');
+    const audience = root.querySelector<HTMLElement>('[data-console-audience]');
+    const intent = root.querySelector<HTMLElement>('[data-console-intent]');
+    const counts = root.querySelector<HTMLElement>('[data-console-counts]');
+    const sources = root.querySelector<HTMLElement>('[data-console-sources]');
+    const tokens = root.querySelector<HTMLElement>('[data-console-tokens]');
+    const deltas = root.querySelector<HTMLElement>('[data-console-deltas]');
+    const askButton = root.querySelector<HTMLButtonElement>('[data-console-ask]');
+    const live = root.querySelector<HTMLElement>('[data-console-live]');
+
+    let activeRun = 0;
+    let timers: number[] = [];
+    let isVisible = false;
+    let isPaused = false;
+
+    const clearTimers = () => {
+      timers.forEach((id) => window.clearTimeout(id));
+      timers = [];
+    };
+
+    const later = (fn: () => void, ms: number) => {
+      timers.push(window.setTimeout(fn, ms));
+    };
+
+    const setActiveStage = (index: number) => {
+      stageItems.forEach((item, itemIndex) => {
+        item.classList.toggle('is-active', itemIndex === index);
+        item.classList.toggle('is-done', itemIndex < index);
+      });
+      if (progress) {
+        const ratio = index < 0 ? 0 : (index + 1) / STEP_COUNT;
+        progress.style.setProperty('--progress', String(ratio));
+      }
+    };
+
+    const renderRun = (run: AgentRun) => {
+      const byKind = (kind: string) =>
+        run.trace.sources.filter((source) => source.kind === kind).length;
+      if (question) question.textContent = `“${run.question}”`;
+      if (audience) audience.textContent = run.trace.audience;
+      if (intent) intent.textContent = run.trace.intent;
+      if (tokens) tokens.textContent = `${run.promptTokens}k`;
+      if (counts) {
+        counts.textContent = `${byKind('fact')} facts · ${byKind('profile')} blocks · ${byKind('project')} projects · ${byKind('memory')} memories`;
+      }
+      if (sources) {
+        sources.replaceChildren(
+          ...run.trace.sources.map((source, index) => {
+            const chip = document.createElement('span');
+            chip.className = `source source-${source.kind}`;
+            chip.style.setProperty('--i', String(index));
+            chip.textContent = source.title;
+            return chip;
+          }),
+        );
+      }
+      tabs.forEach((tab, index) => {
+        tab.setAttribute('aria-selected', index === activeRun ? 'true' : 'false');
+      });
+    };
+
+    const typeQuestion = (text: string, done: () => void) => {
+      if (!question) return done();
+      const full = `“${text}”`;
+      let cursor = 0;
+      question.textContent = '';
+      const tick = () => {
+        cursor += 1;
+        question.textContent = full.slice(0, cursor);
+        if (cursor < full.length) {
+          later(tick, 22);
+          return;
+        }
+        done();
+      };
+      tick();
+    };
+
+    const countDeltas = () => {
+      if (!deltas) return;
+      const target = 96 + Math.floor(Math.random() * 64);
+      let value = 0;
+      const tick = () => {
+        value = Math.min(target, value + 7);
+        deltas.textContent = `×${value}`;
+        if (value < target) later(tick, 40);
+      };
+      tick();
+    };
+
+    const play = (runIndex: number) => {
+      clearTimers();
+      activeRun = runIndex;
+      const run = runs[runIndex];
+      if (!run) return;
+
+      renderRun(run);
+      root.classList.add('is-playing');
+      steps.forEach((step) => step.classList.remove('is-done', 'is-active'));
+      setActiveStage(-1);
+
+      typeQuestion(run.question, () => {
+        steps.forEach((step, index) => {
+          later(() => {
+            steps.forEach((other, otherIndex) => {
+              other.classList.toggle('is-active', otherIndex === index);
+              if (otherIndex < index) other.classList.add('is-done');
+            });
+            setActiveStage(index);
+            if (index === 3) countDeltas();
+          }, 280 + index * STEP_MS);
+        });
+
+        later(() => {
+          steps.forEach((step) => {
+            step.classList.remove('is-active');
+            step.classList.add('is-done');
+          });
+          root.classList.remove('is-playing');
+          later(() => {
+            if (isVisible && !isPaused) play((activeRun + 1) % runs.length);
+          }, RUN_PAUSE_MS);
+        }, 280 + STEP_COUNT * STEP_MS);
+      });
+    };
+
+    const showStatic = (runIndex: number) => {
+      clearTimers();
+      activeRun = runIndex;
+      const run = runs[runIndex];
+      if (!run) return;
+      renderRun(run);
+      steps.forEach((step) => {
+        step.classList.remove('is-active');
+        step.classList.add('is-done');
+      });
+      setActiveStage(STEP_COUNT);
+      root.classList.remove('is-playing');
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => {
+        if (reducedMotion) {
+          showStatic(index);
+          return;
+        }
+        play(index);
+      });
+    });
+
+    askButton?.addEventListener('click', () => {
+      const run = runs[activeRun];
+      if (run) openAgentWithPrompt(run.question);
+    });
+
+    live?.addEventListener('click', () => {
+      if (!reducedMotion) play(activeRun);
+    });
+
+    stageItems.forEach((item, index) => {
+      const highlight = () => {
+        steps.forEach((step, stepIndex) => {
+          step.classList.toggle('is-highlight', stepIndex === index);
+        });
+      };
+      const reset = () => steps.forEach((step) => step.classList.remove('is-highlight'));
+      item.addEventListener('pointerenter', highlight);
+      item.addEventListener('pointerleave', reset);
+    });
+
+    if (reducedMotion) {
+      showStatic(0);
+      return;
+    }
+
+    root.addEventListener('pointerenter', () => {
+      isPaused = true;
+    });
+    root.addEventListener('pointerleave', () => {
+      isPaused = false;
+      if (isVisible && !root.classList.contains('is-playing') && timers.length === 0) {
+        play((activeRun + 1) % runs.length);
+      }
+    });
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const wasVisible = isVisible;
+        isVisible = entry?.isIntersecting ?? false;
+        if (isVisible && !wasVisible) {
+          play(activeRun);
+        }
+        if (!isVisible) {
+          clearTimers();
+          showStatic(activeRun);
+        }
+      },
+      { threshold: 0.35 },
+    );
+    observer.observe(root);
   };
 
   document.addEventListener('DOMContentLoaded', async () => {
@@ -96,20 +469,24 @@ const prompts = [
       });
     });
 
-    if (prefersReducedMotion()) {
+    const reducedMotion = prefersReducedMotion();
+    setupConsole(reducedMotion);
+
+    if (reducedMotion) {
       return;
     }
 
     const { gsap } = await getScrollMotionTools();
 
-    gsap.set('#agent .agent-copy, #agent .agent-note', { y: 28, opacity: 0 });
+    gsap.set('#agent [data-agent-reveal]', { y: 28, opacity: 0 });
+    gsap.set('#agent .agent-backdrop-word', { yPercent: 18, opacity: 0 });
 
-    gsap.to('#agent .agent-copy, #agent .agent-note', {
+    gsap.to('#agent [data-agent-reveal]', {
       y: 0,
       opacity: 1,
-      duration: 0.65,
+      duration: 0.7,
       ease: 'power3.out',
-      stagger: 0.06,
+      stagger: 0.07,
       scrollTrigger: {
         trigger: '#agent',
         start: 'top 75%',
@@ -117,42 +494,71 @@ const prompts = [
         toggleActions: 'play none none reverse',
       },
     });
+
+    gsap.to('#agent .agent-backdrop-word', {
+      yPercent: -12,
+      opacity: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#agent',
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true,
+      },
+    });
   });
 </script>
 
 <style>
   .agent {
-    padding: clamp(4rem, 8vw, 6rem) 1.25rem;
-    background:
-      linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--bg-light) 42%, transparent),
-        var(--bg) 76%
-      );
+    --console-bg: #0f0d0b;
+    --console-surface: #171411;
+    --console-line: #2a241f;
+    --console-text: #f3ebe1;
+    --console-muted: #9d9184;
+    --console-accent: #d98446;
+    --console-ok: #9bbf9a;
+
+    padding: clamp(4.5rem, 9vw, 7rem) 1.25rem;
     color: var(--text);
     overflow: hidden;
     position: relative;
+    isolation: isolate;
   }
 
-  .agent::before {
+  .agent-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .agent-backdrop::before {
     content: '';
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(
-        90deg,
-        color-mix(in srgb, var(--border) 28%, transparent) 1px,
-        transparent 1px
-      ),
-      linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--border) 18%, transparent) 1px,
-        transparent 1px
-      );
-    background-size: 96px 96px;
-    mask-image: linear-gradient(180deg, transparent, black 20%, black 82%, transparent);
-    opacity: 0.12;
-    pointer-events: none;
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--text) 22%, transparent) 1px,
+      transparent 1px
+    );
+    background-size: 22px 22px;
+    mask-image: radial-gradient(ellipse 70% 60% at 70% 45%, black, transparent 75%);
+    opacity: 0.18;
+  }
+
+  .agent-backdrop-word {
+    position: absolute;
+    right: -0.04em;
+    bottom: -0.2em;
+    font-family: var(--font-mono);
+    font-size: clamp(8rem, 24vw, 22rem);
+    font-weight: 600;
+    letter-spacing: -0.08em;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--primary) 26%, transparent);
+    user-select: none;
   }
 
   .container {
@@ -163,9 +569,9 @@ const prompts = [
 
   .agent-layout {
     display: grid;
-    grid-template-columns: minmax(18rem, 0.82fr) minmax(0, 1.18fr);
+    grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
     gap: clamp(2rem, 5vw, 4.5rem);
-    align-items: start;
+    align-items: center;
   }
 
   .agent-copy {
@@ -176,14 +582,30 @@ const prompts = [
   .section-title {
     margin: 0;
     text-align: left;
-    font-size: clamp(2.2rem, 4vw, 3.85rem);
+    font-size: clamp(2.6rem, 5.2vw, 4.8rem);
+  }
+
+  .agent-title-sub {
+    display: block;
+    margin-top: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .agent-title-sub::before {
+    content: '↳ ';
+    color: var(--primary);
   }
 
   .agent-description {
     margin: 0;
-    max-width: 38rem;
+    max-width: 36rem;
     color: var(--text-muted);
-    font-size: clamp(1rem, 1.35vw, 1.12rem);
+    font-size: clamp(1rem, 1.3vw, 1.1rem);
     line-height: 1.7;
   }
 
@@ -203,6 +625,7 @@ const prompts = [
       background-color 160ms ease,
       border-color 160ms ease,
       color 160ms ease,
+      box-shadow 200ms ease,
       transform 160ms var(--ease-out-quart);
   }
 
@@ -210,16 +633,25 @@ const prompts = [
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.45rem;
+    gap: 0.5rem;
     background: var(--primary);
     color: var(--primary-foreground);
-    padding: 0.68rem 1rem;
+    padding: 0.68rem 0.75rem 0.68rem 1rem;
     font-weight: 650;
   }
 
   .agent-open svg {
     width: 1rem;
     height: 1rem;
+  }
+
+  .agent-kbd {
+    padding: 0.12rem 0.42rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--primary-foreground) 16%, transparent);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
   }
 
   .agent-prompt {
@@ -230,7 +662,9 @@ const prompts = [
   }
 
   .agent-open:active,
-  .agent-prompt:active {
+  .agent-prompt:active,
+  .console-tab:active,
+  .console-ask-button:active {
     transform: scale(0.97);
   }
 
@@ -240,42 +674,446 @@ const prompts = [
     box-shadow: 0 0 0 3px var(--focus-ring-soft);
   }
 
-  .agent-notes {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    border-top: 1px solid var(--border);
-  }
+  /* Console */
 
-  .agent-note {
-    min-height: 8.2rem;
-    padding: 1.05rem 1rem 1.2rem 0;
-    border-bottom: 1px solid var(--border-muted);
-  }
-
-  .agent-note:nth-child(odd) {
-    padding-right: 1.25rem;
-    border-right: 1px solid var(--border-muted);
-  }
-
-  .agent-note:nth-child(even) {
-    padding-left: 1.25rem;
-  }
-
-  .agent-note h3 {
+  .agent-console {
+    position: relative;
     margin: 0;
-    color: var(--text);
-    font-family: var(--font-mono, monospace);
-    font-size: 0.78rem;
-    letter-spacing: 0.08em;
-    line-height: 1.35;
-    text-transform: uppercase;
+    border-radius: 18px;
+    background:
+      radial-gradient(
+        120% 80% at 100% 0%,
+        color-mix(in srgb, var(--console-accent) 14%, transparent),
+        transparent 55%
+      ),
+      var(--console-bg);
+    color: var(--console-text);
+    border: 1px solid var(--console-line);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.04) inset,
+      0 30px 80px -30px rgba(0, 0, 0, 0.55),
+      0 0 0 1px color-mix(in srgb, var(--console-accent) 6%, transparent);
+    font-family: var(--font-mono);
+    overflow: hidden;
   }
 
-  .agent-note p {
-    margin: 0.55rem 0 0;
+  .agent-console::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.018) 0 1px,
+      transparent 1px 3px
+    );
+  }
+
+  .console-chrome {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--console-line);
+    font-size: 0.72rem;
+    color: var(--console-muted);
+  }
+
+  .console-dots {
+    display: inline-flex;
+    gap: 0.35rem;
+  }
+
+  .console-dots i {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--console-line);
+  }
+
+  .console-title {
+    flex: 1;
+    letter-spacing: 0.04em;
+  }
+
+  .console-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--console-line);
+    border-radius: 999px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.64rem;
+  }
+
+  .console-live-dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--console-muted);
+  }
+
+  .agent-console.is-playing .console-live {
+    color: var(--console-text);
+  }
+
+  .agent-console.is-playing .console-live-dot {
+    background: var(--console-accent);
+    box-shadow: 0 0 0 0 var(--console-accent);
+    animation: console-ping 1.4s ease-out infinite;
+  }
+
+  .console-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-bottom: 1px solid var(--console-line);
+  }
+
+  .console-tab {
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    min-width: 0;
+    padding: 0.7rem 0.9rem;
+    border: 0;
+    border-right: 1px solid var(--console-line);
+    background: transparent;
+    color: var(--console-muted);
+    font: inherit;
+    font-size: 0.7rem;
+    text-align: left;
+    cursor: pointer;
+    position: relative;
+    transition: color 160ms ease, background-color 160ms ease;
+  }
+
+  .console-tab:last-child {
+    border-right: 0;
+  }
+
+  .console-tab::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--console-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 320ms var(--ease-out-expo);
+  }
+
+  .console-tab[aria-selected='true'] {
+    color: var(--console-text);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .console-tab[aria-selected='true']::after {
+    transform: scaleX(1);
+  }
+
+  .console-tab-index {
+    color: var(--console-accent);
+  }
+
+  .console-tab-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .console-tab:focus-visible,
+  .console-live:focus-visible,
+  .console-ask-button:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--console-accent);
+  }
+
+  .console-body {
+    padding: 1.1rem 1.1rem 0.6rem;
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+
+  .console-line {
+    margin: 0 0 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: baseline;
+  }
+
+  .console-prompt {
+    color: var(--console-accent);
+  }
+
+  .console-question {
+    color: var(--console-text);
+    font-size: 0.9rem;
+  }
+
+  .console-caret {
+    display: inline-block;
+    width: 0.5rem;
+    height: 1rem;
+    margin-left: -0.3rem;
+    background: var(--console-accent);
+    vertical-align: text-bottom;
+    opacity: 0;
+  }
+
+  .agent-console.is-playing .console-caret {
+    animation: console-blink 0.9s steps(1) infinite;
+  }
+
+  .console-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+  }
+
+  .console-step {
+    display: grid;
+    grid-template-columns: 1.8rem 5.2rem minmax(0, 1fr);
+    gap: 0.6rem;
+    align-items: start;
+    padding: 0.65rem 0;
+    border-top: 1px dashed var(--console-line);
+    opacity: 0.28;
+    transition: opacity 260ms ease, background-color 260ms ease;
+  }
+
+  .console-step.is-done,
+  .console-step.is-active,
+  .console-step.is-highlight {
+    opacity: 1;
+  }
+
+  .console-step.is-active .step-name,
+  .console-step.is-highlight .step-name {
+    color: var(--console-accent);
+  }
+
+  .console-step.is-active .step-index::before {
+    content: '▸';
+    position: absolute;
+    margin-left: -0.85rem;
+    color: var(--console-accent);
+  }
+
+  .step-index {
+    color: var(--console-muted);
+    position: relative;
+  }
+
+  .step-name {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.7rem;
+    color: var(--console-text);
+    padding-top: 0.08rem;
+  }
+
+  .step-out {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .token,
+  .chunk {
+    padding: 0.08rem 0.45rem;
+    border-radius: 6px;
+    background: var(--console-surface);
+    border: 1px solid var(--console-line);
+    color: var(--console-muted);
+    white-space: nowrap;
+  }
+
+  .token b,
+  .chunk b {
+    color: var(--console-text);
+    font-weight: 500;
+  }
+
+  .token.ok::before {
+    content: '✓ ';
+    color: var(--console-ok);
+  }
+
+  .chunk-accent {
+    color: var(--console-accent);
+    border-color: color-mix(in srgb, var(--console-accent) 40%, var(--console-line));
+  }
+
+  .step-summary {
+    width: 100%;
+    color: var(--console-muted);
+  }
+
+  .source-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .source-list :global(.source) {
+    --kind: var(--console-muted);
+    max-width: 16rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0.05rem 0.45rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--kind) 42%, transparent);
+    color: color-mix(in srgb, var(--kind) 80%, var(--console-text));
+    font-size: 0.68rem;
+  }
+
+  .source-list :global(.source-fact) { --kind: #d6a24f; }
+  .source-list :global(.source-profile) { --kind: #d98446; }
+  .source-list :global(.source-project) { --kind: #9bbf9a; }
+  .source-list :global(.source-memory) { --kind: #8ba9c9; }
+
+  .agent-console.is-playing .console-step.is-active :global(.source),
+  .agent-console.is-playing .console-step.is-active .token,
+  .agent-console.is-playing .console-step.is-active .chunk {
+    animation: console-pop 360ms var(--ease-out-expo) both;
+    animation-delay: calc(var(--i, 0) * 45ms);
+  }
+
+  .console-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1rem 0.85rem;
+    border-top: 1px solid var(--console-line);
+    color: var(--console-muted);
+    font-size: 0.68rem;
+  }
+
+  .console-ask-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-shrink: 0;
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--console-accent) 55%, var(--console-line));
+    background: color-mix(in srgb, var(--console-accent) 14%, transparent);
+    color: var(--console-text);
+    font: inherit;
+    font-size: 0.72rem;
+    cursor: pointer;
+    transition: background-color 160ms ease, transform 160ms var(--ease-out-quart);
+  }
+
+  .console-ask-button svg {
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+
+  /* Stages */
+
+  .agent-stages {
+    list-style: none;
+    margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    border-top: 1px solid var(--border);
+    position: relative;
+  }
+
+  .agent-stages-progress {
+    position: absolute;
+    left: 0;
+    top: -1px;
+    height: 1px;
+    width: 100%;
+    background: var(--primary);
+    transform: scaleX(var(--progress, 0));
+    transform-origin: left;
+    transition: transform 700ms var(--ease-out-expo);
+  }
+
+  .agent-stage {
+    padding: 1.1rem 1.1rem 0.5rem 0;
+    transition: opacity 260ms ease;
+  }
+
+  .agent-stage + .agent-stage {
+    padding-left: 1.1rem;
+    border-left: 1px solid var(--border-muted);
+  }
+
+  .stage-index {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
     color: var(--text-muted);
-    font-size: 0.92rem;
-    line-height: 1.58;
+    transition: color 200ms ease;
+  }
+
+  .agent-stage.is-active .stage-index,
+  .agent-stage.is-done .stage-index {
+    color: var(--primary);
+  }
+
+  .agent-stage h3 {
+    margin: 0.55rem 0 0;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    color: var(--text);
+  }
+
+  .stage-label {
+    display: block;
+    margin-top: 0.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .agent-stage p {
+    margin: 0.7rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  @keyframes console-blink {
+    50% { opacity: 1; }
+  }
+
+  @keyframes console-ping {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--console-accent) 60%, transparent); }
+    100% { box-shadow: 0 0 0 6px transparent; }
+  }
+
+  @keyframes console-pop {
+    from {
+      opacity: 0;
+      transform: translateY(4px) scale(0.96);
+      filter: blur(3px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -289,6 +1127,30 @@ const prompts = [
       border-color: color-mix(in srgb, var(--primary) 62%, var(--border));
       color: var(--text);
       transform: translateY(-1px);
+    }
+
+    .console-tab:hover {
+      color: var(--console-text);
+    }
+
+    .console-ask-button:hover {
+      background: color-mix(in srgb, var(--console-accent) 26%, transparent);
+    }
+
+    .agent-stage:hover h3 {
+      color: var(--primary);
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .agent-stages {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      row-gap: 1rem;
+    }
+
+    .agent-stage:nth-child(3n + 2) {
+      padding-left: 0;
+      border-left: 0;
     }
   }
 
@@ -304,7 +1166,7 @@ const prompts = [
     }
 
     .section-title {
-      font-size: clamp(1.9rem, 10vw, 2.7rem);
+      font-size: clamp(2.2rem, 12vw, 3rem);
     }
 
     .agent-description {
@@ -321,16 +1183,65 @@ const prompts = [
       width: 100%;
     }
 
-    .agent-notes {
-      grid-template-columns: 1fr;
+    .agent-kbd {
+      display: none;
     }
 
-    .agent-note,
-    .agent-note:nth-child(odd),
-    .agent-note:nth-child(even) {
-      min-height: 0;
+    .console-tabs {
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .console-tab {
+      flex: 0 0 auto;
+      max-width: 15rem;
+    }
+
+    .console-step {
+      grid-template-columns: 1.6rem minmax(0, 1fr);
+    }
+
+    .step-out {
+      grid-column: 2;
+    }
+
+    .console-foot {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .agent-stages {
+      grid-template-columns: 1fr;
+      row-gap: 0;
+    }
+
+    .agent-stage,
+    .agent-stage + .agent-stage,
+    .agent-stage:nth-child(3n + 2) {
+      display: grid;
+      grid-template-columns: 2rem minmax(0, 1fr);
+      column-gap: 0.5rem;
       padding: 1rem 0;
-      border-right: 0;
+      border-left: 0;
+      border-bottom: 1px solid var(--border-muted);
+    }
+
+    .agent-stage h3 {
+      margin: 0;
+      font-size: 1.15rem;
+    }
+
+    .agent-stage p {
+      grid-column: 2;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .agent-console *,
+    .agent-stages * {
+      animation: none !important;
+      transition: none !important;
     }
   }
 </style>

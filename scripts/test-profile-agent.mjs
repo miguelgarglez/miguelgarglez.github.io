@@ -22,6 +22,7 @@ async function main() {
         'chat-worker/test/upstream.test.ts',
         'chat-worker/test/telemetry.test.ts',
         'chat-worker/test/upstream-copy.test.ts',
+        'chat-worker/test/trace.test.ts',
       ],
       bundle: true,
       platform: 'node',

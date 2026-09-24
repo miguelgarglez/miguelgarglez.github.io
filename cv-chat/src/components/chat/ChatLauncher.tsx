@@ -360,8 +360,25 @@ export default function ChatLauncher({
               }
             }}
           >
-            <div className="mb-3 flex items-center justify-between px-4 pt-4 text-sm font-semibold text-foreground lg:p-0">
-              <span>Chat with Miguel's AI assistant</span>
+            <div className="mb-3 flex items-center justify-between gap-3 px-4 pt-4 text-foreground lg:px-1 lg:pt-0.5">
+              <div className="flex min-w-0 items-center gap-3">
+                <span
+                  className="relative grid size-9 shrink-0 place-items-center rounded-full border border-border bg-background font-mono text-[0.7rem] font-semibold tracking-[-0.02em] text-[color:var(--primary)]"
+                  aria-hidden="true"
+                >
+                  mg
+                  <span className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-[color:var(--card)] bg-[color:var(--secondary)]" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-semibold">
+                    Miguel&apos;s profile agent
+                  </span>
+                  <span className="block truncate font-mono text-[0.62rem] uppercase tracking-[0.1em] text-muted-foreground">
+                    classify · retrieve · stream
+                    <span className="hidden lg:inline"> · ⌘K</span>
+                  </span>
+                </span>
+              </div>
               <button
                 type="button"
                 onClick={closePanel}
