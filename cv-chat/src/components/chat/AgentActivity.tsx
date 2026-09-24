@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
 
 const EN_STEPS = [
   { key: 'classify', text: 'Classifying the question' },
@@ -27,36 +26,22 @@ export function AgentActivity({ language }: AgentActivityProps) {
     setIndex(0);
     const id = window.setInterval(() => {
       setIndex((current) => Math.min(current + 1, steps.length - 1));
-    }, 700);
+    }, 850);
 
     return () => window.clearInterval(id);
   }, [steps.length, language]);
 
+  const step = steps[index];
+
   return (
-    <div
-      className="agent-activity"
-      role="status"
-      aria-live="polite"
-      aria-label={steps[index].text}
-    >
-      <ol className="agent-activity-steps">
-        {steps.map((step, stepIndex) => (
-          <li
-            key={step.key}
-            className={cn(
-              'agent-activity-step',
-              stepIndex < index && 'is-done',
-              stepIndex === index && 'is-active'
-            )}
-          >
-            <span className="agent-activity-marker" aria-hidden="true" />
-            <span className="agent-activity-key">{step.key}</span>
-            {stepIndex === index ? (
-              <span className="agent-activity-text">{step.text}</span>
-            ) : null}
-          </li>
-        ))}
-      </ol>
+    <div className="agent-activity" role="status" aria-live="polite">
+      <span className="agent-activity-dot" aria-hidden="true" />
+      <span key={step.key} className="agent-activity-text">
+        {step.text}
+      </span>
+      <span className="agent-activity-count chat-mono" aria-hidden="true">
+        {index + 1}/{steps.length}
+      </span>
     </div>
   );
 }

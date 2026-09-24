@@ -35,11 +35,11 @@ export default function ChatLauncher({
   // shell instead of unmounting Chat preserves its in-memory conversation state.
   // These class groups keep timing, easing, and transforms consistent across states.
   const panelBaseClass =
-    "relative flex w-full max-w-full flex-col bg-card motion-reduce:transition-none lg:p-3";
+    "relative flex w-full max-w-full flex-col bg-card motion-reduce:transition-none lg:bg-[linear-gradient(180deg,color-mix(in_srgb,var(--bg-light)_96%,transparent),var(--bg))]";
   const panelSizeClass =
     "h-full w-full lg:h-[min(700px,calc(100dvh-7.5rem))] lg:max-h-[700px] lg:w-[min(600px,calc(100vw-3rem))] lg:max-w-[600px]";
   const panelShellClass =
-    "border-0 shadow-none rounded-none lg:rounded-[var(--radius-lg)] lg:border lg:shadow-[var(--shadow-card)]";
+    "border-0 shadow-none rounded-none lg:border lg:border-[color:var(--border)] lg:shadow-[var(--shadow-card)]";
   const panelTransformClass = isCompact
     ? ""
     : "origin-bottom-right transform-gpu";
@@ -360,28 +360,25 @@ export default function ChatLauncher({
               }
             }}
           >
-            <div className="mb-3 flex items-center justify-between gap-3 px-4 pt-4 text-foreground lg:px-1 lg:pt-0.5">
-              <div className="flex min-w-0 items-center gap-3">
-                <span
-                  className="relative grid size-9 shrink-0 place-items-center rounded-full border border-border bg-background font-mono text-[0.7rem] font-semibold tracking-[-0.02em] text-[color:var(--primary)]"
-                  aria-hidden="true"
-                >
-                  mg
-                  <span className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-[color:var(--card)] bg-[color:var(--secondary)]" />
+            <div className="flex items-center justify-between gap-3 border-b border-[color:var(--border-muted)] px-4 py-3 text-foreground lg:px-5 lg:py-4">
+              <div className="flex min-w-0 items-baseline gap-3">
+                <span className="font-mono text-[0.7rem] uppercase tracking-[0.06em] text-[color:var(--primary)]">
+                  /ask
                 </span>
-                <span className="min-w-0">
-                  <span className="block truncate text-sm font-semibold">
-                    Miguel&apos;s profile agent
-                  </span>
-                  <span className="block truncate font-mono text-[0.62rem] uppercase tracking-[0.1em] text-muted-foreground">
-                    classify · retrieve · stream
-                    <span className="hidden lg:inline"> · ⌘K</span>
-                  </span>
+                <span className="truncate text-sm font-medium">
+                  Miguel&apos;s profile agent
                 </span>
               </div>
+              <span className="hidden items-center gap-2 font-mono text-[0.66rem] uppercase tracking-[0.06em] text-muted-foreground lg:inline-flex">
+                <span className="chat-online-dot" aria-hidden="true" />
+                online
+                <kbd className="ml-2 rounded-[4px] border border-[color:var(--border-muted)] px-1.5 py-0.5 font-mono text-[0.62rem] normal-case tracking-normal">
+                  ⌘K
+                </kbd>
+              </span>
               <button
                 type="button"
-                onClick={closePanel}
+                onClick={() => closePanel()}
                 className="grid size-10 place-items-center rounded-full bg-primary text-primary-foreground transition-all duration-300 ease-in-out will-change-transform [--focus-radius:999px] cursor-pointer hover:scale-[1.08] hover:shadow-[var(--shadow-glow)] focus-visible:rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] lg:hidden"
                 aria-label="Close chat"
               >

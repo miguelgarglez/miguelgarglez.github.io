@@ -15,21 +15,15 @@ export type ContextTraceData = {
 };
 
 const KIND_LABELS: Record<ContextTraceSource['kind'], string> = {
-  fact: 'facts',
-  profile: 'blocks',
-  project: 'projects',
-  memory: 'updates',
+  fact: 'fact',
+  profile: 'cv',
+  project: 'project',
+  memory: 'update',
 };
-
-const KIND_ORDER: ContextTraceSource['kind'][] = ['fact', 'profile', 'project', 'memory'];
 
 export function ContextTrace({ trace }: { trace: ContextTraceData }) {
   const [isOpen, setIsOpen] = useState(false);
   const listId = useId();
-  const counts = KIND_ORDER.map((kind) => ({
-    kind,
-    count: trace.sources.filter((source) => source.kind === kind).length,
-  })).filter((entry) => entry.count > 0);
 
   if (trace.sources.length === 0) return null;
 
@@ -42,42 +36,26 @@ export function ContextTrace({ trace }: { trace: ContextTraceData }) {
         aria-controls={listId}
         onClick={() => setIsOpen((current) => !current)}
       >
-        <span className="context-trace-dot" aria-hidden="true" />
-        <span className="context-trace-label">
-          Grounded in {trace.sources.length} sources
-        </span>
-        <span className="context-trace-bars" aria-hidden="true">
-          {counts.map((entry) => (
-            <span
-              key={entry.kind}
-              className={cn('context-trace-bar', `is-${entry.kind}`)}
-              style={{ flexGrow: entry.count }}
-            />
-          ))}
-        </span>
+        Grounded in {trace.sources.length} sources
         <ChevronDownIcon
-          className={cn('context-trace-chevron size-3.5', isOpen && 'rotate-180')}
+          className={cn('context-trace-chevron size-3', isOpen && 'rotate-180')}
           aria-hidden="true"
         />
       </button>
-      <div id={listId} className="context-trace-panel" hidden={!isOpen}>
-        <p className="context-trace-meta">
-          <span>intent={trace.intent}</span>
-          <span>audience={trace.audience}</span>
-          {counts.map((entry) => (
-            <span key={entry.kind}>
-              {entry.count} {KIND_LABELS[entry.kind]}
-            </span>
-          ))}
-        </p>
+      <div
+        id={listId}
+        className={cn('context-trace-panel', isOpen && 'is-open')}
+        aria-hidden={!isOpen}
+      >
         <ul className="context-trace-list">
           {trace.sources.map((source, index) => (
             <li
               key={`${source.kind}-${source.id}`}
-              className={cn('context-trace-source', `is-${source.kind}`)}
-              style={{ animationDelay: `${index * 30}ms` }}
+              className="context-trace-source"
+              style={{ transitionDelay: isOpen ? `${Math.min(index, 12) * 25}ms` : '0ms' }}
             >
-              {source.title}
+              <span className="context-trace-source-title">{source.title}</span>
+              <span className="context-trace-source-kind">{KIND_LABELS[source.kind]}</span>
             </li>
           ))}
         </ul>
