@@ -4,11 +4,13 @@ const RETRY_MAX_MS = 6_000;
 
 export type NormalizedErrorCode =
   | 'WORKER_RATE_LIMIT'
-  | 'OPENROUTER_RATE_LIMIT'
-  | 'OPENROUTER_TIMEOUT'
-  | 'OPENROUTER_REQUEST_FAILED'
-  | 'OPENROUTER_QUOTA_EXCEEDED'
-  | 'OPENROUTER_UPSTREAM_ERROR';
+  | 'UPSTREAM_RATE_LIMIT'
+  | 'UPSTREAM_TIMEOUT'
+  | 'UPSTREAM_REQUEST_FAILED'
+  | 'UPSTREAM_QUOTA_EXCEEDED'
+  | 'UPSTREAM_AUTH'
+  | 'UPSTREAM_BAD_REQUEST'
+  | 'UPSTREAM_ERROR';
 
 export function parseRetryAfterMs(value: string | null) {
   if (!value) return null;
@@ -69,16 +71,22 @@ export function normalizeUpstreamFailure(
   const parsed = extractUpstreamError(upstreamDetail);
   let status = 502;
   let error = 'Upstream error.';
-  let errorCode: NormalizedErrorCode = 'OPENROUTER_UPSTREAM_ERROR';
+  let errorCode: NormalizedErrorCode = 'UPSTREAM_ERROR';
 
   if (upstreamStatus === 429) {
     status = 429;
     error = 'Upstream rate limit exceeded.';
-    errorCode = 'OPENROUTER_RATE_LIMIT';
+    errorCode = 'UPSTREAM_RATE_LIMIT';
   } else if (upstreamStatus === 402) {
     status = 503;
     error = 'Upstream quota exceeded.';
-    errorCode = 'OPENROUTER_QUOTA_EXCEEDED';
+    errorCode = 'UPSTREAM_QUOTA_EXCEEDED';
+  } else if (upstreamStatus === 401 || upstreamStatus === 403) {
+    error = 'Upstream authentication failed.';
+    errorCode = 'UPSTREAM_AUTH';
+  } else if (upstreamStatus === 400) {
+    error = 'Upstream rejected the request.';
+    errorCode = 'UPSTREAM_BAD_REQUEST';
   }
 
   return {
@@ -87,7 +95,7 @@ export function normalizeUpstreamFailure(
       ? {
           error,
           errorCode,
-          source: 'openrouter',
+          source: 'llm',
           upstreamStatus,
           detail: parsed?.message ?? upstreamDetail,
           upstreamCode: parsed?.code,
@@ -98,7 +106,7 @@ export function normalizeUpstreamFailure(
       : {
           error,
           errorCode,
-          source: 'openrouter',
+          source: 'llm',
           upstreamStatus,
           upstreamCode: parsed?.code,
           retryAfterSeconds:

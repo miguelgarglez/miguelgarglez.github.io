@@ -112,8 +112,9 @@ assert.ok(blockIds.includes('experience-ods'));
 2. Update the relevant `chat-worker/src/knowledge/*` files.
 3. Copy updated `profile-data.ts` blocks into
    `chat-backup-vercel/shared/chat-context/profile-data.ts`. The Vercel fallback
-   is a separate deploy root and cannot import the Worker package. It also uses
-   OpenRouter, not opencode Zen, so failover still works when Zen is down.
+   is a separate deploy root and cannot import the Worker package. It uses the
+   same provider as the Worker (opencode Zen) by user decision, so a Zen
+   outage affects both backends.
 4. Add or update retrieval tests for changed prompts and claims.
 5. If tests fail, prefer improving classifier keywords, tags, or knowledge ids
    over weakening the test.

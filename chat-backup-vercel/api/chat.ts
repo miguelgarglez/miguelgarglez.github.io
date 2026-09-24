@@ -20,28 +20,23 @@ import {
   setTelemetryTag,
 } from '../src/telemetry.js';
 import { pipeOpenAiSseToUiMessageStream } from '../src/ui-stream.js';
+import {
+  buildUpstreamPayload,
+  buildUpstreamUrl,
+  resolveUpstreamApi,
+  type ChatMessage,
+} from '../src/upstream.js';
 
-const OPENROUTER_TIMEOUT_MS = 25_000;
-const OPENROUTER_MAX_ATTEMPTS = 3;
-const OPENROUTER_RETRY_MAX_MS = 6_000;
-const DEFAULT_MODEL = 'openrouter/free';
-const DEFAULT_FALLBACK_MODELS = [
-  'stepfun/step-3.5-flash:free',
-  'arcee-ai/trinity-large-preview:free',
-  'nvidia/nemotron-3-nano-30b-a3b:free',
-];
+const UPSTREAM_TIMEOUT_MS = 25_000;
+const UPSTREAM_MAX_ATTEMPTS = 3;
+const UPSTREAM_RETRY_MAX_MS = 6_000;
+const DEFAULT_LLM_BASE_URL = 'https://opencode.ai/zen/v1';
+const DEFAULT_LLM_MODEL = 'gpt-5.4-nano';
+const DEFAULT_LLM_PROVIDER = 'opencode';
 
 function getHeaderValue(value: string | string[] | undefined) {
   if (!value) return undefined;
   return Array.isArray(value) ? value[0] : value;
-}
-
-function parseModelList(raw: string | undefined) {
-  if (!raw) return [] as string[];
-  return raw
-    .split(',')
-    .map((value) => value.trim())
-    .filter((value) => value.length > 0);
 }
 
 function sendJson(
@@ -146,50 +141,44 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return sendJson(res, 400, { error: 'Missing question.' });
   }
 
-  const apiToken = process.env.OPENROUTER_API_KEY?.trim();
+  const apiToken = process.env.LLM_API_KEY?.trim();
+  const llmProvider = (process.env.LLM_PROVIDER ?? DEFAULT_LLM_PROVIDER).trim();
+  const llmModel = (process.env.LLM_MODEL ?? DEFAULT_LLM_MODEL).trim();
+  const llmBaseUrl = (process.env.LLM_BASE_URL ?? DEFAULT_LLM_BASE_URL)
+    .trim()
+    .replace(/\/+$/, '');
   if (!apiToken) {
-    logChatRequest('config_missing', 500, { errorCode: 'OPENROUTER_CONFIG_MISSING' });
+    logChatRequest('config_missing', 500, { errorCode: 'LLM_CONFIG_MISSING' });
     captureOperationalIssue(
-      'OpenRouter config missing',
-      { attempt, errorCode: 'OPENROUTER_CONFIG_MISSING' },
+      'LLM config missing',
+      { attempt, errorCode: 'LLM_CONFIG_MISSING' },
       { requestId, failoverReason }
     );
     await flushTelemetry();
     return sendJson(res, 500, {
-      error: 'Missing OPENROUTER_API_KEY.',
-      errorCode: 'OPENROUTER_REQUEST_FAILED',
-      source: 'openrouter',
+      error: 'Missing LLM_API_KEY.',
+      errorCode: 'LLM_CONFIG_MISSING',
+      source: 'llm',
     });
   }
 
-  const primaryModel = (process.env.OPENROUTER_MODEL ?? DEFAULT_MODEL).trim();
-  const configuredFallbacks = parseModelList(process.env.OPENROUTER_FALLBACK_MODELS);
-  const fallbackModels = (
-    configuredFallbacks.length > 0 ? configuredFallbacks : DEFAULT_FALLBACK_MODELS
-  ).filter((model) => model !== primaryModel);
-
-  const payload: Record<string, unknown> = {
-    model: primaryModel,
-    stream: true,
-    messages: [
+  const upstreamApi = resolveUpstreamApi(llmModel);
+  const payload = buildUpstreamPayload(
+    llmModel,
+    [
       { role: 'system', content: buildSystemPrompt(question) },
-      ...(inboundMessages.length > 0 ? inboundMessages : [{ role: 'user', content: question }]),
-    ],
-    provider: {
-      allow_fallbacks: true,
-      sort: 'throughput',
-    },
-  };
-  if (fallbackModels.length > 0) {
-    payload.models = fallbackModels;
-  }
-
-  const upstreamUrl = 'https://openrouter.ai/api/v1/chat/completions';
+      ...(inboundMessages.length > 0
+        ? inboundMessages
+        : [{ role: 'user', content: question }]),
+    ] as ChatMessage[],
+    true
+  );
+  const upstreamUrl = buildUpstreamUrl(llmBaseUrl, llmModel);
   const upstreamHeaders = {
     Authorization: `Bearer ${apiToken}`,
     'Content-Type': 'application/json',
-    'HTTP-Referer': process.env.OPENROUTER_SITE_URL ?? 'https://miguelgarglez.com',
-    'X-Title': process.env.OPENROUTER_APP_TITLE ?? 'Miguel Garcia Profile Chat',
+    'HTTP-Referer': process.env.LLM_SITE_URL ?? 'https://miguelgarglez.com',
+    'X-Title': process.env.LLM_APP_TITLE ?? 'Miguel Garcia Profile Chat',
   };
 
   let upstream: Response | null = null;
@@ -200,10 +189,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   let requestTimedOut = false;
   let attempts = 0;
 
-  for (let attempt = 1; attempt <= OPENROUTER_MAX_ATTEMPTS; attempt += 1) {
+  for (let attempt = 1; attempt <= UPSTREAM_MAX_ATTEMPTS; attempt += 1) {
     attempts = attempt;
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), OPENROUTER_TIMEOUT_MS);
+    const timeoutId = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
 
     try {
       upstream = await fetch(upstreamUrl, {
@@ -216,7 +205,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       clearTimeout(timeoutId);
       requestTimedOut = error instanceof Error && error.name === 'AbortError';
       requestError = error instanceof Error ? error.message : String(error);
-      if (attempt < OPENROUTER_MAX_ATTEMPTS) {
+      if (attempt < UPSTREAM_MAX_ATTEMPTS) {
         await wait(computeBackoffMs(attempt, null));
         continue;
       }
@@ -236,10 +225,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const canRetryRateLimit =
       upstream.status !== 429 ||
       (attempt === 1 &&
-        (upstreamRetryAfterMs === null || upstreamRetryAfterMs <= OPENROUTER_RETRY_MAX_MS));
+        (upstreamRetryAfterMs === null || upstreamRetryAfterMs <= UPSTREAM_RETRY_MAX_MS));
 
     const shouldRetry =
-      attempt < OPENROUTER_MAX_ATTEMPTS && shouldRetryStatus(upstream.status) && canRetryRateLimit;
+      attempt < UPSTREAM_MAX_ATTEMPTS && shouldRetryStatus(upstream.status) && canRetryRateLimit;
 
     if (shouldRetry) {
       await wait(computeBackoffMs(attempt, upstreamRetryAfterMs));
@@ -253,30 +242,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (!upstream) {
     const unreachableErrorCode = requestTimedOut
-      ? 'OPENROUTER_TIMEOUT'
-      : 'OPENROUTER_REQUEST_FAILED';
+      ? 'UPSTREAM_TIMEOUT'
+      : 'UPSTREAM_REQUEST_FAILED';
     logChatRequest('upstream_unreachable', requestTimedOut ? 504 : 502, {
       errorCode: unreachableErrorCode,
       attempts,
+      provider: llmProvider,
+      api: upstreamApi,
     });
     captureOperationalIssue(
       'Upstream unreachable',
-      { provider: 'openrouter', errorCode: unreachableErrorCode, upstreamStatus: 'none', attempt },
+      { provider: llmProvider, api: upstreamApi, errorCode: unreachableErrorCode, upstreamStatus: 'none', attempt },
       { requestId, attempts, failoverReason }
     );
     await flushTelemetry();
     const payload = includeDebug
       ? {
-          error: requestTimedOut ? 'OpenRouter timeout.' : 'OpenRouter request failed.',
-          errorCode: requestTimedOut ? 'OPENROUTER_TIMEOUT' : 'OPENROUTER_REQUEST_FAILED',
-          source: 'openrouter',
+          error: requestTimedOut ? 'Upstream timeout.' : 'Upstream request failed.',
+          errorCode: unreachableErrorCode,
+          source: 'llm',
           detail: requestError,
           attempts,
         }
       : {
           error: requestTimedOut ? 'Upstream timeout.' : 'Upstream request failed.',
-          errorCode: requestTimedOut ? 'OPENROUTER_TIMEOUT' : 'OPENROUTER_REQUEST_FAILED',
-          source: 'openrouter',
+          errorCode: unreachableErrorCode,
+          source: 'llm',
         };
 
     return sendJson(res, requestTimedOut ? 504 : 502, payload);
@@ -300,6 +291,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       requestId,
       attempt,
       failoverReason,
+      provider: llmProvider,
+      api: upstreamApi,
       upstreamStatus,
       attempts,
       retryAfterMs: upstreamRetryAfterMs,
@@ -310,14 +303,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       upstreamStatus,
       errorCode,
       attempts,
-      provider: 'openrouter',
+      provider: llmProvider,
+      api: upstreamApi,
     });
 
     if (normalized.status !== 429) {
       captureOperationalIssue(
         'Upstream error',
         {
-          provider: 'openrouter',
+          provider: llmProvider,
+          api: upstreamApi,
           errorCode,
           upstreamStatus: String(upstreamStatus),
           attempt,
@@ -349,8 +344,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     'ok',
     200,
     {
-      provider: 'openrouter',
-      model: primaryModel,
+      provider: llmProvider,
+      model: llmModel,
+      api: upstreamApi,
       attempts,
     },
     'ttfbMs'

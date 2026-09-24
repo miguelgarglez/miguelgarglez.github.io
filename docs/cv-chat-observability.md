@@ -218,6 +218,10 @@ expected (by design).
 | `observability.head_sampling_rate` | `chat-worker/wrangler.toml` | `1` (log every request) |
 | `tracesSampleRate` (Worker) | `chat-worker/src/index.ts` | `1.0`; lower if the Sentry span quota is hit |
 | `nodejs_compat` flag | `chat-worker/wrangler.toml` | required by `@sentry/cloudflare` (AsyncLocalStorage) |
+| `LLM_API_KEY` | Worker secret / Vercel env | required by both backends |
+| `LLM_PROVIDER` | Worker var / Vercel env | `opencode` |
+| `LLM_BASE_URL` | Worker var / Vercel env | `https://opencode.ai/zen/v1` |
+| `LLM_MODEL` | Worker var / Vercel env | `gpt-5.4-nano` |
 
 ## Maintenance notes
 
