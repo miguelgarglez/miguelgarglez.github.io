@@ -42,19 +42,25 @@ Contexto: backend de backup en Vercel para el chat del `cv-chat`. Este servicio 
   - `X-RateLimit-Reset`
   - JSON con `errorCode: WORKER_RATE_LIMIT`.
 
-## OpenRouter
+## Proveedor LLM OpenAI-compatible
 
-Variables requeridas:
+Mismo proveedor que el Worker por decision explicita del usuario. Una caida
+de Zen afecta ahora a ambos backends; es el trade-off aceptado.
 
-- `OPENROUTER_API_KEY`
-
-Variables opcionales:
-
-- `OPENROUTER_MODEL` (default `openrouter/free`)
-- `OPENROUTER_FALLBACK_MODELS` (CSV)
-- `OPENROUTER_SITE_URL`
-- `OPENROUTER_APP_TITLE`
-- `ALLOWED_ORIGINS`
+- Secret obligatorio: `LLM_API_KEY`.
+- Variables opcionales:
+  - `LLM_PROVIDER` (default `opencode`)
+  - `LLM_BASE_URL` (default `https://opencode.ai/zen/v1`)
+  - `LLM_MODEL` (default `gpt-5.4-nano`)
+  - `LLM_SITE_URL`
+  - `LLM_APP_TITLE`
+  - `SENTRY_DSN` (sin valor = Sentry desactivado)
+  - `ALLOWED_ORIGINS`
+- GPT 5.4 nano y el resto de modelos GPT/Grok/Muse Spark de Zen usan `/responses`, no `/chat/completions`.
+- `src/upstream.ts` debe mantenerse identico a `chat-worker/src/agent/upstream.ts`
+  (lo valida `chat-worker/test/upstream-copy.test.ts`).
+- No usar variables `OPENROUTER_*` ni payload propietario de OpenRouter
+  (`provider`, `models`, `allow_fallbacks`, etc.).
 
 ## Streaming (importante)
 

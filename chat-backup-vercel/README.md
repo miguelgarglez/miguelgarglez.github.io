@@ -3,9 +3,10 @@
 Secondary chat API for `cv-chat`, deployed on Vercel.
 
 This is the **failover** backend. The live site calls the Cloudflare Worker
-first (opencode Zen). On 502/timeout/etc. it retries this Vercel app, which
-uses **OpenRouter**, not opencode. That split is intentional: if Zen is the
-thing failing, the backup should not depend on the same provider.
+first. On 502/timeout/etc. it retries this Vercel app, which by explicit
+decision uses the **same provider** as the Worker (opencode Zen). The
+trade-off: a Zen outage now affects both backends, but behavior, payload
+shape, and error codes stay identical across primary and fallback.
 
 Profile blocks in `shared/chat-context/profile-data.ts` must stay identical to
 `chat-worker/src/knowledge/profile-data.ts`. The fallback cannot import the
@@ -21,14 +22,16 @@ Worker package because Vercel deploys from this directory.
 
 Required:
 
-- `OPENROUTER_API_KEY`
+- `LLM_API_KEY`
 
 Optional:
 
-- `OPENROUTER_MODEL` (default: `openrouter/free`)
-- `OPENROUTER_FALLBACK_MODELS` (CSV fallback chain)
-- `OPENROUTER_SITE_URL` (default: `https://miguelgarglez.com`)
-- `OPENROUTER_APP_TITLE` (default: `Miguel Garcia Profile Chat`)
+- `LLM_PROVIDER` (default: `opencode`)
+- `LLM_BASE_URL` (default: `https://opencode.ai/zen/v1`)
+- `LLM_MODEL` (default: `gpt-5.4-nano`)
+- `LLM_SITE_URL` (default: `https://miguelgarglez.com`)
+- `LLM_APP_TITLE` (default: `Miguel Garcia Profile Chat`)
+- `SENTRY_DSN` (unset = Sentry off)
 - `ALLOWED_ORIGINS` (comma-separated, defaults include `https://miguelgarglez.com`, `https://miguelgarglez.github.io`, and localhost)
 
 ## Local checks

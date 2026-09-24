@@ -1,4 +1,9 @@
 import type { VercelResponse } from '@vercel/node';
+import {
+  extractStreamError,
+  extractStreamTextDelta,
+  isStreamFinished,
+} from './upstream.js';
 
 function writeSse(res: VercelResponse, payload: string) {
   res.write(`data: ${payload}\n\n`);
@@ -78,19 +83,23 @@ export async function pipeOpenAiSseToUiMessageStream(
       return;
     }
 
-    const choice = Array.isArray(parsed.choices)
-      ? (parsed.choices[0] as Record<string, unknown> | undefined)
-      : undefined;
-    const delta = choice?.delta as Record<string, unknown> | undefined;
-    const content = delta?.content;
+    const streamError = extractStreamError(parsed);
+    if (streamError) {
+      sendError(streamError);
+      endMessage();
+      sendDone();
+      stopReading = true;
+      void reader.cancel();
+      return;
+    }
 
-    if (typeof content === 'string' && content.length > 0) {
+    const content = extractStreamTextDelta(parsed);
+    if (content) {
       ensureStarted();
       writeSseJson(res, { type: 'text-delta', id: messageId, delta: content });
     }
 
-    const finishReason = choice?.finish_reason;
-    if (typeof finishReason === 'string' && finishReason.length > 0) {
+    if (isStreamFinished(parsed)) {
       endMessage();
     }
   };
