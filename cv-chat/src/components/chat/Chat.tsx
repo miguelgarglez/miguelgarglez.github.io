@@ -22,6 +22,9 @@ import {
 } from '@/components/ai-elements/prompt-input';
 import { cn } from '@/lib/utils';
 import { AgentActivity, looksSpanish } from './AgentActivity';
+import { AssistantMessageParts } from './AssistantMessageParts';
+import type { CvChatUIMessage } from './chat-message';
+import { ChatActionsContext } from './data-parts';
 
 type ChatProps = {
   primaryApiUrl: string;
@@ -333,12 +336,13 @@ export default function Chat({
     [primaryApiUrl, secondaryApiUrl]
   );
 
-  const { messages, sendMessage, status, regenerate, clearError } = useChat({
-    transport,
-    onError: () => {
-      setChatError((previous) => previous ?? 'retryable');
-    },
-  });
+  const { messages, sendMessage, status, regenerate, clearError } =
+    useChat<CvChatUIMessage>({
+      transport,
+      onError: () => {
+        setChatError((previous) => previous ?? 'retryable');
+      },
+    });
   const isBusy = status === 'submitted' || status === 'streaming';
   const submitStatus = isBusy ? status : 'ready';
   const canRetry =
@@ -356,14 +360,18 @@ export default function Chat({
     setInput(prompt);
   }, [suggestedPrompt]);
 
-  const handleSubmit = (message: PromptInputMessage) => {
-    const trimmed = message.text?.trim();
-    if (!trimmed || isBusy) return;
+  const sendPrompt = (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed || isBusy) return false;
     setChatError(null);
     setRetryAfterSeconds(null);
     setLastSubmittedText(trimmed);
     sendMessage({ text: trimmed });
-    setInput('');
+    return true;
+  };
+
+  const handleSubmit = (message: PromptInputMessage) => {
+    if (sendPrompt(message.text ?? '')) setInput('');
   };
 
   const handleRetry = () => {
@@ -408,140 +416,149 @@ export default function Chat({
   );
 
   return (
-    <div
-      className={cn(
-        'flex min-h-0 flex-1 flex-col overflow-hidden bg-card lg:rounded-[var(--radius-lg)] lg:border lg:border-border lg:shadow-[var(--shadow-card)]',
-        className
-      )}
-    >
-      <Conversation className="flex-1">
-        <ConversationContent className="pb-6">
-          {messages.length === 0 ? (
-            <ConversationEmptyState
-              className="justify-start gap-5 pt-8 sm:justify-center sm:pt-8"
-            >
-              <div className="grid size-12 place-items-center rounded-full border border-border bg-background text-primary">
-                <MessageSquareIcon className="size-5" />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-base font-semibold text-foreground">
-                  Ask Miguel
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Try a focused question about the CV.
-                </p>
-              </div>
-              <div className="flex max-w-md flex-wrap justify-center gap-2">
-                {suggestedQuestions.map((question) => (
-                  <button
-                    type="button"
-                    key={question}
-                    className="min-h-10 rounded-full border border-border bg-background/60 px-3.5 py-2 text-sm text-muted-foreground transition-colors hover:border-[color:var(--primary)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)]"
-                    onClick={() => setInput(question)}
-                  >
-                    <span>{question}</span>
-                  </button>
-                ))}
-              </div>
-            </ConversationEmptyState>
-          ) : (
-            messages.map((message) => (
-              <Message from={message.role} key={message.id}>
-                <MessageContent>
-                  {message.parts.map((part, index) =>
-                    part.type === 'text' ? (
-                      <MessageResponse key={`${message.id}-${index}`}>
-                        {part.text}
-                      </MessageResponse>
-                    ) : null
+    <ChatActionsContext.Provider value={{ isBusy, sendPrompt }}>
+      <div
+        className={cn(
+          'flex min-h-0 flex-1 flex-col overflow-hidden bg-card lg:rounded-[var(--radius-lg)] lg:border lg:border-border lg:shadow-[var(--shadow-card)]',
+          className
+        )}
+      >
+        <Conversation className="flex-1">
+          <ConversationContent className="pb-6">
+            {messages.length === 0 ? (
+              <ConversationEmptyState
+                className="justify-start gap-5 pt-8 sm:justify-center sm:pt-8"
+              >
+                <div className="grid size-12 place-items-center rounded-full border border-border bg-background text-primary">
+                  <MessageSquareIcon className="size-5" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-base font-semibold text-foreground">
+                    Ask Miguel
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Try a focused question about the CV.
+                  </p>
+                </div>
+                <div className="flex max-w-md flex-wrap justify-center gap-2">
+                  {suggestedQuestions.map((question) => (
+                    <button
+                      type="button"
+                      key={question}
+                      className="min-h-10 rounded-full border border-border bg-background/60 px-3.5 py-2 text-sm text-muted-foreground transition-colors hover:border-[color:var(--primary)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)]"
+                      onClick={() => setInput(question)}
+                    >
+                      <span>{question}</span>
+                    </button>
+                  ))}
+                </div>
+              </ConversationEmptyState>
+            ) : (
+              messages.map((message, index) => (
+                <Message from={message.role} key={message.id}>
+                  {message.role === 'assistant' ? (
+                    <AssistantMessageParts
+                      message={message}
+                      isLast={index === messages.length - 1}
+                    />
+                  ) : (
+                    <MessageContent>
+                      {message.parts.map((part, partIndex) =>
+                        part.type === 'text' ? (
+                          <MessageResponse key={`${message.id}-${partIndex}`}>
+                            {part.text}
+                          </MessageResponse>
+                        ) : null
+                      )}
+                    </MessageContent>
                   )}
-                </MessageContent>
-              </Message>
-            ))
-          )}
-          {chatError === 'retryable' && (
-            <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              <p>
-                Something went wrong while contacting the chat provider. Please
-                try again. {contactHint}
-              </p>
-              {renderErrorActions()}
-            </div>
-          )}
-          {chatError === 'providerRateLimited' && (
-            <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              <p>
-                The chat provider is rate-limited right now.
-                {retryAfterSeconds !== null
-                  ? ` Please retry in about ${Math.max(1, Math.ceil(retryAfterSeconds))} seconds.`
-                  : ' Please retry in a moment.'}{' '}
-                {contactHint}
-              </p>
-              {renderErrorActions()}
-            </div>
-          )}
-          {chatError === 'workerRateLimited' && (
-            <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              <p>
-                Too many messages in a short time.
-                {retryAfterSeconds !== null
-                  ? ` Please retry in about ${Math.max(1, Math.ceil(retryAfterSeconds))} seconds.`
-                  : ' Please wait a moment and try again.'}{' '}
-                {contactHint}
-              </p>
-              {renderErrorActions()}
-            </div>
-          )}
-          {chatError === 'providerQuotaExceeded' && (
-            <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              <p>
-                The chat provider quota is currently exhausted. Please try again
-                later. {contactHint}
-              </p>
-              {renderErrorActions()}
-            </div>
-          )}
-          {chatError === 'timeout' && (
-            <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              <p>
-                The chat provider is taking too long to respond. Please try
-                again. {contactHint}
-              </p>
-              {renderErrorActions()}
-            </div>
-          )}
-          {chatError === 'unavailable' && (
-            <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              <p>The chat is currently unavailable. {contactHint}</p>
-              {renderErrorActions()}
-            </div>
-          )}
-          {status === 'submitted' && (
-            <AgentActivity
-              language={looksSpanish(lastSubmittedText) ? 'es' : 'en'}
-            />
-          )}
-        </ConversationContent>
-        <ConversationScrollButton className="border-border bg-card text-foreground hover:bg-[color:var(--primary)] hover:text-[color:var(--primary-foreground)]" />
-      </Conversation>
+                </Message>
+              ))
+            )}
+            {chatError === 'retryable' && (
+              <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                <p>
+                  Something went wrong while contacting the chat provider. Please
+                  try again. {contactHint}
+                </p>
+                {renderErrorActions()}
+              </div>
+            )}
+            {chatError === 'providerRateLimited' && (
+              <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                <p>
+                  The chat provider is rate-limited right now.
+                  {retryAfterSeconds !== null
+                    ? ` Please retry in about ${Math.max(1, Math.ceil(retryAfterSeconds))} seconds.`
+                    : ' Please retry in a moment.'}{' '}
+                  {contactHint}
+                </p>
+                {renderErrorActions()}
+              </div>
+            )}
+            {chatError === 'workerRateLimited' && (
+              <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                <p>
+                  Too many messages in a short time.
+                  {retryAfterSeconds !== null
+                    ? ` Please retry in about ${Math.max(1, Math.ceil(retryAfterSeconds))} seconds.`
+                    : ' Please wait a moment and try again.'}{' '}
+                  {contactHint}
+                </p>
+                {renderErrorActions()}
+              </div>
+            )}
+            {chatError === 'providerQuotaExceeded' && (
+              <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                <p>
+                  The chat provider quota is currently exhausted. Please try again
+                  later. {contactHint}
+                </p>
+                {renderErrorActions()}
+              </div>
+            )}
+            {chatError === 'timeout' && (
+              <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                <p>
+                  The chat provider is taking too long to respond. Please try
+                  again. {contactHint}
+                </p>
+                {renderErrorActions()}
+              </div>
+            )}
+            {chatError === 'unavailable' && (
+              <div className="mt-2 w-fit max-w-full rounded-[var(--radius-md)] border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                <p>The chat is currently unavailable. {contactHint}</p>
+                {renderErrorActions()}
+              </div>
+            )}
+            {status === 'submitted' && (
+              <AgentActivity
+                language={looksSpanish(lastSubmittedText) ? 'es' : 'en'}
+              />
+            )}
+          </ConversationContent>
+          <ConversationScrollButton className="border-border bg-card text-foreground hover:bg-[color:var(--primary)] hover:text-[color:var(--primary-foreground)]" />
+        </Conversation>
 
-      <div className="border-t border-border bg-background p-4">
-        <PromptInput className="w-full" onSubmit={handleSubmit}>
-          <PromptInputTextarea
-            className="min-h-13 pr-13 pb-2.5 pt-2.5"
-            value={input}
-            onChange={(event) => setInput(event.currentTarget.value)}
-            placeholder="Type your question..."
-            autoFocus={autoFocus}
-            disabled={isBusy}
-          />
-          <PromptInputSubmit
-            className="absolute bottom-2.5 right-2.5"
-            status={submitStatus}
-            disabled={isBusy || input.trim().length === 0}
-          />
-        </PromptInput>
+        <div className="border-t border-border bg-background p-4">
+          <PromptInput className="w-full" onSubmit={handleSubmit}>
+            <PromptInputTextarea
+              className="min-h-13 pr-13 pb-2.5 pt-2.5"
+              value={input}
+              onChange={(event) => setInput(event.currentTarget.value)}
+              placeholder="Type your question..."
+              autoFocus={autoFocus}
+              disabled={isBusy}
+            />
+            <PromptInputSubmit
+              className="absolute bottom-2.5 right-2.5"
+              status={submitStatus}
+              disabled={isBusy || input.trim().length === 0}
+            />
+          </PromptInput>
+        </div>
       </div>
-    </div>
+    </ChatActionsContext.Provider>
   );
 }
