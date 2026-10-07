@@ -4,6 +4,7 @@ import { runProfileAgent } from '../src/agent/run-profile-agent';
 import { profileAssistantPolicy } from '../src/agent/prompts';
 import { suggestedPromptContracts } from '../src/agent/suggested-prompts';
 import { profileSections as workerSections } from '../src/knowledge/profile-data';
+import { profileFacts } from '../src/knowledge/profile-facts';
 import { buildSystemPrompt as buildBackupPrompt } from '../../chat-backup-vercel/shared/chat-context/context';
 import { profileSections as backupSections } from '../../chat-backup-vercel/shared/chat-context/profile-data';
 
@@ -470,6 +471,24 @@ describe('visible suggested-prompt retrieval', () => {
 describe('Vercel backup knowledge alignment', () => {
   it('keeps backup profile sections identical to Worker profile sections', () => {
     assert.deepEqual(backupSections, workerSections);
+  });
+
+  it('always gives the backup model the same LinkedIn and X links as the Worker', () => {
+    for (const question of ['What is video-digest?', 'What roles is Miguel a good fit for?']) {
+      const prompt = buildBackupPrompt(question);
+      for (const id of ['linkedin', 'x']) {
+        const fact = profileFacts.find((item) => item.id === id);
+        assert.ok(fact);
+        assert.ok(prompt.includes(fact.value), `backup prompt for "${question}" missing ${fact.value}`);
+      }
+    }
+  });
+
+  it('grounds Spanish academic-background questions in education on the backup', () => {
+    const prompt = buildBackupPrompt('¿Qué formación académica tiene Miguel?');
+
+    assert.match(prompt, /Universidad Autonoma de Madrid/);
+    assert.match(prompt, /Aalto University/);
   });
 
   it('answers product-minded frontend from backup context without Spain as a market', () => {

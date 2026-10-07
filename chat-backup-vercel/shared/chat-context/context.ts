@@ -15,6 +15,11 @@ const systemPromptBase =
   'Reply in the same language as the user. ' +
   'Keep the tone professional, natural, and grounded; do not sound like inflated CV marketing.';
 
+const contactChannels = [
+  'LinkedIn: https://www.linkedin.com/in/miguel-garciag',
+  'X: https://x.com/miguel_garglez',
+].join('\n');
+
 function stripDiacritics(value: string) {
   return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
@@ -93,6 +98,12 @@ const TAG_KEYWORDS: Record<string, string[]> = {
     'degree',
     'master',
     'university',
+    'universidad',
+    'academic',
+    'academica',
+    'academico',
+    'estudios',
+    'grado',
     'certification',
     'certifications',
   ],
@@ -427,5 +438,5 @@ function buildContext(question: string) {
 
 export function buildSystemPrompt(question: string) {
   const context = buildContext(question);
-  return `${systemPromptBase}\n\nContext:\n${context}`;
+  return `${systemPromptBase}\n\nContext:\n${context}\n\n# Contact channels\n${contactChannels}`;
 }
