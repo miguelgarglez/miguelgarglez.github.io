@@ -23,6 +23,7 @@ async function main() {
         'chat-worker/test/telemetry.test.ts',
         'chat-worker/test/upstream-copy.test.ts',
         'chat-worker/test/answer-checks.test.ts',
+        'chat-worker/test/ui-stream.test.ts',
       ],
       bundle: true,
       platform: 'node',
@@ -44,6 +45,7 @@ async function main() {
           join(tempDir, 'telemetry.test.js'),
           join(tempDir, 'upstream-copy.test.js'),
           join(tempDir, 'answer-checks.test.js'),
+          join(tempDir, 'ui-stream.test.js'),
         ],
         {
           stdio: 'inherit',
