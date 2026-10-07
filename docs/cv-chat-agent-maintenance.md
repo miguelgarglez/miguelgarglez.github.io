@@ -106,6 +106,47 @@ assert.ok(blockIds.includes('skills-frontend'));
 assert.ok(blockIds.includes('experience-ods'));
 ```
 
+## Answer Evals
+
+Retrieval tests prove the model gets the right context. Answer evals check what
+the real model says with that context. They call the production LLM, so they
+cost tokens and run on demand, not in CI:
+
+```bash
+npm run eval:profile-answers                       # every case once
+npm run eval:profile-answers -- --runs=3           # repeat to expose flaky cases
+npm run eval:profile-answers -- --case=salary      # cases whose id contains "salary"
+LLM_MODEL=other-model npm run eval:profile-answers # compare a candidate model
+```
+
+The script reads `LLM_*` from `chat-worker/.dev.vars` or `chat-worker/.env`.
+Values already set in the environment take precedence.
+
+- Cases: `chat-worker/evals/answer-cases.ts`. Each case has a question, the
+  expected language, an expectation (`grounded` must not refuse, `deflect` must
+  point to a contact channel, `any` has no refusal rule), and regexes that must
+  or must not appear.
+- Checks: `chat-worker/evals/answer-checks.ts`. Every answer is also checked for
+  links that were not in the selected context and for first-person speech.
+- Grader tests: `chat-worker/test/answer-checks.test.ts` run with
+  `npm run test:profile-agent` and need no LLM.
+
+The grader removes Markdown `*` and turns curly apostrophes into straight ones
+before it checks anything. A forbidden claim that the model may also deny, such
+as "deep production RAG", goes through `affirmed()` in `answer-cases.ts`. That
+helper ignores the claim when a negation comes up to three words before it.
+For each new tricky phrasing, add a correct answer and a wrong answer to
+`answer-checks.test.ts`.
+
+When an eval fails, find out which layer caused it before you change anything.
+If the selected context lacks the fact, fix retrieval or knowledge and add a
+retrieval test. If the context has it and the model still gets it wrong, fix
+the policy. Loosen a regex only when the answer is correct and the pattern was
+too strict.
+
+Add a case when you change positioning, add a sensitive claim, or see a bad
+production answer.
+
 ## Maintenance Workflow
 
 1. Inventory changed visible content and prompts.
@@ -135,7 +176,5 @@ npm run build --prefix cv-chat
 - Store expected retrieval ids beside each prompt, then generate tests from that
   contract.
 - Add language-pair tests for important Spanish and English questions.
-- Add response-level smoke tests with a mocked LLM once the answer contract is
-  stable.
 - Keep the static knowledge approach until the knowledge base becomes too large
   or too dynamic for versioned files.

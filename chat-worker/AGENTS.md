@@ -57,6 +57,7 @@ Contexto: Worker de Cloudflare que hace streaming SSE hacia un proveedor LLM Ope
 - Ejecutar desde la raiz: `npm run test:profile-agent`.
 - Estos tests no llaman al LLM; validan que `runProfileAgent()` entrega el contexto correcto.
 - Anadir regresiones cuando se detecte una pregunta importante que seleccione mal el contexto.
+- Evals de respuesta con el LLM real: `npm run eval:profile-answers` (`-- --runs=3`, `-- --case=<id>`). Casos en `evals/answer-cases.ts`, checks deterministas en `evals/answer-checks.ts`. Cuestan tokens; ejecutarlos al cambiar knowledge, prompts, retrieval o modelo. Detalle en `../docs/cv-chat-agent-maintenance.md`.
 
 ## Notas
 
