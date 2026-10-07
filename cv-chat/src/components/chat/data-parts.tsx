@@ -194,11 +194,16 @@ function ProjectThumb({ project }: { project: ProjectCard }) {
   );
 }
 
+// Matches the row's scroll-mb-16 so the floating scroll-to-bottom button never covers its links.
+const REVEAL_CLEARANCE_PX = 64;
+
 function revealRow(row: HTMLElement, reduceMotion: boolean) {
   const scroller = row.closest('[role="log"]');
   if (!scroller) return;
   const rowBottom = row.getBoundingClientRect().bottom;
-  if (rowBottom <= scroller.getBoundingClientRect().bottom) return;
+  const visibleBottom =
+    scroller.getBoundingClientRect().bottom - REVEAL_CLEARANCE_PX;
+  if (rowBottom <= visibleBottom) return;
   row.scrollIntoView({
     block: 'nearest',
     behavior: reduceMotion ? 'auto' : 'smooth',
@@ -239,7 +244,7 @@ function ProjectRow({
       ref={rowRef}
       style={enterStyle(index)}
       className={cn(
-        'cv-chat-enter relative border-t border-[color:var(--border-muted)] first:border-t-0',
+        'cv-chat-enter relative scroll-mb-16 border-t border-[color:var(--border-muted)] first:border-t-0',
         // The ring lives on the whole row, inset so the list's rounded overflow does not clip it.
         'after:pointer-events-none after:absolute after:inset-0 after:opacity-0 after:shadow-[inset_0_0_0_2px_var(--focus-ring)] first:after:rounded-t-[calc(var(--radius-md)-1px)] last:after:rounded-b-[calc(var(--radius-md)-1px)] has-[>button:focus-visible]:after:opacity-100'
       )}
