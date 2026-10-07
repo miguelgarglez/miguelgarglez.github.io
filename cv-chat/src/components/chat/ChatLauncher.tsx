@@ -183,6 +183,12 @@ export default function ChatLauncher({
     };
   }, [isCompact, isOpen]);
 
+  useEffect(() => {
+    if (isCompact || !isExpanded) return;
+    document.body.classList.add("chat-page-expanded");
+    return () => document.body.classList.remove("chat-page-expanded");
+  }, [isCompact, isExpanded]);
+
   // Keep the compact chat shell pinned to the visual viewport so the OS keyboard
   // only shrinks the chat column (header stays put, composer rises) instead of
   // panning the whole fixed page the way Safari does by default.

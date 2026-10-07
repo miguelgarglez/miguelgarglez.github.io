@@ -256,3 +256,12 @@
     pointer-events: none;
   }
 }
+
+/* Body overflow propagates to the viewport and keeps scrollY, so closing needs
+   no restore. Hiding html overflow instead would make the 100%-tall body its
+   own scroller and jump the page to the top. */
+@media (min-width: 1024px) {
+  body.chat-page-expanded {
+    overflow: hidden;
+  }
+}
