@@ -4,6 +4,7 @@ import {
   type Project,
 } from '../../../src/data/projects';
 import type {
+  BoardPartType,
   ChatSource,
   CvChatDataPart,
   ProjectCard,
@@ -16,7 +17,18 @@ const SITE_URL = 'https://miguelgarglez.com';
 const MAX_SOURCES = 6;
 const MAX_FOLLOWUPS = 2;
 
-type RichCardBuilder = (context: AgentContext) => CvChatDataPart | null;
+export type RichCardPart = Extract<
+  CvChatDataPart,
+  { type: `data-${BoardPartType}` }
+>;
+
+export type AnswerParts = {
+  leading: CvChatDataPart[];
+  richCard: RichCardPart | null;
+  trailing: CvChatDataPart[];
+};
+
+type RichCardBuilder = (context: AgentContext) => RichCardPart | null;
 
 const absolutize = (url: string) =>
   url.startsWith('/') ? `${SITE_URL}${url}` : url;
@@ -181,11 +193,12 @@ function buildFollowups(question: string, intent: Intent): CvChatDataPart {
 export function buildAnswerParts(input: {
   question: string;
   context: AgentContext;
-}): { leading: CvChatDataPart[]; trailing: CvChatDataPart[] } {
+}): AnswerParts {
   const { question, context } = input;
   const richCard = richCardByIntent[context.intent]?.(context) ?? null;
   return {
     leading: buildSources(context),
+    richCard,
     trailing: [
       ...(richCard ? [richCard] : []),
       buildFollowups(question, context.intent),

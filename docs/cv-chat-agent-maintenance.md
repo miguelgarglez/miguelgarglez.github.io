@@ -118,6 +118,10 @@ same retrieval, with no extra LLM call. The contract lives in
   projects, and memories.
 - After the text comes one rich card picked by intent (`projects`,
   `experience`, `contact`), then `data-followups`.
+- `runProfileAgent()` builds the parts before the prompt. When a rich card is
+  emitted, it appends a short answer-format policy (`buildRichCardPolicy` in
+  `prompts.ts`) so the prose does not repeat the card. Contact answers still
+  give the email and LinkedIn in the text, since they are the answer itself.
 - Project cards read the visible directory data in `src/data/projects.ts`,
   never `chat-worker/src/knowledge/projects.ts`, which holds instructions for
   the model.

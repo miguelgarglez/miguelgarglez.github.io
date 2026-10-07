@@ -4,6 +4,10 @@ import {
   buildAnswerParts,
   followupsByIntent,
 } from '../src/agent/answer-parts';
+import {
+  buildRichCardPolicy,
+  RICH_CARD_POLICY_HEADING,
+} from '../src/agent/prompts';
 import { runProfileAgent } from '../src/agent/run-profile-agent';
 import { suggestedPromptContracts } from '../src/agent/suggested-prompts';
 import { normalizeText } from '../src/agent/text';
@@ -202,6 +206,61 @@ describe('buildAnswerParts', () => {
         );
       }
     }
+  });
+
+  it('tells the model about the card exactly when a rich card is emitted', () => {
+    const questions = [
+      ...suggestedPromptContracts.map((entry) => entry.prompt),
+      'What projects has Miguel built?',
+      'What is video-digest?',
+      'How can I contact Miguel?',
+      'cual es su puesto actual?',
+      "What is Miguel's expected salary?",
+      'Has Miguel worked at Amazon?',
+    ];
+    const seen = new Set<string>();
+
+    for (const question of questions) {
+      const { messages, parts } = runProfileAgent({
+        question,
+        inboundMessages: [{ role: 'user', content: question }],
+      });
+      const systemPrompt = messages[0]?.content ?? '';
+      const cardTypes = parts.trailing
+        .map((part) => part.type)
+        .filter((type) => type !== 'data-followups');
+
+      assert.deepEqual(cardTypes, parts.richCard ? [parts.richCard.type] : []);
+      assert.equal(
+        systemPrompt.includes(RICH_CARD_POLICY_HEADING),
+        parts.richCard !== null,
+        `${question}: card policy iff rich card`
+      );
+      if (parts.richCard) {
+        assert.ok(systemPrompt.includes(buildRichCardPolicy(parts.richCard)));
+      }
+      seen.add(parts.richCard?.type ?? 'none');
+    }
+
+    assert.deepEqual(
+      [...seen].sort(),
+      ['data-contact', 'data-projects', 'data-timeline', 'none']
+    );
+  });
+
+  it('keeps the contact channels in the text but not the project links', () => {
+    const contact = runProfileAgent({
+      question: 'How can I contact Miguel?',
+      inboundMessages: [],
+    }).parts.richCard;
+    const projects = runProfileAgent({
+      question: 'What projects has Miguel built?',
+      inboundMessages: [],
+    }).parts.richCard;
+    assert.ok(contact && projects);
+
+    assert.match(buildRichCardPolicy(contact), /Still give the email and the LinkedIn link/);
+    assert.match(buildRichCardPolicy(projects), /no URLs.*do not repeat them/s);
   });
 
   it('never suggests the question that was just asked', () => {

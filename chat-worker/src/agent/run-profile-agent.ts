@@ -1,7 +1,12 @@
 import { classifyAudience, classifyIntent } from './intent';
 import { retrieveProfileFacts } from './facts-retrieval';
 import { retrieveMemories } from './memories-retrieval';
-import { buildContextText, profileAssistantPolicy } from './prompts';
+import { buildAnswerParts } from './answer-parts';
+import {
+  buildContextText,
+  buildRichCardPolicy,
+  profileAssistantPolicy,
+} from './prompts';
 import { retrieveProfileBlocks } from './retrieval';
 import { retrieveProjects } from './projects-retrieval';
 import { matchSuggestedPrompt } from './suggested-prompts';
@@ -85,7 +90,12 @@ export function runProfileAgent(input: {
     selectedProjects,
     selectedMemories,
   };
-  const systemContent = `${profileAssistantPolicy}\n\n${buildContextText(context)}`;
+  const parts = buildAnswerParts({ question: input.question, context });
+  const systemContent = [
+    profileAssistantPolicy,
+    buildContextText(context),
+    ...(parts.richCard ? [buildRichCardPolicy(parts.richCard)] : []),
+  ].join('\n\n');
   const fallbackUserMessage: ChatMessage = {
     role: 'user',
     content: input.question,
@@ -99,5 +109,6 @@ export function runProfileAgent(input: {
         : [fallbackUserMessage]),
     ],
     context,
+    parts,
   };
 }

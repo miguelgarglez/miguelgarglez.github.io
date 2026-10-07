@@ -2,6 +2,7 @@ import type { ProfileBlock } from '../knowledge/profile-data';
 import type { ProfileFact } from '../knowledge/profile-facts';
 import type { MemoryBlock } from '../knowledge/memories';
 import type { ProjectBlock } from '../knowledge/projects';
+import type { AnswerParts } from './answer-parts';
 
 export type ChatMessage = {
   role: 'system' | 'user' | 'assistant';
@@ -34,4 +35,5 @@ export type AgentContext = {
 export type ProfileAgentResult = {
   messages: ChatMessage[];
   context: AgentContext;
+  parts: AnswerParts;
 };
