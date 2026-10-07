@@ -3,10 +3,12 @@ import { DefaultChatTransport } from 'ai';
 import { MessageSquareIcon } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { StickToBottomContext } from 'use-stick-to-bottom';
 import {
   Conversation,
   ConversationContent,
   ConversationEmptyState,
+  ConversationLayoutPin,
   ConversationScrollButton,
 } from '@/components/ai-elements/conversation';
 import {
@@ -132,6 +134,7 @@ export default function Chat({
     null
   );
   const primaryDegradedUntilRef = useRef(0);
+  const conversationRef = useRef<StickToBottomContext>(null);
   const contactHint = (
     <span>
       If you need help right now, reach out on{' '}
@@ -387,6 +390,7 @@ export default function Chat({
     setRetryAfterSeconds(null);
     setLastSubmittedText(trimmed);
     sendMessage({ text: trimmed });
+    conversationRef.current?.scrollToBottom();
     return true;
   };
 
@@ -401,6 +405,7 @@ export default function Chat({
     setChatError(null);
     setRetryAfterSeconds(null);
     clearError();
+    conversationRef.current?.scrollToBottom();
 
     if (messages.length > 0) {
       void regenerate();
@@ -451,7 +456,8 @@ export default function Chat({
           )}
         >
           <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-            <Conversation className="flex-1">
+            <Conversation className="flex-1" contextRef={conversationRef}>
+              <ConversationLayoutPin layoutKey={layout} />
               <ConversationContent
                 className={cn('pb-6', centerColumn && 'mx-auto w-full max-w-[720px]')}
               >
