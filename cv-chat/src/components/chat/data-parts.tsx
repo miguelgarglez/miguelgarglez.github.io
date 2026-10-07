@@ -10,7 +10,6 @@ import {
   LinkedinIcon,
   MapPinIcon,
   SparklesIcon,
-  TwitterIcon,
   type LucideIcon,
 } from 'lucide-react';
 import {
@@ -40,6 +39,10 @@ export const ChatActionsContext = createContext<ChatActions>({
   sendPrompt: () => undefined,
 });
 
+export type BrandIcon = { body: string; width: number; height: number };
+
+export const BrandIconsContext = createContext<{ x?: BrandIcon }>({});
+
 export const kickerClass =
   'font-mono text-[10.5px] uppercase tracking-[0.04em] text-[color:var(--primary)]';
 
@@ -60,18 +63,30 @@ const projectLinkMeta: Record<
 
 function PillLink({
   href,
-  icon: Icon,
+  icon,
   children,
 }: {
   href: string;
-  icon: LucideIcon;
+  icon: ReactNode;
   children: ReactNode;
 }) {
   return (
     <a href={href} target="_blank" rel="noreferrer" className={pillLinkClass}>
-      <Icon className="size-3.5" aria-hidden />
+      {icon}
       {children}
     </a>
+  );
+}
+
+function BrandIconSvg({ icon }: { icon: BrandIcon }) {
+  return (
+    <svg
+      viewBox={`0 0 ${icon.width} ${icon.height}`}
+      fill="currentColor"
+      aria-hidden
+      className="size-3.5"
+      dangerouslySetInnerHTML={{ __html: icon.body }}
+    />
   );
 }
 
@@ -80,10 +95,14 @@ export function ProjectLinks({ links }: { links: ProjectCard['links'] }) {
   return (
     <div className="flex flex-wrap gap-1.5">
       {links.map((link) => {
-        const meta = projectLinkMeta[link.kind];
+        const { label, icon: Icon } = projectLinkMeta[link.kind];
         return (
-          <PillLink key={link.kind} href={link.url} icon={meta.icon}>
-            {meta.label}
+          <PillLink
+            key={link.kind}
+            href={link.url}
+            icon={<Icon className="size-3.5" aria-hidden />}
+          >
+            {label}
           </PillLink>
         );
       })}
@@ -258,6 +277,7 @@ const initialsOf = (name: string) =>
     .toUpperCase();
 
 export function ContactPart({ data }: { data: ContactCard }) {
+  const { x: xIcon } = useContext(BrandIconsContext);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -307,10 +327,13 @@ export function ContactPart({ data }: { data: ContactCard }) {
           )}
           {copied ? 'Copied' : data.email}
         </button>
-        <PillLink href={data.linkedin} icon={LinkedinIcon}>
+        <PillLink
+          href={data.linkedin}
+          icon={<LinkedinIcon className="size-3.5" aria-hidden />}
+        >
           LinkedIn
         </PillLink>
-        <PillLink href={data.x} icon={TwitterIcon}>
+        <PillLink href={data.x} icon={xIcon && <BrandIconSvg icon={xIcon} />}>
           X
         </PillLink>
       </div>

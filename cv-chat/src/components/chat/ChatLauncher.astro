@@ -1,4 +1,5 @@
 ---
+import { icons as simpleIcons } from '@iconify-json/simple-icons';
 import ChatLauncher from './ChatLauncher';
 
 const legacyWorkerUrl = import.meta.env.DEV
@@ -14,10 +15,19 @@ const primaryApiUrl = (
 const secondaryApiUrl = import.meta.env.DEV
   ? import.meta.env.DEV_PUBLIC_CHAT_API_SECONDARY_URL
   : import.meta.env.PUBLIC_CHAT_API_SECONDARY_URL;
+
+// Resolved at build time so only this icon, not the whole set, reaches the island.
+const xIconData = simpleIcons.icons.x;
+const xIcon = {
+  body: xIconData.body,
+  width: xIconData.width ?? simpleIcons.width ?? 24,
+  height: xIconData.height ?? simpleIcons.height ?? 24,
+};
 ---
 
 <ChatLauncher
   primaryApiUrl={primaryApiUrl}
   secondaryApiUrl={secondaryApiUrl}
+  xIcon={xIcon}
   client:load
 />

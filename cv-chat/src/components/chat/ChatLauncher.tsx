@@ -13,17 +13,20 @@ import {
 } from "@/lib/visual-viewport-frame";
 import { cn } from "@/lib/utils";
 import Chat from "./Chat";
+import { BrandIconsContext, type BrandIcon } from "./data-parts";
 
 type PanelState = "closed" | "open" | "expanded";
 
 type ChatLauncherProps = {
   primaryApiUrl: string;
   secondaryApiUrl?: string;
+  xIcon: BrandIcon;
 };
 
 export default function ChatLauncher({
   primaryApiUrl,
   secondaryApiUrl,
+  xIcon,
 }: ChatLauncherProps) {
   const COMPACT_CLOSE_DELAY_MS = 220;
   const panelId = useId();
@@ -445,14 +448,16 @@ export default function ChatLauncher({
                 </button>
               </div>
             </div>
-            <Chat
-              primaryApiUrl={primaryApiUrl}
-              secondaryApiUrl={secondaryApiUrl}
-              className="flex-1 min-h-0 h-auto"
-              autoFocus={isOpen}
-              suggestedPrompt={suggestedPrompt}
-              layout={layout === "expanded" ? "expanded" : "panel"}
-            />
+            <BrandIconsContext.Provider value={{ x: xIcon }}>
+              <Chat
+                primaryApiUrl={primaryApiUrl}
+                secondaryApiUrl={secondaryApiUrl}
+                className="flex-1 min-h-0 h-auto"
+                autoFocus={isOpen}
+                suggestedPrompt={suggestedPrompt}
+                layout={layout === "expanded" ? "expanded" : "panel"}
+              />
+            </BrandIconsContext.Provider>
           </section>
         </div>
       )}
