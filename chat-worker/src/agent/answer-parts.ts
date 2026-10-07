@@ -103,13 +103,13 @@ const richCardByIntent: Partial<Record<Intent, RichCardBuilder>> = {
 export const followupsByIntent: Record<Intent, string[]> = {
   summary: [
     'What kind of engineer is Miguel?',
-    'What has Miguel built at Santander?',
+    'What has Miguel built outside work?',
     'How does this CV chat work?',
   ],
   experience: [
     'What has Miguel built at Santander?',
+    'What has Miguel built outside work?',
     "Explain Miguel's design system experience",
-    "Summarize Miguel's QA background",
   ],
   projects: [
     'How does this CV chat work?',

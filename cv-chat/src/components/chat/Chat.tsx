@@ -367,6 +367,7 @@ export default function Chat({
     'What kind of engineer is Miguel?',
     'How does Miguel use AI in engineering?',
     'How does this CV chat work?',
+    'What has Miguel built outside work?',
   ];
 
   useEffect(() => {

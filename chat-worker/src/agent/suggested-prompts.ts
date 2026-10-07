@@ -77,6 +77,14 @@ export const suggestedPromptContracts: SuggestedPromptContract[] = [
     projectIds: ['cv-chat'],
   },
   {
+    prompt: 'What has Miguel built outside work?',
+    intent: 'projects',
+    factIds: ['hackspain-xfold'],
+    blockIds: ['directory-page', 'hackspain-xfold'],
+    projectIds: ['wellstudio-platform', 'video-digest', 'xfold'],
+    memoryIds: ['directory-and-wellstudio-maturity', 'video-digest-personal-cli'],
+  },
+  {
     prompt: 'What kind of engineer is Miguel?',
     intent: 'skills',
     factIds: ['current-role', 'primary-stack'],

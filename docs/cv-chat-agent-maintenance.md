@@ -73,6 +73,7 @@ Current high-value prompt families:
 - AI-assisted engineering and MCP support tooling;
 - education and recent learning;
 - QA background and early product/customer exposure;
+- side projects outside work (directory project cards);
 - how the CV chat agent works.
 
 ## Retrieval Test Policy

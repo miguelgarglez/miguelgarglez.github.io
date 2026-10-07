@@ -5,7 +5,7 @@ const prompts = [
   'What kind of engineer is Miguel?',
   'What has Miguel built at Santander?',
   'How does Miguel use AI in engineering?',
-  'How does this CV chat work?',
+  'What has Miguel built outside work?',
 ];
 
 export function EditorialEmptyState({
@@ -20,7 +20,7 @@ export function EditorialEmptyState({
         Ask anything about Miguel's work.
       </h3>
       <p className="text-base text-muted-foreground">
-        Experience, skills, how he works, and how this chat works.
+        Experience, skills, side projects, and how he works.
       </p>
       <div className="grid w-full grid-cols-2 gap-2.5">
         {prompts.map((prompt) => (
