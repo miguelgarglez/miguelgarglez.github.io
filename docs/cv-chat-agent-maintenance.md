@@ -114,8 +114,8 @@ same retrieval, with no extra LLM call. The contract lives in
 `shared/chat-parts.ts` and the builder in
 `chat-worker/src/agent/answer-parts.ts`.
 
-- `data-sources` comes before the text: titles of the selected blocks,
-  projects, and memories.
+- `data-sources` comes before the text: up to four titles of the selected
+  blocks, projects, and memories. Project questions list projects first.
 - After the text comes one rich card picked by intent (`projects`,
   `experience`, `contact`), then `data-followups`.
 - `runProfileAgent()` builds the parts before the prompt. When a rich card is

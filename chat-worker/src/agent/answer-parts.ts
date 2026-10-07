@@ -14,7 +14,7 @@ import { normalizeText } from './text';
 import type { AgentContext, Intent } from './types';
 
 const SITE_URL = 'https://miguelgarglez.com';
-const MAX_SOURCES = 6;
+const MAX_SOURCES = 4;
 const MAX_FOLLOWUPS = 2;
 
 export type RichCardPart = Extract<
@@ -154,15 +154,18 @@ export const followupsByIntent: Record<Intent, string[]> = {
 };
 
 function buildSources(context: AgentContext): CvChatDataPart[] {
+  const blocks = context.selectedProfileBlocks.map((block) => ({
+    id: `block:${block.id}`,
+    label: block.title,
+  }));
+  const projects = context.selectedProjects.map((project) => ({
+    id: `project:${project.id}`,
+    label: project.title,
+  }));
   const candidates: ChatSource[] = [
-    ...context.selectedProfileBlocks.map((block) => ({
-      id: `block:${block.id}`,
-      label: block.title,
-    })),
-    ...context.selectedProjects.map((project) => ({
-      id: `project:${project.id}`,
-      label: project.title,
-    })),
+    ...(context.intent === 'projects'
+      ? [...projects, ...blocks]
+      : [...blocks, ...projects]),
     ...context.selectedMemories.map((memory) => ({
       id: `memory:${memory.id}`,
       label: memory.title,

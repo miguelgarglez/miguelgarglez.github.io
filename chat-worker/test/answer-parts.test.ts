@@ -186,11 +186,44 @@ describe('buildAnswerParts', () => {
     );
     const items = findPart(leading, 'data-sources')?.data.items ?? [];
     const labels = items.map((item) => normalizeText(item.label));
-    assert.ok(items.length > 0 && items.length <= 6, 'between 1 and 6 sources');
+    assert.ok(items.length > 0, 'at least one source');
     assert.equal(new Set(labels).size, labels.length, 'labels are unique');
     for (const item of items) {
       assert.ok(selectedTitles.includes(item.label), `${item.label} was selected`);
     }
+  });
+
+  it('lists the selected projects before profile blocks for project questions', () => {
+    const { context, leading } = partsFor('What projects has Miguel built?');
+    const items = findPart(leading, 'data-sources')?.data.items ?? [];
+    const projectCount = Math.min(context.selectedProjects.length, 4);
+
+    assert.ok(projectCount > 0);
+    assert.deepEqual(
+      items.slice(0, projectCount).map((item) => item.id),
+      context.selectedProjects
+        .slice(0, projectCount)
+        .map((project) => `project:${project.id}`)
+    );
+  });
+
+  it('caps sources at four for every intent', () => {
+    const questions = [
+      ...suggestedPromptContracts.map((entry) => entry.prompt),
+      'What projects has Miguel built?',
+      'How can I contact Miguel?',
+      'What has Miguel been up to lately?',
+      "What is Miguel's expected salary?",
+    ];
+    const intents = new Set<string>();
+
+    for (const question of questions) {
+      const { context, leading } = partsFor(question);
+      const items = findPart(leading, 'data-sources')?.data.items ?? [];
+      intents.add(context.intent);
+      assert.ok(items.length <= 4, `${question} has ${items.length} sources`);
+    }
+    assert.ok(intents.size >= 6, 'covers most intents');
   });
 
   it('only suggests follow-ups that are pinned suggested prompts', () => {
