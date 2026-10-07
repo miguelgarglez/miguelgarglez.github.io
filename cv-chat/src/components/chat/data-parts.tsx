@@ -40,7 +40,7 @@ export const ChatActionsContext = createContext<ChatActions>({
   sendPrompt: () => undefined,
 });
 
-const kickerClass =
+export const kickerClass =
   'font-mono text-[10.5px] uppercase tracking-[0.04em] text-[color:var(--primary)]';
 
 const cardClass =
@@ -75,7 +75,7 @@ function PillLink({
   );
 }
 
-function ProjectLinks({ links }: { links: ProjectCard['links'] }) {
+export function ProjectLinks({ links }: { links: ProjectCard['links'] }) {
   if (!links.length) return null;
   return (
     <div className="flex flex-wrap gap-1.5">
@@ -91,7 +91,7 @@ function ProjectLinks({ links }: { links: ProjectCard['links'] }) {
   );
 }
 
-function StackPills({ stack }: { stack: string[] }) {
+export function StackPills({ stack }: { stack: string[] }) {
   return (
     <div className="flex flex-wrap gap-1">
       {stack.map((item) => (
@@ -208,7 +208,7 @@ function ProjectsPart({ data }: { data: CvChatDataParts['projects'] }) {
   );
 }
 
-function TimelinePart({ data }: { data: CvChatDataParts['timeline'] }) {
+export function TimelinePart({ data }: { data: CvChatDataParts['timeline'] }) {
   return (
     <ol className={cn(cardClass, 'px-4 pb-1.5 pt-4')}>
       {data.items.map((role) => (
@@ -257,7 +257,7 @@ const initialsOf = (name: string) =>
     .slice(0, 2)
     .toUpperCase();
 
-function ContactPart({ data }: { data: ContactCard }) {
+export function ContactPart({ data }: { data: ContactCard }) {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {

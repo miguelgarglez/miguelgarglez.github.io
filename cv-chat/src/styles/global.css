@@ -191,6 +191,38 @@
   }
 }
 
+::view-transition-group(cv-chat-panel) {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+::view-transition-old(cv-chat-panel),
+::view-transition-new(cv-chat-panel) {
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
+}
+
+::view-transition-old(cv-chat-panel) {
+  animation: cv-chat-panel-out 160ms ease both;
+}
+
+::view-transition-new(cv-chat-panel) {
+  animation: cv-chat-panel-in 280ms 90ms ease both;
+}
+
+@keyframes cv-chat-panel-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes cv-chat-panel-in {
+  from {
+    opacity: 0;
+  }
+}
+
 @media (max-width: 1023px) {
   html:has(body.chat-page-open) {
     overflow: hidden;

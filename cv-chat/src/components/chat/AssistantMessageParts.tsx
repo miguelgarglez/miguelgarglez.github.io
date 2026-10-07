@@ -3,6 +3,8 @@ import {
   MessageContent,
   MessageResponse,
 } from '@/components/ai-elements/message';
+import { getPartBoardItems } from './board';
+import { BoardRefs, type BoardFocusProps } from './ChatBoard';
 import type { CvChatUIMessage, CvChatUIPart } from './chat-message';
 import { DataPart } from './data-parts';
 
@@ -18,11 +20,13 @@ const partRank: Partial<Record<CvChatUIPart['type'], number>> = {
 type AssistantMessagePartsProps = {
   message: CvChatUIMessage;
   isLast: boolean;
+  boardRefs: BoardFocusProps | null;
 };
 
 export function AssistantMessageParts({
   message,
   isLast,
+  boardRefs,
 }: AssistantMessagePartsProps) {
   const ranked = message.parts
     .map((part, index) => ({ part, index, rank: partRank[part.type] }))
@@ -43,6 +47,10 @@ export function AssistantMessageParts({
               <MessageResponse>{part.text}</MessageResponse>
             </MessageContent>
           );
+        }
+        const refItems = boardRefs ? getPartBoardItems(part) : [];
+        if (boardRefs && refItems.length) {
+          return <BoardRefs key={key} items={refItems} {...boardRefs} />;
         }
         return isDataUIPart(part) ? <DataPart key={key} part={part} /> : null;
       })}
