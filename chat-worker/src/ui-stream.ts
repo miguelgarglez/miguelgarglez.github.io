@@ -3,16 +3,18 @@ import {
   extractStreamTextDelta,
   isStreamFinished,
 } from './agent/upstream';
+import type { CvChatDataPart } from '../../shared/chat-parts';
 
 export type UiStreamEndInfo = { receivedBytes: number; errorSent: boolean };
 
 export type UiMessageStreamOptions = {
+  parts?: { leading: CvChatDataPart[]; trailing: CvChatDataPart[] };
   onEnd?: (info: UiStreamEndInfo) => void;
 };
 
 export function createUiMessageStream(
   upstream: ReadableStream<Uint8Array>,
-  { onEnd }: UiMessageStreamOptions = {}
+  { parts, onEnd }: UiMessageStreamOptions = {}
 ) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
@@ -38,6 +40,7 @@ export function createUiMessageStream(
     textStarted = true;
     if (!controller) return;
     controller.enqueue(emitJson({ type: 'start', messageId }));
+    parts?.leading.forEach((part) => controller?.enqueue(emitJson(part)));
     controller.enqueue(emitJson({ type: 'text-start', id: messageId }));
   };
 
@@ -51,6 +54,9 @@ export function createUiMessageStream(
     if (!controller) return;
     if (textStarted) {
       controller.enqueue(emitJson({ type: 'text-end', id: messageId }));
+    }
+    if (!errorSent) {
+      parts?.trailing.forEach((part) => controller?.enqueue(emitJson(part)));
     }
     controller.enqueue(emitJson({ type: 'finish', finishReason: 'stop' }));
   };

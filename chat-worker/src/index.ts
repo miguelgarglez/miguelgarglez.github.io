@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/cloudflare';
+import { buildAnswerParts } from './agent/answer-parts';
 import { runProfileAgent } from './agent/run-profile-agent';
 import {
   buildUpstreamPayload,
@@ -729,6 +730,7 @@ const handler = {
     );
 
     const uiStream = createUiMessageStream(upstream.body, {
+      parts: buildAnswerParts({ question, context: agentResult.context }),
       onEnd: (info) => {
         logEvent('chat_stream_end', {
           requestId,

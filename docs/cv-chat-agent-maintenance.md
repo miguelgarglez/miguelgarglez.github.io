@@ -106,6 +106,28 @@ assert.ok(blockIds.includes('skills-frontend'));
 assert.ok(blockIds.includes('experience-ods'));
 ```
 
+## Data Parts
+
+Besides the streamed text, the Worker sends AI SDK `data-*` parts that the
+client renders as generative UI. They are chosen deterministically from the
+same retrieval, with no extra LLM call. The contract lives in
+`shared/chat-parts.ts` and the builder in
+`chat-worker/src/agent/answer-parts.ts`.
+
+- `data-sources` comes before the text: titles of the selected blocks,
+  projects, and memories.
+- After the text comes one rich card picked by intent (`projects`,
+  `experience`, `contact`), then `data-followups`.
+- Project cards read the visible directory data in `src/data/projects.ts`,
+  never `chat-worker/src/knowledge/projects.ts`, which holds instructions for
+  the model.
+- The timeline reads `cv-chat/src/data/experience.ts`, the same data the
+  Experience section renders.
+- Follow-ups must be exact `suggestedPromptContracts` prompts so a click is
+  always grounded. `chat-worker/test/answer-parts.test.ts` enforces this.
+
+The Vercel fallback stays text-only. The client must render fine without parts.
+
 ## Answer Evals
 
 Retrieval tests prove the model gets the right context. Answer evals check what

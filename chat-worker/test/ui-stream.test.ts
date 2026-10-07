@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { createUiMessageStream } from '../src/ui-stream';
+import type { CvChatDataPart } from '../../shared/chat-parts';
 
 type UiEvent = { type: string; [key: string]: unknown };
 
@@ -31,6 +32,34 @@ const delta = (text: string) => ({
   type: 'response.output_text.delta',
   delta: text,
 });
+
+const parts: { leading: CvChatDataPart[]; trailing: CvChatDataPart[] } = {
+  leading: [
+    {
+      type: 'data-sources',
+      id: 'sources',
+      data: { items: [{ id: 'block:about', label: 'About Miguel' }] },
+    },
+  ],
+  trailing: [
+    {
+      type: 'data-contact',
+      id: 'contact',
+      data: {
+        name: 'Miguel Garcia',
+        location: 'Madrid, Spain',
+        email: 'miguel.garglez@gmail.com',
+        linkedin: 'https://www.linkedin.com/in/miguel-garciag',
+        x: 'https://x.com/miguel_garglez',
+      },
+    },
+    {
+      type: 'data-followups',
+      id: 'followups',
+      data: { prompts: ['What kind of engineer is Miguel?'] },
+    },
+  ],
+};
 
 describe('createUiMessageStream', () => {
   it('wraps streamed text in a single assistant message', async () => {
@@ -72,6 +101,72 @@ describe('createUiMessageStream', () => {
     );
     assert.equal(events[0].errorText, 'No response from the model.');
     assert.deepEqual(endInfo, { receivedBytes: 0, errorSent: true });
+  });
+
+  it('places leading parts after start and trailing parts before finish', async () => {
+    const events = await readEvents(
+      createUiMessageStream(
+        upstreamOf([delta('Hello'), delta(' there'), { type: 'response.completed' }]),
+        { parts }
+      )
+    );
+
+    assert.deepEqual(
+      events.map((event) => event.type),
+      [
+        'start',
+        'data-sources',
+        'text-start',
+        'text-delta',
+        'text-delta',
+        'text-end',
+        'data-contact',
+        'data-followups',
+        'finish',
+        '[DONE]',
+      ],
+      'data parts wrap the streamed text'
+    );
+    assert.deepEqual(
+      events.filter((event) => event.type.startsWith('data-')),
+      [...parts.leading, ...parts.trailing],
+      'data parts are sent as given'
+    );
+  });
+
+  it('sends no data parts when the upstream sends no bytes', async () => {
+    const events = await readEvents(
+      createUiMessageStream(upstreamOf([]), { parts })
+    );
+
+    assert.deepEqual(events.map((event) => event.type), ['error', '[DONE]']);
+  });
+
+  it('drops trailing parts when the upstream fails mid-stream', async () => {
+    const events = await readEvents(
+      createUiMessageStream(
+        upstreamOf([
+          delta('Partial'),
+          { type: 'response.failed', error: { message: 'boom' } },
+        ]),
+        { parts }
+      )
+    );
+
+    assert.deepEqual(
+      events.map((event) => event.type),
+      [
+        'start',
+        'data-sources',
+        'text-start',
+        'text-delta',
+        'error',
+        'text-end',
+        'finish',
+        '[DONE]',
+      ],
+      'no rich card or follow-ups after an error'
+    );
   });
 
   it('reports an upstream error after text has started', async () => {
