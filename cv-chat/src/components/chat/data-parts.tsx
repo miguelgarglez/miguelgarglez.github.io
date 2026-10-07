@@ -16,10 +16,14 @@ import {
   createContext,
   useContext,
   useEffect,
+  useId,
+  useRef,
   useState,
   type ComponentType,
+  type CSSProperties,
   type ReactNode,
 } from 'react';
+import { useStickToBottomContext } from 'use-stick-to-bottom';
 import { cn } from '@/lib/utils';
 import type {
   ContactCard,
@@ -48,6 +52,17 @@ export const kickerClass =
 
 const cardClass =
   'rounded-[var(--radius-md)] border border-[color:var(--border-muted)] bg-background';
+
+const easeOutStrong = 'ease-[cubic-bezier(0.23,1,0.32,1)]';
+
+// Keep in sync with the accordion's grid-template-rows duration below.
+const ACCORDION_MS = 280;
+
+const enterStyle = (index: number, delayMs = 0) =>
+  ({
+    '--cv-enter-index': index,
+    '--cv-enter-delay': `${delayMs}ms`,
+  }) as CSSProperties;
 
 const pillLinkClass =
   'inline-flex min-h-8 items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-xs text-foreground no-underline transition-colors hover:border-[color:var(--primary)] hover:bg-[color:color-mix(in_srgb,var(--primary)_10%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)]';
@@ -128,18 +143,22 @@ export function StackPills({ stack }: { stack: string[] }) {
 function SourcesPart({ data }: { data: CvChatDataParts['sources'] }) {
   if (!data.items.length) return null;
   return (
-    <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
-      <span className="mr-0.5 inline-flex items-center gap-1.5">
+    <div
+      className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground"
+      style={{ '--cv-enter-stagger': '30ms' } as CSSProperties}
+    >
+      <span className="cv-chat-enter mr-0.5 inline-flex items-center gap-1.5">
         <SparklesIcon
           className="size-3.5 text-[color:var(--primary)]"
           aria-hidden
         />
         Grounded in
       </span>
-      {data.items.map((item) => (
+      {data.items.map((item, index) => (
         <span
           key={item.id}
-          className="rounded-full border border-border bg-background px-2 py-0.5 font-mono text-[11px]"
+          className="cv-chat-enter rounded-full border border-border bg-background px-2 py-0.5 font-mono text-[11px]"
+          style={enterStyle(index + 1)}
         >
           {item.label}
         </span>
@@ -148,92 +167,183 @@ function SourcesPart({ data }: { data: CvChatDataParts['sources'] }) {
   );
 }
 
-function ProjectCardView({
+function ProjectThumb({ project }: { project: ProjectCard }) {
+  const thumbClass =
+    'size-13 shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--border-muted)] bg-muted';
+  if (!project.image) {
+    return (
+      <span
+        aria-hidden
+        className={cn(
+          thumbClass,
+          'grid place-items-center font-mono text-base text-muted-foreground'
+        )}
+      >
+        {project.name.charAt(0).toUpperCase()}
+      </span>
+    );
+  }
+  return (
+    <img
+      src={project.image.src}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      className={cn(thumbClass, 'object-cover object-top')}
+    />
+  );
+}
+
+function revealRow(row: HTMLElement, reduceMotion: boolean) {
+  const scroller = row.closest('[role="log"]');
+  if (!scroller) return;
+  const rowBottom = row.getBoundingClientRect().bottom;
+  if (rowBottom <= scroller.getBoundingClientRect().bottom) return;
+  row.scrollIntoView({
+    block: 'nearest',
+    behavior: reduceMotion ? 'auto' : 'smooth',
+  });
+}
+
+function ProjectRow({
   project,
+  index,
   open,
   onToggle,
 }: {
   project: ProjectCard;
+  index: number;
   open: boolean;
   onToggle: () => void;
 }) {
+  const panelId = useId();
+  const rowRef = useRef<HTMLLIElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // React 18 has no `inert` prop; this keeps collapsed links out of the tab order.
+    panelRef.current?.toggleAttribute('inert', !open);
+    if (!open) return;
+    const reduceMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    const id = window.setTimeout(
+      () => rowRef.current && revealRow(rowRef.current, reduceMotion),
+      reduceMotion ? 0 : ACCORDION_MS
+    );
+    return () => window.clearTimeout(id);
+  }, [open]);
+
   return (
-    <article
+    <li
+      ref={rowRef}
+      style={enterStyle(index)}
       className={cn(
-        cardClass,
-        'flex shrink-0 snap-start flex-col gap-2.5 p-3.5 transition-[border-color,box-shadow] duration-200 hover:border-[color:color-mix(in_srgb,var(--primary)_70%,var(--border))] hover:shadow-[var(--shadow-card)] sm:w-auto',
-        open ? 'w-[92%] sm:col-span-2' : 'w-[78%]'
+        'cv-chat-enter relative border-t border-[color:var(--border-muted)] first:border-t-0',
+        // The ring lives on the whole row, inset so the list's rounded overflow does not clip it.
+        'after:pointer-events-none after:absolute after:inset-0 after:opacity-0 after:shadow-[inset_0_0_0_2px_var(--focus-ring)] first:after:rounded-t-[calc(var(--radius-md)-1px)] last:after:rounded-b-[calc(var(--radius-md)-1px)] has-[>button:focus-visible]:after:opacity-100'
       )}
     >
       <button
         type="button"
         aria-expanded={open}
+        aria-controls={panelId}
         onClick={onToggle}
-        className="flex cursor-pointer flex-col gap-1.5 rounded-[var(--radius-sm)] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)]"
+        className="flex w-full cursor-pointer items-start gap-3 px-3.5 py-3 text-left transition-colors duration-150 ease-out [--focus-radius:0px] hover:bg-[color:color-mix(in_srgb,var(--primary)_5%,transparent)] active:bg-[color:color-mix(in_srgb,var(--primary)_10%,transparent)] focus-visible:shadow-none!"
       >
-        <span className={cn(kickerClass, 'flex items-center justify-between')}>
-          <span>
+        <ProjectThumb project={project} />
+        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <span className={kickerClass}>
             {project.year} · {project.status}
           </span>
-          <ChevronDownIcon
-            className={cn('size-3.5 transition-transform', open && 'rotate-180')}
-            aria-hidden
-          />
+          <span className="text-[0.92rem] font-semibold text-foreground">
+            {project.name}
+          </span>
+          <span className="line-clamp-2 text-[0.82rem] leading-relaxed text-muted-foreground">
+            {project.description}
+          </span>
         </span>
-        <span className="text-[0.92rem] font-semibold text-foreground">
-          {project.name}
-        </span>
-        <span
+        <ChevronDownIcon
+          aria-hidden
           className={cn(
-            'text-[0.82rem] leading-relaxed text-muted-foreground',
-            !open && 'line-clamp-3'
+            'mt-0.5 size-4 shrink-0 text-muted-foreground transition-transform duration-200 motion-reduce:transition-none',
+            easeOutStrong,
+            open && 'rotate-180'
           )}
-        >
-          {open ? project.summary : project.description}
-        </span>
+        />
       </button>
-      {open && (
-        <ul className="list-disc space-y-1 pl-4 text-[0.82rem] leading-relaxed text-muted-foreground">
-          {project.capabilities.map((capability) => (
-            <li key={capability}>{capability}</li>
-          ))}
-        </ul>
-      )}
-      <div className="mt-auto flex flex-col gap-2.5">
-        <StackPills stack={project.stack} />
-        <ProjectLinks links={project.links} />
+      <div
+        id={panelId}
+        ref={panelRef}
+        className={cn(
+          'grid transition-[grid-template-rows] duration-280 motion-reduce:transition-none',
+          easeOutStrong,
+          open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+        )}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <div
+            className={cn(
+              'flex flex-col gap-3 px-3.5 pb-4 pt-0.5 transition-[opacity,translate] motion-reduce:translate-none motion-reduce:transition-none sm:pl-[4.875rem]',
+              easeOutStrong,
+              open
+                ? 'translate-y-0 opacity-100 delay-80 duration-220'
+                : 'translate-y-1 opacity-0 duration-120'
+            )}
+          >
+            <p className="text-[0.84rem] leading-relaxed text-foreground">
+              {project.summary}
+            </p>
+            {project.capabilities.length > 0 && (
+              <ul className="list-disc space-y-1 pl-4 text-[0.82rem] leading-relaxed text-muted-foreground">
+                {project.capabilities.map((capability) => (
+                  <li key={capability}>{capability}</li>
+                ))}
+              </ul>
+            )}
+            <StackPills stack={project.stack} />
+            <ProjectLinks links={project.links} />
+          </div>
+        </div>
       </div>
-    </article>
+    </li>
   );
 }
 
 function ProjectsPart({ data }: { data: CvChatDataParts['projects'] }) {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
+  const { stopScroll } = useStickToBottomContext();
+
+  const toggle = (slug: string) => {
+    // Otherwise the pinned log follows the growth and drags the tapped row
+    // upward; revealRow scrolls only as far as needed and re-pins at the bottom.
+    if (openSlug !== slug) stopScroll();
+    setOpenSlug((current) => (current === slug ? null : slug));
+  };
+
   return (
-    <div className="-mx-1 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-1 pb-1.5 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0">
-      {data.items.map((project) => (
-        <ProjectCardView
+    <ul className={cn(cardClass, 'cv-chat-fade-in overflow-hidden')}>
+      {data.items.map((project, index) => (
+        <ProjectRow
           key={project.slug}
           project={project}
+          index={index}
           open={openSlug === project.slug}
-          onToggle={() =>
-            setOpenSlug((current) =>
-              current === project.slug ? null : project.slug
-            )
-          }
+          onToggle={() => toggle(project.slug)}
         />
       ))}
-    </div>
+    </ul>
   );
 }
 
 export function TimelinePart({ data }: { data: CvChatDataParts['timeline'] }) {
   return (
     <ol className={cn(cardClass, 'px-4 pb-1.5 pt-4')}>
-      {data.items.map((role) => (
+      {data.items.map((role, index) => (
         <li
           key={`${role.title}-${role.company}`}
-          className="relative pb-4 pl-6.5 before:absolute before:bottom-0 before:left-[5px] before:top-[18px] before:w-px before:bg-border last:before:hidden"
+          style={enterStyle(index)}
+          className="cv-chat-enter relative pb-4 pl-6.5 before:absolute before:bottom-0 before:left-[5px] before:top-[18px] before:w-px before:bg-border last:before:hidden"
         >
           <span
             aria-hidden
@@ -294,7 +404,12 @@ export function ContactPart({ data }: { data: ContactCard }) {
   };
 
   return (
-    <div className={cn(cardClass, 'grid grid-cols-[auto_1fr] items-center gap-3.5 p-4')}>
+    <div
+      className={cn(
+        cardClass,
+        'cv-chat-enter grid grid-cols-[auto_1fr] items-center gap-3.5 p-4'
+      )}
+    >
       <div
         aria-hidden
         className="grid size-12 place-items-center rounded-full bg-[linear-gradient(135deg,var(--primary),color-mix(in_srgb,var(--primary)_40%,var(--secondary)))] font-semibold text-[color:var(--primary-foreground)]"
@@ -341,18 +456,25 @@ export function ContactPart({ data }: { data: ContactCard }) {
   );
 }
 
+// Lets the answer's card land first when follow-ups arrive in the same frame.
+const FOLLOWUPS_DELAY_MS = 180;
+
 function FollowupsPart({ data }: { data: CvChatDataParts['followups'] }) {
   const { isBusy, sendPrompt } = useContext(ChatActionsContext);
   if (!data.prompts.length) return null;
   return (
-    <div className="flex flex-wrap gap-1.5">
-      {data.prompts.map((prompt) => (
+    <div
+      className="flex flex-wrap gap-1.5"
+      style={{ '--cv-enter-stagger': '40ms' } as CSSProperties}
+    >
+      {data.prompts.map((prompt, index) => (
         <button
           type="button"
           key={prompt}
           disabled={isBusy}
           onClick={() => sendPrompt(prompt)}
-          className="inline-flex min-h-8 cursor-pointer items-center gap-1.5 rounded-full border border-border bg-transparent px-3 py-1.5 text-left text-xs text-muted-foreground transition-colors hover:border-[color:var(--primary)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)] disabled:pointer-events-none disabled:opacity-50"
+          style={enterStyle(index, FOLLOWUPS_DELAY_MS)}
+          className="cv-chat-enter inline-flex min-h-8 cursor-pointer items-center gap-1.5 rounded-full border border-border bg-transparent px-3 py-1.5 text-left text-xs text-muted-foreground transition-colors hover:border-[color:var(--primary)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)] disabled:pointer-events-none disabled:opacity-50"
         >
           <CornerDownRightIcon className="size-3.5 shrink-0" aria-hidden />
           {prompt}

@@ -191,6 +191,40 @@
   }
 }
 
+/* Entrance for chat data parts. Items set --cv-enter-index (and optionally
+   --cv-enter-delay); a parent can tune --cv-enter-stagger. */
+@keyframes cv-chat-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes cv-chat-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.cv-chat-enter {
+  animation: cv-chat-enter 260ms cubic-bezier(0.23, 1, 0.32, 1) backwards;
+  animation-delay: calc(
+    var(--cv-enter-delay, 0ms) + var(--cv-enter-index, 0) *
+      var(--cv-enter-stagger, 50ms)
+  );
+}
+
+.cv-chat-fade-in {
+  animation: cv-chat-fade 200ms ease-out backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cv-chat-enter {
+    animation-name: cv-chat-fade;
+    animation-duration: 160ms;
+  }
+}
+
 ::view-transition-group(cv-chat-panel) {
   animation-duration: 420ms;
   animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
