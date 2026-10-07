@@ -92,7 +92,7 @@ const checks: Record<string, (input: GradeInput) => string | null> = {
     const other: Lang = evalCase.lang === 'en' ? 'es' : 'en';
     const expected = countMarkers(answer, evalCase.lang);
     const unexpected = countMarkers(answer, other);
-    return expected > unexpected
+    return expected > unexpected || unexpected === 0
       ? null
       : `expected ${evalCase.lang}, markers ${evalCase.lang}=${expected} ${other}=${unexpected}`;
   },

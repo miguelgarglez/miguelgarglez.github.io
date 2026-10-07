@@ -46,6 +46,13 @@ describe('answer grader', () => {
     );
   });
 
+  it('does not fail the language check on terse answers without stopwords', () => {
+    assert.deepEqual(
+      failedChecks('You can contact Miguel: **Email:** miguel.garglez@gmail.com, **LinkedIn:** Santander profile.'),
+      []
+    );
+  });
+
   it('flags first-person answers', () => {
     assert.deepEqual(failedChecks('I work at Santander on onboarding for Mexico and the UK, and the team is great.'), ['thirdPerson']);
   });
