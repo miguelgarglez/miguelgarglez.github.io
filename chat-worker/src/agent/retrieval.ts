@@ -1,6 +1,6 @@
 import { profileSections, type ProfileBlock } from '../knowledge/profile-data';
 import type { Audience, Intent } from './types';
-import { matchesAny, tokenize } from './text';
+import { matchesAny, normalizeText, tokenize } from './text';
 
 const MAX_CONTEXT_BLOCKS = 6;
 
@@ -97,7 +97,7 @@ const TAG_KEYWORDS: Record<string, string[]> = {
   ownership: ['ownership', 'accountability', 'responsibility', 'autonomy', 'own'],
   stakeholders: ['stakeholder', 'stakeholders', 'business', 'product'],
   contact: ['contact', 'linkedin', 'email', 'reach', 'contacto'],
-  educacion: ['educacion', 'educación', 'university', 'degree', 'certifications', 'certificaciones'],
+  educacion: ['educacion', 'university', 'universidad', 'degree', 'academic', 'academica', 'academico', 'estudios', 'grado', 'master', 'certifications', 'certificaciones'],
   certificaciones: ['certification', 'certifications', 'course', 'courses', 'learning', 'learned', 'recent learning', 'certificacion', 'certificación', 'certificaciones', 'curso', 'cursos', 'aprendizaje', 'formacion', 'formación'],
   skills: ['skills', 'stack', 'technologies', 'habilidades', 'tecnologias', 'tecnologías'],
   ai: ['ai', 'ia', 'artificial intelligence', 'herramientas', 'tools', 'windsurf', 'devin', 'codex', 'copilot', 'mcp', 'skills'],
@@ -158,7 +158,7 @@ function extractIntentTags(question: string, tokens: string[]) {
       keywords.some((keyword) =>
         keyword.includes(' ')
           ? matchesAny(question, [keyword])
-          : tokens.includes(keyword)
+          : tokens.includes(normalizeText(keyword))
       )
     ) {
       intentTags.add(tag);

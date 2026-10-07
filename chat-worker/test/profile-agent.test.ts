@@ -221,6 +221,14 @@ describe('profile agent context retrieval', () => {
     assert.ok(blockIds.includes('education'));
   });
 
+  it('grounds Spanish academic-background questions in education', () => {
+    const context = run('¿Qué formación académica tiene Miguel?');
+    const blockIds = ids(context.selectedProfileBlocks);
+
+    assert.equal(context.intent, 'education');
+    assert.ok(blockIds.includes('education'));
+  });
+
   it('grounds the visible recent-learning prompt in certifications', () => {
     const context = run('What has Miguel been learning recently?');
     const blockIds = ids(context.selectedProfileBlocks);
@@ -416,6 +424,16 @@ describe('visible suggested-prompt retrieval', () => {
         'What makes Miguel a strong frontend platform engineer?'
       )
     );
+  });
+
+  it('always gives the model the real LinkedIn and X links it is told to deflect to', () => {
+    const systemPrompt = runProfileAgent({
+      question: 'Has Miguel worked at Amazon?',
+      inboundMessages: [],
+    }).messages[0]?.content ?? '';
+
+    assert.match(systemPrompt, /https:\/\/www\.linkedin\.com\/in\/miguel-garciag/);
+    assert.match(systemPrompt, /https:\/\/x\.com\/miguel_garglez/);
   });
 
   it('refuses to claim missing information when selected context is present', () => {

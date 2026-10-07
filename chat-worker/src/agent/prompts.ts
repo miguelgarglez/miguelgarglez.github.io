@@ -1,4 +1,7 @@
+import { profileFacts } from '../knowledge/profile-facts';
 import type { AgentContext } from './types';
+
+const DEFLECTION_FACT_IDS = ['linkedin', 'x'];
 
 export const profileAssistantPolicy = `
 You are Miguel Garcia's professional profile assistant.
@@ -25,11 +28,15 @@ Rules:
 `;
 
 export function buildContextText(context: AgentContext) {
+  const selectedFactIds = new Set(context.selectedFacts.map((fact) => fact.id));
+  const deflectionFacts = profileFacts.filter(
+    (fact) => DEFLECTION_FACT_IDS.includes(fact.id) && !selectedFactIds.has(fact.id)
+  );
   const sections = [
     `Detected audience: ${context.audience}`,
     `Detected intent: ${context.intent}`,
     `Critical profile facts:`,
-    ...context.selectedFacts.map((fact) => `${fact.label}: ${fact.value}`),
+    ...[...context.selectedFacts, ...deflectionFacts].map((fact) => `${fact.label}: ${fact.value}`),
     `Profile context:`,
     ...context.selectedProfileBlocks.map(
       (block) => `# ${block.title}\n${block.content}`
