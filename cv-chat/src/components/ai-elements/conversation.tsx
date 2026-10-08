@@ -4,8 +4,11 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ArrowDownIcon } from "lucide-react";
 import type { ComponentProps } from "react";
-import { useCallback } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
+
+// Covers the chat panel's 300ms geometry transition.
+const LAYOUT_SETTLE_MS = 400;
 
 export type ConversationProps = ComponentProps<typeof StickToBottom>;
 
@@ -32,6 +35,35 @@ export const ConversationContent = ({
     {...props}
   />
 );
+
+/**
+ * Keeps the log pinned to the bottom across a layout switch if it was pinned
+ * before. use-stick-to-bottom only observes the content size: when the
+ * scroller itself grows, the browser clamps scrollTop and the library reads
+ * that as the user scrolling up, so it stops following new messages.
+ */
+export const ConversationLayoutPin = ({ layoutKey }: { layoutKey: string }) => {
+  const { isAtBottom, scrollToBottom } = useStickToBottomContext();
+  const wasAtBottomRef = useRef(isAtBottom);
+  const layoutKeyRef = useRef(layoutKey);
+
+  useLayoutEffect(() => {
+    if (layoutKeyRef.current === layoutKey) return;
+    layoutKeyRef.current = layoutKey;
+    if (!wasAtBottomRef.current) return;
+    scrollToBottom({
+      animation: "instant",
+      ignoreEscapes: true,
+      duration: LAYOUT_SETTLE_MS,
+    });
+  }, [layoutKey, scrollToBottom]);
+
+  useEffect(() => {
+    wasAtBottomRef.current = isAtBottom;
+  }, [isAtBottom]);
+
+  return null;
+};
 
 export type ConversationEmptyStateProps = ComponentProps<"div"> & {
   title?: string;

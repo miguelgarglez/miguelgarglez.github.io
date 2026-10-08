@@ -1,4 +1,5 @@
 import { profileFacts } from '../knowledge/profile-facts';
+import type { RichCardPart } from './answer-parts';
 import type { AgentContext } from './types';
 
 const DEFLECTION_FACT_IDS = ['linkedin', 'x'];
@@ -26,6 +27,35 @@ Rules:
 - Use recent public updates when relevant, but do not overemphasize them if the user asks a general CV question.
 - If a memory is marked in_progress, phrase it as ongoing work.
 `;
+
+export const RICH_CARD_POLICY_HEADING =
+  'Answer format for this request (overrides the formatting rules above):';
+
+const richCardPolicyByType: Record<RichCardPart['type'], string[]> = {
+  'data-projects': [
+    'Write 2-4 plain sentences. No lists, no headings, no URLs.',
+    'The interface already shows every relevant project with its summary, stack, and links right below your reply, so do not repeat them.',
+    'Say what the projects show about Miguel and which one best answers the question.',
+  ],
+  'data-timeline': [
+    'Write 2-4 plain sentences. No lists, no headings, no URLs.',
+    'The interface already shows a career timeline with every role, company, and period right below your reply, so do not walk through each role.',
+    'Highlight what matters for the question.',
+  ],
+  // The email and LinkedIn are the answer itself, so they stay in the text.
+  'data-contact': [
+    'Write 1-3 plain sentences. No lists, no headings.',
+    'The interface already shows the email, LinkedIn, X, and location right below your reply.',
+    'Still give the email and the LinkedIn link once, and say which channel suits what.',
+  ],
+};
+
+export function buildRichCardPolicy(card: RichCardPart) {
+  return [
+    RICH_CARD_POLICY_HEADING,
+    ...richCardPolicyByType[card.type].map((line) => `- ${line}`),
+  ].join('\n');
+}
 
 export function buildContextText(context: AgentContext) {
   const selectedFactIds = new Set(context.selectedFacts.map((fact) => fact.id));

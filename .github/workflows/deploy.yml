@@ -115,6 +115,9 @@ jobs:
           filters: |
             worker:
               - 'chat-worker/**'
+              - 'shared/chat-parts.ts'
+              - 'src/data/projects.ts'
+              - 'cv-chat/src/data/experience.ts'
       - name: Setup Node for chat-worker
         if: steps.worker-changes.outputs.worker == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/setup-node@v4

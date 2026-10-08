@@ -73,6 +73,7 @@ Current high-value prompt families:
 - AI-assisted engineering and MCP support tooling;
 - education and recent learning;
 - QA background and early product/customer exposure;
+- side projects outside work (directory project cards);
 - how the CV chat agent works.
 
 ## Retrieval Test Policy
@@ -105,6 +106,32 @@ assert.equal(context.intent, 'skills');
 assert.ok(blockIds.includes('skills-frontend'));
 assert.ok(blockIds.includes('experience-ods'));
 ```
+
+## Data Parts
+
+Besides the streamed text, the Worker sends AI SDK `data-*` parts that the
+client renders as generative UI. They are chosen deterministically from the
+same retrieval, with no extra LLM call. The contract lives in
+`shared/chat-parts.ts` and the builder in
+`chat-worker/src/agent/answer-parts.ts`.
+
+- `data-sources` comes before the text: up to four titles of the selected
+  blocks, projects, and memories. Project questions list projects first.
+- After the text comes one rich card picked by intent (`projects`,
+  `experience`, `contact`), then `data-followups`.
+- `runProfileAgent()` builds the parts before the prompt. When a rich card is
+  emitted, it appends a short answer-format policy (`buildRichCardPolicy` in
+  `prompts.ts`) so the prose does not repeat the card. Contact answers still
+  give the email and LinkedIn in the text, since they are the answer itself.
+- Project cards read the visible directory data in `src/data/projects.ts`,
+  never `chat-worker/src/knowledge/projects.ts`, which holds instructions for
+  the model.
+- The timeline reads `cv-chat/src/data/experience.ts`, the same data the
+  Experience section renders.
+- Follow-ups must be exact `suggestedPromptContracts` prompts so a click is
+  always grounded. `chat-worker/test/answer-parts.test.ts` enforces this.
+
+The Vercel fallback stays text-only. The client must render fine without parts.
 
 ## Answer Evals
 

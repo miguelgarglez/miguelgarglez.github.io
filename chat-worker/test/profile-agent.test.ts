@@ -415,6 +415,7 @@ describe('visible suggested-prompt retrieval', () => {
       "What is Miguel's academic background?",
       'What has Miguel been learning recently?',
       'How does this CV chat work?',
+      'What has Miguel built outside work?',
       'What kind of engineer is Miguel?',
     ];
 
@@ -425,6 +426,19 @@ describe('visible suggested-prompt retrieval', () => {
         'What makes Miguel a strong frontend platform engineer?'
       )
     );
+  });
+
+  it('grounds side projects in directory builds, not Santander work', () => {
+    const context = run('What has Miguel built outside work?');
+
+    assert.equal(context.intent, 'projects');
+    assert.deepEqual(ids(context.selectedProjects), [
+      'wellstudio-platform',
+      'video-digest',
+      'xfold',
+    ]);
+    assert.ok(ids(context.selectedProfileBlocks).includes('directory-page'));
+    assert.ok(ids(context.selectedMemories).includes('directory-and-wellstudio-maturity'));
   });
 
   it('always gives the model the real LinkedIn and X links it is told to deflect to', () => {

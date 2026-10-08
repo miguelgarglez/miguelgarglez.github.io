@@ -4,7 +4,7 @@ const SPAIN_AS_SANTANDER_MARKET = /Spain, Mexico|Espa[ñn]a, M[eé]xico|3 (?:San
 
 /** Matches a forbidden claim only when no negation sits within the three preceding words. */
 function affirmed(claim: string) {
-  return new RegExp(`(?<!(?:\\bnot|\\bnever|\\bno|n't)(?: \\S+){0,3} )(?<!\\bnon-)(?:${claim})`, 'i');
+  return new RegExp(`(?<!(?:\\bnot|\\bnever|\\bno|n't|\\brather than|\\binstead of)(?: \\S+){0,3} )(?<!\\bnon-)(?:${claim})`, 'i');
 }
 
 export const answerEvalCases: AnswerEvalCase[] = [

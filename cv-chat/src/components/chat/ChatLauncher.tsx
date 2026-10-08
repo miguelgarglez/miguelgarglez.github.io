@@ -1,5 +1,11 @@
-import { MessageSquareIcon, XIcon } from "lucide-react";
+import {
+  Maximize2Icon,
+  MessageSquareIcon,
+  Minimize2Icon,
+  XIcon,
+} from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import {
   applyVisualViewportFrame,
   clearVisualViewportFrame,
@@ -7,19 +13,24 @@ import {
 } from "@/lib/visual-viewport-frame";
 import { cn } from "@/lib/utils";
 import Chat from "./Chat";
+import { BrandIconsContext, type BrandIcon } from "./data-parts";
+
+type PanelState = "closed" | "open" | "expanded";
 
 type ChatLauncherProps = {
   primaryApiUrl: string;
   secondaryApiUrl?: string;
+  xIcon: BrandIcon;
 };
 
 export default function ChatLauncher({
   primaryApiUrl,
   secondaryApiUrl,
+  xIcon,
 }: ChatLauncherProps) {
   const COMPACT_CLOSE_DELAY_MS = 220;
   const panelId = useId();
-  const [isOpen, setIsOpen] = useState(false);
+  const [panelState, setPanelState] = useState<PanelState>("closed");
   const [hasOpened, setHasOpened] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
   const [isHidden, setIsHidden] = useState(true);
@@ -30,6 +41,11 @@ export default function ChatLauncher({
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const closeTimeoutRef = useRef<number | null>(null);
   const lockedScrollYRef = useRef(0);
+  // Keeps the expanded geometry while the close animation plays.
+  const closingFromRef = useRef<Exclude<PanelState, "closed">>("open");
+  const isOpen = panelState !== "closed";
+  const isExpanded = panelState === "expanded";
+  const layout = isOpen ? panelState : closingFromRef.current;
 
   // Once opened, the panel stays mounted for the lifetime of the page. Hiding the
   // shell instead of unmounting Chat preserves its in-memory conversation state.
@@ -37,7 +53,9 @@ export default function ChatLauncher({
   const panelBaseClass =
     "relative flex w-full max-w-full flex-col bg-card motion-reduce:transition-none lg:p-3";
   const panelSizeClass =
-    "h-full w-full lg:h-[min(700px,calc(100dvh-7.5rem))] lg:max-h-[700px] lg:w-[min(600px,calc(100vw-3rem))] lg:max-w-[600px]";
+    layout === "expanded"
+      ? "h-full w-full lg:h-[calc(100dvh-4rem)] lg:w-[min(1080px,calc(100vw-4rem))]"
+      : "h-full w-full lg:h-[min(700px,calc(100dvh-7.5rem))] lg:max-h-[700px] lg:w-[min(600px,calc(100vw-3rem))] lg:max-w-[600px]";
   const panelShellClass =
     "border-0 shadow-none rounded-none lg:rounded-[var(--radius-lg)] lg:border lg:shadow-[var(--shadow-card)]";
   const panelTransformClass = isCompact
@@ -56,6 +74,7 @@ export default function ChatLauncher({
     ? "opacity-0"
     : "opacity-0 scale-95 translate-y-2";
   const shouldRenderPanel = hasOpened;
+  const isLauncherHidden = (isCompact && isOpen) || isExpanded;
 
   const clearCloseTimeout = () => {
     if (closeTimeoutRef.current !== null) {
@@ -65,7 +84,7 @@ export default function ChatLauncher({
   };
 
   const closePanel = ({ restoreFocusVisible = false } = {}) => {
-    if (!isOpen) return;
+    if (panelState === "closed") return;
 
     clearCloseTimeout();
     setForceLauncherFocus(restoreFocusVisible);
@@ -74,7 +93,8 @@ export default function ChatLauncher({
       document.activeElement.blur();
     }
 
-    setIsOpen(false);
+    closingFromRef.current = panelState;
+    setPanelState("closed");
 
     if (isCompact) {
       closeTimeoutRef.current = window.setTimeout(() => {
@@ -93,12 +113,25 @@ export default function ChatLauncher({
     if (!hasOpened) {
       setHasOpened(true);
       setIsHidden(false);
-      setIsOpen(true);
+      setPanelState("open");
       return;
     }
 
     setIsHidden(false);
-    setIsOpen(true);
+    setPanelState("open");
+  };
+
+  const setExpanded = (expanded: boolean) => {
+    if (!isOpen || isCompact) return;
+    const update = () => setPanelState(expanded ? "expanded" : "open");
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (!document.startViewTransition || reduceMotion) {
+      update();
+      return;
+    }
+    document.startViewTransition(() => flushSync(update));
   };
 
   const togglePanel = () => {
@@ -131,6 +164,10 @@ export default function ChatLauncher({
   }, []);
 
   useEffect(() => {
+    if (isCompact && isExpanded) setPanelState("open");
+  }, [isCompact, isExpanded]);
+
+  useEffect(() => {
     const shouldLock = isOpen && isCompact;
     if (!shouldLock) {
       document.body.classList.remove("chat-page-open");
@@ -148,6 +185,12 @@ export default function ChatLauncher({
       window.scrollTo(0, lockedScrollYRef.current);
     };
   }, [isCompact, isOpen]);
+
+  useEffect(() => {
+    if (isCompact || !isExpanded) return;
+    document.body.classList.add("chat-page-expanded");
+    return () => document.body.classList.remove("chat-page-expanded");
+  }, [isCompact, isExpanded]);
 
   // Keep the compact chat shell pinned to the visual viewport so the OS keyboard
   // only shrinks the chat column (header stays put, composer rises) instead of
@@ -205,13 +248,16 @@ export default function ChatLauncher({
   useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        closePanel({ restoreFocusVisible: true });
+      if (event.key !== "Escape") return;
+      if (isExpanded) {
+        setExpanded(false);
+        return;
       }
+      closePanel({ restoreFocusVisible: true });
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isCompact, isOpen]);
+  }, [isCompact, panelState]);
 
   useEffect(() => {
     if (isOpen) {
@@ -275,7 +321,7 @@ export default function ChatLauncher({
       );
       window.removeEventListener("cv-chat:prompt", handlePrompt);
     };
-  }, [isOpen, hasOpened, isCompact]);
+  }, [panelState, hasOpened, isCompact]);
 
   return (
     <>
@@ -287,14 +333,14 @@ export default function ChatLauncher({
           forceLauncherFocus &&
             "rounded-full ring-2 ring-[color:var(--focus-ring)] ring-offset-2 ring-offset-[color:var(--bg)]",
           isOpen && "shadow-[var(--shadow-glow)]",
-          isCompact && isOpen && "pointer-events-none opacity-0 scale-90",
+          isLauncherHidden && "pointer-events-none opacity-0 scale-90",
         )}
         aria-expanded={isOpen}
         aria-pressed={isOpen}
         aria-controls={panelId}
         aria-label={isOpen ? "Close agent" : "Open agent"}
-        aria-hidden={isCompact && isOpen}
-        tabIndex={isCompact && isOpen ? -1 : 0}
+        aria-hidden={isLauncherHidden}
+        tabIndex={isLauncherHidden ? -1 : 0}
         onClick={togglePanel}
         onBlur={() => setForceLauncherFocus(false)}
         ref={buttonRef}
@@ -325,6 +371,17 @@ export default function ChatLauncher({
 
       {shouldRenderPanel && (
         <div
+          aria-hidden
+          className={cn(
+            "fixed inset-0 z-[9996] hidden bg-[rgba(8,6,4,0.5)] backdrop-blur-[6px] transition-opacity duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] lg:block",
+            isExpanded ? "opacity-100" : "pointer-events-none opacity-0",
+          )}
+          onClick={() => setExpanded(false)}
+        />
+      )}
+
+      {shouldRenderPanel && (
+        <div
           ref={overlayRef}
           className={cn(
             "fixed left-0 right-0 top-0 z-[9997] flex items-stretch justify-stretch overscroll-none p-0",
@@ -332,6 +389,8 @@ export default function ChatLauncher({
             // keyboard-visible visual viewport and force a whole-page pan.
             "h-[100dvh]",
             "lg:inset-auto lg:h-auto lg:min-h-0 lg:bottom-24 lg:right-6 lg:max-w-[calc(100vw-3rem)] lg:items-end lg:justify-end lg:p-0",
+            layout === "expanded" &&
+              "lg:pointer-events-none lg:inset-0 lg:h-[100dvh] lg:max-w-none lg:items-center lg:justify-center",
             !isOpen && "pointer-events-none",
           )}
           aria-hidden={!isOpen}
@@ -340,7 +399,7 @@ export default function ChatLauncher({
             id={panelId}
             role="dialog"
             aria-label="Chat with Miguel's AI assistant"
-            aria-modal={isCompact || undefined}
+            aria-modal={isCompact || isExpanded || undefined}
             aria-hidden={!isOpen}
             className={cn(
               panelBaseClass,
@@ -351,6 +410,7 @@ export default function ChatLauncher({
               // Keep the panel mounted so the close animation can finish before hiding it.
               isOpen ? panelOpenClass : panelCloseClass,
               isHidden && panelHiddenClass,
+              isOpen && "[view-transition-name:cv-chat-panel]",
             )}
             ref={panelRef}
             onAnimationEnd={(event) => {
@@ -360,24 +420,44 @@ export default function ChatLauncher({
               }
             }}
           >
-            <div className="mb-3 flex items-center justify-between px-4 pt-4 text-sm font-semibold text-foreground lg:p-0">
+            <div className="mb-3 flex items-center justify-between gap-2 px-4 pt-4 text-sm font-semibold text-foreground lg:p-0">
               <span>Chat with Miguel's AI assistant</span>
-              <button
-                type="button"
-                onClick={closePanel}
-                className="grid size-10 place-items-center rounded-full bg-primary text-primary-foreground transition-all duration-300 ease-in-out will-change-transform [--focus-radius:999px] cursor-pointer hover:scale-[1.08] hover:shadow-[var(--shadow-glow)] focus-visible:rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)] lg:hidden"
-                aria-label="Close chat"
-              >
-                <XIcon className="size-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setExpanded(!isExpanded)}
+                  className="hidden size-8 cursor-pointer place-items-center rounded-full border border-border text-muted-foreground transition-colors [--focus-radius:999px] hover:border-[color:var(--primary)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)] lg:grid"
+                  aria-label={isExpanded ? "Collapse chat" : "Expand chat"}
+                >
+                  {isExpanded ? (
+                    <Minimize2Icon className="size-3.5" />
+                  ) : (
+                    <Maximize2Icon className="size-3.5" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => closePanel()}
+                  className={cn(
+                    "grid size-10 place-items-center rounded-full bg-primary text-primary-foreground transition-all duration-300 ease-in-out will-change-transform [--focus-radius:999px] cursor-pointer hover:scale-[1.08] hover:shadow-[var(--shadow-glow)] focus-visible:rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--bg)]",
+                    layout === "expanded" ? "lg:size-8" : "lg:hidden",
+                  )}
+                  aria-label="Close chat"
+                >
+                  <XIcon className="size-4" />
+                </button>
+              </div>
             </div>
-            <Chat
-              primaryApiUrl={primaryApiUrl}
-              secondaryApiUrl={secondaryApiUrl}
-              className="flex-1 min-h-0 h-auto"
-              autoFocus={isOpen}
-              suggestedPrompt={suggestedPrompt}
-            />
+            <BrandIconsContext.Provider value={{ x: xIcon }}>
+              <Chat
+                primaryApiUrl={primaryApiUrl}
+                secondaryApiUrl={secondaryApiUrl}
+                className="flex-1 min-h-0 h-auto"
+                autoFocus={isOpen}
+                suggestedPrompt={suggestedPrompt}
+                layout={layout === "expanded" ? "expanded" : "panel"}
+              />
+            </BrandIconsContext.Provider>
           </section>
         </div>
       )}
