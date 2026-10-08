@@ -355,6 +355,8 @@ export const MessageResponse = ({
   <Streamdown
     className={cn(
       "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
+      // Tailwind doesn't scan Streamdown's dist, so its `list-inside` never exists and markers hang past the bubble's padding.
+      "[&_:is(ul,ol)]:list-outside [&_:is(ul,ol)]:pl-5",
       className
     )}
     components={{
