@@ -32,6 +32,8 @@ export type ProjectImage = {
   alt: string;
   /** Optional higher-res source for the lightbox. Falls back to `src`. */
   fullSrc?: string;
+  /** CSS object-position for wide crops, e.g. to keep faces in frame. Defaults to top. */
+  position?: string;
 };
 
 export type Project = {
@@ -191,6 +193,7 @@ export const projects: Project[] = [
       {
         src: "/projects/xfold/team.webp",
         alt: "The XFOLD team at HackSpain '26, in front of the event's mosaic wall",
+        position: "50% 55%",
       },
       {
         src: "/projects/xfold/brand.webp",

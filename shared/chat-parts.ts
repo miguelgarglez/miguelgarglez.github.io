@@ -12,7 +12,7 @@ export type ProjectCard = {
   summary: string;
   capabilities: string[];
   stack: string[];
-  image?: { src: string; alt: string };
+  image?: { src: string; alt: string; position?: string };
   links: { kind: ProjectLinkKind; url: string }[];
 };
 
