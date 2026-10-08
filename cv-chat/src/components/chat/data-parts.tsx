@@ -190,6 +190,7 @@ function ProjectThumb({ project }: { project: ProjectCard }) {
       loading="lazy"
       decoding="async"
       className={cn(thumbClass, 'object-cover object-top')}
+      style={{ objectPosition: project.image.position }}
     />
   );
 }

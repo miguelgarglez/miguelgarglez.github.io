@@ -51,7 +51,15 @@ function toProjectCard(project: Project): ProjectCard {
     summary: project.summary,
     capabilities: project.capabilities,
     stack: project.stack,
-    ...(image ? { image: { src: absolutize(image.src), alt: image.alt } } : {}),
+    ...(image
+      ? {
+          image: {
+            src: absolutize(image.src),
+            alt: image.alt,
+            ...(image.position ? { position: image.position } : {}),
+          },
+        }
+      : {}),
     links,
   };
 }

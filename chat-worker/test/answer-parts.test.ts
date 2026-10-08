@@ -107,6 +107,16 @@ describe('buildAnswerParts', () => {
     });
   });
 
+  it('passes an image crop position through to the card', () => {
+    const { all } = partsFor(
+      'What projects has Miguel built?',
+      withProjects(contextFor('What projects has Miguel built?'), ['xfold'])
+    );
+    const card = findPart(all, 'data-projects')?.data.items[0];
+
+    assert.equal(card?.image?.position, '50% 55%', 'xfold team photo keeps faces in frame');
+  });
+
   it('skips projects that are not in the directory', () => {
     const base = contextFor('What projects has Miguel built?');
     const onlyHidden = partsFor(

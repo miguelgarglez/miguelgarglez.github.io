@@ -72,6 +72,7 @@ function ProjectFocus({ project }: { project: ProjectCard }) {
           alt={project.image.alt}
           loading="lazy"
           className="h-48 w-full border-b border-[color:var(--border-muted)] object-cover object-top"
+          style={{ objectPosition: project.image.position }}
         />
       ) : (
         <div
