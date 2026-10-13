@@ -1,4 +1,4 @@
-export type PostSeriesId = "video-digest";
+export type PostSeriesId = "video-digest" | "agent-lab";
 
 export type PostSeries = {
   id: PostSeriesId;
@@ -12,6 +12,12 @@ export const postSeriesCatalog: Record<PostSeriesId, PostSeries> = {
     title: "Video Digest",
     description:
       "From a personal YouTube backlog workflow to a published local-first CLI.",
+  },
+  "agent-lab": {
+    id: "agent-lab",
+    title: "Agent Lab",
+    description:
+      "Eleven days of coding agents scouting, building, reviewing, and shipping small open-source products from my Mac.",
   },
 };
 
