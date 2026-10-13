@@ -1,0 +1,623 @@
+/* Banana Bank theme for post and project detail pages.
+   Mirrors the t·Dots challenge app's design system (app/styles/tokens.css, base.css,
+   sidebar.css, overview.css, chat.css, motion.css): cream paper, forest brand, banana
+   accent, hairline borders, soft radii, Arial set tight, small tracked eyebrows. */
+[data-page-theme="bananabank"] {
+  --bb-ink: #172b2b;
+  --bb-ink-muted: #5f6e6a;
+  --bb-label: #64746c;
+  --bb-line: #e1e7e1;
+  --bb-paper: #faf9ef;
+  --bb-chrome: #fffef7;
+  --bb-panel: #fdfefa;
+  --bb-forest: #194f43;
+  --bb-forest-hover: #103d33;
+  --bb-banana: #f5d94b;
+  --bb-banana-soft: #fbefb0;
+  --bb-banana-edge: #e7c735;
+  --bb-banana-dot: #dfb72c;
+  --bb-badge: #f4dc63;
+  --bb-chip-border: #dce3d8;
+  --bb-card-border: #d8e1d0;
+  --bb-card-bg: #edf2dd;
+  --bb-quote-bg: #f1f4e9;
+  --bb-quote-border: #b6ca9e;
+  --bb-secondary-border: #d8e0d4;
+  --bb-secondary-text: #476351;
+  --bb-nav-hover: #edf1e8;
+  --bb-halo: #f6f8f0;
+  --bb-halo-line: #e3ebda;
+  --bb-halo-ring: #dbe7d0;
+  --bb-radius-sm: 7px;
+  --bb-radius-md: 10px;
+  --bb-radius-lg: 13px;
+  --bb-radius-xl: 15px;
+  --bb-font: Arial, Helvetica, sans-serif;
+  --bb-mono: ui-monospace, Menlo, Consolas, monospace;
+  --bb-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --bb-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --bb-shadow: 0 12px 32px rgba(23, 43, 43, 0.12), 0 2px 6px rgba(23, 43, 43, 0.06);
+  --bb-pad: clamp(20px, 4vw, 40px);
+
+  color-scheme: light;
+  counter-reset: bb-section;
+  margin-top: clamp(1rem, 3vw, 1.6rem);
+  overflow: hidden;
+  border: 1px solid var(--bb-line);
+  border-radius: var(--bb-radius-xl);
+  color: var(--bb-ink);
+  background: var(--bb-paper);
+  font-family: var(--bb-font);
+}
+
+[data-page-theme="bananabank"] ::selection {
+  color: var(--bb-ink);
+  background: var(--bb-banana-soft);
+}
+
+[data-page-theme="bananabank"] :is(a, button):focus-visible {
+  outline: 2px solid var(--bb-forest);
+  outline-offset: 2px;
+  border-radius: var(--bb-radius-sm);
+}
+
+/* Eyebrows: the app's small tracked uppercase labels */
+[data-page-theme="bananabank"] :is(.bb-brand-meta, .post-meta, .section-label, .post-end-kicker, .post-end-link-label, .bb-account-label) {
+  font-family: var(--bb-font);
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bb-label);
+}
+
+/* Hero, set like the app's chrome sidebar */
+[data-page-theme="bananabank"] .detail-hero {
+  max-width: none;
+  padding: var(--bb-pad);
+  border-bottom: 1px solid var(--bb-line);
+  background: var(--bb-chrome);
+}
+
+[data-page-theme="bananabank"] .detail-back {
+  margin: 0 0 clamp(20px, 3vw, 28px);
+}
+
+[data-page-theme="bananabank"] .detail-back .text-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  margin-left: -12px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--bb-radius-md);
+  color: var(--bb-forest);
+  font-family: var(--bb-font);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  transition: background-color 160ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-page-theme="bananabank"] .detail-back .text-link:hover {
+    color: var(--bb-forest);
+    background: var(--bb-nav-hover);
+  }
+}
+
+[data-page-theme="bananabank"] .bb-brand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 22px;
+  margin: 0 0 clamp(22px, 3.5vw, 32px);
+}
+
+[data-page-theme="bananabank"] .bb-brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+[data-page-theme="bananabank"] .bb-brand-symbol {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 44px;
+  border-radius: 12px;
+  color: var(--bb-banana);
+  background: var(--bb-forest);
+}
+
+[data-page-theme="bananabank"] .bb-brand-symbol svg {
+  display: block;
+  overflow: visible;
+}
+
+[data-page-theme="bananabank"] .bb-banana-shape {
+  transform-box: view-box;
+  transform-origin: 16.9px 14.6px;
+}
+
+[data-page-theme="bananabank"] .bb-brand-word {
+  color: var(--bb-ink);
+  font-size: 38px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+[data-page-theme="bananabank"] .bb-brand-dot {
+  margin-left: 1px;
+  color: var(--bb-banana-dot);
+}
+
+/* The mark does the app's loader turn on hover: 372°, settle at 360° */
+@media (hover: hover) and (pointer: fine) {
+  [data-page-theme="bananabank"] .bb-brand-lockup:hover .bb-banana-shape {
+    animation: bb-banana-spin 1.5s 1;
+  }
+}
+
+@keyframes bb-banana-spin {
+  0% {
+    transform: rotate(0deg);
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  58% {
+    transform: rotate(372deg);
+    animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  }
+  70%,
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.project-detail [data-page-theme="bananabank"] .detail-hero h1 {
+  max-width: 15ch;
+  margin: 0;
+  color: var(--bb-ink);
+  font-family: var(--bb-font);
+  font-size: clamp(2.3rem, 5.6vw, 3.9rem);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+[data-page-theme="bananabank"] .lead {
+  max-width: 58ch;
+  margin-top: 18px;
+  color: var(--bb-ink-muted);
+  font-family: var(--bb-font);
+  font-size: 1.08rem;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+[data-page-theme="bananabank"] .post-meta {
+  margin-top: 22px;
+}
+
+[data-page-theme="bananabank"] .post-meta li::after {
+  color: var(--bb-chip-border);
+}
+
+/* Tags and stack become the app's date chips */
+[data-page-theme="bananabank"] .stack {
+  gap: 8px;
+  margin-top: 14px;
+  font-family: var(--bb-font);
+  font-size: 0.75rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+[data-page-theme="bananabank"] .stack li {
+  padding: 6px 12px;
+  border: 1px solid var(--bb-chip-border);
+  border-radius: 20px;
+  color: var(--bb-ink-muted);
+  background: var(--bb-paper);
+}
+
+[data-page-theme="bananabank"] .stack li::after {
+  content: none;
+}
+
+/* Sections */
+[data-page-theme="bananabank"] .detail-section {
+  padding: var(--bb-pad);
+  border-top: 0;
+}
+
+[data-page-theme="bananabank"] .detail-section + .detail-section {
+  border-top: 1px solid var(--bb-line);
+}
+
+[data-page-theme="bananabank"] .post-body {
+  max-width: 740px;
+  color: var(--bb-ink);
+  font-family: var(--bb-font);
+  font-size: 1.04rem;
+  line-height: 1.72;
+}
+
+[data-page-theme="bananabank"] .post-body p {
+  text-wrap: pretty;
+}
+
+[data-page-theme="bananabank"] .post-body :is(h2, h3) {
+  max-width: none;
+  color: var(--bb-ink);
+  font-family: var(--bb-font);
+  text-wrap: balance;
+}
+
+[data-page-theme="bananabank"] .post-body h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: clamp(2.6rem, 5vw, 3.6rem);
+  font-size: clamp(1.5rem, 3.2vw, 1.95rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  counter-increment: bb-section;
+}
+
+/* Section number set like the app's "AI" badge */
+[data-page-theme="bananabank"] .post-body h2::before {
+  content: counter(bb-section, decimal-leading-zero);
+  flex: none;
+  position: relative;
+  top: -0.2em;
+  padding: 2px 7px;
+  border-radius: 5px;
+  color: var(--bb-forest);
+  background: var(--bb-badge);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+[data-page-theme="bananabank"] .post-body h3 {
+  margin-top: clamp(2rem, 4vw, 2.6rem);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+[data-page-theme="bananabank"] .post-body strong {
+  font-weight: 700;
+}
+
+[data-page-theme="bananabank"] :is(.post-body, .post-end-matter, .project-build-notes) a {
+  color: var(--bb-forest);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--bb-banana);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  transition:
+    background-color 160ms ease,
+    text-decoration-color 160ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-page-theme="bananabank"] :is(.post-body, .post-end-matter, .project-build-notes) a:hover {
+    color: var(--bb-forest);
+    background: var(--bb-banana-soft);
+    text-decoration-color: var(--bb-forest);
+  }
+}
+
+[data-page-theme="bananabank"] .post-body :is(ul, ol) {
+  padding-left: 1.3rem;
+}
+
+[data-page-theme="bananabank"] .post-body li::marker {
+  color: var(--bb-forest);
+}
+
+[data-page-theme="bananabank"] .post-body blockquote {
+  margin: 2rem 0;
+  padding: 18px 22px;
+  border: 1px solid var(--bb-quote-border);
+  border-radius: var(--bb-radius-lg);
+  color: #284e3d;
+  background: var(--bb-quote-bg);
+  font-family: var(--bb-font);
+  font-size: 1.12rem;
+  line-height: 1.55;
+}
+
+[data-page-theme="bananabank"] .post-body :not(pre) > code {
+  padding: 0.12em 0.4em;
+  border: 0;
+  border-radius: 5px;
+  color: var(--bb-ink);
+  background: var(--bb-banana-soft);
+  font-family: var(--bb-mono);
+  font-size: 0.88em;
+}
+
+[data-page-theme="bananabank"] .post-body pre {
+  border: 1px solid var(--bb-line);
+  border-radius: var(--bb-radius-lg);
+  color: var(--bb-ink);
+  background: var(--bb-panel);
+  font-family: var(--bb-mono);
+}
+
+[data-page-theme="bananabank"] .post-body hr {
+  border-top-color: var(--bb-line);
+}
+
+[data-page-theme="bananabank"] .post-body :is(th, td) {
+  border-bottom-color: var(--bb-line);
+}
+
+[data-page-theme="bananabank"] .post-body th {
+  color: var(--bb-label);
+  font-family: var(--bb-font);
+  font-weight: 600;
+}
+
+[data-page-theme="bananabank"] .post-body :is(img, iframe) {
+  border: 1px solid var(--bb-card-border);
+  border-radius: var(--bb-radius-xl);
+  background: var(--bb-card-bg);
+  box-shadow: var(--bb-shadow);
+}
+
+[data-page-theme="bananabank"] .post-body figcaption {
+  margin-top: 14px;
+  color: var(--bb-ink-muted);
+  font-family: var(--bb-font);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+/* Account cards: the app's overview grid, used for the key numbers */
+[data-page-theme="bananabank"] .post-body .bb-accounts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 2rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 720px) {
+  [data-page-theme="bananabank"] .post-body .bb-accounts {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+[data-page-theme="bananabank"] .bb-accounts li {
+  display: flex;
+  flex-direction: column;
+  min-height: 150px;
+  margin: 0;
+  padding: 18px;
+  border: 1px solid var(--bb-card-border);
+  border-radius: var(--bb-radius-xl);
+  color: var(--bb-ink);
+  background: var(--bb-card-bg);
+}
+
+[data-page-theme="bananabank"] .bb-accounts li:first-child {
+  border-color: var(--bb-banana-edge);
+  color: var(--bb-forest);
+  background: var(--bb-banana);
+}
+
+[data-page-theme="bananabank"] .bb-accounts li:first-child .bb-account-label {
+  color: var(--bb-forest);
+}
+
+[data-page-theme="bananabank"] .bb-accounts strong {
+  margin-top: 6px;
+  font-size: clamp(1.45rem, 3vw, 1.8rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-page-theme="bananabank"] .bb-account-note {
+  margin-top: auto;
+  padding-top: 14px;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  opacity: 0.85;
+}
+
+/* End matter: the assistant card, halo rings included */
+[data-page-theme="bananabank"] .post-end-matter {
+  position: relative;
+  max-width: none;
+  margin: 0 var(--bb-pad) var(--bb-pad);
+  padding: clamp(20px, 3vw, 26px);
+  overflow: hidden;
+  border: 1px solid #e1e5dc;
+  border-radius: var(--bb-radius-xl);
+  background: #fdfdf9;
+}
+
+[data-page-theme="bananabank"] .post-end-matter::after {
+  content: "";
+  position: absolute;
+  top: -90px;
+  right: -90px;
+  width: 180px;
+  height: 180px;
+  border: 1px solid var(--bb-halo-ring);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 15px var(--bb-halo),
+    0 0 0 16px var(--bb-halo-line),
+    0 0 0 31px #f9faf5,
+    0 0 0 32px var(--bb-halo-line);
+  pointer-events: none;
+}
+
+[data-page-theme="bananabank"] .post-end-matter > * {
+  position: relative;
+  z-index: 1;
+}
+
+[data-page-theme="bananabank"] :is(.post-end-title, .post-end-links a) {
+  font-family: var(--bb-font);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+[data-page-theme="bananabank"] :is(.post-end-note, .post-end-link-meta) {
+  color: var(--bb-ink-muted);
+}
+
+[data-page-theme="bananabank"] .post-end-divider {
+  color: var(--bb-chip-border);
+}
+
+/* Footer, as in the app */
+[data-page-theme="bananabank"] .bb-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 15px;
+  margin: 0 var(--bb-pad);
+  padding: 20px 0;
+  border-top: 1px solid var(--bb-line);
+  color: var(--bb-ink-muted);
+}
+
+[data-page-theme="bananabank"] .bb-footer-word {
+  font-size: 1.05rem;
+  letter-spacing: -0.5px;
+}
+
+[data-page-theme="bananabank"] .bb-footer-note {
+  font-size: 0.72rem;
+}
+
+[data-page-theme="bananabank"] .bb-footer-meta {
+  margin-left: auto;
+  font-size: 0.66rem;
+  letter-spacing: 0.15em;
+}
+
+/* Project detail */
+[data-page-theme="bananabank"] .project-gallery {
+  padding: var(--bb-pad);
+  border-top: 0;
+}
+
+[data-page-theme="bananabank"] .project-gallery .project-gallery-thumb {
+  overflow: hidden;
+  border: 1px solid var(--bb-card-border);
+  border-radius: var(--bb-radius-xl);
+  background: var(--bb-card-bg);
+  transition: transform 160ms var(--bb-ease-out);
+}
+
+[data-page-theme="bananabank"] .project-gallery .project-gallery-thumb:active {
+  transform: scale(0.97);
+}
+
+[data-page-theme="bananabank"] .project-gallery .project-gallery-expand {
+  border: 1px solid var(--bb-secondary-border);
+  border-radius: var(--bb-radius-sm);
+  color: var(--bb-secondary-text);
+  background: #ffffff;
+  backdrop-filter: none;
+}
+
+@media (min-width: 721px) {
+  [data-page-theme="bananabank"] .project-gallery .project-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+[data-page-theme="bananabank"] :is(.detail-copy, .detail-list) {
+  max-width: 68ch;
+  color: var(--bb-ink);
+  font-family: var(--bb-font);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+[data-page-theme="bananabank"] .detail-list li::marker {
+  color: var(--bb-forest);
+}
+
+/* Links become the app's primary and secondary buttons */
+[data-page-theme="bananabank"] .project-links {
+  gap: 10px;
+  margin-top: 0;
+}
+
+[data-page-theme="bananabank"] .project-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid var(--bb-secondary-border);
+  border-radius: var(--bb-radius-sm);
+  color: var(--bb-secondary-text);
+  background: #ffffff;
+  font-family: var(--bb-font);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition:
+    background-color 160ms ease,
+    transform 120ms var(--bb-ease-out);
+}
+
+[data-page-theme="bananabank"] .project-links a:first-child {
+  border-color: var(--bb-forest);
+  color: #ffffff;
+  background: var(--bb-forest);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-page-theme="bananabank"] .project-links a:hover {
+    color: var(--bb-secondary-text);
+    border-color: var(--bb-secondary-border);
+    background: var(--bb-nav-hover);
+  }
+
+  [data-page-theme="bananabank"] .project-links a:first-child:hover {
+    color: #ffffff;
+    border-color: var(--bb-forest-hover);
+    background: var(--bb-forest-hover);
+  }
+}
+
+[data-page-theme="bananabank"] .project-links a:active {
+  transform: scale(0.97);
+}
+
+[data-page-theme="bananabank"] .project-build-notes {
+  margin-top: 0;
+}
+
+body:has([data-page-theme="bananabank"]) .reading-progress-bar {
+  background: #e7c735;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-page-theme="bananabank"] * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,27 @@
+---
+type Props = {
+  meta: string;
+};
+
+const { meta } = Astro.props;
+---
+
+<p class="bb-brand">
+  <span class="bb-brand-lockup" aria-label="Banana Bank">
+    <span class="bb-brand-symbol" aria-hidden="true">
+      <svg viewBox="0 0 32 32" width="28" height="28">
+        <g class="bb-banana-shape">
+          <path d="M25 4c1 13-7 22-20 20 6 9 25 1 23-16Z" fill="currentColor"></path>
+          <path
+            d="M25.4 4.6c1.6-0.5 2.8-1.4 3.4-3.1"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"></path>
+        </g>
+      </svg>
+    </span>
+    <span class="bb-brand-word" aria-hidden="true">banana<span class="bb-brand-dot">.</span></span>
+  </span>
+  <span class="bb-brand-meta">{meta}</span>
+</p>

@@ -23,7 +23,7 @@ const posts = defineCollection({
       /** Other post ids (filename without `.md`) to surface in end matter. */
       related: z.array(z.string()).default([]),
       /** Optional visual theme for the post detail (e.g. an event's brand). */
-      theme: z.enum(["hackspain"]).optional(),
+      theme: z.enum(["hackspain", "bananabank"]).optional(),
     })
     .superRefine((data, ctx) => {
       if (data.series && data.seriesOrder === undefined) {

@@ -61,7 +61,7 @@ export type Project = {
   liveUrl?: string;
   caseStudyUrl?: string;
   /** Optional visual theme for the project detail page. */
-  theme?: "hackspain";
+  theme?: "hackspain" | "bananabank";
 };
 
 const projectDetailPath = (slug: string) => `/projects/${slug}`;
@@ -154,6 +154,61 @@ export const projects: Project[] = [
     repositoryUrl: "https://github.com/miguelgarglez/video-digest",
     liveUrl: "https://www.npmjs.com/package/video-digest",
     caseStudyUrl: projectDetailPath("video-digest"),
+  },
+  {
+    slug: "banana-bank",
+    title: "banana-bank",
+    displayName: "Banana Bank",
+    href: "/projects/banana-bank/",
+    description:
+      "t·Dots technical challenge, October 2026: an AI banking assistant that duplicated transfers and moved money without confirmation. Fixed, then extended with an operator copilot that reconciles against the bank ledger and transfer cards inside the chat.",
+    sub: {
+      before: "Two days, solo. ",
+      label: "Read the writeup",
+      href: "/posts/two-days-fixing-a-bank-that-moved-money-twice/",
+      after: ", with the demo video.",
+    },
+    stack: ["Next.js", "TypeScript", "SQLite", "OpenAI", "Playwright"],
+    status: "Challenge",
+    year: 2026,
+    category: "hackathon",
+    stage: "archived",
+    featured: true,
+    role: "Everything, with three coding agents reviewing each other",
+    summary:
+      "A fictional bank launches its AI assistant on Monday. Part 1 found and fixed three failures: a lost bank response duplicated transfers (stable reference per intent, verification against the ledger, an explicit unknown state), the agent moved money without the account holder's confirmation (one authorization gate with a server-verified six-character code), and the agent answered outside banking and mixed document versions (scoped prompt with citations, paragraph chunker, validity filter, corpus rewritten from 80 to 46 documents). Part 2 added an operator copilot that cross-checks app intents with the bank's ledger, drafts a brief anchored to verified facts and reconciles with an audit trail, plus editable transfer cards the agent opens inside the conversation.",
+    capabilities: [
+      "Idempotent transfers with a stable bank reference and ledger verification",
+      "Single authorization gate: proposal, six-character code, one-time atomic approval",
+      "Operator copilot: ledger reconciliation, strict-JSON brief, audited actions",
+      "Transfer drafts in the chat that go through the same authorization path",
+      "78 automated tests (starter had 13), Playwright flows, pixel-parity refactor",
+      "Full AI session export with an offline viewer: 14 sessions across three agents",
+    ],
+    sections: [
+      {
+        title: "How I worked",
+        body: "Every bug reproduced before the fix, with before/after evidence. Every fix with a test that failed first. Devin as the main agent with an implementation subagent; Codex and Cursor as read-only reviewers in two rounds, whose findings are all fixed and covered by tests. The complete sessions were exported verbatim from each tool's local database and shipped with a static viewer.",
+      },
+    ],
+    images: [
+      {
+        src: "/projects/banana-bank/chat-review.webp",
+        alt: "Transfer card inside the chat in review state, with confirmation code and expiry countdown",
+      },
+      {
+        src: "/projects/banana-bank/case-detail.webp",
+        alt: "Operator case view with the Money check card flagging a discrepancy between the app and the bank ledger",
+      },
+      {
+        src: "/projects/banana-bank/case-brief.webp",
+        alt: "Copilot brief with verified facts, discrepancies and an editable customer reply",
+      },
+    ],
+    repositoryUrl: "https://github.com/miguelgarglez/banana-bank-tdots-challenge",
+    liveUrl: "https://www.youtube.com/watch?v=PDGUyNVtR-8",
+    caseStudyUrl: projectDetailPath("banana-bank"),
+    theme: "bananabank",
   },
   {
     slug: "xfold",

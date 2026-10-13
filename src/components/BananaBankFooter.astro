@@ -1,0 +1,13 @@
+---
+type Props = {
+  note: string;
+};
+
+const { note } = Astro.props;
+---
+
+<footer class="bb-footer">
+  <span class="bb-footer-word">banana</span>
+  <span class="bb-footer-note">{note}</span>
+  <span class="bb-footer-meta">banana · 2026</span>
+</footer>

@@ -1,6 +1,8 @@
 ---
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import DirectoryNav from "../../components/DirectoryNav.astro";
+import BananaBankBrand from "../../components/BananaBankBrand.astro";
+import BananaBankFooter from "../../components/BananaBankFooter.astro";
 import HackSpainBrand from "../../components/HackSpainBrand.astro";
 import HackSpainFonts from "../../components/HackSpainFonts.astro";
 import MobileDirectoryMenu from "../../components/MobileDirectoryMenu.astro";
@@ -10,6 +12,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { formatReadingTime } from "../../lib/reading-time.js";
 import { pageTitle } from "../../../shared/seo/config";
 import { blogPostingSchema, breadcrumbSchema } from "../../lib/seo-schemas";
+import "../../styles/bananabank.css";
 import "../../styles/hackspain.css";
 
 export async function getStaticPaths() {
@@ -37,6 +40,7 @@ const readingTime = formatReadingTime(post.body ?? "");
 const ogImage = `/og/posts/${post.id}.png`;
 const theme = post.data.theme;
 const isHackSpain = theme === "hackspain";
+const isBananaBank = theme === "bananabank";
 ---
 
 <BaseLayout
@@ -89,6 +93,7 @@ const isHackSpain = theme === "hackspain";
               <a class="text-link" href="/posts/">← All posts</a>
             </p>
             {isHackSpain && <HackSpainBrand meta="Madrid '26 · THEKER track" />}
+            {isBananaBank && <BananaBankBrand meta="t·Dots technical challenge · Oct '26" />}
             <h1>{post.data.title}</h1>
             <p class="lead">{post.data.description}</p>
             <ul class="post-meta" aria-label="Post metadata">
@@ -108,6 +113,7 @@ const isHackSpain = theme === "hackspain";
           </section>
 
           <PostEndMatter post={post} allPosts={allPosts} />
+          {isBananaBank && <BananaBankFooter note="A simulated bank. The fixes are real." />}
         </div>
       </article>
     </div>
