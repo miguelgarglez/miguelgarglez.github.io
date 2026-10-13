@@ -29,3 +29,5 @@ chat-worker/.dev.vars
 
 # local brainstorming companion output
 .superpowers/
+.vercel
+.env*
