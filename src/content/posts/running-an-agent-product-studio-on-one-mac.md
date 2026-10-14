@@ -6,7 +6,7 @@ kind: "article"
 lang: "en"
 tags: ["ai", "agents", "automation", "macos", "process"]
 featured: true
-draft: true
+draft: false
 series: "agent-lab"
 seriesOrder: 1
 related: ["keeping-my-context-outside-the-agent", "two-days-fixing-a-bank-that-moved-money-twice"]
