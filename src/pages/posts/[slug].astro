@@ -1,5 +1,6 @@
 ---
 import { getCollection, render, type CollectionEntry } from "astro:content";
+import { isPublished } from "../../lib/post-relations";
 import DirectoryNav from "../../components/DirectoryNav.astro";
 import BananaBankBrand from "../../components/BananaBankBrand.astro";
 import BananaBankFooter from "../../components/BananaBankFooter.astro";
@@ -16,7 +17,7 @@ import "../../styles/bananabank.css";
 import "../../styles/hackspain.css";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  const posts = await getCollection("posts", ({ data }) => isPublished(data));
 
   return posts.map((post) => ({
     params: { slug: post.id },
