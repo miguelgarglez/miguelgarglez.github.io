@@ -13,9 +13,17 @@ export type SeriesContext = {
   members: PostEntry[];
 };
 
+// A post is live once it is not a draft and its date has arrived. Future-dated
+// posts stay hidden in production builds (a daily scheduled deploy publishes
+// them on their date) and show up in `npm run dev` so they can be reviewed.
+export function isPublished(data: { draft: boolean; date: Date }): boolean {
+  if (data.draft) return false;
+  return import.meta.env.DEV || data.date.valueOf() <= Date.now();
+}
+
 export function getPublishedPosts(posts: PostEntry[]): PostEntry[] {
   return posts
-    .filter((post) => !post.data.draft)
+    .filter((post) => isPublished(post.data))
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 

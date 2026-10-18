@@ -7,6 +7,9 @@ on:
     branches: [ main ]
   # Allows you to run this workflow manually from the Actions tab on GitHub.
   workflow_dispatch:
+  # Rebuild every morning so posts dated in the future go live on their date.
+  schedule:
+    - cron: "0 6 * * *"
 
 # Allow this job to clone the repo and create a page deployment
 permissions:
@@ -43,12 +46,12 @@ jobs:
               - 'cv-chat/**'
       
       - name: Configure GitHub Pages
-        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         id: pages
         uses: actions/configure-pages@v4
       
       - name: Setup Node.js for Astro build
-        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -58,25 +61,25 @@ jobs:
             cv-chat/package-lock.json
 
       - name: Install home dependencies
-        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         run: npm ci
 
       - name: Build home site
-        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         run: npm run build
       
       - name: Install cv-chat dependencies
-        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         run: npm ci
         working-directory: ./cv-chat
       
       - name: Build Astro site
-        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         run: npm run build
         working-directory: ./cv-chat
       
       - name: Prepare Pages artifact
-        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         run: |
           mkdir -p _site/cv-chat
           # Copiar la home Astro como página principal
@@ -85,7 +88,7 @@ jobs:
           cp -r cv-chat/dist/* _site/cv-chat/
       
       - name: Upload Pages artifact
-        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.site-changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./_site
@@ -93,7 +96,7 @@ jobs:
   deploy-pages:
     needs: build-pages
     runs-on: ubuntu-latest
-    if: needs.build-pages.outputs.should_deploy == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.build-pages.outputs.should_deploy == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -104,6 +107,7 @@ jobs:
 
   deploy-cloudflare-worker:
     name: Deploy Cloudflare Worker
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -119,18 +123,18 @@ jobs:
               - 'src/data/projects.ts'
               - 'cv-chat/src/data/experience.ts'
       - name: Setup Node for chat-worker
-        if: steps.worker-changes.outputs.worker == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.worker-changes.outputs.worker == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: chat-worker/package-lock.json
       - name: Install chat-worker dependencies
-        if: steps.worker-changes.outputs.worker == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.worker-changes.outputs.worker == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         working-directory: chat-worker
         run: npm ci
       - name: Build & Deploy Worker with Wrangler
-        if: steps.worker-changes.outputs.worker == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.worker-changes.outputs.worker == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

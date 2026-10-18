@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { isPublished } from "../lib/post-relations";
 import DirectoryNav from "../components/DirectoryNav.astro";
 import MobileDirectoryMenu from "../components/MobileDirectoryMenu.astro";
 import PostCard from "../components/PostCard.astro";
@@ -8,7 +9,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { pageTitle } from "../../shared/seo/config";
 import { breadcrumbSchema } from "../lib/seo-schemas";
 
-const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+const posts = (await getCollection("posts", ({ data }) => isPublished(data))).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
 

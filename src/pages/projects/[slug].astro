@@ -13,14 +13,14 @@ import HackSpainFonts from "../../components/HackSpainFonts.astro";
 import { projects } from "../../data/projects";
 import type { Project } from "../../data/projects";
 import { getProjectActionLinks } from "../../lib/project-links";
-import { getPostsForProject } from "../../lib/post-relations";
+import { getPostsForProject, isPublished } from "../../lib/post-relations";
 import { absoluteUrl, pageTitle } from "../../../shared/seo/config";
 import { breadcrumbSchema, creativeWorkSchema } from "../../lib/seo-schemas";
 import "../../styles/bananabank.css";
 import "../../styles/hackspain.css";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  const posts = await getCollection("posts", ({ data }) => isPublished(data));
 
   return projects.map((project) => ({
     params: { slug: project.slug },
