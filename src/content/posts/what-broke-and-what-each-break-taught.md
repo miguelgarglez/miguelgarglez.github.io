@@ -88,6 +88,27 @@ A launch agent ran `caffeinate -is` for the whole experiment, and I believed it 
 
 **The honest fix:** documentation. Reliable lid-closed work needs clamshell mode (power, an external display or a dummy plug, and a keyboard), or `pmset -a disablesleep 1` with all its risks.
 
+## The music that wouldn't stop
+
+On the last day, after the Lab had shut down, I noticed electronic arcade music playing on my Mac. There was no window and no app to blame. It had been looping, on and off, for days.
+
+I traced it with a second agent. It was the chiptune from greets, the demoscene cracktro generator. Four days earlier, a run had started a smoke test, `scripts/r2-engines.mjs`, which opens the app in Chromium, Firefox and WebKit, presses Space to start the demo and its tracker music, then exports a GIF. The test hung on the GIF export and never reached `browser.close()`. Playwright launches Chromium with `--mute-audio`. It does nothing equivalent for Firefox. So a headless Firefox sat at 80% CPU for four days, playing a tune nobody could see.
+
+It wasn't alone. Once the coordinator went looking, it found 166 processes left behind by Lab runs, using about 1.1 GB:
+
+- around 60 dev servers (Vite, Next, previews, and Python's `http.server`), several per project, some nine days old;
+- headless browsers from captures and tests that never closed;
+- a test script, `metro.mjs`, at 100% CPU for six days;
+- a `vi` window, open for nine days, waiting for a commit message that an agent had forgotten to pass with `-m`.
+
+Every run had ended cleanly from the launcher's point of view: exit code 0, a row in the log, claims released. But a run doesn't stop the processes it started with `bash -c '... &'`. They lose their parent and keep running under launchd.
+
+**The fix is a reaper, made deliberately conservative.** `lab-reap` counts a process as a leftover only in two cases. One: it carries the `LAB_RUN_ID` of a run that has ended (every run exports that variable, and children inherit it). Two: it is an orphan, re-parented to launchd, living in a Lab repo or running as a headless browser, and older than 30 minutes. Their children go too. The supervisor runs it at the end of every run, and the launcher runs it whenever all lanes are idle. A dev server I start myself from a terminal has my shell as its parent, so the reaper leaves it alone.
+
+My first version wasn't conservative, and that is part of the lesson. It also matched any process whose command line mentioned the Lab's folder, and on its first test it killed the shell that was running the test. Nothing else was hit. Still, a cleanup tool has the same power as the mess it cleans, so it should start from "spare everything" and add only the cases it can prove.
+
+The skill also gained rules for process hygiene: every Playwright script closes its browsers in a `finally` block and has an overall timeout, audio is muted in every engine and not only Chromium, and a run that starts a dev server records its PID and stops it.
+
 ## The launcher's own small bugs
 
 Some failures were just edges in shell and macOS:
@@ -106,10 +127,11 @@ The look gate rejects a direction before any code exists if it resembles a shipp
 
 ## What the failures have in common
 
-Most of the failures came in three shapes:
+Most of the failures came in four shapes:
 
 1. **An unchecked belief.** Scouts running, CORS blocking, the Mac awake. The fix was to measure before stating anything.
 2. **A rule that existed only as prose.** Version ages, branch discipline, round caps. The fix was a script, a branch protection, or a denied permission, and the one rule left as prose was the one that failed at the end.
 3. **The convenient path.** The over-broad credential, the fallback model, the fresh dependency. The fix was to make the convenient path the safe one, or to remove it.
+4. **Nobody owning the cleanup.** Each run finished correctly, and the system as a whole still leaked. The fix was to give ending a run its own step, the reaper, instead of hoping each script closes what it opened.
 
 The next post is about the last two days, when the question changed from "is it polished" to "is it worth making", and every product had to face a judge that wasn't another design review.

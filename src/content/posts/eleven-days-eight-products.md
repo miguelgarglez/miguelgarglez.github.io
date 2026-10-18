@@ -26,6 +26,7 @@ From October 7 to October 18, my Mac ran a small product studio made of coding a
 | Unattended runs | 58 |
 | Agent run time | about 210 hours, median 1.7 hours per run |
 | Decisions logged | 277 |
+| Processes left running at the close | 166, about 1.1 GB, including a headless Firefox playing music for four days |
 | Model spend | about $5.60 |
 | Hosting | $0 |
 
@@ -65,9 +66,10 @@ Some things needed me less than I expected. The agents wrote and ran their own t
 2. **Write the outside judge into every brief from day one,** with the pass criterion fixed before work starts. It caught more than the design gate did.
 3. **Measure depth, not only polish.** Every product needs a second layer, made of controls, export, and a reason to come back, and someone has to actually use it for ten minutes.
 4. **Put a script behind every budget.** The round cap that stayed a sentence was the one that failed.
-5. **Give agents scoped credentials only.** The worst incident happened because a convenient login was already within reach.
-6. **Verify the infrastructure I'm relying on.** For eleven days I believed the Mac stayed awake with the lid closed. The power log said otherwise, and resilience had covered for it.
-7. **Fewer, deeper products.** Five things I'd show beat thirty I wouldn't.
+5. **Make ending a run a step of its own.** Every run exited cleanly and the machine still filled up with servers and browsers. Cleanup belongs to the system, not to each script's good manners.
+6. **Give agents scoped credentials only.** The worst incident happened because a convenient login was already within reach.
+7. **Verify the infrastructure I'm relying on.** For eleven days I believed the Mac stayed awake with the lid closed. The power log said otherwise, and resilience had covered for it.
+8. **Fewer, deeper products.** Five things I'd show beat thirty I wouldn't.
 
 ## What stays
 
