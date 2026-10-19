@@ -1,0 +1,127 @@
+.page-theme:not([data-page-theme]) .post-body {
+  width: min(100%, 65ch, 680px);
+  font-size: clamp(1.0625rem, 1.4vw, 1.125rem);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.page-theme:not([data-page-theme]) .post-body > * + * {
+  margin-top: 1.4em;
+}
+
+.page-theme:not([data-page-theme]) .post-body > p:first-child {
+  font-size: 1.125em;
+  line-height: 1.75;
+}
+
+.page-theme:not([data-page-theme]) .post-body :is(h2, h3) {
+  max-width: none;
+  scroll-margin-top: 2rem;
+}
+
+.page-theme:not([data-page-theme]) .post-body h2 {
+  margin-top: clamp(3.5rem, 7vw, 5rem);
+  color: color-mix(in srgb, var(--accent) 68%, var(--ink));
+  font-size: clamp(1.8rem, 3.5vw, 2.3rem);
+  line-height: 1.22;
+  letter-spacing: -0.025em;
+}
+
+.page-theme:not([data-page-theme]) .post-body h3 {
+  margin-top: clamp(2.4rem, 5vw, 3.2rem);
+  font-family: var(--font-sans);
+  font-size: clamp(1.12rem, 2vw, 1.3rem);
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+}
+
+.page-theme:not([data-page-theme]) .post-body :is(h2, h3) + * {
+  margin-top: 1rem;
+}
+
+.page-theme:not([data-page-theme]) .post-body h2 + h3 {
+  margin-top: 1.8rem;
+}
+
+.page-theme:not([data-page-theme]) .post-body :is(ul, ol) {
+  padding-left: 1.55em;
+}
+
+.page-theme:not([data-page-theme]) .post-body li {
+  padding-left: 0.3em;
+}
+
+.page-theme:not([data-page-theme]) .post-body li + li {
+  margin-top: 0.65em;
+}
+
+.page-theme:not([data-page-theme]) .post-body li::marker {
+  color: var(--accent);
+}
+
+.page-theme:not([data-page-theme]) .post-body ol > li::marker {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  font-weight: 500;
+}
+
+.page-theme:not([data-page-theme]) .post-body li > p {
+  margin: 0;
+}
+
+.page-theme:not([data-page-theme]) .post-body li > p + p {
+  margin-top: 0.7em;
+}
+
+.page-theme:not([data-page-theme]) .post-body li > :is(ul, ol) {
+  margin-top: 0.65em;
+}
+
+.page-theme:not([data-page-theme]) .post-body li strong {
+  font-weight: 700;
+}
+
+.page-theme:not([data-page-theme]) .post-body blockquote {
+  margin-block: clamp(2.4rem, 5vw, 3.5rem);
+  padding-left: clamp(1.2rem, 3vw, 1.6rem);
+  font-size: clamp(1.3rem, 2.7vw, 1.65rem);
+}
+
+.page-theme:not([data-page-theme]) .post-body figure {
+  margin-block: clamp(2.4rem, 5vw, 3.5rem);
+}
+
+.page-theme:not([data-page-theme]) .post-body :is(img, iframe, video) {
+  max-width: 100%;
+}
+
+.page-theme:not([data-page-theme]) .post-body video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.page-theme:not([data-page-theme]) .post-body figcaption {
+  max-width: 60ch;
+  margin-top: 0.85rem;
+  line-height: 1.65;
+}
+
+.page-theme:not([data-page-theme]) .post-body pre {
+  max-width: 100%;
+  padding: clamp(0.85rem, 3vw, 1.3rem);
+  font-size: 0.82em;
+  overflow-wrap: normal;
+}
+
+.page-theme:not([data-page-theme]) .post-body table {
+  max-width: 100%;
+  margin-block: 2rem;
+  overflow-wrap: normal;
+}
+
+.page-theme:not([data-page-theme]) .post-body :is(th, td) {
+  min-width: 8rem;
+  padding-block: 0.85rem;
+}

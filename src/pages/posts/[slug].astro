@@ -15,6 +15,7 @@ import { pageTitle } from "../../../shared/seo/config";
 import { blogPostingSchema, breadcrumbSchema } from "../../lib/seo-schemas";
 import "../../styles/bananabank.css";
 import "../../styles/hackspain.css";
+import "../../styles/post-editorial.css";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts", ({ data }) => isPublished(data));

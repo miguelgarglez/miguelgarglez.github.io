@@ -16,6 +16,8 @@ I came across [Andrej Karpathy's idea for an LLM Wiki](https://gist.github.com/k
 
 When I eventually tried it, I found something much more useful than a place to store notes.
 
+## A wiki that accumulates context
+
 Karpathy's original idea is to use an LLM to incrementally compile raw sources into a persistent wiki. Instead of retrieving a few document fragments and rebuilding an answer from scratch every time, the agent maintains a collection of connected Markdown files. New sources update existing concepts, add links, and sometimes challenge what the wiki already says.
 
 He describes the result as a "persistent, compounding artifact".
@@ -30,6 +32,8 @@ I had also avoided enabling the memory features available in some AI apps. I was
 
 Keeping my own knowledge base does not solve every privacy concern. An agent can still access the information I choose to give it, and I cannot make strong claims about everything an AI provider may retain. What changes is that the durable copy lives in files I control. I can inspect it, edit it, and decide when an agent gets access.
 
+## From a saved source to updated knowledge
+
 The workflow is fairly small.
 
 When I find an article, video, or other source I want to keep, I use an Apple Shortcut from my phone or computer. The shortcut creates an issue in the private GitHub repository that contains my knowledge base.
@@ -38,17 +42,17 @@ Later, an automation processes that queue. I currently run it with Codex, althou
 
 The agent preserves the source, writes a summary, connects it to topics already in the wiki, and updates existing pages when the new material adds something useful.
 
-```text
-Interesting source
--> Apple Shortcut
--> Private GitHub issue
--> Agent processes the source
--> Existing knowledge gets updated
-```
+1. Interesting source
+2. Apple Shortcut
+3. Private GitHub issue
+4. Agent processes the source
+5. Existing knowledge gets updated
 
 I can still add and process material manually, but the shortcut matters. Capturing something takes a few seconds, while the slower work of reading, organizing, and connecting it happens asynchronously.
 
 This has made the system easy enough to keep using.
+
+## Continuity across conversations
 
 The results so far are not dramatic discoveries about myself. The knowledge base has not revealed some hidden truth that I would never have found alone. Its current value is continuity.
 
@@ -63,6 +67,8 @@ This matters to me because I am still early in my career. My goals are not fixed
 Longer-term goals and personal values can easily disappear from a normal chat. A question gets answered using the context that happened to fit inside that conversation. With the knowledge base available, the agent can consider previous decisions and ongoing interests before suggesting what I should learn, build, or investigate next.
 
 I can also use the same folder with Codex or Cursor. The useful context does not depend on which product has the best memory feature this month. I can choose the agent that fits the task and give it access to the same underlying material.
+
+## Keeping the context useful
 
 There are obvious ways this could go wrong. Information can become stale. An agent can write a bad summary or connect two ideas too confidently. The structure could grow faster than its usefulness. A stored description of my goals could also preserve an older version of me for longer than it deserves.
 
