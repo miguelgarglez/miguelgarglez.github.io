@@ -463,6 +463,26 @@ describe('visible suggested-prompt retrieval', () => {
     assert.ok(ids(context.selectedMemories).includes('directory-and-wellstudio-maturity'));
   });
 
+  for (const question of [
+    '¿Qué ha construido Miguel fuera del trabajo?',
+    '¿Qué proyectos personales tiene?',
+    '¿Qué hace en su tiempo libre?',
+    '¿Tiene proyectos fuera del trabajo?',
+    'Does Miguel have any side projects?',
+  ]) {
+    it(`pins the outside-work projects for paraphrase: ${question}`, () => {
+      const context = run(question);
+
+      assert.equal(context.intent, 'projects');
+      assert.deepEqual(ids(context.selectedProjects), [
+        'wellstudio-platform',
+        'video-digest',
+        'xfold',
+      ]);
+      assert.ok(ids(context.selectedMemories).includes('video-digest-personal-cli'));
+    });
+  }
+
   it('always gives the model the real LinkedIn and X links it is told to deflect to', () => {
     const systemPrompt = runProfileAgent({
       question: 'Has Miguel worked at Amazon?',
