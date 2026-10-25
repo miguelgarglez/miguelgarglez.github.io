@@ -5,8 +5,12 @@ import { profileAssistantPolicy } from '../src/agent/prompts';
 import { suggestedPromptContracts } from '../src/agent/suggested-prompts';
 import { profileSections as workerSections } from '../src/knowledge/profile-data';
 import { profileFacts } from '../src/knowledge/profile-facts';
-import { buildSystemPrompt as buildBackupPrompt } from '../../chat-backup-vercel/shared/chat-context/context';
-import { profileSections as backupSections } from '../../chat-backup-vercel/shared/chat-context/profile-data';
+import { runProfileAgent as runBackupProfileAgent } from '../../chat-backup-vercel/shared/profile-agent/agent/run-profile-agent';
+import { profileSections as backupSections } from '../../chat-backup-vercel/shared/profile-agent/knowledge/profile-data';
+
+function buildBackupPrompt(question: string) {
+  return runBackupProfileAgent({ question, inboundMessages: [] }).messages[0].content;
+}
 
 function run(question: string) {
   return runProfileAgent({
