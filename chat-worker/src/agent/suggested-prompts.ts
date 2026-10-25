@@ -1,5 +1,5 @@
 import type { Intent } from './types';
-import { normalizeText } from './text';
+import { matchesAny, normalizeText } from './text';
 
 export type SuggestedPromptContract = {
   prompt: string;
@@ -8,6 +8,8 @@ export type SuggestedPromptContract = {
   blockIds: string[];
   projectIds?: string[];
   memoryIds?: string[];
+  /** Paraphrases (any language) that should pin the same context. */
+  aliases?: string[];
 };
 
 /**
@@ -83,6 +85,24 @@ export const suggestedPromptContracts: SuggestedPromptContract[] = [
     blockIds: ['directory-page', 'hackspain-xfold', 'tdots-banana-bank'],
     projectIds: ['wellstudio-platform', 'video-digest', 'xfold'],
     memoryIds: ['directory-and-wellstudio-maturity', 'video-digest-personal-cli'],
+    aliases: [
+      'outside work',
+      'outside of work',
+      'side project',
+      'side projects',
+      'personal project',
+      'personal projects',
+      'free time',
+      'spare time',
+      'fuera del trabajo',
+      'fuera de su trabajo',
+      'fuera de la oficina',
+      'proyecto personal',
+      'proyectos personales',
+      'proyectos propios',
+      'tiempo libre',
+      'por su cuenta',
+    ],
   },
   {
     prompt: 'What kind of engineer is Miguel?',
@@ -94,7 +114,12 @@ export const suggestedPromptContracts: SuggestedPromptContract[] = [
 
 export function matchSuggestedPrompt(question: string) {
   const normalized = normalizeText(question);
-  return suggestedPromptContracts.find(
-    (entry) => normalizeText(entry.prompt) === normalized
+  return (
+    suggestedPromptContracts.find(
+      (entry) => normalizeText(entry.prompt) === normalized
+    ) ??
+    suggestedPromptContracts.find(
+      (entry) => entry.aliases && matchesAny(question, entry.aliases)
+    )
   );
 }

@@ -9,6 +9,13 @@ function affirmed(claim: string) {
 
 export const answerEvalCases: AnswerEvalCase[] = [
   {
+    id: 'outside-work-es',
+    question: '¿Qué ha construido Miguel fuera del trabajo?',
+    lang: 'es',
+    expect: 'grounded',
+    mustInclude: [/video-digest/i, /WellStudio|wellstudio/i],
+  },
+  {
     id: 'current-role-es',
     question: '¿Cuál es su puesto actual?',
     lang: 'es',
