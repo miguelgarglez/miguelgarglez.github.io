@@ -14,7 +14,7 @@ related: ["folding-shirts-at-hackspain-2026", "keeping-my-context-outside-the-ag
 
 In October I did the [t·Dots](https://tdots.ai) technical challenge: a fictional bank called Banana Bank launches its AI assistant on Monday, and you join the team two days before. Customers can ask questions and send money through a chat agent, operators handle support cases. The brief had two parts. First, find out whether the app is ready and fix what you choose. Second, add one feature that makes the agent worth having. Everything goes in a single ZIP, with the complete AI sessions and a demo video.
 
-I worked alone, October 10 and 11, and submitted on the night of the 11th. This is what came out of it.
+I worked alone, October 10 and 11, and submitted on the night of the 11th. About 480 people took part in the online challenge, and my project made it into the top ten. I went through to the final and defended it in an interview with the organizers. I didn't finish in the top five, which were the ones with prizes, but getting that far in a field that size meant a lot to me. This is what came out of it.
 
 <ul class="bb-accounts">
 <li><span class="bb-account-label">Charged, before the fix</span><strong>€20.00</strong><span class="bb-account-note">for one €10.00 order</span></li>
