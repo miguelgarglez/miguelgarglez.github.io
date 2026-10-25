@@ -178,7 +178,7 @@ export const projects: ProjectBlock[] = [
       'Stable idempotent transfer references plus an explicit unknown state, an approval gate before any money movement, and an operator copilot that reconciles against the bank ledger and shows transfer cards in chat.',
     impact:
       'Test suite grew from 13 to 78 tests. Finalist (top ten of about 480) with an interview with the organizers; not a prize winner.',
-    technologies: ['AI agents', 'TypeScript', 'idempotency', 'testing'],
+    technologies: ['AI agents', 'idempotency', 'testing', 'Playwright'],
     links: {
       repo: 'https://github.com/miguelgarglez/banana-bank-tdots-challenge',
       article: 'https://miguelgarglez.com/posts/two-days-fixing-a-bank-that-moved-money-twice/',
