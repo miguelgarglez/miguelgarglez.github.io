@@ -168,7 +168,7 @@ export const projects: ProjectBlock[] = [
     priority: 86,
   },
   {
-    id: 'banana-bank-tdots',
+    id: 'banana-bank',
     title: 'Banana Bank (t·Dots challenge, Oct 2026)',
     shortSummary:
       'Solo entry to the online t·Dots Banana Bank technical challenge (10–11 Oct 2026, about 480 participants). Miguel reached the final (top ten) and defended the project in an interview with the organizers; he did not finish in the top five, which were the prize places. Hackathon challenge, not a production bank.',

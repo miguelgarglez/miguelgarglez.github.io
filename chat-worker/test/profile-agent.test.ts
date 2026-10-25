@@ -368,7 +368,7 @@ describe('profile agent context retrieval', () => {
     for (const question of ['¿has hecho hackathons?', 'Have you done hackathons?', 'Tell me about Banana Bank', 'What did Miguel do at t·Dots?']) {
       const context = run(question);
       assert.equal(context.intent, 'projects', question);
-      assert.ok(ids(context.selectedProjects).includes('banana-bank-tdots'), question);
+      assert.ok(ids(context.selectedProjects).includes('banana-bank'), question);
       assert.ok(ids(context.selectedFacts).includes('tdots-banana-bank'), question);
     }
     const context = run('¿has hecho hackathons?');
@@ -378,7 +378,7 @@ describe('profile agent context retrieval', () => {
     assert.match(fact.value, /480/);
     assert.match(fact.value, /top ten/i);
     assert.match(fact.value, /did not finish in the top five/i);
-    const project = context.selectedProjects.find((item) => item.id === 'banana-bank-tdots');
+    const project = context.selectedProjects.find((item) => item.id === 'banana-bank');
     assert.equal(project?.links.repo, 'https://github.com/miguelgarglez/banana-bank-tdots-challenge');
   });
 
@@ -570,8 +570,8 @@ describe('Vercel backup knowledge alignment', () => {
       const context = run(question);
 
       assert.ok(
-        ids(context.selectedProjects).includes('banana-bank-tdots'),
-        `${question}: banana-bank-tdots project`
+        ids(context.selectedProjects).includes('banana-bank'),
+        `${question}: banana-bank project`
       );
       assert.ok(
         ids(context.selectedProjects).includes('xfold'),
