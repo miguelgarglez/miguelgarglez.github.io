@@ -2,11 +2,16 @@ export function stripDiacritics(value: string) {
   return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
+// Collapse spelling and plural variants (hackaton, hackatones, hackathones,
+// hackathons) into one token so retrieval matches however the visitor writes it.
+const HACKATHON_VARIANTS = /hackath?on(?:e?s)?/g;
+
 export function normalizeText(value: string) {
   return stripDiacritics(value)
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, ' ')
-    .trim();
+    .trim()
+    .replace(HACKATHON_VARIANTS, 'hackathon');
 }
 
 export function tokenize(value: string) {
