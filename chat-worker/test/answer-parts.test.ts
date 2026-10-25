@@ -323,3 +323,31 @@ describe('buildAnswerParts', () => {
     }
   });
 });
+
+describe('project card ids', () => {
+  // Knowledge-only entries that have no directory page on purpose.
+  const knowledgeOnly = new Set(['genai-intensive-capstone']);
+
+  it('every knowledge project id matches a directory slug', () => {
+    const slugs = new Set(directoryProjects.map((project) => project.slug));
+    for (const project of knowledgeProjects) {
+      if (knowledgeOnly.has(project.id)) continue;
+      assert.ok(slugs.has(project.id), `knowledge project without directory slug: ${project.id}`);
+    }
+  });
+
+  it('every directory slug has a knowledge project', () => {
+    const ids = new Set(knowledgeProjects.map((project) => project.id));
+    for (const project of directoryProjects) {
+      assert.ok(ids.has(project.slug), `directory slug without knowledge project: ${project.slug}`);
+    }
+  });
+
+  for (const question of ['Tell me about Banana Bank', 'Tell me about the t·Dots hackathon']) {
+    it(`shows the banana-bank card first for: ${question}`, () => {
+      const { all } = partsFor(question);
+      const card = findPart(all, 'data-projects');
+      assert.equal(card?.data.items[0]?.slug, 'banana-bank');
+    });
+  }
+});
