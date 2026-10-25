@@ -27,8 +27,8 @@ knowledge first, then rely on the LLM second.
 - Visible profile content: `cv-chat/src/components/welcome/*`
 - Critical facts: `chat-worker/src/knowledge/profile-facts.ts`
 - Longer profile blocks: `chat-worker/src/knowledge/profile-data.ts`
-- Fallback profile blocks: `chat-backup-vercel/shared/chat-context/profile-data.ts`
-  (must stay identical to the Worker profile blocks)
+- Fallback agent and knowledge: `chat-backup-vercel/shared/profile-agent/`
+  (generated from the Worker by `scripts/sync-backup-agent.mjs`; do not edit)
 - Projects: `chat-worker/src/knowledge/projects.ts`
 - Curated updates and learning notes: `chat-worker/src/knowledge/memories.ts`
 - Retrieval tests: `chat-worker/test/profile-agent.test.ts`
@@ -178,8 +178,8 @@ production answer.
 
 1. Inventory changed visible content and prompts.
 2. Update the relevant `chat-worker/src/knowledge/*` files.
-3. Copy updated `profile-data.ts` blocks into
-   `chat-backup-vercel/shared/chat-context/profile-data.ts`. The Vercel fallback
+3. Run `node scripts/sync-backup-agent.mjs` to regenerate the Vercel fallback
+   mirror in `chat-backup-vercel/shared/profile-agent/`. The Vercel fallback
    is a separate deploy root and cannot import the Worker package. It uses the
    same provider as the Worker (opencode Zen) by user decision, so a Zen
    outage affects both backends.

@@ -10,10 +10,9 @@ Contexto: backend de backup en Vercel para el chat del `cv-chat`. Este servicio 
 - `src/cors.ts`: validacion de origen y headers CORS.
 - `src/rate-limit.ts`: rate limit en memoria por IP.
 - `src/messages.ts`: parseo de body (`question` o `messages`) y extraccion de mensajes.
-- `src/context.ts`: system prompt y contexto basado en `profile-data`.
+- `shared/profile-agent/`: espejo GENERADO del agente del Worker (retrieval, prompts, parts, upstream, ui-stream, knowledge). No editar; regenerar con `node scripts/sync-backup-agent.mjs`.
+- `src/pipe-stream.ts`: escribe el UI message stream del Worker en la respuesta de Vercel.
 - `src/errors.ts`: normalizacion de errores y politicas de retry/backoff.
-- `src/ui-stream.ts`: adaptador de stream upstream -> protocolo `x-vercel-ai-ui-message-stream: v1`.
-- `src/profile-data.ts`: base de conocimiento del perfil.
 
 ## Endpoints
 
@@ -74,4 +73,4 @@ de Zen afecta ahora a ambos backends; es el trade-off aceptado.
 - Este backend es API-only; no sirve frontend.
 - Incluir `X-Chat-Backend: vercel-fallback` en respuestas para trazabilidad.
 - Mantener `GET /healthz` sin logica pesada para checks externos.
-- Si cambia informacion del perfil, sincronizar `src/profile-data.ts` con `cv-chat`.
+- Si cambia el agente o la informacion del perfil en el Worker, ejecutar `node scripts/sync-backup-agent.mjs` (el test `backup-parity` falla si el espejo se desfasa).

@@ -1,6 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { applyHeaders, buildCorsHeaders, getAllowedOrigins, isOriginAllowed } from '../src/cors.js';
-import { buildSystemPrompt } from '../src/context.js';
 import {
   computeBackoffMs,
   normalizeUpstreamFailure,
@@ -19,13 +18,14 @@ import {
   resolveRequestId,
   setTelemetryTag,
 } from '../src/telemetry.js';
-import { pipeOpenAiSseToUiMessageStream } from '../src/ui-stream.js';
+import { pipeWebStreamToResponse } from '../src/pipe-stream.js';
+import { runProfileAgent } from '../shared/profile-agent/agent/run-profile-agent.js';
+import { createUiMessageStream } from '../shared/profile-agent/ui-stream.js';
 import {
   buildUpstreamPayload,
   buildUpstreamUrl,
   resolveUpstreamApi,
-  type ChatMessage,
-} from '../src/upstream.js';
+} from '../shared/profile-agent/agent/upstream.js';
 
 const UPSTREAM_TIMEOUT_MS = 25_000;
 const UPSTREAM_MAX_ATTEMPTS = 3;
@@ -162,17 +162,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 
+  const agentResult = runProfileAgent({ question, inboundMessages });
+  logEvent('profile_agent_context', {
+    requestId,
+    attempt,
+    intent: agentResult.context.intent,
+    audience: agentResult.context.audience,
+    facts: agentResult.context.selectedFacts.map((fact) => fact.id),
+    profileBlocks: agentResult.context.selectedProfileBlocks.map((block) => block.id),
+    projects: agentResult.context.selectedProjects.map((project) => project.id),
+    memories: agentResult.context.selectedMemories.map((memory) => memory.id),
+  });
+
   const upstreamApi = resolveUpstreamApi(llmModel);
-  const payload = buildUpstreamPayload(
-    llmModel,
-    [
-      { role: 'system', content: buildSystemPrompt(question) },
-      ...(inboundMessages.length > 0
-        ? inboundMessages
-        : [{ role: 'user', content: question }]),
-    ] as ChatMessage[],
-    true
-  );
+  const payload = buildUpstreamPayload(llmModel, agentResult.messages, true);
   const upstreamUrl = buildUpstreamUrl(llmBaseUrl, llmModel);
   const upstreamHeaders = {
     Authorization: `Bearer ${apiToken}`,
@@ -352,14 +355,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     'ttfbMs'
   );
 
-  await pipeOpenAiSseToUiMessageStream(upstream.body, res, (info) => {
-    logEvent('chat_stream_end', {
-      requestId,
-      receivedBytes: info.receivedBytes,
-      errorSent: info.errorSent,
-      durationMs: Date.now() - startedAt,
-    });
+  const uiStream = createUiMessageStream(upstream.body, {
+    parts: agentResult.parts,
+    onEnd: (info) => {
+      logEvent('chat_stream_end', {
+        requestId,
+        receivedBytes: info.receivedBytes,
+        errorSent: info.errorSent,
+        durationMs: Date.now() - startedAt,
+      });
+    },
   });
+  await pipeWebStreamToResponse(uiStream, res);
 
   await flushTelemetry();
 }

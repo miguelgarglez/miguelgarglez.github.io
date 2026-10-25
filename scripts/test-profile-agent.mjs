@@ -21,10 +21,10 @@ async function main() {
         'chat-worker/test/profile-agent.test.ts',
         'chat-worker/test/upstream.test.ts',
         'chat-worker/test/telemetry.test.ts',
-        'chat-worker/test/upstream-copy.test.ts',
         'chat-worker/test/answer-checks.test.ts',
         'chat-worker/test/ui-stream.test.ts',
         'chat-worker/test/answer-parts.test.ts',
+        'chat-worker/test/backup-parity.test.ts',
       ],
       bundle: true,
       platform: 'node',
@@ -33,6 +33,8 @@ async function main() {
       outdir: tempDir,
       outbase: 'chat-worker/test',
       external: ['node:assert/strict', 'node:test'],
+      // The backup handler imports Sentry; tests run offline without it.
+      alias: { '@sentry/node': './chat-worker/test/stubs/sentry-node.ts' },
       logLevel: 'silent',
     });
 
@@ -44,10 +46,10 @@ async function main() {
           join(tempDir, 'profile-agent.test.js'),
           join(tempDir, 'upstream.test.js'),
           join(tempDir, 'telemetry.test.js'),
-          join(tempDir, 'upstream-copy.test.js'),
           join(tempDir, 'answer-checks.test.js'),
           join(tempDir, 'ui-stream.test.js'),
           join(tempDir, 'answer-parts.test.js'),
+          join(tempDir, 'backup-parity.test.js'),
         ],
         {
           stdio: 'inherit',

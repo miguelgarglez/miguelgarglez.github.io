@@ -1,6 +1,6 @@
-// Canonical public profile blocks. Keep
-// chat-backup-vercel/shared/chat-context/profile-data.ts in sync: the Vercel
-// fallback cannot import this Worker package from its deploy root.
+// Canonical public profile blocks. The Vercel fallback gets a generated copy
+// in chat-backup-vercel/shared/profile-agent/: run
+// `node scripts/sync-backup-agent.mjs` after editing.
 
 export type ProfileBlock = {
   id: string;

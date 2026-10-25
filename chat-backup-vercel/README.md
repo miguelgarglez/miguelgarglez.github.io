@@ -8,9 +8,14 @@ decision uses the **same provider** as the Worker (opencode Zen). The
 trade-off: a Zen outage now affects both backends, but behavior, payload
 shape, and error codes stay identical across primary and fallback.
 
-Profile blocks in `shared/chat-context/profile-data.ts` must stay identical to
-`chat-worker/src/knowledge/profile-data.ts`. The fallback cannot import the
-Worker package because Vercel deploys from this directory.
+The whole profile agent (intent, retrieval, prompts, suggested-prompt
+contracts, rich-card parts, upstream payloads, UI stream and knowledge) is a
+generated mirror of the Worker in `shared/profile-agent/`. Vercel deploys from
+this directory and cannot import the Worker package, so after any change under
+`chat-worker/src/agent`, `chat-worker/src/knowledge`, `chat-worker/src/ui-stream.ts`,
+`shared/chat-parts.ts`, `cv-chat/src/data/experience.ts` or `src/data/projects.ts`
+run `node scripts/sync-backup-agent.mjs`. `npm run test:profile-agent` fails if
+the mirror drifts. Never edit `shared/profile-agent/` by hand.
 
 ## Endpoints
 
