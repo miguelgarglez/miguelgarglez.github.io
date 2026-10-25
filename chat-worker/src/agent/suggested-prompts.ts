@@ -79,8 +79,8 @@ export const suggestedPromptContracts: SuggestedPromptContract[] = [
   {
     prompt: 'What has Miguel built outside work?',
     intent: 'projects',
-    factIds: ['hackspain-xfold'],
-    blockIds: ['directory-page', 'hackspain-xfold'],
+    factIds: ['hackspain-xfold', 'tdots-banana-bank'],
+    blockIds: ['directory-page', 'hackspain-xfold', 'tdots-banana-bank'],
     projectIds: ['wellstudio-platform', 'video-digest', 'xfold'],
     memoryIds: ['directory-and-wellstudio-maturity', 'video-digest-personal-cli'],
   },

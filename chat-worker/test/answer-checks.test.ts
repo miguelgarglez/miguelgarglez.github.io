@@ -149,7 +149,7 @@ describe('answer eval dataset', () => {
       ['work-authorization-en', 'Yes. Miguel is authorized to work in Spain and does **not** require visa sponsorship now or in the future.'],
       ['mcp-adoption-en', 'He **built an unofficial MCP server**; adoption is **limited** and **not described as widely adopted across the organization**.'],
       ['phone-en', 'His phone number is not published, so the best path is LinkedIn. His QA role ran 2023-2024 at the company.'],
-      ['hackathons-es', 'Sí, participó en HackSpain con XFOLD; el equipo no ganó, pero llegó a una demo funcional para el reto.'],
+      ['hackathons-es', 'Sí, participó en HackSpain con XFOLD; el equipo no ganó, pero llegó a una demo funcional para el reto. En t·Dots quedó finalista.'],
       ['mcp-adoption-en', 'He built an unofficial MCP server; it is not an official MCP program and adoption is limited for the team.'],
       ['rag-depth-en', 'His exposure comes from the Google GenAI Intensive capstone and is **not positioned as deep production RAG**.'],
       ['rag-depth-en', 'Miguel has **lightweight / non-deep production RAG exposure** from the Google GenAI Intensive capstone.'],

@@ -66,6 +66,8 @@ const TAG_KEYWORDS: Record<string, string[]> = {
     'hackspain',
     'xfold',
     'theker',
+    'tdots',
+    'banana',
   ],
   hackathon: [
     'hackathon',
@@ -75,6 +77,8 @@ const TAG_KEYWORDS: Record<string, string[]> = {
     'hackspain',
     'xfold',
     'theker',
+    'tdots',
+    'banana',
   ],
   futuro: ['futuro', 'objetivo', 'crecer', 'carrera', 'future', 'goal', 'next', 'career'],
   recruiting: ['recruiter', 'recruiting', 'hire', 'hiring', 'candidate', 'profile', 'talent', 'seleccion'],

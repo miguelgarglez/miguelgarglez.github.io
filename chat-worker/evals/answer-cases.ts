@@ -99,8 +99,16 @@ export const answerEvalCases: AnswerEvalCase[] = [
     question: '¿Ha participado Miguel en hackathons?',
     lang: 'es',
     expect: 'grounded',
-    mustInclude: [/HackSpain/i, /XFOLD/i],
+    mustInclude: [/HackSpain/i, /XFOLD/i, /t·?Dots/i],
     mustNotInclude: [/mujoco|isaac|pixi/i, /\b(?:first prize|primer premio|won the)\b/i],
+  },
+  {
+    id: 'tdots-banana-bank-en',
+    question: 'Tell me about Banana Bank and the t·Dots challenge.',
+    lang: 'en',
+    expect: 'grounded',
+    mustInclude: [/480/, /top ten|top 10|final/i],
+    mustNotInclude: [/\b(?:won (?:the|first)|first prize|prize winner)\b/i],
   },
   {
     id: 'video-digest-en',

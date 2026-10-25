@@ -168,6 +168,40 @@ export const projects: ProjectBlock[] = [
     priority: 86,
   },
   {
+    id: 'banana-bank-tdots',
+    title: 'Banana Bank (t·Dots challenge, Oct 2026)',
+    shortSummary:
+      'Solo entry to the online t·Dots Banana Bank technical challenge (10–11 Oct 2026, about 480 participants). Miguel reached the final (top ten) and defended the project in an interview with the organizers; he did not finish in the top five, which were the prize places. Hackathon challenge, not a production bank.',
+    problem:
+      'The Banana Bank starter, an AI banking assistant, duplicated transfers and moved money without asking for confirmation.',
+    solution:
+      'Stable idempotent transfer references plus an explicit unknown state, an approval gate before any money movement, and an operator copilot that reconciles against the bank ledger and shows transfer cards in chat.',
+    impact:
+      'Test suite grew from 13 to 78 tests. Finalist (top ten of about 480) with an interview with the organizers; not a prize winner.',
+    technologies: ['AI agents', 'TypeScript', 'idempotency', 'testing'],
+    links: {
+      repo: 'https://github.com/miguelgarglez/banana-bank-tdots-challenge',
+      article: 'https://miguelgarglez.com/posts/two-days-fixing-a-bank-that-moved-money-twice/',
+    },
+    tags: [
+      'hackathon',
+      'hackathons',
+      'hackaton',
+      'hackatones',
+      'tdots',
+      't·dots',
+      'banana-bank',
+      'banana',
+      'finalist',
+      'ai',
+      'fintech',
+      'idempotency',
+      'solo-project',
+    ],
+    visibility: 'public',
+    priority: 86,
+  },
+  {
     id: 'genai-intensive-capstone',
     title: 'Google GenAI Intensive capstone',
     shortSummary:

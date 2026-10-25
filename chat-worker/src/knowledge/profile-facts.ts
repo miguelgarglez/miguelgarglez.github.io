@@ -120,4 +120,12 @@ export const profileFacts: ProfileFact[] = [
     tags: ['projects', 'portfolio', 'hackathon', 'hackathons', 'hackspain', 'xfold'],
     priority: 84,
   },
+  {
+    id: 'tdots-banana-bank',
+    label: 't·Dots Banana Bank challenge / finalist',
+    value:
+      'In October 2026 (10–11 Oct) Miguel did the t·Dots Banana Bank technical challenge online, solo, among about 480 participants (t·Dots is a developer community). He reached the final (top ten) and defended his project in an interview with the organizers. The top five got prizes; Miguel did not finish in the top five. Together with HackSpain 2026 (XFOLD, team demo), these are his recent hackathons.',
+    tags: ['projects', 'portfolio', 'hackathon', 'hackathons', 'tdots', 'banana', 'achievement', 'achievements', 'logros'],
+    priority: 84,
+  },
 ];
