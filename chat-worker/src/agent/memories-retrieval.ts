@@ -35,6 +35,9 @@ function shouldIncludeMemories(question: string, intent: Intent) {
       'hackspain',
       'xfold',
       'theker',
+      'tdots',
+      't·dots',
+      'banana bank',
     ])
   );
 }

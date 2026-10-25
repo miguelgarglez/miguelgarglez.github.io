@@ -148,6 +148,32 @@ export const memories: MemoryBlock[] = [
     priority: 88,
   },
   {
+    id: 'tdots-2026-banana-bank',
+    title: 't·Dots Banana Bank challenge finalist (Oct 2026)',
+    content:
+      'On 10–11 October 2026 Miguel did the t·Dots Banana Bank technical challenge (t·Dots is a developer community), online and alone, among about 480 participants. He reached the final (top ten) and defended the project in an interview with the organizers. The top five got prizes; he did not finish in the top five. He fixed an AI banking assistant starter that duplicated transfers and moved money without confirmation (idempotent references, an unknown state, an approval gate) and added an operator copilot that reconciles against the ledger. Write-up: https://miguelgarglez.com/posts/two-days-fixing-a-bank-that-moved-money-twice/',
+    source: 'manual',
+    tags: [
+      'hackathon',
+      'hackathons',
+      'hackaton',
+      'hackatones',
+      'tdots',
+      't·dots',
+      'banana-bank',
+      'banana',
+      'finalist',
+      'achievement',
+      'ai',
+      'solo-project',
+    ],
+    createdAt: '2026-10-11',
+    status: 'completed',
+    visibility: 'public',
+    confidence: 'verified',
+    priority: 88,
+  },
+  {
     id: 'google-genai-intensive-capstone',
     title: 'Google GenAI Intensive capstone',
     content:

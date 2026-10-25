@@ -148,6 +148,15 @@ export const profileSections: ProfileBlock[] = [
     lang: 'en',
   },
   {
+    id: 'tdots-banana-bank',
+    title: 't·Dots Banana Bank challenge (Oct 2026)',
+    content:
+      'On 10–11 October 2026 Miguel took part, alone and online, in the t·Dots Banana Bank technical challenge, with about 480 participants. The starter was an AI banking assistant that duplicated transfers and moved money without confirmation. He fixed it with stable idempotent references plus an unknown state and an approval gate for money movement, and added an operator copilot that reconciles against the bank ledger and shows transfer cards in chat. Tests went from 13 to 78. He reached the final (top ten) and defended the project in an interview with the organizers; the top five got prizes and he was not among them. Repo: https://github.com/miguelgarglez/banana-bank-tdots-challenge. Post: https://miguelgarglez.com/posts/two-days-fixing-a-bank-that-moved-money-twice/',
+    tags: ['proyectos', 'aprendizaje', 'impacto', 'hackathon'],
+    type: 'example',
+    lang: 'en',
+  },
+  {
     id: 'experience-ods',
     title: 'Experience - Open Digital Services (Santander Group)',
     content:

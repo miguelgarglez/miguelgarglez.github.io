@@ -79,6 +79,9 @@ export function classifyIntent(question: string): Intent {
       'hackspain',
       'xfold',
       'theker',
+      'tdots',
+      't·dots',
+      'banana bank',
     ])
   )
     return 'projects';
