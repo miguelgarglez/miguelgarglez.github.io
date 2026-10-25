@@ -535,4 +535,28 @@ describe('Vercel backup knowledge alignment', () => {
     assert.doesNotMatch(prompt, /frontend platform engineer/i);
     assert.doesNotMatch(prompt, /frontend platform remains/i);
   });
+
+  it('retrieves hackathon content for every spelling and plural variant', () => {
+    for (const question of [
+      'que me cuentas de hackathones?',
+      'háblame de hackatones',
+      'hackathones',
+      'cuéntame de tus hackatons',
+    ]) {
+      const context = run(question);
+
+      assert.ok(
+        ids(context.selectedProjects).includes('banana-bank-tdots'),
+        `${question}: banana-bank-tdots project`
+      );
+      assert.ok(
+        ids(context.selectedProjects).includes('xfold'),
+        `${question}: xfold project`
+      );
+      assert.ok(
+        ids(context.selectedFacts).includes('tdots-banana-bank'),
+        `${question}: t·Dots fact`
+      );
+    }
+  });
 });
